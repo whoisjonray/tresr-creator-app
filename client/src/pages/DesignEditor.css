@@ -506,6 +506,7 @@
     align-items: center;
     margin-bottom: 20px;
     width: 100%;
+    position: relative;
 }
 
 .view-toggle {
@@ -515,6 +516,9 @@
     padding: 4px;
     gap: 4px;
     width: fit-content;
+    position: absolute;
+    left: 0;
+    top: 0;
 }
 
 .view-btn {
@@ -538,7 +542,7 @@
 }
 
 /* Replace Image Button */
-.replace-image-btn {
+.replace-image-btn, .add-back-image-btn {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -551,13 +555,16 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
+    position: absolute;
+    right: 0;
+    top: 0;
 }
 
-.replace-image-btn:hover {
+.replace-image-btn:hover, .add-back-image-btn:hover {
     background: #4338ca;
 }
 
-.replace-image-btn svg {
+.replace-image-btn svg, .add-back-image-btn svg {
     width: 16px;
     height: 16px;
 }

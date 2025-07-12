@@ -122,6 +122,10 @@ function DesignEditor() {
   const [backDesignImage, setBackDesignImage] = useState(null);
   const [frontDesignImageSrc, setFrontDesignImageSrc] = useState(null);
   const [backDesignImageSrc, setBackDesignImageSrc] = useState(null);
+  const [frontDesignFile, setFrontDesignFile] = useState(null);
+  const [backDesignFile, setBackDesignFile] = useState(null);
+  const [frontDesignUrl, setFrontDesignUrl] = useState(null);
+  const [backDesignUrl, setBackDesignUrl] = useState(null);
   
   // Legacy support - current design based on active side (using useMemo to prevent initialization issues)
   const designImage = useMemo(() => 
@@ -188,8 +192,10 @@ function DesignEditor() {
     reader.onload = (e) => {
       const img = new Image();
       img.onload = () => {
-        setDesignImage(img);
-        setDesignImageSrc(e.target.result);
+        // Always set front image when using the main drop zone
+        setFrontDesignImage(img);
+        setFrontDesignImageSrc(e.target.result);
+        setFrontDesignFile(file);
         
         // Update all product configs with correct aspect ratio
         const aspectRatio = img.width / img.height;
@@ -242,13 +248,13 @@ function DesignEditor() {
       // Upload design to get URL for mockup generation
       mockupService.uploadDesign(e.target.result)
         .then(url => {
-          setDesignUrl(url);
-          console.log('Design uploaded:', url);
+          setFrontDesignUrl(url);
+          console.log('Front design uploaded:', url);
         })
         .catch(err => {
-          console.error('Failed to upload design:', err);
+          console.error('Failed to upload front design:', err);
           // Continue without URL for now
-          setDesignUrl(e.target.result);
+          setFrontDesignUrl(e.target.result);
         });
     };
     reader.readAsDataURL(file);
@@ -535,17 +541,21 @@ function DesignEditor() {
       // Set product publish status
       setIsProductPublished(!productData.isDraft);
       
-      // Try to load the original design image
-      const designImageToLoad = productData.originalDesignImage || 
-                                productData.previewImage || 
-                                (productData.mockups && productData.mockups.length > 0 && 
-                                 productData.mockups.find(m => m.designPreview)?.designPreview);
+      // Try to load front and back images
+      const frontImageToLoad = productData.frontDesignImageSrc || 
+                               productData.originalDesignImage || 
+                               productData.previewImage || 
+                               (productData.mockups && productData.mockups.length > 0 && 
+                                productData.mockups.find(m => m.designPreview)?.designPreview);
       
-      if (designImageToLoad) {
+      if (frontImageToLoad) {
         const img = new Image();
         img.onload = () => {
-          setDesignImage(img);
-          setDesignImageSrc(designImageToLoad);
+          setFrontDesignImage(img);
+          setFrontDesignImageSrc(frontImageToLoad);
+          if (productData.frontDesignUrl) {
+            setFrontDesignUrl(productData.frontDesignUrl);
+          }
           
           // If we already have saved product configs with positions, don't modify them
           // Only update configs if this is a new design without saved positions
@@ -575,7 +585,20 @@ function DesignEditor() {
             });
           }
         };
-        img.src = designImageToLoad;
+        img.src = frontImageToLoad;
+      }
+      
+      // Load back image if available
+      if (productData.backDesignImageSrc) {
+        const backImg = new Image();
+        backImg.onload = () => {
+          setBackDesignImage(backImg);
+          setBackDesignImageSrc(productData.backDesignImageSrc);
+          if (productData.backDesignUrl) {
+            setBackDesignUrl(productData.backDesignUrl);
+          }
+        };
+        backImg.src = productData.backDesignImageSrc;
       }
       
       // Only set enabled products from mockups if we don't have saved productConfigs
@@ -810,9 +833,13 @@ function DesignEditor() {
         supportingText: supportingText, // Save supporting text
         tags: tags ? tags.split(',').map(t => t.trim()).filter(t => t) : [],
         nfcEnabled: nfcExperienceType !== 'none',
-        originalDesignImage: designImageSrc, // Store original for editing
-        previewImage: designImageSrc, // Store for product card display
-        designUrl: designUrl,
+        originalDesignImage: frontDesignImageSrc, // Store original front for editing
+        previewImage: frontDesignImageSrc, // Store for product card display
+        designUrl: frontDesignUrl,
+        frontDesignImageSrc: frontDesignImageSrc,
+        backDesignImageSrc: backDesignImageSrc,
+        frontDesignUrl: frontDesignUrl,
+        backDesignUrl: backDesignUrl,
         productConfigs: productConfigs, // Save product positions and configurations
         selectedColors: selectedColors, // Save selected colors
         mockups: [
@@ -878,10 +905,12 @@ function DesignEditor() {
   const handleGenerateProducts = async () => {
     // In edit mode, we don't need a new file upload
     const isEditMode = params.id && location.state?.productData;
-    const hasDesignImage = designImageSrc || designUrl || (isEditMode && location.state?.productData?.originalDesignImage);
+    const hasFrontImage = frontDesignImageSrc || frontDesignUrl || (isEditMode && location.state?.productData?.originalDesignImage);
+    const hasBackImage = backDesignImageSrc || backDesignUrl;
+    const hasAnyImage = hasFrontImage || hasBackImage;
     
-    if ((!designFile && !isEditMode) || !designTitle || !hasDesignImage) {
-      alert('Please upload a design and add a title');
+    if ((!frontDesignFile && !isEditMode) || !designTitle || !hasAnyImage) {
+      alert('Please upload at least a front design and add a title');
       return;
     }
 
@@ -897,19 +926,30 @@ function DesignEditor() {
         return;
       }
       
-      // Use the appropriate design image source
-      const designImageForMockups = designUrl || designImageSrc || (isEditMode && location.state?.productData?.originalDesignImage);
-      
-      console.log('Using design image for mockups:', designImageForMockups ? 'present' : 'missing');
-      
       // Generate mockups for all enabled products
-      const products = enabledProducts.map(product => ({
-        ...product,
-        enabled: true,
-        selectedColor: productConfigs[product.id].selectedColor || productConfigs[product.id].defaultColor
-      }));
+      const mockupPromises = [];
       
-      const mockups = await mockupService.generateAllMockups(designImageForMockups, products, productConfigs);
+      for (const product of enabledProducts) {
+        const config = productConfigs[product.id];
+        
+        // Determine which image to use based on print location
+        let mockupImage;
+        if (config.printLocation === 'back') {
+          mockupImage = backDesignUrl || backDesignImageSrc;
+        } else {
+          // For 'front' and 'both', use front image for preview
+          mockupImage = frontDesignUrl || frontDesignImageSrc || (isEditMode && location.state?.productData?.originalDesignImage);
+        }
+        
+        if (mockupImage) {
+          // Generate mockup for this product
+          const mockupPromise = generateMockupPreview(product.id);
+          mockupPromises.push(mockupPromise);
+        }
+      }
+      
+      await Promise.all(mockupPromises);
+      const mockups = {};
       
       console.log('Generated mockups:', mockups);
       
@@ -1059,33 +1099,111 @@ function DesignEditor() {
             <div className="editor-layout">
               {/* Canvas Section */}
               <div className="canvas-section">
-                {/* Front/Back Toggle - Only show when "Print on Front & Back" is selected */}
+                {/* View Controls */}
                 {activeProduct && productConfigs[activeProduct]?.enabled && 
-                 productConfigs[activeProduct]?.printLocation === 'both' &&
                  !['art-sqsm', 'art-sqm', 'art-lg', 'nft'].includes(activeProduct) && (
                   <div className="view-controls">
-                    <div className="view-toggle">
-                      <button 
-                        className={`view-btn ${viewSide === 'front' ? 'active' : ''}`}
-                        onClick={() => setViewSide('front')}
-                      >
-                        Front
-                      </button>
-                      <button 
-                        className={`view-btn ${viewSide === 'back' ? 'active' : ''}`}
-                        onClick={() => setViewSide('back')}
-                      >
-                        Back
-                      </button>
-                    </div>
-                    {viewSide === 'back' && (
-                      <button className="replace-image-btn">
+                    {/* Front/Back Toggle - Only show when "Print on Front & Back" is selected */}
+                    {productConfigs[activeProduct]?.printLocation === 'both' && (
+                      <div className="view-toggle">
+                        <button 
+                          className={`view-btn ${viewSide === 'front' ? 'active' : ''}`}
+                          onClick={() => setViewSide('front')}
+                        >
+                          Front
+                        </button>
+                        <button 
+                          className={`view-btn ${viewSide === 'back' ? 'active' : ''}`}
+                          onClick={() => setViewSide('back')}
+                        >
+                          Back
+                        </button>
+                      </div>
+                    )}
+                    {/* Add back image button - show when viewing back side OR when "Print on Back" is selected */}
+                    {((productConfigs[activeProduct]?.printLocation === 'back' && !backDesignImage) ||
+                      (productConfigs[activeProduct]?.printLocation === 'both' && viewSide === 'back' && !backDesignImage)) && (
+                      <label className="add-back-image-btn">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          style={{ display: 'none' }}
+                          onChange={(e) => {
+                            const file = e.target.files[0];
+                            if (!file) return;
+                            
+                            setBackDesignFile(file);
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                              const img = new Image();
+                              img.onload = () => {
+                                setBackDesignImage(img);
+                                setBackDesignImageSrc(event.target.result);
+                                
+                                // Upload back design
+                                mockupService.uploadDesign(event.target.result)
+                                  .then(url => {
+                                    setBackDesignUrl(url);
+                                    console.log('Back design uploaded:', url);
+                                  })
+                                  .catch(err => {
+                                    console.error('Failed to upload back design:', err);
+                                    setBackDesignUrl(event.target.result);
+                                  });
+                              };
+                              img.src = event.target.result;
+                            };
+                            reader.readAsDataURL(file);
+                          }}
+                        />
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                        </svg>
+                        Add back image
+                      </label>
+                    )}
+                    {/* Replace back image button - show when back image exists */}
+                    {((productConfigs[activeProduct]?.printLocation === 'back' && backDesignImage) ||
+                      (productConfigs[activeProduct]?.printLocation === 'both' && viewSide === 'back' && backDesignImage)) && (
+                      <label className="replace-image-btn">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          style={{ display: 'none' }}
+                          onChange={(e) => {
+                            const file = e.target.files[0];
+                            if (!file) return;
+                            
+                            setBackDesignFile(file);
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                              const img = new Image();
+                              img.onload = () => {
+                                setBackDesignImage(img);
+                                setBackDesignImageSrc(event.target.result);
+                                
+                                // Upload back design
+                                mockupService.uploadDesign(event.target.result)
+                                  .then(url => {
+                                    setBackDesignUrl(url);
+                                    console.log('Back design replaced:', url);
+                                  })
+                                  .catch(err => {
+                                    console.error('Failed to upload back design:', err);
+                                    setBackDesignUrl(event.target.result);
+                                  });
+                              };
+                              img.src = event.target.result;
+                            };
+                            reader.readAsDataURL(file);
+                          }}
+                        />
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M5 13l4 4L19 7" stroke="none"/>
                           <path d="M21 19v-14l-9 6-3-2-6 4v6h18z" stroke="currentColor" strokeWidth="2" fill="none"/>
                         </svg>
                         Replace back image
-                      </button>
+                      </label>
                     )}
                   </div>
                 )}
@@ -1246,6 +1364,10 @@ function DesignEditor() {
                                     printLocation: e.target.value
                                   }
                                 }));
+                                // Auto-select front view when switching to front only
+                                if (product.id === activeProduct && e.target.value === 'front') {
+                                  setViewSide('front');
+                                }
                               }}
                             />
                             <span>Print on Front</span>
@@ -1264,6 +1386,10 @@ function DesignEditor() {
                                     printLocation: e.target.value
                                   }
                                 }));
+                                // Auto-select back view when switching to back only
+                                if (product.id === activeProduct && e.target.value === 'back') {
+                                  setViewSide('back');
+                                }
                               }}
                             />
                             <span>Print on Back</span>
