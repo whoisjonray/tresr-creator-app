@@ -1,6 +1,6 @@
 {
   "name": "tresr-creator-app",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "TRESR Creator Tools - Design editor and product management for creators",
   "private": true,
   "workspaces": [
