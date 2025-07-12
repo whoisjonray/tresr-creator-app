@@ -7,10 +7,10 @@ const DynamicProvider = ({ children }) => {
     // Production environment ID for nftreasure
     environmentId: 'b17e8631-c1b7-45d5-95cf-151eb5246423',
     
-    // Keep wallet connectors but prioritize social auth
+    // Include wallet connectors (required by Dynamic)
     walletConnectors: [EthereumWalletConnectors],
     
-    // Prioritize social auth providers (same as TRESR.com)
+    // Social auth providers FIRST (same as TRESR.com)
     authProviders: [
       'googlesocial',
       'discord', 
@@ -18,15 +18,16 @@ const DynamicProvider = ({ children }) => {
       'emailverification'
     ],
     
+    // Force social auth to show first - NOT wallet connect
+    initialAuthenticationMode: 'connect-and-sign',
+    
+    // Prioritize social authentication over wallet connections
+    authFlow: 'social-first',
+    hideEmbeddedWalletTransactionUIs: false,
+    
     // UI customization to match TRESR brand
     appName: 'TRESR Creator Tools',
     appLogoUrl: 'https://tresr.com/logo.png',
-    
-    // Initial auth mode - prioritize social login
-    initialAuthenticationMode: 'connect-only',
-    
-    // Show social login first
-    authModeOrder: ['social-auth', 'wallet'],
     
     // Privacy policy (matches TRESR.com)
     privacyPolicyUrl: 'https://tresr.com/privacy',
