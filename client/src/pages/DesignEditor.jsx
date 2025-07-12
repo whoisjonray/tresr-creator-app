@@ -214,9 +214,16 @@ function DesignEditor() {
               designWidth = maxHeight * aspectRatio;
             }
             
+            // Update both front and back positions with the new dimensions
             newConfigs[productId] = {
               ...prev[productId],
-              position: {
+              frontPosition: {
+                x: printArea.x, // Center in print area
+                y: printArea.y,
+                width: designWidth,
+                height: designHeight
+              },
+              backPosition: {
                 x: printArea.x, // Center in print area
                 y: printArea.y,
                 width: designWidth,
@@ -267,14 +274,17 @@ function DesignEditor() {
     setIsGeneratingMockup(true);
     
     try {
+      // Get the current position based on view side
+      const currentPos = getCurrentPosition(productId);
+      
       // Convert canvas position to API format
       const apiPosition = mockupService.convertToApiPosition(
-        { x: config.position.x, y: config.position.y },
+        { x: currentPos.x, y: currentPos.y },
         { width: 400, height: 400 }
       );
       
       const apiScale = mockupService.calculateApiScale(
-        { width: config.position.width, height: config.position.height },
+        { width: currentPos.width, height: currentPos.height },
         { width: 400, height: 400 },
         designScale / 100
       );
@@ -549,8 +559,13 @@ function DesignEditor() {
               Object.keys(prev).forEach(productId => {
                 newConfigs[productId] = {
                   ...prev[productId],
-                  position: {
-                    ...prev[productId].position,
+                  frontPosition: {
+                    ...prev[productId].frontPosition,
+                    width: baseWidth,
+                    height: baseHeight
+                  },
+                  backPosition: {
+                    ...prev[productId].backPosition,
                     width: baseWidth,
                     height: baseHeight
                   }
@@ -680,12 +695,14 @@ function DesignEditor() {
       finalWidth = finalHeight * aspectRatio;
     }
     
+    // Update the position for the current view side
+    const positionKey = viewSide === 'front' ? 'frontPosition' : 'backPosition';
     setProductConfigs(prev => ({
       ...prev,
       [activeProduct]: {
         ...prev[activeProduct],
-        position: {
-          ...prev[activeProduct].position,
+        [positionKey]: {
+          ...prev[activeProduct][positionKey],
           width: finalWidth,
           height: finalHeight
         }
@@ -1036,7 +1053,7 @@ function DesignEditor() {
           </div>
         </div>
 
-        {designImage && (
+        {(frontDesignImage || backDesignImage) && (
           <>
             {/* Editor Layout */}
             <div className="editor-layout">
@@ -1114,17 +1131,12 @@ function DesignEditor() {
                         onClick={() => {
                           // Top align - only move vertically to top of print area
                           const config = productConfigs[activeProduct];
-                          const printAreaTop = 50 + config.position.height / 2; // Top edge of print area
-                          setProductConfigs(prev => ({
-                            ...prev,
-                            [activeProduct]: {
-                              ...prev[activeProduct],
-                              position: {
-                                ...prev[activeProduct].position,
-                                y: printAreaTop // Only change Y, keep X the same
-                              }
-                            }
-                          }));
+                          const currentPos = getCurrentPosition();
+                          const printAreaTop = 50 + currentPos.height / 2; // Top edge of print area
+                          updateCurrentPosition(activeProduct, {
+                            ...currentPos,
+                            y: printAreaTop // Only change Y, keep X the same
+                          });
                         }}
                         title="Align to top"
                       >
@@ -1139,16 +1151,11 @@ function DesignEditor() {
                         className="tool-btn align-center"
                         onClick={() => {
                           // Center align - only move horizontally to center
-                          setProductConfigs(prev => ({
-                            ...prev,
-                            [activeProduct]: {
-                              ...prev[activeProduct],
-                              position: {
-                                ...prev[activeProduct].position,
-                                x: 200 // Only change X to center, keep Y the same
-                              }
-                            }
-                          }));
+                          const currentPos = getCurrentPosition();
+                          updateCurrentPosition(activeProduct, {
+                            ...currentPos,
+                            x: 200 // Only change X to center, keep Y the same
+                          });
                         }}
                         title="Center horizontally"
                       >
