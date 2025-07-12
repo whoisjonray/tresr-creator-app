@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create axios instance with default config
 const api = axios.create({
-  baseURL: 'http://localhost:3002',
+  baseURL: import.meta.env.PROD ? 'https://creators.tresr.com' : 'http://localhost:3002',
   withCredentials: true, // Include cookies in requests
   headers: {
     'Content-Type': 'application/json'

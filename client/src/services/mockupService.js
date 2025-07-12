@@ -1,5 +1,7 @@
 // Service for handling mockup generation with Dynamic Mockups API
-const API_BASE_URL = 'http://localhost:3002/api';
+const API_BASE_URL = window.location.hostname === 'localhost' 
+  ? 'http://localhost:3002/api' 
+  : 'https://creators.tresr.com/api';
 
 class MockupService {
   constructor() {
