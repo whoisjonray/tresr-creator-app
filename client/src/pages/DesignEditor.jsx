@@ -4,7 +4,7 @@ import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 import mockupService from '../services/mockupService';
 import { getGarmentImage as getCloudinaryImage } from '../config/garmentImagesCloudinary';
-import './DesignEditor.css';
+import './DesignEditor.css'; // v2 - square swatches with 14 colors
 
 // Map product IDs to actual Sanity SKUs we migrated
 // Color mapping strategy:
