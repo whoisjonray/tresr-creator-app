@@ -5,7 +5,7 @@ import { useAuth } from '../hooks/useAuth';
 
 function Login() {
   const navigate = useNavigate();
-  const { login, creator } = useAuth();
+  const { login, logout, creator } = useAuth();
   const { user, isAuthenticated, handleLogOut, primaryWallet } = useDynamicContext();
 
   useEffect(() => {
@@ -31,7 +31,8 @@ function Login() {
         // Exchange Dynamic JWT for our app session
         const result = await login(token);
         if (result.success) {
-          navigate('/dashboard');
+          // Redirect to dashboard after successful login
+          window.location.href = 'https://creators.tresr.com/dashboard';
         } else {
           alert(result.error || 'Creator access denied. Please ensure you have creator permissions.');
           // Log out from Dynamic if app login fails
@@ -50,11 +51,22 @@ function Login() {
       {/* Debug nav for testing */}
       {(isAuthenticated || creator) && (
         <div className="debug-nav">
-          <button onClick={handleLogOut} className="btn-secondary">
-            Logout from Dynamic
+          <button onClick={async () => {
+            try {
+              if (creator) {
+                await logout();
+              }
+              await handleLogOut();
+              window.location.reload();
+            } catch (error) {
+              console.error('Logout error:', error);
+              window.location.reload();
+            }
+          }} className="btn-secondary">
+            Logout
           </button>
           {creator && (
-            <button onClick={() => navigate('/dashboard')} className="btn-primary">
+            <button onClick={() => window.location.href = 'https://creators.tresr.com/dashboard'} className="btn-primary">
               Go to Dashboard
             </button>
           )}

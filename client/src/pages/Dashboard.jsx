@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useDynamicContext } from '@dynamic-labs/sdk-react-core';
 import { useAuth } from '../hooks/useAuth';
 import axios from 'axios';
 
 function Dashboard() {
   const { creator, logout } = useAuth();
+  const { handleLogOut } = useDynamicContext();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -35,7 +37,16 @@ function Dashboard() {
         <div className="container">
           <div className="header-content">
             <h1 className="page-title">Creator Dashboard</h1>
-            <button onClick={logout} className="btn-secondary">Logout</button>
+            <button onClick={async () => {
+              try {
+                await logout();
+                await handleLogOut();
+                window.location.href = 'https://creators.tresr.com/login';
+              } catch (error) {
+                console.error('Logout error:', error);
+                window.location.href = 'https://creators.tresr.com/login';
+              }
+            }} className="btn-secondary">Logout</button>
           </div>
         </div>
       </div>
