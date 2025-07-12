@@ -25,7 +25,7 @@ function Login() {
     console.log('creator:', creator);
     
     // Handle Dynamic.xyz authentication
-    // Check if user exists and has valid data (regardless of isAuthenticated state)
+    // Only trigger auth if no creator session exists and user is available
     if (user && user.userId && !creator) {
       console.log('Conditions met, calling handleDynamicAuth');
       handleDynamicAuth();
@@ -33,6 +33,9 @@ function Login() {
       console.log('Conditions not met for auth');
       console.log('  - user.userId:', user?.userId);
       console.log('  - creator exists:', !!creator);
+      if (creator) {
+        console.log('Creator already exists, skipping auth');
+      }
     }
   }, [isAuthenticated, user, creator]);
 
@@ -92,10 +95,9 @@ function Login() {
         
         if (result.success) {
           console.log('Login successful, redirecting...');
-          // Add a small delay to ensure session is saved
-          setTimeout(() => {
-            window.location.href = 'https://creators.tresr.com/dashboard';
-          }, 500);
+          // Don't redirect if already authenticated - let the useEffect handle it
+          // The useAuth context will update and trigger navigation
+          return;
         } else {
           console.error('Login failed:', result.error);
           alert(result.error || 'Creator access denied. Please ensure you have creator permissions.');
