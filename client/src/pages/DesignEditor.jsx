@@ -351,7 +351,14 @@ function DesignEditor() {
     
     // Try to get and draw the garment image
     const selectedColor = config?.selectedColor || config?.defaultColor || 'Black';
-    const garmentImageUrl = getCloudinaryImage(activeProduct, selectedColor, viewSide);
+    // Determine which side to show based on print location
+    let displaySide = 'front';
+    if (config?.printLocation === 'back') {
+      displaySide = 'back';
+    } else if (config?.printLocation === 'both') {
+      displaySide = viewSide; // Use the toggle selection
+    }
+    const garmentImageUrl = getCloudinaryImage(activeProduct, selectedColor, displaySide);
     
     if (garmentImageUrl && garmentImage.current) {
       // If garment image is loaded, draw it centered on canvas
@@ -430,7 +437,14 @@ function DesignEditor() {
   React.useEffect(() => {
     const config = productConfigs[activeProduct];
     const selectedColor = config?.selectedColor || config?.defaultColor || 'Black';
-    const garmentImageUrl = getCloudinaryImage(activeProduct, selectedColor, viewSide);
+    // Determine which side to show based on print location
+    let displaySide = 'front';
+    if (config?.printLocation === 'back') {
+      displaySide = 'back';
+    } else if (config?.printLocation === 'both') {
+      displaySide = viewSide; // Use the toggle selection
+    }
+    const garmentImageUrl = getCloudinaryImage(activeProduct, selectedColor, displaySide);
     
     if (garmentImageUrl) {
       const img = new Image();
@@ -448,7 +462,7 @@ function DesignEditor() {
       garmentImage.current = null;
       drawCanvas();
     }
-  }, [activeProduct, productConfigs[activeProduct]?.selectedColor, viewSide]);
+  }, [activeProduct, productConfigs[activeProduct]?.selectedColor, productConfigs[activeProduct]?.printLocation, viewSide]);
 
   // Load existing product data when editing
   useEffect(() => {
@@ -1028,8 +1042,9 @@ function DesignEditor() {
             <div className="editor-layout">
               {/* Canvas Section */}
               <div className="canvas-section">
-                {/* Front/Back Toggle */}
+                {/* Front/Back Toggle - Only show when "Print on Front & Back" is selected */}
                 {activeProduct && productConfigs[activeProduct]?.enabled && 
+                 productConfigs[activeProduct]?.printLocation === 'both' &&
                  !['art-sqsm', 'art-sqm', 'art-lg', 'nft'].includes(activeProduct) && (
                   <div className="view-controls">
                     <div className="view-toggle">
