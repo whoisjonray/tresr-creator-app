@@ -1,5 +1,6 @@
 require('dotenv').config({ path: '../../.env' });
 const express = require('express');
+console.log('🚀 SERVER STARTED - BUILD v2.0 -', new Date().toISOString());
 const cors = require('cors');
 const session = require('express-session');
 const { createClient } = require('redis');
