@@ -457,26 +457,16 @@ function DesignEditor() {
           setDesignImage(img);
           setDesignImageSrc(designImageToLoad);
           
-          // Update product configs with correct aspect ratio ONLY if not already loaded from productData
-          const aspectRatio = img.width / img.height;
-          const baseWidth = 150;
-          const baseHeight = baseWidth / aspectRatio;
-          
-          setProductConfigs(prev => {
-            const newConfigs = {};
-            Object.keys(prev).forEach(productId => {
-              // If product config was loaded from saved data, preserve position but update size
-              if (productData.productConfigs && productData.productConfigs[productId]) {
-                newConfigs[productId] = {
-                  ...productData.productConfigs[productId],
-                  position: {
-                    ...productData.productConfigs[productId].position,
-                    width: baseWidth,
-                    height: baseHeight
-                  }
-                };
-              } else {
-                // Default configuration for new products
+          // If we already have saved product configs with positions, don't modify them
+          // Only update configs if this is a new design without saved positions
+          if (!productData.productConfigs) {
+            const aspectRatio = img.width / img.height;
+            const baseWidth = 150;
+            const baseHeight = baseWidth / aspectRatio;
+            
+            setProductConfigs(prev => {
+              const newConfigs = {};
+              Object.keys(prev).forEach(productId => {
                 newConfigs[productId] = {
                   ...prev[productId],
                   position: {
@@ -485,10 +475,10 @@ function DesignEditor() {
                     height: baseHeight
                   }
                 };
-              }
+              });
+              return newConfigs;
             });
-            return newConfigs;
-          });
+          }
         };
         img.src = designImageToLoad;
       }
