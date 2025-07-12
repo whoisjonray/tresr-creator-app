@@ -15,11 +15,24 @@ router.post('/verify', async (req, res) => {
       return res.status(400).json({ error: 'Token required' });
     }
 
-    // For now, decode the JWT to get user info (temporary solution)
-    // In production, this should verify the signature with Dynamic's public key
+    // Handle both JWT tokens and custom JSON tokens from Dynamic
     try {
-      const decoded = jwt.decode(token);
-      console.log('Decoded JWT:', JSON.stringify(decoded, null, 2));
+      let decoded;
+      
+      // Try to decode as JWT first
+      try {
+        decoded = jwt.decode(token);
+        console.log('Decoded as JWT:', JSON.stringify(decoded, null, 2));
+      } catch (jwtDecodeError) {
+        // If JWT decode fails, try parsing as JSON (custom token)
+        try {
+          decoded = JSON.parse(token);
+          console.log('Parsed as JSON token:', JSON.stringify(decoded, null, 2));
+        } catch (jsonError) {
+          console.error('Failed to decode token as JWT or JSON:', { jwtDecodeError, jsonError });
+          return res.status(401).json({ error: 'Invalid token format' });
+        }
+      }
       
       if (!decoded || !decoded.sub) {
         return res.status(401).json({ error: 'Invalid token format' });

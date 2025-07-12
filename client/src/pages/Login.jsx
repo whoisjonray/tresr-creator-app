@@ -9,7 +9,7 @@ function Login() {
   console.log('🔥 Login component rendering');
   const navigate = useNavigate();
   const { login, logout, creator } = useAuth();
-  const { user, isAuthenticated, handleLogOut, primaryWallet, authToken } = useDynamicContext();
+  const { user, isAuthenticated, handleLogOut, primaryWallet, authToken, getAuthToken } = useDynamicContext();
 
   useEffect(() => {
     // Redirect if already logged in via our app
@@ -45,23 +45,29 @@ function Login() {
       // Get the JWT token from Dynamic - try different methods
       let token;
       try {
-        // Try Dynamic context authToken first
-        if (authToken) {
+        // Try getAuthToken function from Dynamic context
+        if (typeof getAuthToken === 'function') {
+          token = await getAuthToken();
+          console.log('Using getAuthToken() from Dynamic context');
+        } else if (authToken) {
           token = authToken;
           console.log('Using authToken from Dynamic context');
-        } else if (typeof user.getJWT === 'function') {
-          token = await user.getJWT();
-          console.log('Using user.getJWT() method');
-        } else if (typeof user.authToken === 'string') {
-          token = user.authToken;
-          console.log('Using user.authToken property');
-        } else if (typeof user.token === 'string') {
-          token = user.token;
-          console.log('Using user.token property');
+        } else if (user.sessionId) {
+          // For newer Dynamic SDK, we might need to create a simple session token
+          // Since the user object has userId, sessionId, email, etc., we can create our own token
+          token = JSON.stringify({
+            sub: user.userId,
+            email: user.email,
+            alias: user.alias || user.firstName,
+            sessionId: user.sessionId,
+            verifiedCredentials: user.verifiedCredentials
+          });
+          console.log('Creating custom token from user data');
         } else {
-          console.error('No JWT method found on user object');
-          console.log('Available properties:', Object.keys(user));
-          console.log('Dynamic context authToken:', authToken);
+          console.error('No JWT method available');
+          console.log('Available Dynamic context methods:', typeof getAuthToken);
+          console.log('authToken:', authToken);
+          console.log('User has sessionId:', !!user.sessionId);
           throw new Error('JWT token method not available');
         }
       } catch (jwtError) {
