@@ -34,16 +34,22 @@ router.post('/verify', async (req, res) => {
         }
       }
       
-      if (!decoded || !decoded.sub) {
+      if (!decoded || (!decoded.sub && !decoded.userId)) {
+        console.log('Token validation failed - missing sub/userId');
+        console.log('Decoded token:', decoded);
         return res.status(401).json({ error: 'Invalid token format' });
       }
+      
+      // Handle different token formats (JWT uses 'sub', our custom format uses 'userId')
+      const userId = decoded.sub || decoded.userId;
 
-      // Extract user data from JWT
+      // Extract user data from token (works for both JWT and custom JSON)
       const userData = {
-        id: decoded.sub,
+        id: userId,
         email: decoded.email || 'creator@tresr.com',
-        alias: decoded.alias || decoded.email?.split('@')[0] || 'Creator',
-        verifiedCredentials: decoded.verifiedCredentials || []
+        alias: decoded.alias || decoded.firstName || decoded.email?.split('@')[0] || 'Creator',
+        verifiedCredentials: decoded.verifiedCredentials || [],
+        sessionId: decoded.sessionId
       };
       
       // For now, allow all authenticated users as creators
