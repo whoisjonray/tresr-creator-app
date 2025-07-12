@@ -3,7 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useDynamicContext, DynamicConnectButton } from '@dynamic-labs/sdk-react-core';
 import { useAuth } from '../hooks/useAuth';
 
+console.log('🔥 Login.jsx file loaded at:', new Date().toISOString());
+
 function Login() {
+  console.log('🔥 Login component rendering');
   const navigate = useNavigate();
   const { login, logout, creator } = useAuth();
   const { user, isAuthenticated, handleLogOut, primaryWallet } = useDynamicContext();
