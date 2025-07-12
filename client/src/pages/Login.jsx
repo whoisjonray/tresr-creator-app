@@ -32,11 +32,14 @@ function Login() {
   };
 
   const handleDynamicLogin = () => {
-    // Redirect to Dynamic.xyz for authentication
-    const authUrl = `https://app.dynamic.xyz/login/b17e8631-c1b7-45d5-95cf-151eb5246423`;
-    const redirectUri = `${window.location.origin}/login`;
-    const fullUrl = `${authUrl}?redirect_uri=${encodeURIComponent(redirectUri)}`;
-    window.location.href = fullUrl;
+    // For now, show instructions until we implement the SDK
+    alert('Creator authentication is being upgraded. Please use your existing TRESR.com login or contact support for creator access.');
+    
+    // TODO: Implement Dynamic SDK like TRESR.com:
+    // 1. Install @dynamic-labs/sdk-react-core
+    // 2. Wrap app with DynamicContextProvider
+    // 3. Use DynamicConnectButton component
+    // 4. Handle JWT token exchange with backend
   };
 
   return (
