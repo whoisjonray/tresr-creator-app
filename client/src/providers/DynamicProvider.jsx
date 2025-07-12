@@ -1,10 +1,14 @@
 import React from 'react';
 import { DynamicContextProvider } from '@dynamic-labs/sdk-react-core';
+import { EthereumWalletConnectors } from '@dynamic-labs/ethereum';
 
 const DynamicProvider = ({ children }) => {
   const settings = {
     // Production environment ID for nftreasure
     environmentId: 'b17e8631-c1b7-45d5-95cf-151eb5246423',
+    
+    // Keep wallet connectors but prioritize social auth
+    walletConnectors: [EthereumWalletConnectors],
     
     // Prioritize social auth providers (same as TRESR.com)
     authProviders: [
@@ -19,7 +23,10 @@ const DynamicProvider = ({ children }) => {
     appLogoUrl: 'https://tresr.com/logo.png',
     
     // Initial auth mode - prioritize social login
-    initialAuthenticationMode: 'connect-and-sign',
+    initialAuthenticationMode: 'connect-only',
+    
+    // Show social login first
+    authModeOrder: ['social-auth', 'wallet'],
     
     // Privacy policy (matches TRESR.com)
     privacyPolicyUrl: 'https://tresr.com/privacy',
