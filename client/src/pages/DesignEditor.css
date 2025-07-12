@@ -466,10 +466,10 @@
     max-width: 800px;
 }
 
-.color-swatch {
+.design-editor-page .color-swatch {
     width: 40px;
     height: 40px;
-    border-radius: 0; /* Square shape */
+    border-radius: 0 !important; /* Square shape - override AdminPanel.css */
     cursor: pointer;
     position: relative;
     transition: all 0.2s ease;
@@ -479,17 +479,17 @@
     justify-content: center;
 }
 
-.color-swatch:hover {
+.design-editor-page .color-swatch:hover {
     transform: scale(1.1);
     box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
-.color-swatch.selected {
+.design-editor-page .color-swatch.selected {
     border-color: #666;
     transform: scale(1.05);
 }
 
-.color-swatch .checkmark {
+.design-editor-page .color-swatch .checkmark {
     width: 24px;
     height: 24px;
     position: absolute;
@@ -497,6 +497,110 @@
     left: 50%;
     transform: translate(-50%, -50%);
     pointer-events: none;
+}
+
+/* Front/Back View Toggle */
+.view-toggle {
+    display: flex;
+    margin-bottom: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 4px;
+    gap: 4px;
+    width: fit-content;
+}
+
+.view-btn {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: #6b7280;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.view-btn.active {
+    background: #5b6cff;
+    color: white;
+}
+
+.view-btn:hover:not(.active) {
+    background: #e5e7eb;
+}
+
+/* Product Configuration Headers */
+.config-header-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 20px;
+    padding: 15px 20px;
+    background: #374151;
+    color: white;
+    font-weight: 600;
+    border-radius: 8px 8px 0 0;
+    margin-bottom: 0;
+}
+
+.header-item {
+    color: white;
+}
+
+.header-enable {
+    color: white;
+    text-align: center;
+}
+
+.header-color {
+    color: white;
+    text-align: center;
+}
+
+/* Product Section Styling */
+.product-section {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.product-section:last-child {
+    border-bottom: none;
+}
+
+.product-item {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 20px;
+    padding: 15px 20px;
+    align-items: center;
+    background: white;
+}
+
+.product-item.active {
+    background: #f0f9ff;
+    border-left: 4px solid #5b6cff;
+}
+
+/* Print Location Options */
+.print-location-options {
+    padding: 15px 20px;
+    background: #f8f9fa;
+    display: flex;
+    gap: 20px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.print-location-options label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #374151;
+}
+
+.print-location-options input[type="radio"] {
+    margin: 0;
+    accent-color: #5b6cff;
 }
 
 /* Summary Section */

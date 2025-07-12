@@ -127,6 +127,7 @@ function DesignEditor() {
   const [isGeneratingMockup, setIsGeneratingMockup] = useState(false);
   
   const [activeProduct, setActiveProduct] = useState(PRODUCT_TEMPLATES[0].id);
+  const [viewSide, setViewSide] = useState('front'); // New: track which side we're viewing
   const [productConfigs, setProductConfigs] = useState(() => {
     const configs = {};
     PRODUCT_TEMPLATES.forEach(product => {
@@ -134,8 +135,9 @@ function DesignEditor() {
       configs[product.id] = {
         enabled: product.id === 'tee' || product.id === 'wmn-hoodie',
         position: { x: printArea.x, y: printArea.y, width: 150, height: 150 }, // Will be updated with correct aspect ratio when image loads
-        defaultColor: product.colors[0],
-        selectedColor: product.colors[0]
+        defaultColor: '', // Start with no default color selected
+        selectedColor: '',
+        printLocation: 'front' // New: track front/back/both
       };
     });
     return configs;
@@ -303,7 +305,7 @@ function DesignEditor() {
     
     // Try to get and draw the garment image
     const selectedColor = config?.selectedColor || config?.defaultColor || 'Black';
-    const garmentImageUrl = getCloudinaryImage(activeProduct, selectedColor);
+    const garmentImageUrl = getCloudinaryImage(activeProduct, selectedColor, viewSide);
     
     if (garmentImageUrl && garmentImage.current) {
       // If garment image is loaded, draw it centered on canvas
@@ -376,13 +378,13 @@ function DesignEditor() {
 
   React.useEffect(() => {
     drawCanvas();
-  }, [activeProduct, productConfigs, designImage, showBoundingBox, isDragging]);
+  }, [activeProduct, productConfigs, designImage, showBoundingBox, isDragging, viewSide]);
   
   // Load garment image when product or color changes
   React.useEffect(() => {
     const config = productConfigs[activeProduct];
     const selectedColor = config?.selectedColor || config?.defaultColor || 'Black';
-    const garmentImageUrl = getCloudinaryImage(activeProduct, selectedColor);
+    const garmentImageUrl = getCloudinaryImage(activeProduct, selectedColor, viewSide);
     
     if (garmentImageUrl) {
       const img = new Image();
@@ -400,7 +402,7 @@ function DesignEditor() {
       garmentImage.current = null;
       drawCanvas();
     }
-  }, [activeProduct, productConfigs[activeProduct]?.selectedColor]);
+  }, [activeProduct, productConfigs[activeProduct]?.selectedColor, viewSide]);
 
   // Load existing product data when editing
   useEffect(() => {
@@ -967,6 +969,24 @@ function DesignEditor() {
             <div className="editor-layout">
               {/* Canvas Section */}
               <div className="canvas-section">
+                {/* Front/Back Toggle */}
+                {activeProduct && productConfigs[activeProduct]?.enabled && 
+                 !['art-sqsm', 'art-sqm', 'art-lg', 'nft'].includes(activeProduct) && (
+                  <div className="view-toggle">
+                    <button 
+                      className={`view-btn ${viewSide === 'front' ? 'active' : ''}`}
+                      onClick={() => setViewSide('front')}
+                    >
+                      Front
+                    </button>
+                    <button 
+                      className={`view-btn ${viewSide === 'back' ? 'active' : ''}`}
+                      onClick={() => setViewSide('back')}
+                    >
+                      Back
+                    </button>
+                  </div>
+                )}
                 <div className="canvas-container">
                   {isGeneratingMockup && (
                     <div style={{
@@ -1073,49 +1093,109 @@ function DesignEditor() {
 
               {/* Product Configuration */}
               <div className="product-config">
-                <div className="config-header">
-                  <h3>Products</h3>
-                  <span>{Object.values(productConfigs).filter(c => c.enabled).length} - Items</span>
+                <div className="config-header-row">
+                  <div className="header-item">Item</div>
+                  <div className="header-enable">Enable</div>
+                  <div className="header-color">Default Color</div>
                 </div>
                 
                 <div className="product-list">
                   {PRODUCT_TEMPLATES.filter(product => productConfigs[product.id]?.enabled).map(product => (
-                    <div 
-                      key={product.id} 
-                      className={`product-item ${activeProduct === product.id ? 'active' : ''}`}
-                    >
-                      <div 
-                        className="product-name"
-                        onClick={() => setActiveProduct(product.id)}
-                      >
-                        {product.name}
-                      </div>
-                      <div className="product-toggle">
+                    <div key={product.id} className="product-section">
+                      <div className={`product-item ${activeProduct === product.id ? 'active' : ''}`}>
                         <div 
-                          className={`toggle-switch ${productConfigs[product.id]?.enabled ? 'active' : ''}`}
-                          onClick={() => handleProductToggle(product.id)}
-                        />
-                        <span className="toggle-label">
-                          {productConfigs[product.id]?.enabled ? 'ON' : 'OFF'}
-                        </span>
+                          className="product-name"
+                          onClick={() => setActiveProduct(product.id)}
+                        >
+                          {product.name}
+                        </div>
+                        <div className="product-toggle">
+                          <div 
+                            className={`toggle-switch ${productConfigs[product.id]?.enabled ? 'active' : ''}`}
+                            onClick={() => handleProductToggle(product.id)}
+                          />
+                          <span className="toggle-label">
+                            {productConfigs[product.id]?.enabled ? 'ON' : 'OFF'}
+                          </span>
+                        </div>
+                        <select 
+                          className="color-dropdown"
+                          value={productConfigs[product.id]?.selectedColor || ''}
+                          onChange={(e) => {
+                            setProductConfigs(prev => ({
+                              ...prev,
+                              [product.id]: {
+                                ...prev[product.id],
+                                defaultColor: e.target.value,
+                                selectedColor: e.target.value
+                              }
+                            }));
+                          }}
+                        >
+                          <option value="">Select Default Color</option>
+                          {product.colors.map(color => (
+                            <option key={color} value={color}>{color}</option>
+                          ))}
+                        </select>
                       </div>
-                      <select 
-                        className="color-dropdown"
-                        value={productConfigs[product.id]?.selectedColor || productConfigs[product.id]?.defaultColor}
-                        onChange={(e) => {
-                          setProductConfigs(prev => ({
-                            ...prev,
-                            [product.id]: {
-                              ...prev[product.id],
-                              selectedColor: e.target.value
-                            }
-                          }));
-                        }}
-                      >
-                        {product.colors.map(color => (
-                          <option key={color} value={color}>{color}</option>
-                        ))}
-                      </select>
+                      {product.id !== 'art-sqsm' && product.id !== 'art-sqm' && product.id !== 'art-lg' && product.id !== 'nft' && (
+                        <div className="print-location-options">
+                          <label>
+                            <input
+                              type="radio"
+                              name={`print-location-${product.id}`}
+                              value="front"
+                              checked={productConfigs[product.id]?.printLocation === 'front'}
+                              onChange={(e) => {
+                                setProductConfigs(prev => ({
+                                  ...prev,
+                                  [product.id]: {
+                                    ...prev[product.id],
+                                    printLocation: e.target.value
+                                  }
+                                }));
+                              }}
+                            />
+                            <span>Print on Front</span>
+                          </label>
+                          <label>
+                            <input
+                              type="radio"
+                              name={`print-location-${product.id}`}
+                              value="back"
+                              checked={productConfigs[product.id]?.printLocation === 'back'}
+                              onChange={(e) => {
+                                setProductConfigs(prev => ({
+                                  ...prev,
+                                  [product.id]: {
+                                    ...prev[product.id],
+                                    printLocation: e.target.value
+                                  }
+                                }));
+                              }}
+                            />
+                            <span>Print on Back</span>
+                          </label>
+                          <label>
+                            <input
+                              type="radio"
+                              name={`print-location-${product.id}`}
+                              value="both"
+                              checked={productConfigs[product.id]?.printLocation === 'both'}
+                              onChange={(e) => {
+                                setProductConfigs(prev => ({
+                                  ...prev,
+                                  [product.id]: {
+                                    ...prev[product.id],
+                                    printLocation: e.target.value
+                                  }
+                                }));
+                              }}
+                            />
+                            <span>Print on Front & Back</span>
+                          </label>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
