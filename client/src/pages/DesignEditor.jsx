@@ -7,20 +7,26 @@ import { getGarmentImage as getCloudinaryImage } from '../config/garmentImagesCl
 import './DesignEditor.css';
 
 // Map product IDs to actual Sanity SKUs we migrated
+// Color mapping strategy:
+// - Each product uses color categories rather than specific color names
+// - Actual garment colors are shown in product images
+// - Mappings: Charcoal/Black Camo → Dark Grey, Gray/Heather variations → Light Grey,
+//   Bone/Beige → Natural, Red variations → Cardinal Red, Blue → Royal Heather,
+//   Sage → Mint, Classic Navy → Navy
 const PRODUCT_TEMPLATES = [
   // Core Apparel
-  { id: 'tee', name: 'Medium Weight T-Shirt', templateId: 'tshirt_front', price: 22, colors: ['Black', 'White', 'Navy', 'Heather Grey', 'Natural', 'Red'] },
+  { id: 'tee', name: 'Medium Weight T-Shirt', templateId: 'tshirt_front', price: 22, colors: ['Black', 'White', 'Navy', 'Light Grey', 'Natural', 'Cardinal Red'] },
   { id: 'boxy', name: 'Oversized Drop Shoulder', templateId: 'tshirt_boxy_front', price: 26, colors: ['Black', 'Natural'] },
-  { id: 'next-crop', name: 'Next Level Crop Top', templateId: 'croptop_front', price: 24, colors: ['Black', 'White', 'Gold', 'Blue', 'Dark Heather Gray'] },
+  { id: 'next-crop', name: 'Next Level Crop Top', templateId: 'croptop_front', price: 24, colors: ['Black', 'White', 'Gold', 'Royal Heather', 'Dark Grey'] },
   
   // Hoodies & Sweatshirts
-  { id: 'wmn-hoodie', name: "Women's Independent Hoodie", templateId: 'hoodie_front', price: 42, colors: ['Black', 'Black Camo', 'Pink', 'Bone', 'Cotton Candy', 'Gray Heather', 'Sage', 'White'] },
-  { id: 'med-hood', name: 'Medium Weight Hoodie', templateId: 'hoodie_front', price: 42, colors: ['Black', 'Gold', 'Gray Heather', 'Red', 'Alpine Green'] },
-  { id: 'mediu', name: 'Medium Weight Sweatshirt', templateId: 'crewneck_front', price: 36, colors: ['Black', 'Charcoal', 'Classic Navy', 'Gray Heather', 'White'] },
+  { id: 'wmn-hoodie', name: "Women's Independent Hoodie", templateId: 'hoodie_front', price: 42, colors: ['Black', 'Dark Grey', 'Pink', 'Natural', 'Cotton Candy', 'Light Grey', 'Mint', 'White'] },
+  { id: 'med-hood', name: 'Medium Weight Hoodie', templateId: 'hoodie_front', price: 42, colors: ['Black', 'Gold', 'Light Grey', 'Cardinal Red', 'Alpine Green'] },
+  { id: 'mediu', name: 'Medium Weight Sweatshirt', templateId: 'crewneck_front', price: 36, colors: ['Black', 'Dark Grey', 'Navy', 'Light Grey', 'White'] },
   { id: 'sweat', name: 'Standard Sweatshirt', templateId: 'crewneck_front', price: 34, colors: ['Black'] },
   
   // Hats
-  { id: 'patch-c', name: 'Patch Hat - Curved', templateId: 'hat_front', price: 22, colors: ['Black', 'Gray'] },
+  { id: 'patch-c', name: 'Patch Hat - Curved', templateId: 'hat_front', price: 22, colors: ['Black', 'Light Grey'] },
   { id: 'patch-flat', name: 'Patch Hat - Flat', templateId: 'hat_flat', price: 24, colors: ['Black', 'Navy'] },
   
   // Art Canvas
@@ -33,38 +39,25 @@ const PRODUCT_TEMPLATES = [
   { id: 'nft', name: 'NFTREASURE NFT Cards', templateId: 'trading_card', price: 5, colors: ['Default'] }
 ];
 
-// Limited to unique colors actually available in Shopify products
+// Consolidated color categories for all products
 const COLOR_PALETTE = [
-  // Blacks & Grays (ordered dark to light)
+  // Core neutrals
   { name: 'Black', hex: '#000000' },
-  { name: 'Black Camo', hex: '#2C2C2C' }, // Slightly lighter than black for camo pattern
-  { name: 'Charcoal', hex: '#2B2E2E' },
-  { name: 'Dark Heather Gray', hex: '#4A4A4A' },
-  { name: 'Gray', hex: '#757575' },
-  { name: 'Gray Heather', hex: '#9CA3AF' }, // Note: "Gray Heather" and "Heather Grey" are same color
-  { name: 'Heather Grey', hex: '#9CA3AF' }, // Kept both for product compatibility
-  
-  // Blues
-  { name: 'Navy', hex: '#080F20' },
-  { name: 'Classic Navy', hex: '#1B2951' }, // Slightly different from Navy
-  { name: 'Blue', hex: '#0066CC' },
-  
-  // Whites & Naturals
+  { name: 'Dark Grey', hex: '#4A4A4A' },  // Covers: Charcoal, Dark Heather Gray, Black Camo
+  { name: 'Light Grey', hex: '#9CA3AF' }, // Covers: Gray, Gray Heather, Heather Grey
+  { name: 'Natural', hex: '#FEF3C7' },    // Covers: Natural, Bone, Beige tones
   { name: 'White', hex: '#FAFAFA' },
-  { name: 'Natural', hex: '#FEF3C7' },
-  { name: 'Bone', hex: '#E8DCC6' },
   
-  // Greens
+  // Colors
+  { name: 'Mint', hex: '#98FF98' },
+  { name: 'Navy', hex: '#080F20' },       // Covers: Navy, Classic Navy
+  { name: 'Cardinal Red', hex: '#EC5039' },// Covers: Red, Burgundy, Maroon
+  { name: 'Gold', hex: '#F6CB46' },
   { name: 'Alpine Green', hex: '#165B33' },
-  { name: 'Sage', hex: '#9CAF88' },
-  
-  // Reds & Pinks
-  { name: 'Red', hex: '#EC5039' },
+  { name: 'Army Heather', hex: '#6B7043' },// Military green heather
+  { name: 'Royal Heather', hex: '#4169E1' },// Royal blue heather
   { name: 'Pink', hex: '#F82F57' },
-  { name: 'Cotton Candy', hex: '#FFB6C1' },
-  
-  // Other
-  { name: 'Gold', hex: '#F6CB46' }
+  { name: 'Cotton Candy', hex: '#FFB6C1' }
 ];
 
 const PRODUCT_ICONS = {
@@ -863,8 +856,8 @@ function DesignEditor() {
 
   const filteredColors = COLOR_PALETTE.filter(color => {
     if (colorFilter === 'All') return true;
-    if (colorFilter === 'Light') return ['White', 'Natural', 'Bone', 'Gray Heather', 'Heather Grey', 'Pink', 'Cotton Candy', 'Gold', 'Sage'].includes(color.name);
-    if (colorFilter === 'Dark') return ['Black', 'Black Camo', 'Charcoal', 'Dark Heather Gray', 'Navy', 'Classic Navy', 'Alpine Green'].includes(color.name);
+    if (colorFilter === 'Light') return ['White', 'Natural', 'Light Grey', 'Pink', 'Cotton Candy', 'Gold', 'Mint'].includes(color.name);
+    if (colorFilter === 'Dark') return ['Black', 'Dark Grey', 'Navy', 'Cardinal Red', 'Alpine Green', 'Army Heather', 'Royal Heather'].includes(color.name);
     if (colorFilter === 'None') return false;
     return true;
   });
