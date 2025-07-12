@@ -16,9 +16,17 @@ function Login() {
   }, [creator, navigate]);
 
   useEffect(() => {
+    console.log('Login useEffect triggered');
+    console.log('isAuthenticated:', isAuthenticated);
+    console.log('user:', user);
+    console.log('creator:', creator);
+    
     // Handle Dynamic.xyz authentication
     if (isAuthenticated && user && !creator) {
+      console.log('Conditions met, calling handleDynamicAuth');
       handleDynamicAuth();
+    } else {
+      console.log('Conditions not met for auth');
     }
   }, [isAuthenticated, user, creator]);
 
@@ -89,9 +97,14 @@ function Login() {
           </button>
         )}
         {isAuthenticated && !creator && (
-          <p style={{ color: '#666', fontSize: '12px', margin: 0 }}>
-            Dynamic.xyz authenticated but no creator session
-          </p>
+          <div>
+            <p style={{ color: '#666', fontSize: '12px', margin: 0 }}>
+              Dynamic.xyz authenticated but no creator session
+            </p>
+            <button onClick={handleDynamicAuth} className="btn-primary" style={{ marginTop: '10px' }}>
+              Manual Auth Test
+            </button>
+          </div>
         )}
       </div>
       
