@@ -34,6 +34,8 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (token) => {
     try {
+      console.log('Sending auth request with token length:', token?.length);
+      console.log('Token preview:', token?.substring(0, 100) + '...');
       const response = await api.post('/api/auth/verify', { token });
       if (response.data.success) {
         setCreator(response.data.creator);
@@ -41,6 +43,7 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error('Login failed:', error);
+      console.error('Response data:', error.response?.data);
       return { 
         success: false, 
         error: error.response?.data?.error || 'Login failed' 

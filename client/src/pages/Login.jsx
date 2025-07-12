@@ -63,6 +63,13 @@ function Login() {
             verifiedCredentials: user.verifiedCredentials
           });
           console.log('Creating custom token from user data');
+          console.log('Token data:', {
+            sub: user.userId,
+            email: user.email,
+            alias: user.alias || user.firstName,
+            sessionId: user.sessionId,
+            verifiedCredentials: user.verifiedCredentials
+          });
         } else {
           console.error('No JWT method available');
           console.log('Available Dynamic context methods:', typeof getAuthToken);
@@ -149,7 +156,7 @@ function Login() {
       <div className="container">
         <div className="login-card card">
           <h1>🚨 TRESR Creator Tools - TEST BUILD 🚨</h1>
-          <p style={{ fontSize: '16px', color: 'red', fontWeight: 'bold' }}>⚠️ DEBUG MODE ACTIVE - BUILD v2.0 ⚠️</p>
+          <p style={{ fontSize: '16px', color: 'red', fontWeight: 'bold' }}>⚠️ DEBUG MODE ACTIVE - BUILD v2.1 ⚠️</p>
           <p>Login to manage your designs and products</p>
           
           {!isAuthenticated ? (
