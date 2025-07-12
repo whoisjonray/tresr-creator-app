@@ -22,14 +22,21 @@ router.post('/verify', async (req, res) => {
       // Try to decode as JWT first
       try {
         decoded = jwt.decode(token);
-        console.log('Decoded as JWT:', JSON.stringify(decoded, null, 2));
+        if (decoded) {
+          console.log('Decoded as JWT:', JSON.stringify(decoded, null, 2));
+        } else {
+          // jwt.decode returns null for invalid JWTs, try JSON parsing
+          throw new Error('JWT decode returned null');
+        }
       } catch (jwtDecodeError) {
+        console.log('JWT decode failed, trying JSON parse...');
         // If JWT decode fails, try parsing as JSON (custom token)
         try {
           decoded = JSON.parse(token);
           console.log('Parsed as JSON token:', JSON.stringify(decoded, null, 2));
         } catch (jsonError) {
-          console.error('Failed to decode token as JWT or JSON:', { jwtDecodeError, jsonError });
+          console.error('Failed to decode token as JWT or JSON:', { jwtDecodeError: jwtDecodeError.message, jsonError: jsonError.message });
+          console.log('Token preview:', token.substring(0, 200));
           return res.status(401).json({ error: 'Invalid token format' });
         }
       }
