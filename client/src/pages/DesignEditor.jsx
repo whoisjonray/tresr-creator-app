@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
@@ -120,11 +120,23 @@ function DesignEditor() {
   const [frontDesignImageSrc, setFrontDesignImageSrc] = useState(null);
   const [backDesignImageSrc, setBackDesignImageSrc] = useState(null);
   
-  // Legacy support - current design based on active side
-  const designImage = viewSide === 'front' ? frontDesignImage : backDesignImage;
-  const designImageSrc = viewSide === 'front' ? frontDesignImageSrc : backDesignImageSrc;
-  const setDesignImage = viewSide === 'front' ? setFrontDesignImage : setBackDesignImage;
-  const setDesignImageSrc = viewSide === 'front' ? setFrontDesignImageSrc : setBackDesignImageSrc;
+  // Legacy support - current design based on active side (using useMemo to prevent initialization issues)
+  const designImage = useMemo(() => 
+    viewSide === 'front' ? frontDesignImage : backDesignImage, 
+    [viewSide, frontDesignImage, backDesignImage]
+  );
+  const designImageSrc = useMemo(() => 
+    viewSide === 'front' ? frontDesignImageSrc : backDesignImageSrc, 
+    [viewSide, frontDesignImageSrc, backDesignImageSrc]
+  );
+  const setDesignImage = useMemo(() => 
+    viewSide === 'front' ? setFrontDesignImage : setBackDesignImage, 
+    [viewSide]
+  );
+  const setDesignImageSrc = useMemo(() => 
+    viewSide === 'front' ? setFrontDesignImageSrc : setBackDesignImageSrc, 
+    [viewSide]
+  );
   const [designFile, setDesignFile] = useState(null);
   const [designUrl, setDesignUrl] = useState(null);
   const [designTitle, setDesignTitle] = useState('');
