@@ -25,11 +25,14 @@ function Login() {
     console.log('creator:', creator);
     
     // Handle Dynamic.xyz authentication
-    if (isAuthenticated && user && !creator) {
+    // Check if user exists and has valid data (regardless of isAuthenticated state)
+    if (user && user.userId && !creator) {
       console.log('Conditions met, calling handleDynamicAuth');
       handleDynamicAuth();
     } else {
       console.log('Conditions not met for auth');
+      console.log('  - user.userId:', user?.userId);
+      console.log('  - creator exists:', !!creator);
     }
   }, [isAuthenticated, user, creator]);
 
