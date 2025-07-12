@@ -9,7 +9,7 @@ function Login() {
   console.log('🔥 Login component rendering');
   const navigate = useNavigate();
   const { login, logout, creator } = useAuth();
-  const { user, isAuthenticated, handleLogOut, primaryWallet } = useDynamicContext();
+  const { user, isAuthenticated, handleLogOut, primaryWallet, authToken } = useDynamicContext();
 
   useEffect(() => {
     // Redirect if already logged in via our app
@@ -40,9 +40,35 @@ function Login() {
     try {
       console.log('Starting Dynamic auth process...');
       console.log('User object:', user);
+      console.log('User methods:', Object.getOwnPropertyNames(user));
       
-      // Get the JWT token from Dynamic
-      const token = await user.getJWT();
+      // Get the JWT token from Dynamic - try different methods
+      let token;
+      try {
+        // Try Dynamic context authToken first
+        if (authToken) {
+          token = authToken;
+          console.log('Using authToken from Dynamic context');
+        } else if (typeof user.getJWT === 'function') {
+          token = await user.getJWT();
+          console.log('Using user.getJWT() method');
+        } else if (typeof user.authToken === 'string') {
+          token = user.authToken;
+          console.log('Using user.authToken property');
+        } else if (typeof user.token === 'string') {
+          token = user.token;
+          console.log('Using user.token property');
+        } else {
+          console.error('No JWT method found on user object');
+          console.log('Available properties:', Object.keys(user));
+          console.log('Dynamic context authToken:', authToken);
+          throw new Error('JWT token method not available');
+        }
+      } catch (jwtError) {
+        console.error('JWT retrieval error:', jwtError);
+        throw jwtError;
+      }
+      
       console.log('Got JWT token:', token ? 'Yes' : 'No');
       
       if (token) {
