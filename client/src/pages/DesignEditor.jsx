@@ -114,6 +114,9 @@ function DesignEditor() {
   const canvasRef = useRef(null);
   const garmentImage = useRef(new Image());
   
+  // Track which side we're viewing - MUST be defined before useMemo hooks
+  const [viewSide, setViewSide] = useState('front');
+  
   // Separate design images for front and back
   const [frontDesignImage, setFrontDesignImage] = useState(null);
   const [backDesignImage, setBackDesignImage] = useState(null);
@@ -148,7 +151,6 @@ function DesignEditor() {
   const [isGeneratingMockup, setIsGeneratingMockup] = useState(false);
   
   const [activeProduct, setActiveProduct] = useState(PRODUCT_TEMPLATES[0].id);
-  const [viewSide, setViewSide] = useState('front'); // New: track which side we're viewing
   const [productConfigs, setProductConfigs] = useState(() => {
     const configs = {};
     PRODUCT_TEMPLATES.forEach(product => {
@@ -480,7 +482,25 @@ function DesignEditor() {
       // Load product configurations with positions (do this after image loads)
       if (productData.productConfigs) {
         console.log('Loading product configs:', productData.productConfigs);
-        setProductConfigs(productData.productConfigs);
+        
+        // Migrate old position format to new front/back format
+        const migratedConfigs = {};
+        Object.entries(productData.productConfigs).forEach(([productId, config]) => {
+          if (config.position && (!config.frontPosition || !config.backPosition)) {
+            // Old format with single position - migrate to new format
+            migratedConfigs[productId] = {
+              ...config,
+              frontPosition: config.position,
+              backPosition: config.position,
+              position: undefined // Remove old position property
+            };
+          } else {
+            // Already in new format or has no position
+            migratedConfigs[productId] = config;
+          }
+        });
+        
+        setProductConfigs(migratedConfigs);
       }
       
       // Load NFC settings
