@@ -33,34 +33,38 @@ const PRODUCT_TEMPLATES = [
   { id: 'nft', name: 'NFTREASURE NFT Cards', templateId: 'trading_card', price: 5, colors: ['Default'] }
 ];
 
-// Limited to colors actually available in Shopify products
+// Limited to unique colors actually available in Shopify products
 const COLOR_PALETTE = [
-  // Core colors available across many products
+  // Blacks & Grays (ordered dark to light)
   { name: 'Black', hex: '#000000' },
-  { name: 'White', hex: '#FFFFFF' },
-  { name: 'Navy', hex: '#000080' },
-  { name: 'Classic Navy', hex: '#002147' },
-  { name: 'Red', hex: '#DC143C' },
-  { name: 'Natural', hex: '#F5E6D3' },
-  { name: 'Bone', hex: '#E3DAC9' },
+  { name: 'Black Camo', hex: '#2C2C2C' }, // Slightly lighter than black for camo pattern
+  { name: 'Charcoal', hex: '#2B2E2E' },
+  { name: 'Dark Heather Gray', hex: '#4A4A4A' },
+  { name: 'Gray', hex: '#757575' },
+  { name: 'Gray Heather', hex: '#9CA3AF' }, // Note: "Gray Heather" and "Heather Grey" are same color
+  { name: 'Heather Grey', hex: '#9CA3AF' }, // Kept both for product compatibility
   
-  // Grays
-  { name: 'Gray', hex: '#808080' },
-  { name: 'Heather Grey', hex: '#9B9B9B' },
-  { name: 'Gray Heather', hex: '#B0B0B0' },
-  { name: 'Dark Heather Gray', hex: '#666666' },
-  { name: 'Charcoal', hex: '#36454F' },
+  // Blues
+  { name: 'Navy', hex: '#080F20' },
+  { name: 'Classic Navy', hex: '#1B2951' }, // Slightly different from Navy
+  { name: 'Blue', hex: '#0066CC' },
+  
+  // Whites & Naturals
+  { name: 'White', hex: '#FAFAFA' },
+  { name: 'Natural', hex: '#FEF3C7' },
+  { name: 'Bone', hex: '#E8DCC6' },
   
   // Greens
   { name: 'Alpine Green', hex: '#165B33' },
   { name: 'Sage', hex: '#9CAF88' },
   
-  // Other colors
-  { name: 'Gold', hex: '#FFD700' },
-  { name: 'Blue', hex: '#0066CC' },
-  { name: 'Pink', hex: '#FFC0CB' },
+  // Reds & Pinks
+  { name: 'Red', hex: '#EC5039' },
+  { name: 'Pink', hex: '#F82F57' },
   { name: 'Cotton Candy', hex: '#FFB6C1' },
-  { name: 'Black Camo', hex: '#1C1C1C' }
+  
+  // Other
+  { name: 'Gold', hex: '#F6CB46' }
 ];
 
 const PRODUCT_ICONS = {
@@ -859,8 +863,8 @@ function DesignEditor() {
 
   const filteredColors = COLOR_PALETTE.filter(color => {
     if (colorFilter === 'All') return true;
-    if (colorFilter === 'Light') return ['White', 'Natural', 'Bone', 'Gray Heather', 'Heather Grey', 'Pink', 'Cotton Candy', 'Gold'].includes(color.name);
-    if (colorFilter === 'Dark') return ['Black', 'Navy', 'Classic Navy', 'Charcoal', 'Alpine Green', 'Dark Heather Gray', 'Black Camo'].includes(color.name);
+    if (colorFilter === 'Light') return ['White', 'Natural', 'Bone', 'Gray Heather', 'Heather Grey', 'Pink', 'Cotton Candy', 'Gold', 'Sage'].includes(color.name);
+    if (colorFilter === 'Dark') return ['Black', 'Black Camo', 'Charcoal', 'Dark Heather Gray', 'Navy', 'Classic Navy', 'Alpine Green'].includes(color.name);
     if (colorFilter === 'None') return false;
     return true;
   });
