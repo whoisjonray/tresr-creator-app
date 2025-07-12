@@ -8,8 +8,8 @@ router.get('/stats', requireAuth, async (req, res) => {
   try {
     const { creator } = req.session;
     
-    // In development, return mock stats
-    if (process.env.NODE_ENV === 'development') {
+    // For now, always return mock stats until Shopify integration is complete
+    if (true || process.env.NODE_ENV === 'development') {
       return res.json({
         success: true,
         stats: {

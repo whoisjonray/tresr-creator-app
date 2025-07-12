@@ -949,17 +949,23 @@ function DesignEditor() {
       }
       
       await Promise.all(mockupPromises);
+      
+      // Create mockups object from enabled products
       const mockups = {};
+      for (const product of enabledProducts) {
+        const config = productConfigs[product.id];
+        mockups[product.id] = {
+          productId: product.id,
+          templateId: product.templateId,
+          color: config.selectedColor || config.defaultColor,
+          printLocation: config.printLocation
+        };
+      }
       
       console.log('Generated mockups:', mockups);
       
-      // Add the actual design image to each mockup for preview
-      const finalDesignImage = designImageForMockups;
-      Object.keys(mockups).forEach(productId => {
-        if (mockups[productId] && finalDesignImage) {
-          mockups[productId].designPreview = finalDesignImage;
-        }
-      });
+      // Use front design as the primary preview image
+      const finalDesignImage = frontDesignUrl || frontDesignImageSrc || (isEditMode && location.state?.productData?.originalDesignImage);
       
       // Navigate to products page with the generated data
       navigate('/products', { 
@@ -973,6 +979,10 @@ function DesignEditor() {
           productConfigs,
           selectedColors,
           designImageSrc: finalDesignImage, // Use the final design image
+          frontDesignImageSrc,
+          backDesignImageSrc,
+          frontDesignUrl,
+          backDesignUrl,
           isEditMode: params.id && location.state?.productData, // Add edit mode flag
           editProductId: params.id // Pass the product ID if editing
         } 
