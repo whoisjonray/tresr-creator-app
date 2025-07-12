@@ -182,11 +182,14 @@ template: {
 - No manual configuration needed when switching environments
 - Supports localhost, ngrok tunnels, and production
 
-### Authentication Flow
-1. Dynamic.xyz handles social/wallet authentication
-2. JWT token exchanged with backend for session creation
-3. Creator permissions verified against Shopify vendor data
-4. Session maintained for subsequent API calls
+### Authentication Flow ✅ COMPLETE
+1. Dynamic.xyz handles social/wallet authentication (Google, Discord, Telegram, Email)
+2. Custom JSON token created when JWT not available (newer SDK compatibility)
+3. Backend accepts both JWT and JSON token formats
+4. Express session created with creator data (id, email, walletAddress, name)
+5. AuthGuard component protects all routes
+6. Navigation component provides logout across all pages
+7. Smart redirect handling prevents authentication loops
 
 ## Cost Optimization Achievement
 
@@ -205,10 +208,34 @@ template: {
 
 ## Testing Checklist
 
-- [ ] Dynamic.xyz auth flow works (social + wallet)
+- [x] Dynamic.xyz auth flow works (social + wallet) ✅ COMPLETE
+- [x] Multi-environment URL detection working ✅ COMPLETE  
+- [x] Navigation and logout functional across all environments ✅ COMPLETE
+- [x] Session persistence and CORS handling ✅ COMPLETE
+- [x] AuthGuard protecting all routes ✅ COMPLETE
 - [ ] Design upload and positioning functional
 - [ ] Mockup generation via Dynamic Mockups API
 - [ ] Shopify product creation with correct vendor/metafields
 - [ ] Creator stats and dashboard data loading
-- [ ] Multi-environment URL detection working
-- [ ] Navigation and logout functional across all environments
+
+## Key Authentication Solutions
+
+### JWT vs JSON Token Handling
+- **Problem**: Dynamic.xyz SDK doesn't always provide JWT tokens
+- **Solution**: Created hybrid backend that accepts both JWT and custom JSON tokens
+- **Implementation**: Frontend creates JSON token from user data when JWT unavailable
+
+### Session Persistence Issues
+- **Problem**: Express sessions not persisting in production (secure cookie requirements)
+- **Solution**: Temporarily disabled secure cookies, added sameSite: 'lax' for cross-origin
+- **Production**: Will need Redis session store for proper session scaling
+
+### Redirect Loop Prevention
+- **Problem**: Login success caused infinite redirects between /login and /dashboard
+- **Solution**: Removed manual redirects, let React navigation handle auth state changes
+- **Key**: AuthGuard + useEffect navigation handles flow naturally
+
+### Environment-Aware Development
+- **Problem**: Different API URLs for localhost, ngrok, and production
+- **Solution**: Smart hostname detection in both frontend services and CORS config
+- **Benefit**: No manual URL changes when switching between development modes
