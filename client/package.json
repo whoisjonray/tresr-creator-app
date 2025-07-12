@@ -1,0 +1,25 @@
+{
+  "name": "tresr-creator-client",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@dnd-kit/core": "^6.1.0",
+    "@dnd-kit/modifiers": "^7.0.0",
+    "axios": "^1.6.2",
+    "react": "^18.2.0",
+    "react-color": "^2.19.3",
+    "react-dom": "^18.2.0",
+    "react-dropzone": "^14.2.3",
+    "react-router-dom": "^6.20.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.6.0",
+    "vite": "^5.4.19"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "proxy": "http://localhost:3002"
+}

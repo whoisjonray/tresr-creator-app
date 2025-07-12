@@ -1,0 +1,36 @@
+{
+  "name": "tresr-creator-app",
+  "version": "1.0.0",
+  "description": "TRESR Creator Tools - Design editor and product management for creators",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
+    "dev:client": "cd client && npm run dev",
+    "dev:server": "cd server && npm run dev",
+    "build": "npm run install:all && npm run build:client && npm run build:server",
+    "build:client": "cd client && npm run build",
+    "build:server": "cd server && npm run build",
+    "install:all": "npm install && cd client && npm install && cd ../server && npm install",
+    "start": "cd server && npm start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "shopify",
+    "creator-tools",
+    "design-editor",
+    "product-management"
+  ],
+  "author": "TRESR",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "cloudinary": "^2.7.0",
+    "node-fetch": "^3.3.2"
+  }
+}
