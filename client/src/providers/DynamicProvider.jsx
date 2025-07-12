@@ -25,6 +25,12 @@ const DynamicProvider = ({ children }) => {
     authFlow: 'social-first',
     hideEmbeddedWalletTransactionUIs: false,
     
+    // Prevent additional auth prompts when already authenticated
+    enableVisitTrackingOnConnectOnly: true,
+    
+    // Only show primary auth method, not additional linking options
+    multiWallet: false,
+    
     // UI customization to match TRESR brand
     appName: 'TRESR Creator Tools',
     appLogoUrl: 'https://tresr.com/logo.png',

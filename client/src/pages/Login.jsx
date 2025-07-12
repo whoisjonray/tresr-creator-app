@@ -17,10 +17,10 @@ function Login() {
 
   useEffect(() => {
     // Handle Dynamic.xyz authentication
-    if (isAuthenticated && user) {
+    if (isAuthenticated && user && !creator) {
       handleDynamicAuth();
     }
-  }, [isAuthenticated, user]);
+  }, [isAuthenticated, user, creator]);
 
   const handleDynamicAuth = async () => {
     try {
@@ -49,29 +49,37 @@ function Login() {
   return (
     <div className="login-page">
       {/* Debug nav for testing */}
-      {(isAuthenticated || creator) && (
-        <div className="debug-nav">
-          <button onClick={async () => {
-            try {
-              if (creator) {
-                await logout();
-              }
-              await handleLogOut();
-              window.location.reload();
-            } catch (error) {
-              console.error('Logout error:', error);
-              window.location.reload();
+      <div className="debug-nav">
+        <button onClick={async () => {
+          try {
+            if (creator) {
+              await logout();
             }
-          }} className="btn-secondary">
-            Logout
+            await handleLogOut();
+            // Clear any local storage
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.reload();
+          } catch (error) {
+            console.error('Logout error:', error);
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.reload();
+          }
+        }} className="btn-secondary">
+          Force Logout & Reset
+        </button>
+        {creator && (
+          <button onClick={() => window.location.href = 'https://creators.tresr.com/dashboard'} className="btn-primary">
+            Go to Dashboard
           </button>
-          {creator && (
-            <button onClick={() => window.location.href = 'https://creators.tresr.com/dashboard'} className="btn-primary">
-              Go to Dashboard
-            </button>
-          )}
-        </div>
-      )}
+        )}
+        {isAuthenticated && !creator && (
+          <p style={{ color: '#666', fontSize: '12px', margin: 0 }}>
+            Dynamic.xyz authenticated but no creator session
+          </p>
+        )}
+      </div>
       
       <div className="container">
         <div className="login-card card">
@@ -84,9 +92,26 @@ function Login() {
                 Login or Create Account
               </button>
             </DynamicConnectButton>
-          ) : (
+          ) : !creator ? (
             <div className="authenticating">
               <p>Verifying creator access...</p>
+              <button 
+                onClick={async () => {
+                  await handleLogOut();
+                  window.location.reload();
+                }} 
+                className="btn-secondary"
+                style={{ marginTop: '20px' }}
+              >
+                Start Over (Logout)
+              </button>
+            </div>
+          ) : (
+            <div className="authenticated">
+              <p>✅ Logged in as {creator.name}</p>
+              <button onClick={() => navigate('/dashboard')} className="btn-primary">
+                Go to Dashboard
+              </button>
             </div>
           )}
           
