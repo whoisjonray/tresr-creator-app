@@ -114,8 +114,17 @@ function DesignEditor() {
   const canvasRef = useRef(null);
   const garmentImage = useRef(new Image());
   
-  const [designImage, setDesignImage] = useState(null);
-  const [designImageSrc, setDesignImageSrc] = useState(null);
+  // Separate design images for front and back
+  const [frontDesignImage, setFrontDesignImage] = useState(null);
+  const [backDesignImage, setBackDesignImage] = useState(null);
+  const [frontDesignImageSrc, setFrontDesignImageSrc] = useState(null);
+  const [backDesignImageSrc, setBackDesignImageSrc] = useState(null);
+  
+  // Legacy support - current design based on active side
+  const designImage = viewSide === 'front' ? frontDesignImage : backDesignImage;
+  const designImageSrc = viewSide === 'front' ? frontDesignImageSrc : backDesignImageSrc;
+  const setDesignImage = viewSide === 'front' ? setFrontDesignImage : setBackDesignImage;
+  const setDesignImageSrc = viewSide === 'front' ? setFrontDesignImageSrc : setBackDesignImageSrc;
   const [designFile, setDesignFile] = useState(null);
   const [designUrl, setDesignUrl] = useState(null);
   const [designTitle, setDesignTitle] = useState('');
@@ -134,7 +143,9 @@ function DesignEditor() {
       const printArea = PRINT_AREAS[product.id] || { x: 200, y: 80 };
       configs[product.id] = {
         enabled: product.id === 'tee' || product.id === 'wmn-hoodie',
-        position: { x: printArea.x, y: printArea.y, width: 150, height: 150 }, // Will be updated with correct aspect ratio when image loads
+        // Separate positions for front and back
+        frontPosition: { x: printArea.x, y: printArea.y, width: 150, height: 150 },
+        backPosition: { x: printArea.x, y: printArea.y, width: 150, height: 150 },
         defaultColor: '', // Start with no default color selected
         selectedColor: '',
         printLocation: 'front' // New: track front/back/both
@@ -282,12 +293,33 @@ function DesignEditor() {
     return () => clearTimeout(timer);
   }, [productConfigs, activeProduct, designScale]);
 
+  // Helper function to get current position based on view side
+  const getCurrentPosition = (productId = activeProduct) => {
+    const config = productConfigs[productId];
+    if (!config) return { x: 200, y: 80, width: 150, height: 150 };
+    
+    return viewSide === 'front' ? config.frontPosition : config.backPosition;
+  };
+
+  // Helper function to update current position based on view side
+  const updateCurrentPosition = (productId, newPosition) => {
+    const positionKey = viewSide === 'front' ? 'frontPosition' : 'backPosition';
+    setProductConfigs(prev => ({
+      ...prev,
+      [productId]: {
+        ...prev[productId],
+        [positionKey]: newPosition
+      }
+    }));
+  };
+
   const drawCanvas = () => {
     if (!canvasRef.current) return;
     
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     const config = productConfigs[activeProduct];
+    const currentPosition = getCurrentPosition();
     
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -321,7 +353,7 @@ function DesignEditor() {
     }
     
     // Draw design if available (AFTER garment image)
-    if (designImage && config && config.position) {
+    if (designImage && config) {
       ctx.save();
       
       // Clip to print area
@@ -329,7 +361,7 @@ function DesignEditor() {
       ctx.rect(printAreaX, printAreaY, printAreaWidth, printAreaHeight);
       ctx.clip();
       
-      const { x, y, width, height } = config.position;
+      const { x, y, width, height } = currentPosition;
       
       try {
         ctx.drawImage(designImage, x - width/2, y - height/2, width, height);
@@ -368,8 +400,8 @@ function DesignEditor() {
     }
     
     // Draw selection border only when hovering over canvas
-    if (designImage && config && config.position && showBoundingBox) {
-      const { x, y, width, height } = config.position;
+    if (designImage && config && showBoundingBox) {
+      const { x, y, width, height } = currentPosition;
       ctx.strokeStyle = '#3b82f6';
       ctx.lineWidth = 2;
       ctx.strokeRect(x - width/2, y - height/2, width, height);
@@ -519,7 +551,7 @@ function DesignEditor() {
     const config = productConfigs[activeProduct];
     
     // Check if click is on the design
-    const { x: cx, y: cy, width, height } = config.position;
+    const { x: cx, y: cy, width, height } = getCurrentPosition();
     if (x >= cx - width/2 && x <= cx + width/2 && y >= cy - height/2 && y <= cy + height/2) {
       setIsDragging(true);
       setDragStart({ 
@@ -538,8 +570,7 @@ function DesignEditor() {
     
     // Update cursor on hover
     if (!isDragging) {
-      const config = productConfigs[activeProduct];
-      const { x: cx, y: cy, width, height } = config.position;
+      const { x: cx, y: cy, width, height } = getCurrentPosition();
       
       if (x >= cx - width/2 && x <= cx + width/2 && y >= cy - height/2 && y <= cy + height/2) {
         canvasRef.current.style.cursor = 'move';
@@ -551,9 +582,9 @@ function DesignEditor() {
     // Handle dragging
     if (isDragging) {
       const printArea = PRINT_AREAS[activeProduct] || { width: 200, height: 286, x: 200, y: 80 };
-      const config = productConfigs[activeProduct];
-      const halfWidth = config.position.width / 2;
-      const halfHeight = config.position.height / 2;
+      const currentPosition = getCurrentPosition();
+      const halfWidth = currentPosition.width / 2;
+      const halfHeight = currentPosition.height / 2;
       
       // Calculate boundaries based on print area
       const minX = (printArea.x - printArea.width/2) + halfWidth;
@@ -561,17 +592,13 @@ function DesignEditor() {
       const minY = (printArea.y - printArea.height/2) + halfHeight;
       const maxY = (printArea.y + printArea.height/2) - halfHeight;
       
-      setProductConfigs(prev => ({
-        ...prev,
-        [activeProduct]: {
-          ...prev[activeProduct],
-          position: {
-            ...prev[activeProduct].position,
-            x: Math.max(minX, Math.min(maxX, x - dragStart.x)),
-            y: Math.max(minY, Math.min(maxY, y - dragStart.y))
-          }
-        }
-      }));
+      const newPosition = {
+        ...currentPosition,
+        x: Math.max(minX, Math.min(maxX, x - dragStart.x)),
+        y: Math.max(minY, Math.min(maxY, y - dragStart.y))
+      };
+      
+      updateCurrentPosition(activeProduct, newPosition);
     }
   };
 
@@ -972,19 +999,30 @@ function DesignEditor() {
                 {/* Front/Back Toggle */}
                 {activeProduct && productConfigs[activeProduct]?.enabled && 
                  !['art-sqsm', 'art-sqm', 'art-lg', 'nft'].includes(activeProduct) && (
-                  <div className="view-toggle">
-                    <button 
-                      className={`view-btn ${viewSide === 'front' ? 'active' : ''}`}
-                      onClick={() => setViewSide('front')}
-                    >
-                      Front
-                    </button>
-                    <button 
-                      className={`view-btn ${viewSide === 'back' ? 'active' : ''}`}
-                      onClick={() => setViewSide('back')}
-                    >
-                      Back
-                    </button>
+                  <div className="view-controls">
+                    <div className="view-toggle">
+                      <button 
+                        className={`view-btn ${viewSide === 'front' ? 'active' : ''}`}
+                        onClick={() => setViewSide('front')}
+                      >
+                        Front
+                      </button>
+                      <button 
+                        className={`view-btn ${viewSide === 'back' ? 'active' : ''}`}
+                        onClick={() => setViewSide('back')}
+                      >
+                        Back
+                      </button>
+                    </div>
+                    {viewSide === 'back' && (
+                      <button className="replace-image-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M5 13l4 4L19 7" stroke="none"/>
+                          <path d="M21 19v-14l-9 6-3-2-6 4v6h18z" stroke="currentColor" strokeWidth="2" fill="none"/>
+                        </svg>
+                        Replace back image
+                      </button>
+                    )}
                   </div>
                 )}
                 <div className="canvas-container">

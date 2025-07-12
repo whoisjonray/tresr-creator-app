@@ -499,10 +499,17 @@
     pointer-events: none;
 }
 
-/* Front/Back View Toggle */
+/* Front/Back View Controls */
+.view-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
 .view-toggle {
     display: flex;
-    margin-bottom: 20px;
     background: #f8f9fa;
     border-radius: 8px;
     padding: 4px;
@@ -528,6 +535,31 @@
 
 .view-btn:hover:not(.active) {
     background: #e5e7eb;
+}
+
+/* Replace Image Button */
+.replace-image-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: #5b6cff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.replace-image-btn:hover {
+    background: #4338ca;
+}
+
+.replace-image-btn svg {
+    width: 16px;
+    height: 16px;
 }
 
 /* Product Configuration Headers */
