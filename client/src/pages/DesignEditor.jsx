@@ -33,31 +33,34 @@ const PRODUCT_TEMPLATES = [
   { id: 'nft', name: 'NFTREASURE NFT Cards', templateId: 'trading_card', price: 5, colors: ['Default'] }
 ];
 
+// Limited to colors actually available in Shopify products
 const COLOR_PALETTE = [
+  // Core colors available across many products
   { name: 'Black', hex: '#000000' },
   { name: 'White', hex: '#FFFFFF' },
   { name: 'Navy', hex: '#000080' },
-  { name: 'Red', hex: '#FF0000' },
+  { name: 'Classic Navy', hex: '#002147' },
+  { name: 'Red', hex: '#DC143C' },
+  { name: 'Natural', hex: '#F5E6D3' },
+  { name: 'Bone', hex: '#E3DAC9' },
+  
+  // Grays
   { name: 'Gray', hex: '#808080' },
-  { name: 'Forest Green', hex: '#228B22' },
-  { name: 'Royal Blue', hex: '#4169E1' },
-  { name: 'Orange', hex: '#FFA500' },
-  { name: 'Yellow', hex: '#FFFF00' },
-  { name: 'Pink', hex: '#FFC0CB' },
-  { name: 'Purple', hex: '#800080' },
-  { name: 'Turquoise', hex: '#40E0D0' },
-  { name: 'Coral', hex: '#FF7F50' },
-  { name: 'Mint', hex: '#98FF98' },
-  { name: 'Burgundy', hex: '#800020' },
-  { name: 'Olive', hex: '#808000' },
-  { name: 'Teal', hex: '#008080' },
+  { name: 'Heather Grey', hex: '#9B9B9B' },
+  { name: 'Gray Heather', hex: '#B0B0B0' },
+  { name: 'Dark Heather Gray', hex: '#666666' },
+  { name: 'Charcoal', hex: '#36454F' },
+  
+  // Greens
+  { name: 'Alpine Green', hex: '#165B33' },
+  { name: 'Sage', hex: '#9CAF88' },
+  
+  // Other colors
   { name: 'Gold', hex: '#FFD700' },
-  { name: 'Silver', hex: '#C0C0C0' },
-  { name: 'Beige', hex: '#F5F5DC' },
-  { name: 'Maroon', hex: '#800000' },
-  { name: 'Light Blue', hex: '#ADD8E6' },
-  { name: 'Light Gray', hex: '#D3D3D3' },
-  { name: 'Charcoal', hex: '#36454F' }
+  { name: 'Blue', hex: '#0066CC' },
+  { name: 'Pink', hex: '#FFC0CB' },
+  { name: 'Cotton Candy', hex: '#FFB6C1' },
+  { name: 'Black Camo', hex: '#1C1C1C' }
 ];
 
 const PRODUCT_ICONS = {
@@ -856,8 +859,8 @@ function DesignEditor() {
 
   const filteredColors = COLOR_PALETTE.filter(color => {
     if (colorFilter === 'All') return true;
-    if (colorFilter === 'Light') return ['White', 'Light Gray', 'Light Blue', 'Beige', 'Pink', 'Yellow', 'Mint'].includes(color.name);
-    if (colorFilter === 'Dark') return ['Black', 'Navy', 'Charcoal', 'Forest Green', 'Burgundy', 'Purple', 'Maroon'].includes(color.name);
+    if (colorFilter === 'Light') return ['White', 'Natural', 'Bone', 'Gray Heather', 'Heather Grey', 'Pink', 'Cotton Candy', 'Gold'].includes(color.name);
+    if (colorFilter === 'Dark') return ['Black', 'Navy', 'Classic Navy', 'Charcoal', 'Alpine Green', 'Dark Heather Gray', 'Black Camo'].includes(color.name);
     if (colorFilter === 'None') return false;
     return true;
   });
@@ -1160,10 +1163,17 @@ function DesignEditor() {
                   <div
                     key={color.name}
                     className={`color-swatch ${selectedColors.includes(color.name) ? 'selected' : ''}`}
-                    style={{ backgroundColor: color.hex, border: color.name === 'White' ? '2px solid #e5e7eb' : 'none' }}
+                    style={{ backgroundColor: color.hex }}
                     onClick={() => handleColorToggle(color.name)}
                     title={color.name}
-                  />
+                  >
+                    {selectedColors.includes(color.name) && (
+                      <svg className="checkmark" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5 13l4 4L19 7" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M5 13l4 4L19 7" stroke="black" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" style={{ strokeOpacity: 0.3 }}/>
+                      </svg>
+                    )}
+                  </div>
                 ))}
               </div>
             </div>

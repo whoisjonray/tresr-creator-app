@@ -467,47 +467,36 @@
 }
 
 .color-swatch {
-    width: 35px;
-    height: 35px;
-    border-radius: 6px;
+    width: 40px;
+    height: 40px;
+    border-radius: 0; /* Square shape */
     cursor: pointer;
     position: relative;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     border: 2px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .color-swatch:hover {
     transform: scale(1.1);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
 .color-swatch.selected {
-    border-color: #3b82f6;
+    border-color: #666;
     transform: scale(1.05);
 }
 
-.color-swatch.selected::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 12px;
-    height: 12px;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white' stroke-width='3'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M5 13l4 4L19 7'/%3E%3C/svg%3E") no-repeat center;
-    background-size: contain;
-    transform: translate(-50%, -50%);
-    opacity: 1;
-    transition: opacity 0.3s ease;
-}
-
 .color-swatch .checkmark {
+    width: 24px;
+    height: 24px;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: white;
-    font-size: 20px;
-    font-weight: bold;
+    pointer-events: none;
 }
 
 /* Summary Section */
@@ -547,26 +536,24 @@
 }
 
 .color-filter {
-    padding: 8px 16px;
-    border: 1px solid #d1d5db;
-    border-radius: 20px;
-    background: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    background: #e5e7eb;
     color: #374151;
     cursor: pointer;
     font-size: 14px;
-    font-weight: 500;
-    transition: all 0.3s ease;
+    font-weight: 600;
+    transition: all 0.2s ease;
 }
 
 .color-filter:hover {
-    border-color: #3b82f6;
-    background: #f3f4f6;
+    background: #d1d5db;
 }
 
 .color-filter.active {
-    background: #3b82f6;
+    background: #5b6cff;
     color: white;
-    border-color: #3b82f6;
 }
 
 /* Configure Products Section */
