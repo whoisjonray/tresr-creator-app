@@ -37,16 +37,6 @@ function Dashboard() {
         <div className="container">
           <div className="header-content">
             <h1 className="page-title">Creator Dashboard</h1>
-            <button onClick={async () => {
-              try {
-                await logout();
-                await handleLogOut();
-                window.location.href = 'https://creators.tresr.com/login';
-              } catch (error) {
-                console.error('Logout error:', error);
-                window.location.href = 'https://creators.tresr.com/login';
-              }
-            }} className="btn-secondary">Logout</button>
           </div>
         </div>
       </div>
