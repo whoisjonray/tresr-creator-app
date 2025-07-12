@@ -98,6 +98,7 @@ function Login() {
       <div className="container">
         <div className="login-card card">
           <h1>TRESR Creator Tools</h1>
+          <p style={{ fontSize: '12px', color: '#999' }}>Build: v1.1 - Debug Enabled</p>
           <p>Login to manage your designs and products</p>
           
           {!isAuthenticated ? (
