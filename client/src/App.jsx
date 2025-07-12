@@ -6,25 +6,28 @@ import ProductManager from './pages/ProductManager';
 import AdminPanel from './pages/AdminPanel';
 import Login from './pages/Login';
 import { AuthProvider } from './hooks/useAuth';
+import DynamicProvider from './providers/DynamicProvider';
 import './App.css';
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <div className="app">
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/design/new" element={<DesignEditor />} />
-            <Route path="/design/:id/edit" element={<DesignEditor />} />
-            <Route path="/products" element={<ProductManager />} />
-            <Route path="/admin" element={<AdminPanel />} />
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          </Routes>
-        </div>
-      </Router>
-    </AuthProvider>
+    <DynamicProvider>
+      <AuthProvider>
+        <Router>
+          <div className="app">
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/design/new" element={<DesignEditor />} />
+              <Route path="/design/:id/edit" element={<DesignEditor />} />
+              <Route path="/products" element={<ProductManager />} />
+              <Route path="/admin" element={<AdminPanel />} />
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+          </div>
+        </Router>
+      </AuthProvider>
+    </DynamicProvider>
   );
 }
 

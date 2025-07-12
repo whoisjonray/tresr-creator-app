@@ -1,45 +1,48 @@
 import React, { useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useDynamicContext, DynamicConnectButton } from '@dynamic-labs/sdk-react-core';
 import { useAuth } from '../hooks/useAuth';
 
 function Login() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const { login, creator } = useAuth();
+  const { user, isAuthenticated, handleLogOut, primaryWallet } = useDynamicContext();
 
   useEffect(() => {
-    // Check if we have a token from Dynamic.xyz callback
-    const token = searchParams.get('token');
-    if (token) {
-      handleLogin(token);
-    }
-  }, [searchParams]);
-
-  useEffect(() => {
-    // Redirect if already logged in
+    // Redirect if already logged in via our app
     if (creator) {
       navigate('/dashboard');
     }
   }, [creator, navigate]);
 
-  const handleLogin = async (token) => {
-    const result = await login(token);
-    if (result.success) {
-      navigate('/dashboard');
-    } else {
-      alert(result.error || 'Login failed');
+  useEffect(() => {
+    // Handle Dynamic.xyz authentication
+    if (isAuthenticated && user) {
+      handleDynamicAuth();
     }
-  };
+  }, [isAuthenticated, user]);
 
-  const handleDynamicLogin = () => {
-    // For now, show instructions until we implement the SDK
-    alert('Creator authentication is being upgraded. Please use your existing TRESR.com login or contact support for creator access.');
-    
-    // TODO: Implement Dynamic SDK like TRESR.com:
-    // 1. Install @dynamic-labs/sdk-react-core
-    // 2. Wrap app with DynamicContextProvider
-    // 3. Use DynamicConnectButton component
-    // 4. Handle JWT token exchange with backend
+  const handleDynamicAuth = async () => {
+    try {
+      // Get the JWT token from Dynamic
+      const token = await user.getJWT();
+      
+      if (token) {
+        // Exchange Dynamic JWT for our app session
+        const result = await login(token);
+        if (result.success) {
+          navigate('/dashboard');
+        } else {
+          alert(result.error || 'Creator access denied. Please ensure you have creator permissions.');
+          // Log out from Dynamic if app login fails
+          await handleLogOut();
+        }
+      }
+    } catch (error) {
+      console.error('Authentication error:', error);
+      alert('Authentication failed. Please try again.');
+      await handleLogOut();
+    }
   };
 
   return (
@@ -49,12 +52,17 @@ function Login() {
           <h1>TRESR Creator Tools</h1>
           <p>Login to manage your designs and products</p>
           
-          <button 
-            className="btn-primary login-btn"
-            onClick={handleDynamicLogin}
-          >
-            Login with Dynamic
-          </button>
+          {!isAuthenticated ? (
+            <DynamicConnectButton>
+              <button className="btn-primary login-btn">
+                Login or Create Account
+              </button>
+            </DynamicConnectButton>
+          ) : (
+            <div className="authenticating">
+              <p>Verifying creator access...</p>
+            </div>
+          )}
           
           <p className="login-note">
             You must be an approved creator to access this portal.
@@ -94,6 +102,16 @@ function Login() {
         .login-note {
           margin-top: 20px;
           font-size: 14px;
+        }
+        
+        .authenticating {
+          text-align: center;
+          padding: 20px;
+        }
+        
+        .authenticating p {
+          color: #666;
+          font-style: italic;
         }
       `}</style>
     </div>
