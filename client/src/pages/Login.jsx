@@ -24,20 +24,34 @@ function Login() {
 
   const handleDynamicAuth = async () => {
     try {
+      console.log('Starting Dynamic auth process...');
+      console.log('User object:', user);
+      
       // Get the JWT token from Dynamic
       const token = await user.getJWT();
+      console.log('Got JWT token:', token ? 'Yes' : 'No');
       
       if (token) {
+        console.log('Calling login with token...');
         // Exchange Dynamic JWT for our app session
         const result = await login(token);
+        console.log('Login result:', result);
+        
         if (result.success) {
-          // Redirect to dashboard after successful login
-          window.location.href = 'https://creators.tresr.com/dashboard';
+          console.log('Login successful, redirecting...');
+          // Add a small delay to ensure session is saved
+          setTimeout(() => {
+            window.location.href = 'https://creators.tresr.com/dashboard';
+          }, 500);
         } else {
+          console.error('Login failed:', result.error);
           alert(result.error || 'Creator access denied. Please ensure you have creator permissions.');
           // Log out from Dynamic if app login fails
           await handleLogOut();
         }
+      } else {
+        console.error('No JWT token received from Dynamic');
+        alert('Failed to get authentication token');
       }
     } catch (error) {
       console.error('Authentication error:', error);

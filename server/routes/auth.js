@@ -6,9 +6,12 @@ const jwt = require('jsonwebtoken');
 // Verify Dynamic.xyz JWT and create creator session
 router.post('/verify', async (req, res) => {
   try {
+    console.log('Auth verify called');
     const { token } = req.body;
+    console.log('Token received:', token ? 'Yes' : 'No');
     
     if (!token) {
+      console.log('No token provided');
       return res.status(400).json({ error: 'Token required' });
     }
 
@@ -16,7 +19,7 @@ router.post('/verify', async (req, res) => {
     // In production, this should verify the signature with Dynamic's public key
     try {
       const decoded = jwt.decode(token);
-      console.log('Decoded JWT:', decoded);
+      console.log('Decoded JWT:', JSON.stringify(decoded, null, 2));
       
       if (!decoded || !decoded.sub) {
         return res.status(401).json({ error: 'Invalid token format' });
@@ -41,6 +44,9 @@ router.post('/verify', async (req, res) => {
         name: userData.alias || userData.email.split('@')[0],
         isCreator: true
       };
+      
+      console.log('Created session creator:', req.session.creator);
+      console.log('Session ID:', req.sessionID);
 
       res.json({
         success: true,
@@ -63,8 +69,14 @@ router.post('/verify', async (req, res) => {
 
 // Get current creator session
 router.get('/me', (req, res) => {
+  console.log('Auth /me called');
+  console.log('Session ID:', req.sessionID);
+  console.log('Session creator:', req.session.creator);
+  console.log('NODE_ENV:', process.env.NODE_ENV);
+  
   // In development, create a session if none exists
   if (process.env.NODE_ENV === 'development' && !req.session.creator) {
+    console.log('Creating dev session');
     req.session.creator = {
       id: 'dev-creator',
       email: 'dev@tresr.com',
@@ -74,9 +86,11 @@ router.get('/me', (req, res) => {
   }
 
   if (!req.session.creator) {
+    console.log('No creator session found, returning 401');
     return res.status(401).json({ error: 'Not authenticated' });
   }
 
+  console.log('Returning creator session');
   res.json({
     success: true,
     creator: req.session.creator
