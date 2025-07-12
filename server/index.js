@@ -88,8 +88,11 @@ app.use((req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`TRESR Creator Server running on port ${PORT}`);
+const actualPort = process.env.PORT || PORT;
+console.log(`Railway PORT: ${process.env.PORT}, Configured PORT: ${PORT}, Using: ${actualPort}`);
+
+app.listen(actualPort, '0.0.0.0', () => {
+  console.log(`TRESR Creator Server running on port ${actualPort}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`Dynamic.xyz Auth URL: ${process.env.DYNAMIC_AUTH_URL || 'Not configured'}`);
   console.log(`Shopify Backend URL: ${process.env.SHOPIFY_APP_URL || 'Not configured'}`);

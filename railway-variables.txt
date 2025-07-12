@@ -1,0 +1,11 @@
+JWT_SECRET=${{tresr-shopify-backend.JWT_SECRET}}
+SHOPIFY_API_KEY=${{tresr-shopify-backend.SHOPIFY_API_KEY}}
+SHOPIFY_API_SECRET=${{tresr-shopify-backend.SHOPIFY_API_SECRET}}
+SHOPIFY_ACCESS_TOKEN=${{tresr-shopify-backend.SHOPIFY_ACCESS_TOKEN}}
+DYNAMIC_ENV_ID=${{tresr-shopify-backend.DYNAMIC_ENV_ID}}
+DYNAMIC_MOCKUPS_API_KEY=${{tresr-shopify-backend.DYNAMIC_MOCKUPS_API_KEY}}
+SESSION_SECRET=${{tresr-shopify-backend.SESSION_SECRET}}
+SHOPIFY_APP_URL=${{tresr-shopify-backend.SHOPIFY_APP_URL}}
+DYNAMIC_AUTH_URL=${{tresr-shopify-backend.DYNAMIC_AUTH_URL}}
+SHOPIFY_STORE_DOMAIN=${{tresr-shopify-backend.SHOPIFY_STORE_DOMAIN}}
+NODE_ENV=production
