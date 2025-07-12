@@ -1,8 +1,26 @@
 import axios from 'axios';
 
+// Determine API base URL based on current host
+const getBaseURL = () => {
+  const currentHost = window.location.hostname;
+  
+  // If running on ngrok or localhost, use same origin
+  if (currentHost.includes('ngrok') || currentHost === 'localhost') {
+    return window.location.origin;
+  }
+  
+  // If on production domain, use production API
+  if (currentHost === 'creators.tresr.com') {
+    return 'https://creators.tresr.com';
+  }
+  
+  // Fallback to local development
+  return 'http://localhost:3002';
+};
+
 // Create axios instance with default config
 const api = axios.create({
-  baseURL: import.meta.env.PROD ? 'https://creators.tresr.com' : 'http://localhost:3002',
+  baseURL: getBaseURL(),
   withCredentials: true, // Include cookies in requests
   headers: {
     'Content-Type': 'application/json'

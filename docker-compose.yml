@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  # Creator App (Frontend + Backend)
+  creator-app:
+    build: .
+    ports:
+      - "3002:3002"  # Backend API
+      - "3003:3003"  # Frontend (if needed)
+    environment:
+      - NODE_ENV=production
+      - PORT=3002
+    # env_file:
+    #   - ../.env
+    volumes:
+      # Mount source for hot reloading in development
+      - ./client/src:/app/client/src
+      - ./server:/app/server
+      - /app/node_modules
+      - /app/client/node_modules
+      - /app/server/node_modules
+    networks:
+      - tresr-network
+
+  # Redis (for sessions)
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - tresr-network
+
+  # MySQL (if needed for local development)
+  mysql:
+    image: mysql:8
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=tresr_root_2025
+      - MYSQL_DATABASE=tresr_creator_dev
+      - MYSQL_USER=tresr_dev
+      - MYSQL_PASSWORD=tresr_dev_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - tresr-network
+
+networks:
+  tresr-network:
+    driver: bridge
+
+volumes:
+  mysql_data:

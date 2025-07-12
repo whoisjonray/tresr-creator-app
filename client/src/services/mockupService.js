@@ -1,7 +1,22 @@
 // Service for handling mockup generation with Dynamic Mockups API
-const API_BASE_URL = window.location.hostname === 'localhost' 
-  ? 'http://localhost:3002/api' 
-  : 'https://creators.tresr.com/api';
+const getApiBaseURL = () => {
+  const currentHost = window.location.hostname;
+  
+  // If running on ngrok or localhost, use same origin
+  if (currentHost.includes('ngrok') || currentHost === 'localhost') {
+    return window.location.origin + '/api';
+  }
+  
+  // If on production domain, use production API
+  if (currentHost === 'creators.tresr.com') {
+    return 'https://creators.tresr.com/api';
+  }
+  
+  // Fallback to local development
+  return 'http://localhost:3002/api';
+};
+
+const API_BASE_URL = getApiBaseURL();
 
 class MockupService {
   constructor() {

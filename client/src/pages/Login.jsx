@@ -47,6 +47,20 @@ function Login() {
 
   return (
     <div className="login-page">
+      {/* Debug nav for testing */}
+      {(isAuthenticated || creator) && (
+        <div className="debug-nav">
+          <button onClick={handleLogOut} className="btn-secondary">
+            Logout from Dynamic
+          </button>
+          {creator && (
+            <button onClick={() => navigate('/dashboard')} className="btn-primary">
+              Go to Dashboard
+            </button>
+          )}
+        </div>
+      )}
+      
       <div className="container">
         <div className="login-card card">
           <h1>TRESR Creator Tools</h1>
@@ -74,8 +88,18 @@ function Login() {
         .login-page {
           min-height: 100vh;
           display: flex;
+          flex-direction: column;
           align-items: center;
           justify-content: center;
+        }
+        
+        .debug-nav {
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          display: flex;
+          gap: 10px;
+          z-index: 1000;
         }
         
         .login-card {
