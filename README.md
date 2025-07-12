@@ -1,79 +1,119 @@
 # TRESR Creator App
 
-A dedicated Shopify app for TRESR creators to manage their designs and products.
+TeePublic-style design editor and product management tools for TRESR creators.
 
-## 🚀 Demo Access
+## Features
 
-The app is now running locally:
+- 🎨 **Design Editor**: Drag & drop design positioning on multiple products
+- 🎯 **Product Configuration**: Enable/disable products, select colors
+- 💾 **Save & Publish**: Draft saving and mockup generation
+- 📦 **Product Management**: View, edit, and manage all products
+- 🏭 **Bulk Operations**: Generate mockups for all products at once
 
-### **Frontend (React App)**
-- **URL**: http://localhost:3003
-- **Login Page**: http://localhost:3003/login
-- **Dashboard**: http://localhost:3003/dashboard (requires login)
+## Tech Stack
 
-### **Backend API**
-- **URL**: http://localhost:3002
-- **Health Check**: http://localhost:3002/health
+- **Frontend**: React + Vite
+- **Backend**: Express.js
+- **Database**: MySQL + Redis (optional)
+- **APIs**: Dynamic Mockups, Shopify Admin API
+- **Deployment**: Railway
 
-## 🔐 Authentication
+## Quick Deploy to Railway
 
-The app uses Dynamic.xyz for authentication. To login:
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template/github?template=https://github.com/whoisjonray/tresr-creator-app)
 
-1. Go to http://localhost:3003/login
-2. Click "Login with Dynamic"
-3. You'll be redirected to Dynamic.xyz
-4. After authentication, you'll be redirected back to the dashboard
+### Manual Deployment Steps
 
-**Note**: You need to be marked as a "creator" in the system to access the dashboard.
+1. Fork or use this repository
+2. Go to [Railway.app](https://railway.app)
+3. Create new project → "Deploy from GitHub repo"
+4. Select `whoisjonray/tresr-creator-app`
+5. Add environment variables (see below)
+6. Deploy!
 
-## 📱 Features Implemented
+### Required Environment Variables
 
-### ✅ Working Now
-- Dynamic.xyz authentication integration
-- Creator dashboard with stats
-- Basic navigation structure
-- Session management
-- API endpoints for products, mockups, and creator data
+```env
+# API Keys
+DYNAMIC_MOCKUPS_API_KEY=your_dynamic_mockups_key
+SHOPIFY_API_KEY=your_shopify_api_key
+SHOPIFY_API_SECRET=your_shopify_api_secret
+SHOPIFY_ACCESS_TOKEN=your_shopify_access_token
+SHOPIFY_STORE_DOMAIN=becc05-b4.myshopify.com
 
-### 🚧 Coming Soon
-- TeePublic-style design editor
-- Product management interface
-- Dynamic Mockups API integration
-- Real-time mockup generation
-- Batch product creation
+# Auth & Security
+JWT_SECRET=your_jwt_secret_here
+SESSION_SECRET=your_session_secret_here
+DYNAMIC_ENV_ID=b17e8631-c1b7-45d5-95cf-151eb5246423
 
-## 🛠️ Development
+# URLs
+DYNAMIC_AUTH_URL=https://auth.tresr.com
+SHOPIFY_APP_URL=https://vibes.tresr.com
 
-To stop the servers: Press `Ctrl+C` in the terminal
-
-To restart:
-```bash
-cd /Users/user/Documents/TRESR Shopify/tresr-creator-app
-npm run dev
+# Optional (Railway provides these automatically)
+DATABASE_URL=mysql://...
+REDIS_URL=redis://...
 ```
 
-## 💰 Cost Savings
+## Local Development
 
-This app replaces IMG.ly ($980/month) with Dynamic Mockups ($19/month), saving **$961/month** or **$11,532/year**!
+```bash
+# Clone the repository
+git clone https://github.com/whoisjonray/tresr-creator-app.git
+cd tresr-creator-app
 
-## 🏗️ Architecture
+# Install dependencies
+npm install
 
-- **Frontend**: React + Vite (Port 3000)
-- **Backend**: Express.js (Port 3002)
-- **Authentication**: Dynamic.xyz OAuth
-- **APIs**: Shopify Admin API + Dynamic Mockups API
-- **Session Storage**: In-memory (Redis ready)
+# Start development servers
+npm run dev
 
-## 📝 Environment Variables
+# Frontend: http://localhost:3003
+# Backend API: http://localhost:3002
+```
 
-The app reads from `/Users/user/Documents/TRESR Shopify/.env`:
-- `DYNAMIC_MOCKUPS_API_KEY` - Already configured
-- `SHOPIFY_API_ACCESS_TOKEN` - Needs to be added
-- `SHOPIFY_STORE_DOMAIN` - Set to becc05-b4.myshopify.com
+## Production Build
 
-## 🚀 Next Steps
+```bash
+# Build for production
+npm run build
 
-1. Complete the design editor by porting the demo
-2. Integrate Dynamic Mockups API
-3. Add product creation workflow
-4. Deploy to production (Railway/Vercel)
+# Start production server
+npm start
+```
+
+## Architecture
+
+```
+tresr-creator-app/
+├── client/               # React frontend
+│   ├── src/
+│   │   ├── pages/       # Main app pages
+│   │   ├── components/  # Reusable components
+│   │   └── services/    # API services
+│   └── dist/            # Production build
+├── server/              # Express backend
+│   ├── routes/          # API endpoints
+│   ├── services/        # External services
+│   └── middleware/      # Auth & error handling
+└── docs/                # Documentation
+```
+
+## API Endpoints
+
+- `GET /health` - Health check
+- `POST /api/auth/login` - Dynamic.xyz login
+- `GET /api/products` - List creator products
+- `POST /api/products` - Create new product
+- `POST /api/mockups/generate` - Generate mockups
+- `GET /api/creators/stats` - Creator statistics
+
+## Cost Savings
+
+Replaces IMG.ly ($980/month) with Dynamic Mockups ($19/month):
+- **Monthly Savings**: $961
+- **Annual Savings**: $11,532
+
+## Support
+
+For issues or questions, contact the TRESR development team.
