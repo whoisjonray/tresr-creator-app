@@ -29,12 +29,24 @@ const requireAdmin = (req, res, next) => {
     });
   }
   
-  if (!req.session.creator.isAdmin) {
+  // Check admin email addresses
+  const adminEmails = [
+    'whoisjonray@gmail.com',
+    'admin@tresr.com',
+    'nftreasure@gmail.com'
+  ];
+  
+  const userEmail = req.session.creator.email;
+  if (!adminEmails.includes(userEmail)) {
+    console.log(`🚫 Admin access denied for: ${userEmail}`);
     return res.status(403).json({ 
-      error: 'Admin access required' 
+      error: 'Admin access required',
+      message: 'You do not have admin permissions'
     });
   }
   
+  console.log(`👑 Admin access granted: ${userEmail}`);
+  req.session.creator.isAdmin = true;
   next();
 };
 

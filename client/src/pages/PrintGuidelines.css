@@ -537,3 +537,141 @@
     height: 100px;
   }
 }
+
+/* Design Tools Section */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-top: 20px;
+}
+
+.tool-card {
+  background: #f8f9fa;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px;
+  transition: all 0.3s ease;
+}
+
+.tool-card:hover {
+  border-color: #00c896;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.tool-card h3 {
+  font-size: 1.3rem;
+  color: #1a202c;
+  margin-bottom: 8px;
+}
+
+.tool-card > p {
+  color: #4a5568;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+}
+
+.tool-link {
+  display: inline-block;
+  background: #00c896;
+  color: white;
+  text-decoration: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
+  margin-bottom: 16px;
+}
+
+.tool-link:hover {
+  background: #00b085;
+}
+
+.tool-description {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid #00c896;
+}
+
+.tool-description p {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.tool-description p:first-child {
+  margin-bottom: 8px;
+}
+
+.best-practices {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-top: 20px;
+}
+
+.practice-item {
+  background: #f8f9fa;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.practice-item h3 {
+  color: #1a202c;
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+}
+
+.practice-item ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.practice-item li {
+  padding: 6px 0;
+  border-bottom: 1px solid #e2e8f0;
+  color: #4a5568;
+  font-size: 0.9rem;
+  padding-left: 20px;
+  position: relative;
+}
+
+.practice-item li:last-child {
+  border-bottom: none;
+}
+
+.practice-item li::before {
+  content: '✓';
+  color: #00c896;
+  font-weight: bold;
+  margin-right: 8px;
+  position: absolute;
+  left: 0;
+  top: 6px;
+}
+
+/* Responsive design for tools */
+@media (max-width: 768px) {
+  .tools-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .tool-card {
+    padding: 20px;
+  }
+  
+  .best-practices {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .practice-item {
+    padding: 20px;
+  }
+}

@@ -15,6 +15,18 @@ function Navigation() {
     { path: '/products', label: 'Products' },
   ];
 
+  // Add admin link for whoisjonray@gmail.com and other admins
+  const adminEmails = [
+    'whoisjonray@gmail.com',
+    'admin@tresr.com', 
+    'nftreasure@gmail.com'
+  ];
+  
+  const isAdmin = creator?.email && adminEmails.includes(creator.email);
+  if (isAdmin) {
+    navItems.push({ path: '/admin', label: 'Admin' });
+  }
+
   const handleLogout = async () => {
     try {
       // Logout from our app session first

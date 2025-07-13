@@ -1,5 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const { requireAdmin } = require('../middleware/auth');
+
+// Apply admin middleware to all routes
+router.use(requireAdmin);
 
 // Mock data for admin config
 const defaultConfig = {

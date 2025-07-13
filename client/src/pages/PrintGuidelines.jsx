@@ -5,11 +5,20 @@ import './PrintGuidelines.css';
 function PrintGuidelines() {
   const [activeTab, setActiveTab] = useState('print');
 
+  const getTabTitle = () => {
+    switch(activeTab) {
+      case 'print': return 'DTG vs. DTF Printing + NFC Integration';
+      case 'garments': return 'Garment Details & Specifications';
+      case 'tools': return 'Design Tools & Resources';
+      default: return 'Creator Guide';
+    }
+  };
+
   return (
     <div className="print-guidelines-page">
       <div className="guidelines-header">
         <h1>🖨️ TRESR.com Creator Guide</h1>
-        <h2>{activeTab === 'print' ? 'DTG vs. DTF Printing + NFC Integration' : 'Garment Details & Specifications'}</h2>
+        <h2>{getTabTitle()}</h2>
       </div>
 
       <div className="tab-navigation">
@@ -25,13 +34,19 @@ function PrintGuidelines() {
         >
           Garment Details
         </button>
+        <button 
+          className={`tab-button ${activeTab === 'tools' ? 'active' : ''}`}
+          onClick={() => setActiveTab('tools')}
+        >
+          Design Tools
+        </button>
       </div>
 
       {activeTab === 'print' ? (
       <div className="guidelines-container">
         <section className="guidelines-section">
           <h2>🧭 Choosing the Right Print Method</h2>
-          <p>TRESR offers three professional-grade print options for your artwork:</p>
+          <p>TRESR offers two professional-grade print options for your artwork:</p>
 
           <div className="print-method">
             <h3>✅ 1. Use What's Best (Recommended – Default Option)</h3>
@@ -651,6 +666,236 @@ function PrintGuidelines() {
               </tbody>
             </table>
           </div>
+        </section>
+      </div>
+      ) : activeTab === 'tools' ? (
+      <div className="guidelines-container">
+        <section className="guidelines-section">
+          <h2>🛠 Design Tools & Resources</h2>
+          <p>Essential tools and resources to create professional designs for TRESR products.</p>
+        </section>
+
+        <section className="guidelines-section">
+          <h2>🔼 Image Enhancement Tools</h2>
+          <div className="tools-grid">
+            <div className="tool-card">
+              <h3>🔍 Image Upscaler</h3>
+              <p>Make your artwork meet the 1500px minimum requirement</p>
+              <a href="https://imageupscaler.com/upscale-image-4x/" target="_blank" rel="noopener noreferrer" className="tool-link">
+                Visit Image Upscaler →
+              </a>
+              <div className="tool-description">
+                <p><strong>Best for:</strong> Low-resolution artwork, sketches, photos</p>
+                <p><strong>Tip:</strong> Upload at highest quality, then scale to 4x</p>
+              </div>
+            </div>
+            
+            <div className="tool-card">
+              <h3>🧹 Background Removal</h3>
+              <p>Remove backgrounds or specific colors from images</p>
+              <a href="https://imgonline.tools/remove-color" target="_blank" rel="noopener noreferrer" className="tool-link">
+                Visit Background Remover →
+              </a>
+              <div className="tool-description">
+                <p><strong>Best for:</strong> Creating transparent PNGs, isolating designs</p>
+                <p><strong>Tip:</strong> Save as PNG to preserve transparency</p>
+              </div>
+            </div>
+
+            <div className="tool-card">
+              <h3>🎨 Remove.bg</h3>
+              <p>AI-powered automatic background removal</p>
+              <a href="https://remove.bg" target="_blank" rel="noopener noreferrer" className="tool-link">
+                Visit Remove.bg →
+              </a>
+              <div className="tool-description">
+                <p><strong>Best for:</strong> Photos with people, complex subjects</p>
+                <p><strong>Tip:</strong> Works best with clear subject/background contrast</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="guidelines-section">
+          <h2>🎨 Design Creation Tools</h2>
+          <div className="tools-grid">
+            <div className="tool-card">
+              <h3>📱 Canva</h3>
+              <p>User-friendly design platform with templates</p>
+              <a href="https://canva.com" target="_blank" rel="noopener noreferrer" className="tool-link">
+                Visit Canva →
+              </a>
+              <div className="tool-description">
+                <p><strong>Best for:</strong> Beginners, quick designs, text-based graphics</p>
+                <p><strong>Tip:</strong> Use custom dimensions: 1500x1995px for TRESR</p>
+              </div>
+            </div>
+
+            <div className="tool-card">
+              <h3>🖌️ GIMP (Free)</h3>
+              <p>Professional photo editing and design software</p>
+              <a href="https://gimp.org" target="_blank" rel="noopener noreferrer" className="tool-link">
+                Visit GIMP →
+              </a>
+              <div className="tool-description">
+                <p><strong>Best for:</strong> Advanced editing, custom artwork, photo manipulation</p>
+                <p><strong>Tip:</strong> Set up 150 PPI, RGB color mode for TRESR</p>
+              </div>
+            </div>
+
+            <div className="tool-card">
+              <h3>🎯 Adobe Creative Suite</h3>
+              <p>Industry-standard design tools (Photoshop, Illustrator)</p>
+              <a href="https://adobe.com/creativecloud" target="_blank" rel="noopener noreferrer" className="tool-link">
+                Visit Adobe →
+              </a>
+              <div className="tool-description">
+                <p><strong>Best for:</strong> Professional designs, vector graphics, complex projects</p>
+                <p><strong>Tip:</strong> Create artboards at 1500x1995px, 150 PPI</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="guidelines-section">
+          <h2>🤖 AI Design Tools</h2>
+          <div className="tools-grid">
+            <div className="tool-card">
+              <h3>🎭 Midjourney</h3>
+              <p>High-quality AI art generation via Discord</p>
+              <a href="https://midjourney.com" target="_blank" rel="noopener noreferrer" className="tool-link">
+                Visit Midjourney →
+              </a>
+              <div className="tool-description">
+                <p><strong>Best for:</strong> Artistic, detailed, stylized imagery</p>
+                <p><strong>Tip:</strong> Use --ar 3:4 for TRESR proportions</p>
+              </div>
+            </div>
+
+            <div className="tool-card">
+              <h3>🎨 DALL-E 3</h3>
+              <p>OpenAI's image generation (via ChatGPT Plus)</p>
+              <a href="https://chat.openai.com" target="_blank" rel="noopener noreferrer" className="tool-link">
+                Visit ChatGPT →
+              </a>
+              <div className="tool-description">
+                <p><strong>Best for:</strong> Text integration, concept art, illustrations</p>
+                <p><strong>Tip:</strong> Request transparent backgrounds and high resolution</p>
+              </div>
+            </div>
+
+            <div className="tool-card">
+              <h3>⚡ Leonardo AI</h3>
+              <p>Fast AI generation with style control</p>
+              <a href="https://leonardo.ai" target="_blank" rel="noopener noreferrer" className="tool-link">
+                Visit Leonardo AI →
+              </a>
+              <div className="tool-description">
+                <p><strong>Best for:</strong> Consistent style, rapid iteration, commercial use</p>
+                <p><strong>Tip:</strong> Use Phoenix model for photorealistic results</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="guidelines-section">
+          <h2>📸 Stock Resources</h2>
+          <div className="tools-grid">
+            <div className="tool-card">
+              <h3>📷 Unsplash</h3>
+              <p>Free high-resolution photos for commercial use</p>
+              <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer" className="tool-link">
+                Visit Unsplash →
+              </a>
+              <div className="tool-description">
+                <p><strong>License:</strong> Free for commercial use</p>
+                <p><strong>Tip:</strong> Search for isolated subjects on clean backgrounds</p>
+              </div>
+            </div>
+
+            <div className="tool-card">
+              <h3>🎨 Freepik</h3>
+              <p>Vectors, illustrations, and photos</p>
+              <a href="https://freepik.com" target="_blank" rel="noopener noreferrer" className="tool-link">
+                Visit Freepik →
+              </a>
+              <div className="tool-description">
+                <p><strong>License:</strong> Attribution required or Premium subscription</p>
+                <p><strong>Tip:</strong> Download SVG vectors for crisp prints</p>
+              </div>
+            </div>
+
+            <div className="tool-card">
+              <h3>🏷️ Pexels</h3>
+              <p>Free stock photos and videos</p>
+              <a href="https://pexels.com" target="_blank" rel="noopener noreferrer" className="tool-link">
+                Visit Pexels →
+              </a>
+              <div className="tool-description">
+                <p><strong>License:</strong> Free for commercial use, no attribution required</p>
+                <p><strong>Tip:</strong> Filter by orientation (portrait) for t-shirt designs</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="guidelines-section">
+          <h2>💡 Design Best Practices</h2>
+          <div className="best-practices">
+            <div className="practice-item">
+              <h3>📏 Sizing Guidelines</h3>
+              <ul>
+                <li>Minimum: 1500px wide for all designs</li>
+                <li>Recommended: 1500x1995px (3:4 ratio)</li>
+                <li>Resolution: 150 PPI or higher</li>
+                <li>File format: PNG with transparent background</li>
+              </ul>
+            </div>
+
+            <div className="practice-item">
+              <h3>🎯 Design Positioning</h3>
+              <ul>
+                <li>Center designs for maximum garment compatibility</li>
+                <li>Leave 2-3 inches from garment edges</li>
+                <li>Consider how design looks on different colors</li>
+                <li>Test with both light and dark mockups</li>
+              </ul>
+            </div>
+
+            <div className="practice-item">
+              <h3>🌈 Color Considerations</h3>
+              <ul>
+                <li>Use RGB color mode for digital designs</li>
+                <li>Avoid fluorescent/neon colors (unprintable)</li>
+                <li>Ensure good contrast on all garment colors</li>
+                <li>Elements must be 40%+ opacity for DTG</li>
+              </ul>
+            </div>
+
+            <div className="practice-item">
+              <h3>📝 Text & Typography</h3>
+              <ul>
+                <li>Minimum 12pt font size for readability</li>
+                <li>Choose bold, readable fonts</li>
+                <li>Avoid thin strokes (may not print well)</li>
+                <li>Convert text to outlines/paths before upload</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section className="guidelines-section community-section">
+          <h2>🔥 Join the TRESR Creator Community</h2>
+          <p>Get access to exclusive design resources, AI workflows, and pro tips:</p>
+          <ul className="community-benefits">
+            <li>✅ Curated list of the <strong>best design tools</strong> (with tutorials)</li>
+            <li>✅ Learn to design <strong>better than pros</strong>, even with zero experience</li>
+            <li>✅ Full AI workflows for fast, high-quality design output</li>
+            <li>✅ Exclusive templates, prompts, and scaling strategies</li>
+            <li>✅ Access to <strong>custom NFC programming</strong> and smart product playbooks</li>
+            <li>✅ Private support, content drops, and merch tactics</li>
+          </ul>
+          <p className="cta">🎯 Level up at <a href="https://TRESR.com" target="_blank" rel="noopener noreferrer">TRESR.com</a></p>
         </section>
       </div>
       )}
