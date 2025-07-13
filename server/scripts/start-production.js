@@ -6,10 +6,12 @@
 
 async function startProduction() {
   console.log('🚀 Starting production server...');
+  console.log('📅 Deployment time:', new Date().toISOString());
   console.log('Environment:', process.env.NODE_ENV);
   console.log('Railway Environment:', process.env.RAILWAY_ENVIRONMENT);
-  console.log('MySQL URL:', process.env.MYSQL_URL ? 'Set' : 'Not set');
-  console.log('MySQL Host:', process.env.MYSQLHOST || 'Not set');
+  console.log('MySQL URL:', process.env.MYSQL_URL ? 'Set ✅' : 'Not set ❌');
+  console.log('MySQL Host:', process.env.MYSQLHOST || 'Not set ❌');
+  console.log('MySQL Database:', process.env.MYSQLDATABASE || 'Not set ❌');
   
   // If no database is configured, just start the server
   if (!process.env.MYSQL_URL && !process.env.MYSQLHOST && process.env.NODE_ENV === 'production') {
