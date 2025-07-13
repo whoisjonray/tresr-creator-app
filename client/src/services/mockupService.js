@@ -1,4 +1,5 @@
-// Service for handling mockup generation with Dynamic Mockups API
+// Service for handling mockup generation with real canvas-based image generation
+import canvasImageGenerator from './canvasImageGenerator';
 const getApiBaseURL = () => {
   const currentHost = window.location.hostname;
   
@@ -49,9 +50,9 @@ class MockupService {
     }
   }
 
-  // Generate preview for a single product
+  // Generate preview for a single product using real canvas-based image generation
   async generatePreview(designUrl, templateId, color, designConfig) {
-    console.log('MockupService.generatePreview called with:', { 
+    console.log('🎨 MockupService.generatePreview called with real image generator:', { 
       designUrl: designUrl ? 'present' : 'missing', 
       templateId, 
       color, 
@@ -66,22 +67,8 @@ class MockupService {
         color: !color
       });
       
-      // Return fallback immediately
-      const svg = `
-        <svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
-          <rect width="400" height="400" fill="#cccccc"/>
-          <text x="50%" y="50%" text-anchor="middle" fill="#333" 
-                font-family="Arial" font-size="24" dy=".3em">
-            ${templateId || 'Product'}
-          </text>
-        </svg>
-      `;
-      
-      return {
-        url: `data:image/svg+xml;base64,${btoa(svg)}`,
-        templateId: templateId || 'unknown',
-        color: color || 'Default'
-      };
+      // Return fallback using canvas generator
+      return canvasImageGenerator.generateFallbackImage(templateId, color);
     }
     
     const cacheKey = `${templateId}-${color}-${JSON.stringify(designConfig)}`;
@@ -92,48 +79,63 @@ class MockupService {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/mockups/preview`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include', // Include cookies for session auth
-        body: JSON.stringify({
-          designUrl,
-          templateId,
-          color,
-          designConfig
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error(`Preview API returned ${response.status}: ${response.statusText}`);
-      }
-
-      const data = await response.json();
+      // Convert designConfig to position and scale for canvas generator
+      const position = designConfig?.position ? {
+        x: designConfig.position.x * 400, // Convert from 0-1 to canvas coordinates
+        y: designConfig.position.y * 400
+      } : { x: 200, y: 200 }; // Default center position
+      
+      const scale = designConfig?.scale || 1.0;
+      
+      // Generate real composite image using canvas
+      const realImage = await canvasImageGenerator.generateProductImage(
+        designUrl,
+        templateId,
+        color,
+        position,
+        scale
+      );
       
       // Cache the result
-      this.mockupCache.set(cacheKey, data.mockup);
+      this.mockupCache.set(cacheKey, realImage);
       
-      return data.mockup;
+      console.log('✅ Real mockup generated successfully');
+      return realImage;
+      
     } catch (error) {
-      console.error('Generate preview error:', error);
-      // Return SVG placeholder on error
-      const svg = `
-        <svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
-          <rect width="400" height="400" fill="#cccccc"/>
-          <text x="50%" y="50%" text-anchor="middle" fill="#333" 
-                font-family="Arial" font-size="24" dy=".3em">
-            ${templateId || 'Product'}
-          </text>
-        </svg>
-      `;
+      console.error('❌ Real image generation failed, falling back to API:', error);
       
-      return {
-        url: `data:image/svg+xml;base64,${btoa(svg)}`,
-        templateId,
-        color
-      };
+      // Fallback to API call if canvas generation fails
+      try {
+        const response = await fetch(`${API_BASE_URL}/mockups/preview`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            designUrl,
+            templateId,
+            color,
+            designConfig
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Preview API returned ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        
+        // Cache the result
+        this.mockupCache.set(cacheKey, data.mockup);
+        
+        return data.mockup;
+      } catch (apiError) {
+        console.error('API fallback also failed:', apiError);
+        // Return final fallback
+        return canvasImageGenerator.generateFallbackImage(templateId, color);
+      }
     }
   }
 

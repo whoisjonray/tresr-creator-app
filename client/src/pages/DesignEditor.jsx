@@ -3,6 +3,7 @@ import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 import mockupService from '../services/mockupService';
+import canvasImageGenerator from '../services/canvasImageGenerator';
 import { getGarmentImage as getCloudinaryImage } from '../config/garmentImagesCloudinary';
 import './DesignEditor.css'; // v2 - square swatches with 14 colors
 
@@ -998,43 +999,90 @@ function DesignEditor() {
         return;
       }
       
-      // Generate mockups for all enabled products
-      const mockupPromises = [];
+      console.log('🎨 Generating real product images for', enabledProducts.length, 'products...');
+      
+      // Generate REAL product images for all enabled products and colors
+      const mockups = {};
+      const totalVariants = enabledProducts.reduce((total, product) => {
+        return total + (product.colors?.length || 1);
+      }, 0);
+      
+      let processedVariants = 0;
       
       for (const product of enabledProducts) {
         const config = productConfigs[product.id];
         
         // Determine which image to use based on print location
-        let mockupImage;
+        let designImage;
         if (config.printLocation === 'back') {
-          mockupImage = backDesignUrl || backDesignImageSrc;
+          designImage = backDesignUrl || backDesignImageSrc;
         } else {
           // For 'front' and 'both', use front image for preview
-          mockupImage = frontDesignUrl || frontDesignImageSrc || (isEditMode && location.state?.productData?.originalDesignImage);
+          designImage = frontDesignUrl || frontDesignImageSrc || (isEditMode && location.state?.productData?.originalDesignImage);
         }
         
-        if (mockupImage) {
-          // Generate mockup for this product
-          const mockupPromise = generateMockupPreview(product.id);
-          mockupPromises.push(mockupPromise);
+        if (designImage) {
+          // Get current position for this product
+          const currentPosition = getCurrentPosition(product.id);
+          
+          // Generate images for all available colors of this product
+          const productColors = product.colors || ['Default'];
+          const colorVariants = [];
+          
+          for (const color of productColors) {
+            try {
+              console.log(`🎨 Generating ${product.name} in ${color}...`);
+              
+              // Generate real composite image using canvas
+              const realImage = await canvasImageGenerator.generateProductImage(
+                designImage,
+                product.templateId,
+                color,
+                currentPosition,
+                designScale / 100
+              );
+              
+              colorVariants.push({
+                color: color,
+                image: realImage.url,
+                real: realImage.real || false,
+                width: realImage.width,
+                height: realImage.height
+              });
+              
+              processedVariants++;
+              
+              // Update progress for user feedback
+              if (processedVariants % 5 === 0) {
+                console.log(`✅ Generated ${processedVariants}/${totalVariants} product variants`);
+              }
+              
+            } catch (error) {
+              console.error(`❌ Failed to generate ${product.name} in ${color}:`, error);
+              // Add fallback for failed generation
+              colorVariants.push({
+                color: color,
+                image: null,
+                error: error.message
+              });
+            }
+          }
+          
+          mockups[product.id] = {
+            productId: product.id,
+            templateId: product.templateId,
+            name: product.name,
+            price: product.price,
+            printLocation: config.printLocation,
+            selectedColor: config.selectedColor || config.defaultColor,
+            variants: colorVariants,
+            position: currentPosition,
+            scale: designScale / 100
+          };
         }
       }
       
-      await Promise.all(mockupPromises);
-      
-      // Create mockups object from enabled products
-      const mockups = {};
-      for (const product of enabledProducts) {
-        const config = productConfigs[product.id];
-        mockups[product.id] = {
-          productId: product.id,
-          templateId: product.templateId,
-          color: config.selectedColor || config.defaultColor,
-          printLocation: config.printLocation
-        };
-      }
-      
-      console.log('Generated mockups:', mockups);
+      console.log('✅ Generated real product images for all variants:', mockups);
       
       // Use front design as the primary preview image
       const finalDesignImage = frontDesignUrl || frontDesignImageSrc || (isEditMode && location.state?.productData?.originalDesignImage);
