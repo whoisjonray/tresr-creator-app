@@ -8,6 +8,21 @@ const { v4: uuidv4 } = require('uuid');
 // Get all designs for the authenticated creator (with pagination)
 router.get('/', requireAuth, async (req, res) => {
   try {
+    // Check if database is available
+    if (!databaseService.isDatabaseAvailable()) {
+      return res.json({
+        success: true,
+        designs: [],
+        pagination: {
+          total: 0,
+          page: 1,
+          limit: 20,
+          hasMore: false
+        },
+        message: 'Database not configured. Using localStorage on client side.'
+      });
+    }
+
     const creatorId = req.session.creator.id;
     const { page = 1, limit = 20, status } = req.query;
 

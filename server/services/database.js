@@ -11,13 +11,21 @@ const cloudinaryService = require('./cloudinary');
 
 class DatabaseService {
   constructor() {
+    this.isConnected = false;
     this.initializeDatabase();
   }
 
   async initializeDatabase() {
     try {
+      // Skip database init if no database is configured
+      if (!sequelize || (process.env.NODE_ENV === 'production' && !process.env.MYSQL_URL && !process.env.MYSQLHOST)) {
+        console.log('⚠️ Database not configured, service will use localStorage fallback');
+        return;
+      }
+      
       await sequelize.authenticate();
       console.log('✅ Database connection established successfully.');
+      this.isConnected = true;
       
       // Sync models in development (use migrations in production)
       if (process.env.NODE_ENV === 'development') {
@@ -25,8 +33,14 @@ class DatabaseService {
         console.log('✅ Database models synchronized.');
       }
     } catch (error) {
-      console.error('❌ Unable to connect to the database:', error);
+      console.error('⚠️ Unable to connect to the database:', error.message);
+      this.isConnected = false;
     }
+  }
+
+  // Check if database is available
+  isDatabaseAvailable() {
+    return this.isConnected;
   }
 
   // Creator operations
