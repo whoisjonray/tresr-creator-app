@@ -11,13 +11,13 @@ function PrintGuidelines() {
       </div>
 
       <div className="tab-navigation">
-        <Link to="/print-guidelines" className="tab-button active">
+        <Link to="/docs/print-guidelines" className="tab-button active">
           Print Guidelines
         </Link>
-        <Link to="/garment-details" className="tab-button">
+        <Link to="/docs/garment-details" className="tab-button">
           Garment Details
         </Link>
-        <Link to="/design-tools" className="tab-button">
+        <Link to="/docs/design-tools" className="tab-button">
           Design Tools
         </Link>
       </div>

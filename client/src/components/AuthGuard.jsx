@@ -166,8 +166,44 @@ function AuthGuard({ children }) {
   }
 
   // If not on login page and no creator session, redirect to login
-  if (!isLoginPage && !creator) {
+  // But give Dynamic.xyz auth a chance to complete first
+  if (!isLoginPage && !creator && !isAuthenticated) {
     return <Navigate to="/login" replace />;
+  }
+  
+  // If Dynamic.xyz is authenticated but no creator session yet, show loading
+  if (!isLoginPage && !creator && isAuthenticated) {
+    return (
+      <div className="auth-loading">
+        <div className="loading-spinner"></div>
+        <p>Setting up your creator account...</p>
+        
+        <style>{`
+          .auth-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            gap: 20px;
+          }
+          
+          .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #333;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+          }
+          
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}</style>
+      </div>
+    );
   }
 
   // All good, render the protected content

@@ -36,11 +36,6 @@ function AppContent() {
   return (
     <Router>
       <Routes>
-        {/* Public routes - outside AuthGuard */}
-        <Route path="/print-guidelines" element={<PrintGuidelines />} />
-        <Route path="/garment-details" element={<GarmentDetails />} />
-        <Route path="/design-tools" element={<DesignTools />} />
-        
         {/* Protected routes - inside AuthGuard */}
         <Route path="/*" element={
           <AuthGuard>
