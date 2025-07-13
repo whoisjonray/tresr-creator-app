@@ -661,6 +661,11 @@
     font-weight: bold;
     font-size: 16px;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    line-height: 1;
 }
 
 /* Special handling for light colors */

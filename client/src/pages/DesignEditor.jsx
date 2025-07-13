@@ -32,8 +32,8 @@ const getApiBaseURL = () => {
 //   Sage → Mint, Classic Navy → Navy
 const PRODUCT_TEMPLATES = [
   // Core Apparel
-  { id: 'tee', name: 'Medium Weight T-Shirt', templateId: 'tshirt_front', price: 22, colors: ['Black', 'White', 'Navy', 'Light Grey', 'Natural', 'Cardinal Red'] },
-  { id: 'boxy', name: 'Oversized Drop Shoulder', templateId: 'tshirt_boxy_front', price: 26, colors: ['Black', 'Natural'] },
+  { id: 'tee', name: 'Medium Weight T-Shirt', templateId: 'tshirt_front', price: 22, colors: ['Black', 'White', 'Natural', 'Cardinal Red', 'Dark Grey'] }, // Navy removed - no image available
+  { id: 'boxy', name: 'Oversized Drop Shoulder', templateId: 'tshirt_boxy_front', price: 26, colors: ['Black', 'Natural', 'Cardinal Red', 'Navy', 'White', 'Dark Grey'] }, // Expanded based on available images
   { id: 'next-crop', name: 'Next Level Crop Top', templateId: 'croptop_front', price: 24, colors: ['Black', 'White', 'Gold', 'Royal Heather', 'Dark Grey'] },
   
   // Hoodies & Sweatshirts
@@ -60,20 +60,20 @@ const PRODUCT_TEMPLATES = [
 const COLOR_PALETTE = [
   // Core neutrals
   { name: 'Black', hex: '#000000' },
-  { name: 'Dark Grey', hex: '#4A4A4A' },  // Covers: Charcoal, Dark Heather Gray, Black Camo
+  { name: 'Dark Grey', hex: '#4A4A4A' },  // Covers: Charcoal, Dark Heather Gray, Black Camo, Heather-Grey
   { name: 'Light Grey', hex: '#9CA3AF' }, // Covers: Gray, Gray Heather, Heather Grey
   { name: 'Natural', hex: '#FEF3C7' },    // Covers: Natural, Bone, Beige tones
   { name: 'White', hex: '#FAFAFA' },
   
   // Colors
   { name: 'Mint', hex: '#98FF98' },
-  { name: 'Navy', hex: '#080F20' },       // Covers: Navy, Classic Navy
-  { name: 'Cardinal Red', hex: '#EC5039' },// Covers: Red, Burgundy, Maroon
-  { name: 'Gold', hex: '#F6CB46' },
+  { name: 'Navy', hex: '#080F20' },       // Covers: Navy, Classic Navy, Midnight-Navy
+  { name: 'Cardinal Red', hex: '#EC5039' },// Covers: Red, Burgundy, Maroon, Cardinal-Red
+  { name: 'Gold', hex: '#F6CB46' },       // Covers: Gold, Antique-Gold
   { name: 'Alpine Green', hex: '#165B33' },
   { name: 'Army Heather', hex: '#6B7043' },// Military green heather
-  { name: 'Royal Heather', hex: '#4169E1' },// Royal blue heather
-  { name: 'Pink', hex: '#F82F57' },
+  { name: 'Royal Heather', hex: '#4169E1' },// Royal blue heather, covers: Blue, Royal-Blue
+  { name: 'Pink', hex: '#F82F57' },       // Covers: Pink, Desert-Pink
   { name: 'Cotton Candy', hex: '#FFB6C1' }
 ];
 
