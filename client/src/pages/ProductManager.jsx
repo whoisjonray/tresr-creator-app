@@ -36,7 +36,7 @@ function ProductManager() {
   useEffect(() => {
     // Check if we received data from the design editor
     if (location.state && location.state.mockups) {
-      const { mockups, designTitle, designDescription, supportingText, tags, nfcEnabled, productConfigs, selectedColors, designImageSrc, isEditMode, editProductId } = location.state;
+      const { mockups, designTitle, designDescription, supportingText, tags, nfcEnabled, productConfigs, selectedColors, designImageSrc, frontDesignImageSrc, backDesignImageSrc, frontDesignUrl, backDesignUrl, isEditMode, editProductId } = location.state;
       
       // Convert the mockups object to a product format
       const timestamp = Date.now();
@@ -49,6 +49,10 @@ function ProductManager() {
         tags: tags || [],
         nfcEnabled: nfcEnabled || false,
         originalDesignImage: designImageSrc, // Store the original design for editing
+        frontDesignImageSrc: frontDesignImageSrc, // Store front design image
+        backDesignImageSrc: backDesignImageSrc, // Store back design image
+        frontDesignUrl: frontDesignUrl, // Store front design URL
+        backDesignUrl: backDesignUrl, // Store back design URL
         productConfigs: productConfigs, // Store product configurations and positions
         selectedColors: selectedColors, // Store selected colors
         mockups: Object.entries(mockups).map(([productId, mockupData], index) => ({
@@ -69,6 +73,8 @@ function ProductManager() {
       console.log('New product created:', newProduct);
       console.log('Preview image present:', newProduct.previewImage ? 'YES' : 'NO');
       console.log('Original design image present:', newProduct.originalDesignImage ? 'YES' : 'NO');
+      console.log('Front design image present:', newProduct.frontDesignImageSrc ? 'YES' : 'NO');
+      console.log('Back design image present:', newProduct.backDesignImageSrc ? 'YES' : 'NO');
       console.log('Design image src from state:', designImageSrc ? 'YES' : 'NO');
       console.log('Mockups received count:', Object.keys(mockups || {}).length);
       
