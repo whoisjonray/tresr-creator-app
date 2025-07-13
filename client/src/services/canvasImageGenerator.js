@@ -1,5 +1,6 @@
 // Real image generation service using HTML5 Canvas (zero-cost approach)
-// Replaces expensive API calls with browser-native image compositing
+// Uses actual Cloudinary garment images for each color variation
+import { getGarmentImage } from '../config/garmentImagesCloudinary';
 
 class CanvasImageGenerator {
   constructor() {
@@ -25,7 +26,13 @@ class CanvasImageGenerator {
   // Generate real composite image of design on garment
   async generateProductImage(designImageSrc, garmentTemplate, color, position, scale = 1.0) {
     try {
-      console.log('🎨 Generating real product image:', { garmentTemplate, color, position, scale });
+      console.log('🎨 REAL IMAGE GENERATION STARTED:', { 
+        garmentTemplate, 
+        color, 
+        position, 
+        scale,
+        designSrc: designImageSrc ? 'present' : 'missing'
+      });
       
       // Create high-resolution canvas for export quality
       const canvas = document.createElement('canvas');
@@ -33,14 +40,17 @@ class CanvasImageGenerator {
       canvas.height = 800;
       const ctx = canvas.getContext('2d');
 
-      // Load garment base image
-      const garmentImage = await this.loadGarmentImage(garmentTemplate, color);
+      // Load actual garment image from Cloudinary
+      console.log(`🔍 Loading garment: ${garmentTemplate} in ${color}...`);
+      const garmentImage = await this.loadGarmentImage(garmentTemplate, color, 'front');
       
       // Draw garment as background
+      console.log('🖼️ Drawing garment background on canvas...');
       ctx.drawImage(garmentImage, 0, 0, canvas.width, canvas.height);
 
       // Load and composite design image
       if (designImageSrc) {
+        console.log('🎨 Loading design image...');
         const designImage = await this.loadImage(designImageSrc);
         
         // Calculate design placement on high-res canvas
@@ -52,14 +62,29 @@ class CanvasImageGenerator {
         const x = scaledPosition.x - (designWidth / 2);
         const y = scaledPosition.y - (designHeight / 2);
         
+        console.log(`📐 Design placement:`, {
+          originalSize: { width: designImage.width, height: designImage.height },
+          scaledSize: { width: designWidth, height: designHeight },
+          position: { x, y },
+          scale
+        });
+        
         // Draw design on garment
         ctx.drawImage(designImage, x, y, designWidth, designHeight);
       }
 
       // Convert to high-quality data URL
       const dataUrl = canvas.toDataURL('image/png', 0.9);
+      const imageSizeKB = Math.round(dataUrl.length * 0.75 / 1024); // Rough estimate
       
-      console.log('✅ Real product image generated successfully');
+      console.log(`✅ REAL PRODUCT IMAGE GENERATED SUCCESSFULLY:`, {
+        garmentTemplate,
+        color,
+        size: `${canvas.width}x${canvas.height}`,
+        imageSizeKB: `${imageSizeKB}KB`,
+        dataUrlLength: dataUrl.length
+      });
+      
       return {
         url: dataUrl,
         templateId: garmentTemplate,
@@ -67,36 +92,100 @@ class CanvasImageGenerator {
         width: canvas.width,
         height: canvas.height,
         generatedAt: Date.now(),
-        real: true // Flag to indicate this is a real image, not placeholder
+        real: true, // Flag to indicate this is a real image, not placeholder
+        imageSizeKB: imageSizeKB
       };
 
     } catch (error) {
-      console.error('❌ Failed to generate product image:', error);
+      console.error('❌ REAL IMAGE GENERATION FAILED:', error);
       
       // Return fallback SVG as last resort
       return this.generateFallbackImage(garmentTemplate, color);
     }
   }
 
-  // Load garment image with color transformation
-  async loadGarmentImage(templateId, color) {
-    const cacheKey = `${templateId}-${color}`;
+  // Load actual garment image from Cloudinary for specific color
+  async loadGarmentImage(templateId, color, side = 'front') {
+    const cacheKey = `${templateId}-${color}-${side}`;
     
     if (this.garmentImageCache.has(cacheKey)) {
+      console.log(`🎯 Using cached garment image: ${templateId} in ${color} (${side})`);
       return this.garmentImageCache.get(cacheKey);
     }
 
     try {
-      // For now, create a procedural garment shape since we don't have actual images yet
-      const garmentImage = await this.createProceduralGarment(templateId, color);
-      this.garmentImageCache.set(cacheKey, garmentImage);
-      return garmentImage;
+      // Map templateId to garment type for Cloudinary lookup
+      const garmentType = this.mapTemplateToGarmentType(templateId);
+      
+      // Map display color name to Cloudinary slug
+      const cloudinaryColor = this.mapColorToCloudinarySlug(color);
+      
+      // Get actual Cloudinary image URL for this garment type, color, and side
+      const imageUrl = getGarmentImage(garmentType, cloudinaryColor, side);
+      
+      console.log(`🎨 Loading real garment image: ${garmentType} in ${color} -> ${cloudinaryColor} (${side})`, imageUrl);
+      
+      if (imageUrl) {
+        // Load the actual garment image from Cloudinary
+        const garmentImage = await this.loadImage(imageUrl);
+        this.garmentImageCache.set(cacheKey, garmentImage);
+        console.log(`✅ Loaded real garment image successfully: ${garmentType} in ${color}`);
+        return garmentImage;
+      } else {
+        console.warn(`⚠️ No Cloudinary image found for ${garmentType} in ${color}, using procedural fallback`);
+        // Fallback to procedural garment if no Cloudinary image
+        const garmentImage = await this.createProceduralGarment(templateId, color);
+        this.garmentImageCache.set(cacheKey, garmentImage);
+        return garmentImage;
+      }
 
     } catch (error) {
-      console.error('Failed to create garment image:', error);
-      // Return solid color rectangle as fallback
-      return this.createSolidColorGarment(color);
+      console.error(`❌ Failed to load garment image for ${templateId} in ${color}:`, error);
+      // Return procedural fallback on error
+      return this.createProceduralGarment(templateId, color);
     }
+  }
+
+  // Map template ID to garment type for Cloudinary lookup
+  mapTemplateToGarmentType(templateId) {
+    const templateMap = {
+      'tshirt_front': 'tee',
+      'tshirt_back': 'tee',
+      'tshirt_boxy_front': 'boxy',
+      'hoodie_front': 'wmn-hoodie',
+      'hoodie_back': 'wmn-hoodie',
+      'crewneck_front': 'mediu',
+      'croptop_front': 'next-crop',
+      'hat_front': 'patch-c',
+      'hat_flat': 'patch-flat',
+      'canvas_square': 'art-sqsm', // Default to small, could be sqm or lg
+      'polo_front': 'polo',
+      'trading_card': 'nft'
+    };
+    
+    return templateMap[templateId] || 'tee'; // Default to tee if not found
+  }
+
+  // Map display color names to Cloudinary slug names
+  mapColorToCloudinarySlug(colorName) {
+    const colorMap = {
+      'Black': 'black',
+      'White': 'white',
+      'Navy': 'navy',
+      'Light Grey': 'heather-grey',
+      'Dark Grey': 'dark-heather-gray',
+      'Natural': 'natural',
+      'Cardinal Red': 'red',
+      'Gold': 'gold',
+      'Alpine Green': 'alpine-green',
+      'Royal Heather': 'blue',
+      'Pink': 'pink',
+      'Cotton Candy': 'cotton-candy',
+      'Mint': 'sage', // Cloudinary uses 'sage' for mint-like color
+      'Army Heather': 'army-heather'
+    };
+    
+    return colorMap[colorName] || colorName.toLowerCase().replace(/\s+/g, '-');
   }
 
   // Apply CSS filter to image using canvas

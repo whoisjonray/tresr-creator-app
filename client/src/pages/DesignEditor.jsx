@@ -999,7 +999,9 @@ function DesignEditor() {
         return;
       }
       
-      console.log('🎨 Generating real product images for', enabledProducts.length, 'products...');
+      console.log('🎨 🎨 🎨 GENERATING REAL PRODUCT IMAGES 🎨 🎨 🎨');
+      console.log('Enabled products:', enabledProducts.length);
+      console.log('Products to process:', enabledProducts.map(p => `${p.name} (${p.colors?.length || 0} colors)`));
       
       // Generate REAL product images for all enabled products and colors
       const mockups = {};
@@ -1031,7 +1033,7 @@ function DesignEditor() {
           
           for (const color of productColors) {
             try {
-              console.log(`🎨 Generating ${product.name} in ${color}...`);
+              console.log(`🎨 🎨 REAL IMAGE: Generating ${product.name} in ${color}...`);
               
               // Generate real composite image using canvas
               const realImage = await canvasImageGenerator.generateProductImage(
