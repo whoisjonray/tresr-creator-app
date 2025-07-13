@@ -593,7 +593,8 @@ function DesignEditor() {
         hasBackDesignImageSrc: !!productData.backDesignImageSrc,
         backDesignImageSrc: productData.backDesignImageSrc?.substring(0, 50) + '...',
         hasBackDesignUrl: !!productData.backDesignUrl,
-        allKeys: Object.keys(productData)
+        allKeys: Object.keys(productData),
+        fullProductData: productData
       });
       
       if (productData.backDesignImageSrc) {
@@ -605,6 +606,9 @@ function DesignEditor() {
           if (productData.backDesignUrl) {
             setBackDesignUrl(productData.backDesignUrl);
           }
+        };
+        backImg.onerror = () => {
+          console.error('❌ Failed to load back image:', productData.backDesignImageSrc?.substring(0, 100));
         };
         backImg.src = productData.backDesignImageSrc;
       } else {
@@ -632,6 +636,18 @@ function DesignEditor() {
           
           return newConfigs;
         });
+      }
+      
+      // If we have a back image, we should start viewing the back by default
+      if (productData.backDesignImageSrc && productData.productConfigs) {
+        // Check if any product has back or both print location
+        const hasBackPrint = Object.values(productData.productConfigs).some(config => 
+          config.printLocation === 'back' || config.printLocation === 'both'
+        );
+        if (hasBackPrint) {
+          // Start with back view if there's a back image and back printing is enabled
+          setViewSide('back');
+        }
       }
     }
   }, [params.id, location.state]);
@@ -842,7 +858,8 @@ function DesignEditor() {
         hasFrontDesignUrl: !!frontDesignUrl,
         hasBackDesignUrl: !!backDesignUrl,
         frontDesignImageSrcLength: frontDesignImageSrc?.length,
-        backDesignImageSrcLength: backDesignImageSrc?.length
+        backDesignImageSrcLength: backDesignImageSrc?.length,
+        backDesignImageSrcPreview: backDesignImageSrc?.substring(0, 50)
       });
       
       const savedProduct = {
