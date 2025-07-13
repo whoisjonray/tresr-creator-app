@@ -1463,7 +1463,24 @@ function DesignEditor() {
                       onChange={handleScaleChange}
                       className="scale-slider"
                     />
-                    <span className="scale-value">{designScale}%</span>
+                    <input
+                      type="number"
+                      min="50"
+                      max="200"
+                      value={designScale}
+                      onChange={(e) => {
+                        const value = parseInt(e.target.value) || 100;
+                        const clampedValue = Math.max(50, Math.min(200, value));
+                        handleScaleChange({ target: { value: clampedValue } });
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.target.blur();
+                        }
+                      }}
+                      className="scale-input"
+                    />
+                    <span className="scale-suffix">%</span>
                   </div>
                 </div>
               </div>

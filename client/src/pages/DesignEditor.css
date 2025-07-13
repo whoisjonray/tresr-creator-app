@@ -298,6 +298,42 @@
     text-align: right;
 }
 
+.scale-input {
+    width: 60px;
+    padding: 6px 8px;
+    border: 1px solid #4a5568;
+    background: #2d3748;
+    color: white;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    margin-left: 10px;
+}
+
+.scale-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+/* Hide number input arrows */
+.scale-input::-webkit-inner-spin-button,
+.scale-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.scale-input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.scale-suffix {
+    font-weight: 600;
+    color: white;
+    margin-left: 4px;
+}
+
 /* Product Configuration */
 .product-config {
     background: white;
