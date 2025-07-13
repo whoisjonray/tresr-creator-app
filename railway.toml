@@ -1,0 +1,19 @@
+[build]
+builder = "nixpacks"
+buildCommand = "npm run build"
+
+[deploy]
+startCommand = "npm start"
+restartPolicyType = "always"
+restartPolicyMaxRetries = 10
+
+[environments.production]
+NODE_ENV = "production"
+
+# Railway will automatically provision MySQL and set these:
+# MYSQL_URL
+# MYSQLHOST
+# MYSQLPORT
+# MYSQLDATABASE
+# MYSQLUSER
+# MYSQLPASSWORD

@@ -12,6 +12,10 @@ const productsRoutes = require('./routes/products');
 const mockupsRoutes = require('./routes/mockups');
 const creatorsRoutes = require('./routes/creators');
 const adminRoutes = require('./routes/admin');
+const designsRoutes = require('./routes/designs');
+
+// Initialize database
+const databaseService = require('./services/database');
 
 const app = express();
 const PORT = process.env.PORT || process.env.CREATOR_APP_PORT || 3002;
@@ -31,19 +35,61 @@ app.use(cors({
   credentials: true
 }));
 
-// Session configuration (using memory store for now, Redis can be added later)
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'tresr-creator-app-secret-2025',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: false, // Temporarily disable for debugging
-    httpOnly: true,
-    maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-    sameSite: 'lax' // Important for cross-origin requests
-  },
-  name: 'tresr.session' // Custom session name
-}));
+// Session configuration
+const isDevelopment = process.env.NODE_ENV !== 'production';
+const isRailway = process.env.RAILWAY_ENVIRONMENT === 'production';
+const useDbSessions = !isDevelopment || isRailway || process.env.MYSQL_URL;
+
+if (useDbSessions) {
+  // Use database store in production and Railway
+  const SequelizeStore = require('connect-session-sequelize')(session.Store);
+  const { sequelize } = require('./models');
+  
+  const sessionStore = new SequelizeStore({
+    db: sequelize,
+    tableName: 'sessions',
+    checkExpirationInterval: 15 * 60 * 1000, // Clean up expired sessions every 15 minutes
+    expiration: 7 * 24 * 60 * 60 * 1000 // 7 days
+  });
+  
+  app.use(session({
+    secret: process.env.SESSION_SECRET || 'tresr-creator-app-secret-2025',
+    store: sessionStore,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === 'production', // Secure in production
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+      sameSite: 'lax',
+      domain: process.env.COOKIE_DOMAIN || undefined // For Railway custom domains
+    },
+    name: 'tresr.session',
+    proxy: true // Trust proxy for Railway
+  }));
+  
+  // Sync session store after database is ready
+  setTimeout(() => {
+    sessionStore.sync()
+      .then(() => console.log('✅ Session store synced'))
+      .catch(err => console.error('❌ Session store sync failed:', err));
+  }, 1000);
+} else {
+  // Use memory store in development
+  console.log('📦 Using memory session store for development');
+  app.use(session({
+    secret: process.env.SESSION_SECRET || 'tresr-creator-app-secret-2025',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: false, // Not secure in development
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+      sameSite: 'lax'
+    },
+    name: 'tresr.session'
+  }));
+}
 
 // Health check
 app.get('/health', (req, res) => {
@@ -60,6 +106,7 @@ app.use('/api/products', productsRoutes);
 app.use('/api/mockups', mockupsRoutes);
 app.use('/api/creators', creatorsRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/designs', designsRoutes);
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
