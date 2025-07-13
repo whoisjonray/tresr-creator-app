@@ -678,7 +678,7 @@ function PrintGuidelines() {
             </div>
           </section>
         </div>
-      ) : activeTab === 'tools' ? (
+      ) : (
         <div className="guidelines-container">
           <section className="guidelines-section">
             <h2>🛠 Design Tools & Resources</h2>
