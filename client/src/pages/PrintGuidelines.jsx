@@ -181,10 +181,14 @@ function PrintGuidelines() {
               </div>
               <div className="garment-details">
                 <p><strong>Material:</strong> 60/40 combed ring-spun cotton/polyester sueded jersey, 4.3 oz</p>
-                <p><strong>Fit:</strong> Classic unisex fit with side seams</p>
+                <p><strong>Fit:</strong> Classic unisex fit with side seams (XS–3XL)</p>
+                <p><strong>Feel:</strong> Soft, sueded texture with vintage appeal</p>
                 <p><strong>Features:</strong> Fabric laundered, sueded baby rib collar, satin label</p>
                 <p><strong>Print Area:</strong> 12" x 15" (front/back)</p>
                 <p><strong>Available Colors:</strong> Black, White, Navy, Heather Grey, Natural, Cardinal Red</p>
+                <p><strong>Recommended Print Method:</strong> DTG (excellent ink absorption)</p>
+                <p><strong>Turnaround Time:</strong> 3–5 business days</p>
+                <p><strong>Customer Feedback:</strong> "Super soft and comfortable" • "Perfect everyday tee"</p>
                 
                 <div className="size-chart-mini">
                   <h4>Size Chart (inches)</h4>
@@ -221,10 +225,14 @@ function PrintGuidelines() {
               </div>
               <div className="garment-details">
                 <p><strong>Material:</strong> 100% Airlume combed and ring-spun cotton, 7.5 oz heavyweight</p>
-                <p><strong>Fit:</strong> Boxier, relaxed fit with drop shoulders</p>
+                <p><strong>Fit:</strong> Boxy, relaxed fit with dropped shoulders (XS–4XL)</p>
+                <p><strong>Feel:</strong> Dense and structured, vintage silhouette</p>
                 <p><strong>Features:</strong> Side-seamed, double needle top stitched neckband, shoulder taping</p>
                 <p><strong>Print Area:</strong> 14" x 16" (front/back)</p>
                 <p><strong>Available Colors:</strong> Black, White, Asphalt, Athletic Heather, Cocoa, Dust</p>
+                <p><strong>Recommended Print Method:</strong> DTG or DTF (DTF preferred for dark garments)</p>
+                <p><strong>Turnaround Time:</strong> 5–7 business days</p>
+                <p><strong>Customer Feedback:</strong> "Feels premium and holds its shape" • "Great for streetwear collections"</p>
                 
                 <div className="size-chart-mini">
                   <h4>Size Chart (inches)</h4>
@@ -262,10 +270,14 @@ function PrintGuidelines() {
               </div>
               <div className="garment-details">
                 <p><strong>Material:</strong> 70/30 Cotton/Poly blend, 10 oz heavyweight fleece</p>
-                <p><strong>Fit:</strong> Generous fit with kangaroo pocket</p>
+                <p><strong>Fit:</strong> Generous fit with kangaroo pocket (XS–3XL)</p>
+                <p><strong>Feel:</strong> Thick, warm fleece with premium construction</p>
                 <p><strong>Features:</strong> Fleece lined hood, split stitch seams, 1x1 ribbing</p>
                 <p><strong>Print Area:</strong> 11" x 14" (front), 12" x 16" (back)</p>
                 <p><strong>Available Colors:</strong> Black, Gold, Light Grey, Cardinal Red, Alpine Green</p>
+                <p><strong>Recommended Print Method:</strong> DTF (best for fleece texture)</p>
+                <p><strong>Turnaround Time:</strong> 5–7 business days</p>
+                <p><strong>Customer Feedback:</strong> "Perfect weight for fall/winter" • "High-quality construction"</p>
                 
                 <div className="size-chart-mini">
                   <h4>Size Chart (inches)</h4>
@@ -344,10 +356,14 @@ function PrintGuidelines() {
               </div>
               <div className="garment-details">
                 <p><strong>Material:</strong> 80/20 ring-spun cotton/polyester with 100% cotton face, 6.5 oz lightweight</p>
-                <p><strong>Fit:</strong> Women's crop fit with split kangaroo pocket, pre-laundered</p>
+                <p><strong>Fit:</strong> Women's crop fit with split kangaroo pocket (XS–2XL)</p>
+                <p><strong>Feel:</strong> Soft, lightweight fleece perfect for layering</p>
                 <p><strong>Features:</strong> Split-stitched double-needle sewing, 3/8" flat drawcord, sewn eyelets, 1x1 ribbing at cuffs</p>
                 <p><strong>Print Area:</strong> 10" x 12" (front), 11" x 14" (back)</p>
                 <p><strong>Available Colors:</strong> Black, White, Black Camo, Blush, Bone, Grey Heather, Sage, Tie Dye Cotton Candy</p>
+                <p><strong>Recommended Print Method:</strong> DTG or DTF (DTG for light colors)</p>
+                <p><strong>Turnaround Time:</strong> 4–6 business days</p>
+                <p><strong>Customer Feedback:</strong> "Love the crop length" • "Great quality and fit"</p>
                 
                 <div className="size-chart-mini">
                   <h4>Size Chart (inches) - Independent Trading AFX64CRP</h4>
