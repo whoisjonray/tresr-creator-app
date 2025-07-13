@@ -6,6 +6,8 @@ import ProductManager from './pages/ProductManager';
 import AdminPanel from './pages/AdminPanel';
 import Login from './pages/Login';
 import PrintGuidelines from './pages/PrintGuidelines';
+import GarmentDetails from './pages/GarmentDetails';
+import DesignTools from './pages/DesignTools';
 import Navigation from './components/Navigation';
 import SidebarNavigation from './components/SidebarNavigation';
 import AuthGuard from './components/AuthGuard';
@@ -34,8 +36,10 @@ function AppContent() {
   return (
     <Router>
       <Routes>
-        {/* Public route - outside AuthGuard */}
+        {/* Public routes - outside AuthGuard */}
         <Route path="/print-guidelines" element={<PrintGuidelines />} />
+        <Route path="/garment-details" element={<GarmentDetails />} />
+        <Route path="/design-tools" element={<DesignTools />} />
         
         {/* Protected routes - inside AuthGuard */}
         <Route path="/*" element={
@@ -56,7 +60,8 @@ function AppContent() {
                     {/* Documentation Routes */}
                     <Route path="/docs/getting-started" element={<div>Getting Started Guide (Coming Soon)</div>} />
                     <Route path="/docs/print-guidelines" element={<PrintGuidelines />} />
-                    <Route path="/docs/design-tools" element={<PrintGuidelines />} />
+                    <Route path="/docs/garment-details" element={<GarmentDetails />} />
+                    <Route path="/docs/design-tools" element={<DesignTools />} />
                     <Route path="/docs/faq" element={<div>FAQ (Coming Soon)</div>} />
                     
                     {/* Account Routes */}
