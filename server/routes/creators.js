@@ -8,25 +8,32 @@ router.get('/stats', requireAuth, async (req, res) => {
   try {
     const { creator } = req.session;
     
-    // For now, always return mock stats until Shopify integration is complete
-    if (true || process.env.NODE_ENV === 'development') {
-      return res.json({
-        success: true,
-        stats: {
-          totalProducts: 12,
-          activeProducts: 10,
-          totalSales: 2450.00,
-          totalOrders: 23,
-          commissionEarned: 980.00,
-          commissionPending: 245.00,
-          monthlyStats: {},
-          topProducts: [
-            { id: 1, title: "Cool Design Tee", sales: 450, quantity: 15 },
-            { id: 2, title: "Awesome Hoodie", sales: 380, quantity: 8 }
-          ]
+    // Return creator-specific stats
+    // TODO: Once Shopify integration is complete, pull real stats from Shopify API
+    console.log(`📊 Fetching stats for creator: ${creator.id} (${creator.email})`);
+    
+    // For now, return empty stats that are specific to each creator
+    // This ensures data isolation between different authenticated users
+    return res.json({
+      success: true,
+      stats: {
+        totalProducts: 0,
+        activeProducts: 0,
+        totalSales: 0.00,
+        totalOrders: 0,
+        commissionEarned: 0.00,
+        commissionPending: 0.00,
+        monthlyStats: {},
+        topProducts: [],
+        // Include creator info to verify proper user isolation
+        _debug: {
+          creatorId: creator.id,
+          creatorEmail: creator.email,
+          creatorName: creator.name,
+          timestamp: new Date().toISOString()
         }
-      });
-    }
+      }
+    });
     
     // Get creator's products
     const products = await shopifyService.getProductsByVendor(creator.name);

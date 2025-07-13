@@ -6,6 +6,7 @@ import mockupService from '../services/mockupService';
 import canvasImageGenerator from '../services/canvasImageGenerator';
 import { getGarmentImage as getCloudinaryImage } from '../config/garmentImagesCloudinary';
 import './DesignEditor.css'; // v2 - square swatches with 14 colors
+import { userStorage } from '../utils/userStorage';
 
 // Get API base URL from environment
 const getApiBaseURL = () => {
@@ -843,12 +844,12 @@ function DesignEditor() {
       if (!isEditMode) return;
       
       // Update the product to draft status
-      const savedProducts = JSON.parse(localStorage.getItem('generatedProducts') || '[]');
+      const savedProducts = userStorage.getProducts();
       const index = savedProducts.findIndex(p => p.id === params.id);
       
       if (index !== -1) {
         savedProducts[index].isDraft = true;
-        localStorage.setItem('generatedProducts', JSON.stringify(savedProducts));
+        userStorage.setProducts(savedProducts);
         setIsProductPublished(false);
         alert('Design unpublished to draft! Redirecting to products page...');
         navigate('/products');
@@ -874,9 +875,9 @@ function DesignEditor() {
       if (!isEditMode) return;
       
       // Remove the product from localStorage
-      const savedProducts = JSON.parse(localStorage.getItem('generatedProducts') || '[]');
+      const savedProducts = userStorage.getProducts();
       const updatedProducts = savedProducts.filter(p => p.id !== params.id);
-      localStorage.setItem('generatedProducts', JSON.stringify(updatedProducts));
+      userStorage.setProducts(updatedProducts);
       
       alert('Design deleted successfully!');
       navigate('/products');
@@ -941,7 +942,7 @@ function DesignEditor() {
       };
       
       // Save to localStorage
-      const savedProducts = JSON.parse(localStorage.getItem('generatedProducts') || '[]');
+      const savedProducts = userStorage.getProducts();
       
       if (isEditMode) {
         // Update existing product
@@ -956,7 +957,7 @@ function DesignEditor() {
         savedProducts.unshift(savedProduct);
       }
       
-      localStorage.setItem('generatedProducts', JSON.stringify(savedProducts));
+      userStorage.setProducts(savedProducts);
       
       console.log('🔥 SAVED PRODUCT DEBUG:', {
         savedProductId: savedProduct.id,

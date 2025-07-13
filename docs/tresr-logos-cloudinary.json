@@ -1,0 +1,302 @@
+{
+  "generated": "2025-07-13T18:47:02.394Z",
+  "baseFolder": "tresr-logos",
+  "logos": {
+    "diamond": [
+      {
+        "category": "diamond",
+        "file": "Diamond Black TRESR.png",
+        "success": true,
+        "publicId": "tresr-logos/diamond/diamond-black.png",
+        "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752432386/tresr-logos/diamond/diamond-black.png.png",
+        "format": "png",
+        "resourceType": "image",
+        "width": 689,
+        "height": 548,
+        "bytes": 13291
+      },
+      {
+        "category": "diamond",
+        "file": "Diamond Black TRESR.svg",
+        "success": true,
+        "publicId": "tresr-logos/diamond/diamond-black.svg",
+        "url": "https://res.cloudinary.com/dqslerzk9/raw/upload/v1752432388/tresr-logos/diamond/diamond-black.svg",
+        "resourceType": "raw",
+        "bytes": 989
+      },
+      {
+        "category": "diamond",
+        "file": "Diamond Gold TRESR.png",
+        "success": true,
+        "publicId": "tresr-logos/diamond/diamond-gold.png",
+        "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752432389/tresr-logos/diamond/diamond-gold.png.png",
+        "format": "png",
+        "resourceType": "image",
+        "width": 689,
+        "height": 548,
+        "bytes": 13280
+      },
+      {
+        "category": "diamond",
+        "file": "Diamond Gold TRESR.svg",
+        "success": true,
+        "publicId": "tresr-logos/diamond/diamond-gold.svg",
+        "url": "https://res.cloudinary.com/dqslerzk9/raw/upload/v1752432390/tresr-logos/diamond/diamond-gold.svg",
+        "resourceType": "raw",
+        "bytes": 1088
+      },
+      {
+        "category": "diamond",
+        "file": "Diamond White TRESR.png",
+        "success": true,
+        "publicId": "tresr-logos/diamond/diamond-white.png",
+        "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752432391/tresr-logos/diamond/diamond-white.png.png",
+        "format": "png",
+        "resourceType": "image",
+        "width": 689,
+        "height": 548,
+        "bytes": 13596
+      },
+      {
+        "category": "diamond",
+        "file": "Diamond White TRESR.svg",
+        "success": true,
+        "publicId": "tresr-logos/diamond/diamond-white.svg",
+        "url": "https://res.cloudinary.com/dqslerzk9/raw/upload/v1752432393/tresr-logos/diamond/diamond-white.svg",
+        "resourceType": "raw",
+        "bytes": 1009
+      }
+    ],
+    "horizontal": [
+      {
+        "category": "horizontal",
+        "file": "TRESR Horizontal Black.png",
+        "success": true,
+        "publicId": "tresr-logos/horizontal/horizontal-black.png",
+        "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752432394/tresr-logos/horizontal/horizontal-black.png.png",
+        "format": "png",
+        "resourceType": "image",
+        "width": 2375,
+        "height": 667,
+        "bytes": 40551
+      },
+      {
+        "category": "horizontal",
+        "file": "TRESR Logo Horizontal Black.svg",
+        "success": true,
+        "publicId": "tresr-logos/horizontal/horizontal-black.svg",
+        "url": "https://res.cloudinary.com/dqslerzk9/raw/upload/v1752432395/tresr-logos/horizontal/horizontal-black.svg",
+        "resourceType": "raw",
+        "bytes": 3400
+      },
+      {
+        "category": "horizontal",
+        "file": "Tresr Horizontal White.png",
+        "success": true,
+        "publicId": "tresr-logos/horizontal/horizontal-white.png",
+        "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752432397/tresr-logos/horizontal/horizontal-white.png.png",
+        "format": "png",
+        "resourceType": "image",
+        "width": 2307,
+        "height": 626,
+        "bytes": 38889
+      },
+      {
+        "category": "horizontal",
+        "file": "TRESR Logo Horizontal White.svg",
+        "success": true,
+        "publicId": "tresr-logos/horizontal/horizontal-white.svg",
+        "url": "https://res.cloudinary.com/dqslerzk9/raw/upload/v1752432398/tresr-logos/horizontal/horizontal-white.svg",
+        "resourceType": "raw",
+        "bytes": 3420
+      },
+      {
+        "category": "horizontal",
+        "file": "Tresr Horizontal White Gold.png",
+        "success": true,
+        "publicId": "tresr-logos/horizontal/horizontal-white-gold.png",
+        "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752432399/tresr-logos/horizontal/horizontal-white-gold.png.png",
+        "format": "png",
+        "resourceType": "image",
+        "width": 2307,
+        "height": 626,
+        "bytes": 38783
+      },
+      {
+        "category": "horizontal",
+        "file": "TRESR Logo Horizontal Gold White.svg",
+        "success": true,
+        "publicId": "tresr-logos/horizontal/horizontal-gold-white.svg",
+        "url": "https://res.cloudinary.com/dqslerzk9/raw/upload/v1752432400/tresr-logos/horizontal/horizontal-gold-white.svg",
+        "resourceType": "raw",
+        "bytes": 3499
+      }
+    ],
+    "vertical": [
+      {
+        "category": "vertical",
+        "file": "TRESR Logo Vertical Black.png",
+        "success": true,
+        "publicId": "tresr-logos/vertical/vertical-black.png",
+        "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752432401/tresr-logos/vertical/vertical-black.png.png",
+        "format": "png",
+        "resourceType": "image",
+        "width": 1526,
+        "height": 1333,
+        "bytes": 39290
+      },
+      {
+        "category": "vertical",
+        "file": "TRESR Logo Vertical Black.svg",
+        "success": true,
+        "publicId": "tresr-logos/vertical/vertical-black.svg",
+        "url": "https://res.cloudinary.com/dqslerzk9/raw/upload/v1752432402/tresr-logos/vertical/vertical-black.svg",
+        "resourceType": "raw",
+        "bytes": 3456
+      },
+      {
+        "category": "vertical",
+        "file": "TRESR Logo Vertical White.png",
+        "success": true,
+        "publicId": "tresr-logos/vertical/vertical-white.png",
+        "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752432404/tresr-logos/vertical/vertical-white.png.png",
+        "format": "png",
+        "resourceType": "image",
+        "width": 1526,
+        "height": 1333,
+        "bytes": 38933
+      },
+      {
+        "category": "vertical",
+        "file": "TRESR Logo Vertical White.svg",
+        "success": true,
+        "publicId": "tresr-logos/vertical/vertical-white.svg",
+        "url": "https://res.cloudinary.com/dqslerzk9/raw/upload/v1752432405/tresr-logos/vertical/vertical-white.svg",
+        "resourceType": "raw",
+        "bytes": 3476
+      },
+      {
+        "category": "vertical",
+        "file": "TRESR Logo Vertical Gold White.png",
+        "success": true,
+        "publicId": "tresr-logos/vertical/vertical-gold-white.png",
+        "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752432406/tresr-logos/vertical/vertical-gold-white.png.png",
+        "format": "png",
+        "resourceType": "image",
+        "width": 1526,
+        "height": 1333,
+        "bytes": 38300
+      }
+    ],
+    "patch": [
+      {
+        "category": "patch",
+        "file": "PNG/TRESR Patch Black.png",
+        "success": true,
+        "publicId": "tresr-logos/patch/patch-black.png",
+        "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752432407/tresr-logos/patch/patch-black.png.png",
+        "format": "png",
+        "resourceType": "image",
+        "width": 2338,
+        "height": 825,
+        "bytes": 59143
+      },
+      {
+        "category": "patch",
+        "file": "PNG/TRESR Patch Colour.png",
+        "success": true,
+        "publicId": "tresr-logos/patch/patch-color.png",
+        "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752432408/tresr-logos/patch/patch-color.png.png",
+        "format": "png",
+        "resourceType": "image",
+        "width": 2338,
+        "height": 825,
+        "bytes": 60941
+      },
+      {
+        "category": "patch",
+        "file": "PNG/TRESR Patch White.png",
+        "success": true,
+        "publicId": "tresr-logos/patch/patch-white.png",
+        "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752432410/tresr-logos/patch/patch-white.png.png",
+        "format": "png",
+        "resourceType": "image",
+        "width": 2338,
+        "height": 825,
+        "bytes": 55211
+      },
+      {
+        "category": "patch",
+        "file": "SVG/TRESR Logo Black.svg",
+        "success": true,
+        "publicId": "tresr-logos/patch/patch-black.svg",
+        "url": "https://res.cloudinary.com/dqslerzk9/raw/upload/v1752432414/tresr-logos/patch/patch-black.svg",
+        "resourceType": "raw",
+        "bytes": 4189
+      },
+      {
+        "category": "patch",
+        "file": "SVG/TRESR Logo 2025 Colour.svg",
+        "success": true,
+        "publicId": "tresr-logos/patch/patch-2025-color.svg",
+        "url": "https://res.cloudinary.com/dqslerzk9/raw/upload/v1752432415/tresr-logos/patch/patch-2025-color.svg",
+        "resourceType": "raw",
+        "bytes": 4068
+      },
+      {
+        "category": "patch",
+        "file": "SVG/TRESR Logo 2025 White.svg",
+        "success": true,
+        "publicId": "tresr-logos/patch/patch-2025-white.svg",
+        "url": "https://res.cloudinary.com/dqslerzk9/raw/upload/v1752432416/tresr-logos/patch/patch-2025-white.svg",
+        "resourceType": "raw",
+        "bytes": 4040
+      }
+    ],
+    "text": [
+      {
+        "category": "text",
+        "file": "TRESR Text Black.png",
+        "success": true,
+        "publicId": "tresr-logos/text/text-black.png",
+        "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752432418/tresr-logos/text/text-black.png.png",
+        "format": "png",
+        "resourceType": "image",
+        "width": 1366,
+        "height": 337,
+        "bytes": 20877
+      },
+      {
+        "category": "text",
+        "file": "TRESR Text Black.svg",
+        "success": true,
+        "publicId": "tresr-logos/text/text-black.svg",
+        "url": "https://res.cloudinary.com/dqslerzk9/raw/upload/v1752432419/tresr-logos/text/text-black.svg",
+        "resourceType": "raw",
+        "bytes": 2555
+      },
+      {
+        "category": "text",
+        "file": "TRESR Text White.png",
+        "success": true,
+        "publicId": "tresr-logos/text/text-white.png",
+        "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752432420/tresr-logos/text/text-white.png.png",
+        "format": "png",
+        "resourceType": "image",
+        "width": 1366,
+        "height": 337,
+        "bytes": 19849
+      },
+      {
+        "category": "text",
+        "file": "TRESR Text White.svg",
+        "success": true,
+        "publicId": "tresr-logos/text/text-white.svg",
+        "url": "https://res.cloudinary.com/dqslerzk9/raw/upload/v1752432421/tresr-logos/text/text-white.svg",
+        "resourceType": "raw",
+        "bytes": 2575
+      }
+    ]
+  },
+  "failed": []
+}

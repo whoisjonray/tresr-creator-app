@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './Products.css';
+import { userStorage } from '../utils/userStorage';
 
 // Generate SVG placeholder function for fallback images
 const generatePlaceholder = (productName, color) => {
@@ -87,7 +88,7 @@ function ProductManager() {
       console.log('==============================');
       
       // Save to localStorage first
-      const savedProducts = JSON.parse(localStorage.getItem('generatedProducts') || '[]');
+      const savedProducts = userStorage.getProducts();
       
       if (isEditMode && editProductId) {
         // Update existing product
@@ -103,7 +104,7 @@ function ProductManager() {
         savedProducts.unshift(newProduct);
       }
       
-      localStorage.setItem('generatedProducts', JSON.stringify(savedProducts));
+      userStorage.setProducts(savedProducts);
       
       // Set products to only include saved products (no mock products)
       setProducts([...savedProducts]);
@@ -112,15 +113,9 @@ function ProductManager() {
       window.history.replaceState({}, document.title);
     } else {
       // Load products from localStorage or API
-      const savedProducts = localStorage.getItem('generatedProducts');
-      if (savedProducts) {
-        try {
-          const parsed = JSON.parse(savedProducts);
-          setProducts([...parsed]);
-        } catch (error) {
-          console.error('Error parsing saved products:', error);
-          setProducts([]);
-        }
+      const savedProducts = userStorage.getProducts();
+      if (savedProducts && savedProducts.length > 0) {
+        setProducts([...savedProducts]);
       } else {
         setProducts([]);
       }
@@ -151,13 +146,13 @@ function ProductManager() {
       setProducts(updatedProducts);
       
       // Update localStorage (save all real products)
-      localStorage.setItem('generatedProducts', JSON.stringify(updatedProducts));
+      userStorage.setProducts(updatedProducts);
     }
   };
 
   const handleClearAll = () => {
     if (window.confirm('Are you sure you want to clear all products including demo products? This cannot be undone.')) {
-      localStorage.removeItem('generatedProducts');
+      userStorage.setProducts([]);
       setProducts([]);
     }
   };

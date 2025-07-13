@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDynamicContext, DynamicConnectButton } from '@dynamic-labs/sdk-react-core';
 import { useAuth } from '../hooks/useAuth';
+import { logos, colors, typography, spacing, transitions, shadows, borderRadius } from '../styles/tresr-design-system';
 
 console.log('🔥 Login.jsx file loaded at:', new Date().toISOString());
 
@@ -157,8 +158,14 @@ function Login() {
       
       <div className="container">
         <div className="login-card card">
-          <h1>🚨 TRESR Creator Tools - TEST BUILD 🚨</h1>
-          <p style={{ fontSize: '16px', color: 'red', fontWeight: 'bold' }}>⚠️ DEBUG MODE ACTIVE - BUILD v2.1 ⚠️</p>
+          <div className="logo-container">
+            <img 
+              src={logos.vertical.black}
+              alt="TRESR"
+              className="login-logo"
+            />
+          </div>
+          <h1>Creator Portal</h1>
           <p>Login to manage your designs and products</p>
           
           {!isAuthenticated ? (
@@ -203,51 +210,188 @@ function Login() {
           flex-direction: column;
           align-items: center;
           justify-content: center;
+          background: ${colors.bgLightBlue};
+          font-family: ${typography.fontFamily.sans};
         }
         
         .debug-nav {
           position: fixed;
-          top: 20px;
-          right: 20px;
+          top: ${spacing[5]};
+          right: ${spacing[5]};
           display: flex;
-          gap: 10px;
+          gap: ${spacing[3]};
           z-index: 1000;
         }
         
+        .debug-nav .btn-secondary,
+        .debug-nav .btn-primary {
+          font-size: ${typography.fontSize.xs};
+          padding: ${spacing[2]} ${spacing[3]};
+          height: 32px;
+        }
+        
+        .container {
+          width: 100%;
+          max-width: 480px;
+          padding: ${spacing[5]};
+        }
+        
         .login-card {
-          max-width: 400px;
-          margin: 0 auto;
+          background: ${colors.offWhite};
+          padding: ${spacing[10]};
+          border-radius: ${borderRadius.xl};
+          box-shadow: ${shadows.lg};
           text-align: center;
         }
         
+        .logo-container {
+          margin-bottom: ${spacing[8]};
+        }
+        
+        .login-logo {
+          height: 80px;
+          width: auto;
+        }
+        
         .login-card h1 {
-          margin-bottom: 10px;
+          font-size: ${typography.fontSize['2xl']};
+          font-weight: ${typography.fontWeight.bold};
+          color: ${colors.textBlack};
+          margin-bottom: ${spacing[3]};
+          font-family: ${typography.fontFamily.jost};
+          letter-spacing: ${typography.letterSpacing.tight};
         }
         
         .login-card p {
-          margin-bottom: 30px;
-          color: #666;
+          font-size: ${typography.fontSize.base};
+          color: ${colors.bodyGray};
+          margin-bottom: ${spacing[8]};
+          line-height: ${typography.lineHeight.relaxed};
         }
         
         .login-btn {
           width: 100%;
-          padding: 12px;
-          font-size: 16px;
+          background: ${colors.brand};
+          color: ${colors.textBlack};
+          border: 2px solid ${colors.brand};
+          border-radius: 32px;
+          padding: ${spacing[3]} ${spacing[6]};
+          font-size: ${typography.fontSize.base};
+          font-weight: ${typography.fontWeight.bold};
+          font-family: ${typography.fontFamily.jost};
+          text-transform: uppercase;
+          letter-spacing: ${typography.letterSpacing.wide};
+          cursor: pointer;
+          transition: ${transitions.DEFAULT};
+          height: 48px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
+        .login-btn:hover {
+          border-color: ${colors.accentOrange};
+          transform: translateY(-1px);
+          box-shadow: ${shadows.md};
+        }
+        
+        .login-btn:active {
+          transform: translateY(0);
+          box-shadow: ${shadows.sm};
+        }
+        
+        .btn-primary {
+          background: ${colors.brand};
+          color: ${colors.textBlack};
+          border: 2px solid ${colors.brand};
+          border-radius: 32px;
+          padding: ${spacing[2]} ${spacing[5]};
+          font-size: ${typography.fontSize.sm};
+          font-weight: ${typography.fontWeight.bold};
+          font-family: ${typography.fontFamily.jost};
+          text-transform: uppercase;
+          letter-spacing: ${typography.letterSpacing.wide};
+          cursor: pointer;
+          transition: ${transitions.DEFAULT};
+          text-decoration: none;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
+        .btn-primary:hover {
+          border-color: ${colors.accentOrange};
+          transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+          background: transparent;
+          color: ${colors.darkGray};
+          border: 2px solid ${colors.gray};
+          border-radius: 32px;
+          padding: ${spacing[2]} ${spacing[5]};
+          font-size: ${typography.fontSize.sm};
+          font-weight: ${typography.fontWeight.medium};
+          font-family: ${typography.fontFamily.jost};
+          text-transform: uppercase;
+          letter-spacing: ${typography.letterSpacing.wide};
+          cursor: pointer;
+          transition: ${transitions.DEFAULT};
+          text-decoration: none;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
+        .btn-secondary:hover {
+          background: ${colors.lightGray};
+          border-color: ${colors.darkGray};
+          color: ${colors.textBlack};
         }
         
         .login-note {
-          margin-top: 20px;
-          font-size: 14px;
+          margin-top: ${spacing[6]};
+          font-size: ${typography.fontSize.sm};
+          color: ${colors.bodyGray};
         }
         
         .authenticating {
           text-align: center;
-          padding: 20px;
+          padding: ${spacing[5]};
         }
         
         .authenticating p {
-          color: #666;
+          color: ${colors.bodyGray};
           font-style: italic;
+          margin-bottom: ${spacing[4]};
+        }
+        
+        .authenticated {
+          text-align: center;
+        }
+        
+        .authenticated p {
+          color: ${colors.success};
+          font-weight: ${typography.fontWeight.medium};
+          margin-bottom: ${spacing[4]};
+        }
+        
+        @media (max-width: 640px) {
+          .container {
+            padding: ${spacing[4]};
+          }
+          
+          .login-card {
+            padding: ${spacing[8]} ${spacing[6]};
+          }
+          
+          .login-logo {
+            height: 60px;
+          }
+          
+          .login-card h1 {
+            font-size: ${typography.fontSize.xl};
+          }
         }
       `}</style>
     </div>

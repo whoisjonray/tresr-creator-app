@@ -1,22 +1,17 @@
 // Authentication middleware
 const requireAuth = (req, res, next) => {
-  // Allow development access
-  if (process.env.NODE_ENV === 'development') {
-    req.session = req.session || {};
-    req.session.creator = {
-      id: 'dev-creator',
-      email: 'dev@tresr.com',
-      name: 'Dev Creator'
-    };
-    return next();
-  }
-  
-  if (!req.session.creator) {
+  // SECURITY: Always require proper authentication
+  // Each user must have their own session with unique creator ID
+  if (!req.session || !req.session.creator || !req.session.creator.id) {
+    console.log('🔐 Authentication required - no valid session found');
     return res.status(401).json({ 
       error: 'Authentication required',
       message: 'Please log in to continue'
     });
   }
+  
+  // Log authenticated user for debugging
+  console.log(`✅ Authenticated user: ${req.session.creator.id} (${req.session.creator.email})`);
   next();
 };
 

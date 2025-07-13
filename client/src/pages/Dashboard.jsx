@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useDynamicContext } from '@dynamic-labs/sdk-react-core';
 import { useAuth } from '../hooks/useAuth';
 import axios from 'axios';
+import { colors, typography, spacing, transitions, shadows, borderRadius } from '../styles/tresr-design-system';
 
 function Dashboard() {
   const { creator, logout } = useAuth();

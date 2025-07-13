@@ -62,7 +62,7 @@ router.post('/verify', async (req, res) => {
       // For now, allow all authenticated users as creators
       // TODO: Implement proper creator permission checking
       
-      // Create session
+      // Create session with unique user data
       req.session.creator = {
         id: userData.id,
         email: userData.email,
@@ -71,8 +71,14 @@ router.post('/verify', async (req, res) => {
         isCreator: true
       };
       
-      console.log('Created session creator:', req.session.creator);
-      console.log('Session ID:', req.sessionID);
+      // SECURITY: Log session creation for audit trail
+      console.log('🔐 === NEW SESSION CREATED ===');
+      console.log(`User ID: ${req.session.creator.id}`);
+      console.log(`Email: ${req.session.creator.email}`);
+      console.log(`Name: ${req.session.creator.name}`);
+      console.log(`Session ID: ${req.sessionID}`);
+      console.log(`Timestamp: ${new Date().toISOString()}`);
+      console.log('🔐 ==========================');
 
       res.json({
         success: true,

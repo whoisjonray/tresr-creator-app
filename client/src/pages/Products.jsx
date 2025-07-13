@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Products.css';
+import { userStorage } from '../utils/userStorage';
 
 const MOCK_PRODUCTS = [
   {
@@ -34,9 +35,9 @@ function Products() {
 
   useEffect(() => {
     // Load products from localStorage or API
-    const savedProducts = localStorage.getItem('generatedProducts');
-    if (savedProducts) {
-      setProducts(JSON.parse(savedProducts));
+    const savedProducts = userStorage.getProducts();
+    if (savedProducts && savedProducts.length > 0) {
+      setProducts(savedProducts);
     }
   }, []);
 

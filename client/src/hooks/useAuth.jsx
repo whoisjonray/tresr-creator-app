@@ -18,6 +18,17 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     checkAuth();
   }, []);
+  
+  // Expose creator info globally for userStorage
+  useEffect(() => {
+    if (creator) {
+      window.__TRESR_SESSION_CREATOR__ = creator;
+      window.__TRESR_AUTH_CONTEXT__ = { creator };
+    } else {
+      window.__TRESR_SESSION_CREATOR__ = null;
+      window.__TRESR_AUTH_CONTEXT__ = null;
+    }
+  }, [creator]);
 
   const checkAuth = async () => {
     try {
