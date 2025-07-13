@@ -268,4 +268,57 @@ router.post('/upload-product-images', requireAuth, async (req, res) => {
   }
 });
 
+// Upload a single product image to Cloudinary
+router.post('/upload-single-image', requireAuth, async (req, res) => {
+  try {
+    const { productName, imageUrl, productId, color } = req.body;
+    const { creator } = req.session;
+    
+    if (!productName || !imageUrl || !productId || !color) {
+      return res.status(400).json({ 
+        error: 'Product name, image URL, product ID, and color are required' 
+      });
+    }
+
+    // Generate a safe public ID
+    const timestamp = new Date().toISOString().split('T')[0];
+    const safeProductName = productName.replace(/[^a-zA-Z0-9-_]/g, '_');
+    const safeCreatorId = creator.id.replace(/[^a-zA-Z0-9-_]/g, '_');
+    const public_id = `${safeCreatorId}_${safeProductName}_${color}_${timestamp}`;
+
+    console.log(`📤 Uploading single image to Cloudinary: ${public_id}`);
+
+    // Upload to Cloudinary
+    const result = await cloudinaryService.uploadImage(imageUrl, {
+      folder: 'tresr-creator-products',
+      public_id,
+      tags: [
+        'creator-product',
+        'generated',
+        `creator:${creator.id}`,
+        `product:${productId}`,
+        `color:${color}`
+      ],
+      overwrite: true
+    });
+
+    console.log(`✅ Successfully uploaded single image to Cloudinary: ${result.secure_url}`);
+
+    res.json({
+      success: true,
+      cloudinaryUrl: result.secure_url,
+      productId,
+      color,
+      publicId: result.public_id
+    });
+
+  } catch (error) {
+    console.error('Error uploading single image:', error);
+    res.status(500).json({ 
+      error: 'Failed to upload image',
+      message: error.message 
+    });
+  }
+});
+
 module.exports = router;
