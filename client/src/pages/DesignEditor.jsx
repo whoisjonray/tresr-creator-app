@@ -1736,15 +1736,15 @@ function DesignEditor() {
                                 style={{ backgroundColor: colorHex }}
                                 title={color}
                                 onClick={() => {
+                                  // Only add/remove from selectedColors list - don't change canvas background
                                   setProductConfigs(prev => ({
                                     ...prev,
                                     [product.id]: {
                                       ...prev[product.id],
                                       selectedColors: isSelected
                                         ? prev[product.id]?.selectedColors?.filter(c => c !== color) || []
-                                        : [...(prev[product.id]?.selectedColors || []), color],
-                                      selectedColor: color, // Set as the current display color
-                                      hoverColor: null // Clear any hover state
+                                        : [...(prev[product.id]?.selectedColors || []), color]
+                                      // Don't set selectedColor here - that's controlled by dropdown
                                     }
                                   }));
                                 }}
@@ -1761,13 +1761,13 @@ function DesignEditor() {
                                   }
                                 }}
                                 onMouseLeave={() => {
-                                  // Remove hover color when mouse leaves - will default back to selectedColor
+                                  // Remove hover color when mouse leaves - returns to dropdown default color
                                   if (product.id === activeProduct) {
                                     setProductConfigs(prev => ({
                                       ...prev,
                                       [product.id]: {
                                         ...prev[product.id],
-                                        hoverColor: null // Clear hover color, returns to selectedColor
+                                        hoverColor: null // Clear hover color, returns to dropdown selectedColor/defaultColor
                                       }
                                     }));
                                   }
