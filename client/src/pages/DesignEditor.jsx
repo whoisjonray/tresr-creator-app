@@ -153,6 +153,8 @@ function DesignEditor() {
   const [matureContent, setMatureContent] = useState(false);
   const [currentMockup, setCurrentMockup] = useState(null);
   const [isGeneratingMockup, setIsGeneratingMockup] = useState(false);
+  const [printMethod, setPrintMethod] = useState('auto'); // auto = Use What's Best, dtg, dtf
+  const [imageQualityWarning, setImageQualityWarning] = useState(null);
   
   const [activeProduct, setActiveProduct] = useState(PRODUCT_TEMPLATES[0].id);
   const [productConfigs, setProductConfigs] = useState(() => {
@@ -192,6 +194,18 @@ function DesignEditor() {
     reader.onload = (e) => {
       const img = new Image();
       img.onload = () => {
+        // Check image dimensions
+        if (img.width < 1500) {
+          setImageQualityWarning({
+            type: 'warning',
+            message: `Your image is ${img.width}px wide. We recommend at least 1500px for best print quality.`,
+            currentWidth: img.width,
+            recommendedWidth: 1500
+          });
+        } else {
+          setImageQualityWarning(null);
+        }
+        
         // Always set front image when using the main drop zone
         setFrontDesignImage(img);
         setFrontDesignImageSrc(e.target.result);
@@ -502,6 +516,11 @@ function DesignEditor() {
       // Load supporting text if available
       if (productData.supportingText) {
         setSupportingText(productData.supportingText);
+      }
+      
+      // Load print method if available
+      if (productData.printMethod) {
+        setPrintMethod(productData.printMethod);
       }
       
       // Load selected colors
@@ -872,6 +891,7 @@ function DesignEditor() {
         backDesignImageSrc: backDesignImageSrc,
         frontDesignUrl: frontDesignUrl,
         backDesignUrl: backDesignUrl,
+        printMethod: printMethod, // Save the selected print method
         productConfigs: productConfigs, // Save product positions and configurations
         selectedColors: selectedColors, // Save selected colors
         mockups: [
@@ -1024,6 +1044,7 @@ function DesignEditor() {
           backDesignImageSrc,
           frontDesignUrl,
           backDesignUrl,
+          printMethod, // Pass the selected print method
           isEditMode: params.id && location.state?.productData, // Add edit mode flag
           editProductId: params.id // Pass the product ID if editing
         } 
@@ -1089,6 +1110,35 @@ function DesignEditor() {
             </div>
           )}
           
+          {/* Image Quality Warning */}
+          {imageQualityWarning && (
+            <div className="quality-warning">
+              <div className="warning-icon">⚠️</div>
+              <div className="warning-content">
+                <p className="warning-message">{imageQualityWarning.message}</p>
+                <p className="warning-recommendation">
+                  <a href="https://imageupscaler.com/upscale-image-4x/" target="_blank" rel="noopener noreferrer">
+                    Upscale your image here →
+                  </a>
+                </p>
+              </div>
+            </div>
+          )}
+          
+          {/* Design Guidelines */}
+          <div className="design-guidelines">
+            <h3>📐 Design Requirements</h3>
+            <ul>
+              <li>Minimum width: 1500px</li>
+              <li>File type: PNG with transparent background</li>
+              <li>Resolution: 150 PPI or higher</li>
+              <li>Color mode: RGB</li>
+            </ul>
+            <a href="/print-guidelines" target="_blank" className="guidelines-link">
+              View full print guidelines →
+            </a>
+          </div>
+          
           <div className="design-info">
             <div className="form-group">
               <label>Design Title</label>
@@ -1100,6 +1150,18 @@ function DesignEditor() {
               />
             </div>
             <div className="form-group">
+              <label>Print Method</label>
+              <select
+                value={printMethod}
+                onChange={(e) => setPrintMethod(e.target.value)}
+                className="print-method-select"
+              >
+                <option value="auto">Use What's Best (Recommended)</option>
+                <option value="dtg">DTG Printing</option>
+                <option value="dtf">DTF Printing</option>
+              </select>
+            </div>
+            <div className="form-group">
               <label>Tags</label>
               <input
                 type="text"
@@ -1108,7 +1170,7 @@ function DesignEditor() {
                 placeholder="nature, animals, landscape, forest"
               />
             </div>
-            <div className="form-group" style={{ gridColumn: 'span 2' }}>
+            <div className="form-group" style={{ gridColumn: 'span 3' }}>
               <label>Description</label>
               <textarea
                 value={designDescription}
@@ -1116,7 +1178,7 @@ function DesignEditor() {
                 placeholder="A beautiful forest landscape with a majestic lion, perfect for nature lovers and wildlife enthusiasts."
               />
             </div>
-            <div className="form-group" style={{ gridColumn: 'span 2' }}>
+            <div className="form-group" style={{ gridColumn: 'span 3' }}>
               <label>Supporting Text</label>
               <input
                 type="text"
@@ -1207,6 +1269,18 @@ function DesignEditor() {
                             reader.onload = (event) => {
                               const img = new Image();
                               img.onload = () => {
+                                // Check back image dimensions
+                                if (img.width < 1500) {
+                                  setImageQualityWarning({
+                                    type: 'warning',
+                                    message: `Your back image is ${img.width}px wide. We recommend at least 1500px for best print quality.`,
+                                    currentWidth: img.width,
+                                    recommendedWidth: 1500
+                                  });
+                                } else if (imageQualityWarning?.message?.includes('back')) {
+                                  setImageQualityWarning(null);
+                                }
+                                
                                 setBackDesignImage(img);
                                 setBackDesignImageSrc(event.target.result);
                                 
@@ -1249,6 +1323,18 @@ function DesignEditor() {
                             reader.onload = (event) => {
                               const img = new Image();
                               img.onload = () => {
+                                // Check back image dimensions
+                                if (img.width < 1500) {
+                                  setImageQualityWarning({
+                                    type: 'warning',
+                                    message: `Your back image is ${img.width}px wide. We recommend at least 1500px for best print quality.`,
+                                    currentWidth: img.width,
+                                    recommendedWidth: 1500
+                                  });
+                                } else if (imageQualityWarning?.message?.includes('back')) {
+                                  setImageQualityWarning(null);
+                                }
+                                
                                 setBackDesignImage(img);
                                 setBackDesignImageSrc(event.target.result);
                                 

@@ -5,6 +5,7 @@ import DesignEditor from './pages/DesignEditor';
 import ProductManager from './pages/ProductManager';
 import AdminPanel from './pages/AdminPanel';
 import Login from './pages/Login';
+import PrintGuidelines from './pages/PrintGuidelines';
 import Navigation from './components/Navigation';
 import AuthGuard from './components/AuthGuard';
 import { AuthProvider, useAuth } from './hooks/useAuth';
@@ -26,6 +27,7 @@ function AppContent() {
             <Route path="/design/:id/edit" element={<DesignEditor />} />
             <Route path="/products" element={<ProductManager />} />
             <Route path="/admin" element={<AdminPanel />} />
+            <Route path="/print-guidelines" element={<PrintGuidelines />} />
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </div>

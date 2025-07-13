@@ -36,7 +36,7 @@ function ProductManager() {
   useEffect(() => {
     // Check if we received data from the design editor
     if (location.state && location.state.mockups) {
-      const { mockups, designTitle, designDescription, supportingText, tags, nfcEnabled, productConfigs, selectedColors, designImageSrc, frontDesignImageSrc, backDesignImageSrc, frontDesignUrl, backDesignUrl, isEditMode, editProductId } = location.state;
+      const { mockups, designTitle, designDescription, supportingText, tags, nfcEnabled, productConfigs, selectedColors, designImageSrc, frontDesignImageSrc, backDesignImageSrc, frontDesignUrl, backDesignUrl, printMethod, isEditMode, editProductId } = location.state;
       
       // Convert the mockups object to a product format
       const timestamp = Date.now();
@@ -53,6 +53,7 @@ function ProductManager() {
         backDesignImageSrc: backDesignImageSrc, // Store back design image
         frontDesignUrl: frontDesignUrl, // Store front design URL
         backDesignUrl: backDesignUrl, // Store back design URL
+        printMethod: printMethod || 'auto', // Store print method with default
         productConfigs: productConfigs, // Store product configurations and positions
         selectedColors: selectedColors, // Store selected colors
         mockups: Object.entries(mockups).map(([productId, mockupData], index) => ({
