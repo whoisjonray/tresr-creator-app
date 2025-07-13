@@ -507,6 +507,8 @@
     margin-bottom: 20px;
     width: 100%;
     position: relative;
+    height: 50px; /* Set fixed height to prevent overlap */
+    z-index: 10; /* Ensure controls stay above canvas */
 }
 
 .view-toggle {
@@ -519,6 +521,8 @@
     position: absolute;
     left: 0;
     top: 0;
+    z-index: 15;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .view-btn {
@@ -558,6 +562,9 @@
     position: absolute;
     right: 0;
     top: 0;
+    z-index: 15;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    white-space: nowrap; /* Prevent text wrapping */
 }
 
 .replace-image-btn:hover, .add-back-image-btn:hover {
@@ -567,6 +574,12 @@
 .replace-image-btn svg, .add-back-image-btn svg {
     width: 16px;
     height: 16px;
+}
+
+/* Canvas container positioning */
+.canvas-container {
+    position: relative;
+    z-index: 1; /* Lower than controls */
 }
 
 /* Product Configuration Headers */

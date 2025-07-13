@@ -589,9 +589,17 @@ function DesignEditor() {
       }
       
       // Load back image if available
+      console.log('🔥 BACK IMAGE DEBUG:', {
+        hasBackDesignImageSrc: !!productData.backDesignImageSrc,
+        backDesignImageSrc: productData.backDesignImageSrc?.substring(0, 50) + '...',
+        hasBackDesignUrl: !!productData.backDesignUrl,
+        allKeys: Object.keys(productData)
+      });
+      
       if (productData.backDesignImageSrc) {
         const backImg = new Image();
         backImg.onload = () => {
+          console.log('✅ Back image loaded successfully');
           setBackDesignImage(backImg);
           setBackDesignImageSrc(productData.backDesignImageSrc);
           if (productData.backDesignUrl) {
@@ -599,6 +607,8 @@ function DesignEditor() {
           }
         };
         backImg.src = productData.backDesignImageSrc;
+      } else {
+        console.log('❌ No back design image found in productData');
       }
       
       // Only set enabled products from mockups if we don't have saved productConfigs
@@ -826,6 +836,13 @@ function DesignEditor() {
       const isEditMode = params.id && location.state?.productData;
       const timestamp = Date.now();
       const randomSuffix = Math.random().toString(36).substr(2, 9);
+      console.log('🔥 SAVE DEBUG:', {
+        hasFrontDesignImageSrc: !!frontDesignImageSrc,
+        hasBackDesignImageSrc: !!backDesignImageSrc,
+        hasFrontDesignUrl: !!frontDesignUrl,
+        hasBackDesignUrl: !!backDesignUrl
+      });
+      
       const savedProduct = {
         id: isEditMode ? params.id : `draft_${timestamp}_${randomSuffix}`,
         name: designTitle,
