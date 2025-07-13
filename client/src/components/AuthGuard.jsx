@@ -168,7 +168,8 @@ function AuthGuard({ children }) {
   // If not on login page and no creator session, redirect to login
   // But give Dynamic.xyz auth a chance to complete first
   if (!isLoginPage && !creator && !isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    const returnUrl = encodeURIComponent(location.pathname);
+    return <Navigate to={`/login?returnUrl=${returnUrl}`} replace />;
   }
   
   // If Dynamic.xyz is authenticated but no creator session yet, show loading

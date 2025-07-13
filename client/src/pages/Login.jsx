@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDynamicContext, DynamicConnectButton } from '@dynamic-labs/sdk-react-core';
 import { useAuth } from '../hooks/useAuth';
 import { logos, colors, typography, spacing, transitions, shadows, borderRadius } from '../styles/tresr-design-system';
@@ -9,15 +9,21 @@ console.log('🔥 Login.jsx file loaded at:', new Date().toISOString());
 function Login() {
   console.log('🔥 Login component rendering');
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { login, logout, creator } = useAuth();
   const { user, isAuthenticated, handleLogOut, primaryWallet, authToken, getAuthToken } = useDynamicContext();
 
   useEffect(() => {
     // Redirect if already logged in via our app
     if (creator) {
-      navigate('/dashboard');
+      const returnUrl = searchParams.get('returnUrl');
+      if (returnUrl) {
+        navigate(decodeURIComponent(returnUrl));
+      } else {
+        navigate('/dashboard');
+      }
     }
-  }, [creator, navigate]);
+  }, [creator, navigate, searchParams]);
 
   useEffect(() => {
     console.log('Login useEffect triggered');
