@@ -9,13 +9,27 @@ async function startProduction() {
   console.log('📅 Deployment time:', new Date().toISOString());
   console.log('Environment:', process.env.NODE_ENV);
   console.log('Railway Environment:', process.env.RAILWAY_ENVIRONMENT);
-  console.log('MySQL URL:', process.env.MYSQL_URL ? 'Set ✅' : 'Not set ❌');
-  console.log('MySQL Host:', process.env.MYSQLHOST || 'Not set ❌');
-  console.log('MySQL Database:', process.env.MYSQLDATABASE || 'Not set ❌');
+  
+  // Check for various MySQL environment variable formats
+  console.log('\n🔍 Checking for MySQL environment variables:');
+  console.log('MYSQL_URL:', process.env.MYSQL_URL ? 'Set ✅' : 'Not set ❌');
+  console.log('DATABASE_URL:', process.env.DATABASE_URL ? 'Set ✅' : 'Not set ❌');
+  console.log('MYSQLHOST:', process.env.MYSQLHOST || 'Not set ❌');
+  console.log('MYSQL_HOST:', process.env.MYSQL_HOST || 'Not set ❌');
+  console.log('MYSQLDATABASE:', process.env.MYSQLDATABASE || 'Not set ❌');
+  console.log('MYSQL_DATABASE:', process.env.MYSQL_DATABASE || 'Not set ❌');
+  
+  // List all env vars starting with MYSQL or DATABASE
+  console.log('\n📋 All database-related environment variables:');
+  Object.keys(process.env).forEach(key => {
+    if (key.includes('MYSQL') || key.includes('DATABASE') || key.includes('DB_')) {
+      console.log(`${key}: ${key.includes('PASSWORD') ? '***' : (process.env[key] ? 'Set' : 'Not set')}`);
+    }
+  });
   
   // If no database is configured, just start the server
-  if (!process.env.MYSQL_URL && !process.env.MYSQLHOST && process.env.NODE_ENV === 'production') {
-    console.log('⚠️ No database configured yet, starting server without database initialization');
+  if (!process.env.MYSQL_URL && !process.env.DATABASE_URL && !process.env.MYSQLHOST && process.env.NODE_ENV === 'production') {
+    console.log('\n⚠️ No database configured yet, starting server without database initialization');
     console.log('💡 Add MySQL to your Railway project to enable database features');
     
     // Start server directly

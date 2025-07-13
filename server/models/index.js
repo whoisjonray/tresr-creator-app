@@ -15,13 +15,20 @@ let DesignVariant = null;
 let DesignAnalytics = null;
 
 // In production without database, skip everything
-if (process.env.NODE_ENV === 'production' && !process.env.MYSQL_URL && !process.env.MYSQLHOST) {
+if (process.env.NODE_ENV === 'production' && !process.env.MYSQL_URL && !process.env.DATABASE_URL && !process.env.MYSQLHOST) {
   console.log('⚠️ No database configuration found, running without database');
 } else {
   // Initialize Sequelize based on environment
   if (process.env.MYSQL_URL) {
-    console.log('📦 Using Railway MySQL database');
+    console.log('📦 Using Railway MySQL database (MYSQL_URL)');
     sequelize = new Sequelize(process.env.MYSQL_URL, {
+      dialect: 'mysql',
+      logging: isDevelopment ? console.log : false,
+      pool: { max: 5, min: 0, acquire: 30000, idle: 10000 }
+    });
+  } else if (process.env.DATABASE_URL && process.env.DATABASE_URL.includes('mysql')) {
+    console.log('📦 Using Railway MySQL database (DATABASE_URL)');
+    sequelize = new Sequelize(process.env.DATABASE_URL, {
       dialect: 'mysql',
       logging: isDevelopment ? console.log : false,
       pool: { max: 5, min: 0, acquire: 30000, idle: 10000 }

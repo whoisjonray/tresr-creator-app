@@ -38,12 +38,13 @@ app.use(cors({
 // Session configuration
 const isDevelopment = process.env.NODE_ENV !== 'production';
 const isRailway = process.env.RAILWAY_ENVIRONMENT === 'production';
-const useDbSessions = !isDevelopment || isRailway || process.env.MYSQL_URL;
+const { sequelize } = require('./models');
+const hasDatabase = sequelize !== null && (process.env.MYSQL_URL || process.env.DATABASE_URL || process.env.MYSQLHOST);
+const useDbSessions = hasDatabase && (!isDevelopment || isRailway);
 
 if (useDbSessions) {
   // Use database store in production and Railway
   const SequelizeStore = require('connect-session-sequelize')(session.Store);
-  const { sequelize } = require('./models');
   
   const sessionStore = new SequelizeStore({
     db: sequelize,

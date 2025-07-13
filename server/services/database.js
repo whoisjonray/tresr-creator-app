@@ -18,7 +18,7 @@ class DatabaseService {
   async initializeDatabase() {
     try {
       // Skip database init if no database is configured
-      if (!sequelize || (process.env.NODE_ENV === 'production' && !process.env.MYSQL_URL && !process.env.MYSQLHOST)) {
+      if (!sequelize || (process.env.NODE_ENV === 'production' && !process.env.MYSQL_URL && !process.env.DATABASE_URL && !process.env.MYSQLHOST)) {
         console.log('⚠️ Database not configured, service will use localStorage fallback');
         return;
       }
