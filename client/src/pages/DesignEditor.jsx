@@ -186,6 +186,7 @@ function DesignEditor() {
         backPosition: { x: printArea.x, y: printArea.y, width: 150, height: 150 },
         defaultColor: '', // Start with no default color selected
         selectedColor: '',
+        selectedColors: [], // Array of selected colors for variants
         printLocation: 'front' // New: track front/back/both
       };
     });
@@ -1720,6 +1721,38 @@ function DesignEditor() {
                           </label>
                         </div>
                       )}
+                      
+                      {/* Color Swatches for each product */}
+                      <div className="color-swatches-section">
+                        <div className="color-grid">
+                          {product.colors.map(color => {
+                            const colorHex = COLOR_PALETTE.find(c => c.name === color)?.hex || '#000000';
+                            const isSelected = productConfigs[product.id]?.selectedColors?.includes(color) || false;
+                            
+                            return (
+                              <div
+                                key={color}
+                                className={`color-swatch ${isSelected ? 'selected' : ''}`}
+                                style={{ backgroundColor: colorHex }}
+                                title={color}
+                                onClick={() => {
+                                  setProductConfigs(prev => ({
+                                    ...prev,
+                                    [product.id]: {
+                                      ...prev[product.id],
+                                      selectedColors: isSelected
+                                        ? prev[product.id]?.selectedColors?.filter(c => c !== color) || []
+                                        : [...(prev[product.id]?.selectedColors || []), color]
+                                    }
+                                  }));
+                                }}
+                              >
+                                {isSelected && <span className="checkmark">✓</span>}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </div>

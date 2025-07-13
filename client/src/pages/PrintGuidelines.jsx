@@ -25,7 +25,7 @@ function PrintGuidelines() {
       <div className="guidelines-container">
         <section className="guidelines-section">
           <h2>🧭 Choosing the Right Print Method</h2>
-          <p>TRESR offers two professional-grade print options for your artwork:</p>
+          <p>TRESR offers three professional-grade print options for your artwork:</p>
 
           <div className="print-method">
             <h3>✅ 1. Use What's Best (Recommended – Default Option)</h3>
@@ -106,10 +106,12 @@ function PrintGuidelines() {
             <li><strong>Resolution:</strong> 150 PPI or higher</li>
             <li><strong>Minimum Size:</strong> 1500 x 1995 px</li>
             <li><strong>Color Mode:</strong> RGB</li>
-            <li><strong>Avoid:</strong> Fluorescent or neon colors</li>
-            <li><strong>Use:</strong> Rich, saturated colors for best results</li>
-            <li><strong>Transparency:</strong> Semi-transparent elements work well</li>
-            <li><strong>Garment Compatibility:</strong> Best on cotton and cotton blends</li>
+            <li><strong>Avoid:</strong> Fluorescent/neon colors</li>
+            <li><strong>Opacity Rule:</strong> No elements under 40% opacity</li>
+            <li><strong>Shading:</strong> Use solid fills—not soft gradients or glows</li>
+            <li><strong>Halftones:</strong> Use 25–35 LPI, disable anti-aliasing</li>
+            <li><strong>Garment Color:</strong> Choose defaults wisely, disable bad combinations</li>
+            <li><strong>Knockouts:</strong> Use carefully—limits garment color flexibility</li>
           </ul>
         </section>
 
@@ -139,9 +141,75 @@ function PrintGuidelines() {
           </div>
         </section>
 
+        <section className="guidelines-section">
+          <h2>📲 Smart NFC Labels — Built Into Every Garment</h2>
+          <p>Every TRESR garment includes a <strong>scannable NFC chip</strong> under a <strong>PVC vinyl label on the left sleeve</strong>.</p>
+          <p>This turns physical products into digital experiences.</p>
+          
+          <div className="nfc-section">
+            <h3>🛡️ Default NFC Features:</h3>
+            <ul>
+              <li>Tap-to-scan with any smartphone</li>
+              <li>Verifies the garment is authentic</li>
+              <li>Unlocks a <strong>Digital Twin Certificate of Authenticity</strong> <strong>minted to the blockchain</strong></li>
+            </ul>
+          </div>
+
+          <div className="nfc-section">
+            <h3>🚀 Advanced NFC Options (For Community Members)</h3>
+            <p>With custom NFC programming, your merch can:</p>
+            <ul>
+              <li>🎥 Link to exclusive media, audio, or behind-the-scenes drops</li>
+              <li>🎟️ Grant access to private content or fan experiences</li>
+              <li>🛠️ Enable loyalty programs, registration, or digital unlocks</li>
+              <li>🧠 Add value to products even <strong>after they're delivered</strong></li>
+            </ul>
+            <p>All experiences can be added retroactively.</p>
+            <p>👉 Select <strong>"Default Authentication"</strong> in the Creator Tool to start.</p>
+          </div>
+        </section>
+
+        <section className="guidelines-section">
+          <h2>💡 Why NFC = More Value = Higher Earnings</h2>
+          <p>Most print-on-demand platforms struggle with razor-thin profit margins. Creators are often stuck earning just <strong>10–20%</strong> per sale—on low-priced items with zero real value.</p>
+          <p>TRESR is different.</p>
+          <p>Because every garment includes <strong>NFC smart tech</strong>, customers get more than a shirt—they get a connected experience, a collectible, and access to a world.</p>
+          <ul>
+            <li>This creates <strong>perceived and real value</strong></li>
+            <li>You can <strong>charge more per item</strong></li>
+            <li>And we can afford to pay you <strong>up to 40% per sale (on a higher retail rate)</strong></li>
+          </ul>
+          <p>🧠 No middlemen. No guesswork. Just premium merch, connected.</p>
+        </section>
+
+        <section className="guidelines-section">
+          <h2>✅ Final Checklist</h2>
+          <ul className="checklist">
+            <li>✔ Choose <strong>"Use What's Best"</strong> to let our print shop optimize your results</li>
+            <li>✔ PNG format, 150 PPI+, min 1500px wide</li>
+            <li>✔ Avoid transparency below 40%</li>
+            <li>✔ Use solid fills and bold, contrast-friendly colors</li>
+            <li>✔ Use mockups to preview on light and dark garments</li>
+            <li>✔ Start with Default Authentication for NFC</li>
+            <li>✔ Join the TRESR Creator Community to unlock everything else</li>
+          </ul>
+        </section>
+
+        <section className="guidelines-section">
+          <h2>⚡ The TRESR Difference</h2>
+          <ul className="tresr-difference">
+            <li>🌟 DTG + DTF + Auto-Optimization</li>
+            <li>📲 NFC-backed, scannable, smart garments</li>
+            <li>💸 Up to 40% commissions per sale (on higher-priced goods)</li>
+            <li>🧠 Creator-first tools, AI workflows, and community resources</li>
+            <li>🔓 The only POD platform that helps you build something real</li>
+          </ul>
+          <p>🎨 Make products that connect.</p>
+          <p>🔗 Join now at <a href="https://TRESR.com" target="_blank" rel="noopener noreferrer">TRESR.com</a></p>
+        </section>
+
         <section className="guidelines-section community-section">
           <h2>🔥 Join the TRESR Creator Community</h2>
-          <p>Get access to exclusive design resources, AI workflows, and pro tips:</p>
           <ul className="community-benefits">
             <li>✅ Curated list of the <strong>best design tools</strong> (with tutorials)</li>
             <li>✅ Learn to design <strong>better than pros</strong>, even with zero experience</li>

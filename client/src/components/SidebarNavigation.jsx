@@ -34,10 +34,9 @@ function SidebarNavigation() {
       title: 'Documentation',
       icon: '📚',
       items: [
-        { path: '/docs/getting-started', label: 'Getting Started', icon: '🚀' },
         { path: '/docs/print-guidelines', label: 'Print Guidelines', icon: '🖨️' },
+        { path: '/docs/garment-details', label: 'Garment Details', icon: '📏' },
         { path: '/docs/design-tools', label: 'Design Tools', icon: '🛠️' },
-        { path: '/docs/faq', label: 'FAQ', icon: '❓' },
       ]
     },
     {
