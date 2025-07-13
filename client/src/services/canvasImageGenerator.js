@@ -34,10 +34,10 @@ class CanvasImageGenerator {
         designSrc: designImageSrc ? 'present' : 'missing'
       });
       
-      // Create high-resolution canvas for export quality
+      // Create high-resolution canvas matching Shopify's recommended size
       const canvas = document.createElement('canvas');
-      canvas.width = 800; // High res for Shopify
-      canvas.height = 800;
+      canvas.width = 2000; // Shopify recommended product image size
+      canvas.height = 2000; // Square format for consistency
       const ctx = canvas.getContext('2d');
 
       // Load actual garment image from Cloudinary
@@ -55,8 +55,9 @@ class CanvasImageGenerator {
         
         // Calculate design placement on high-res canvas
         const scaledPosition = this.scalePositionToCanvas(position, canvas.width, canvas.height);
-        const designWidth = designImage.width * scale * 0.4; // Scale factor for garment
-        const designHeight = designImage.height * scale * 0.4;
+        // Scale design appropriately for 2000x2000 canvas (was 0.4 for 800px, now 1.0 for 2000px)
+        const designWidth = designImage.width * scale * 1.0; 
+        const designHeight = designImage.height * scale * 1.0;
         
         // Center the design at the specified position
         const x = scaledPosition.x - (designWidth / 2);
@@ -73,16 +74,19 @@ class CanvasImageGenerator {
         ctx.drawImage(designImage, x, y, designWidth, designHeight);
       }
 
-      // Convert to high-quality data URL
-      const dataUrl = canvas.toDataURL('image/png', 0.9);
+      // Convert to high-quality JPEG for optimal file size (PNG for transparency if needed)
+      // Using JPEG as recommended by Shopify for photographs
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.92); // High quality JPEG
       const imageSizeKB = Math.round(dataUrl.length * 0.75 / 1024); // Rough estimate
       
       console.log(`✅ REAL PRODUCT IMAGE GENERATED SUCCESSFULLY:`, {
         garmentTemplate,
         color,
         size: `${canvas.width}x${canvas.height}`,
+        format: 'JPEG',
+        quality: '92%',
         imageSizeKB: `${imageSizeKB}KB`,
-        dataUrlLength: dataUrl.length
+        shopifyReady: true
       });
       
       return {
@@ -496,10 +500,10 @@ class CanvasImageGenerator {
     const productName = (templateId || 'product').replace(/_/g, ' ');
     
     const svg = `
-      <svg width="800" height="800" xmlns="http://www.w3.org/2000/svg">
-        <rect width="800" height="800" fill="${colorHex}"/>
+      <svg width="2000" height="2000" xmlns="http://www.w3.org/2000/svg">
+        <rect width="2000" height="2000" fill="${colorHex}"/>
         <text x="50%" y="50%" text-anchor="middle" fill="${color === 'White' || color === 'Natural' ? '#333' : '#fff'}" 
-              font-family="Arial" font-size="32" dy=".3em">
+              font-family="Arial" font-size="64" dy=".3em">
           ${productName}
         </text>
       </svg>

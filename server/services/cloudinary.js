@@ -30,16 +30,25 @@ class CloudinaryService {
       console.log(`   Public ID: ${public_id || 'auto-generated'}`);
       console.log(`   Tags: ${tags.join(', ')}`);
 
-      // Upload to Cloudinary
+      // Upload to Cloudinary with Shopify optimizations
       const result = await cloudinary.uploader.upload(base64Image, {
         folder,
         public_id,
         tags,
         resource_type,
-        format,
+        format: 'jpg', // Force JPEG for product images
         transformation: [
-          { quality: 'auto:best' },
-          { fetch_format: 'auto' }
+          { width: 2000, height: 2000, crop: 'limit' }, // Ensure 2000x2000 max
+          { quality: 'auto:best' }, // Optimize quality
+          { fetch_format: 'auto' }, // Auto format selection
+          { flags: 'progressive' } // Progressive loading for better UX
+        ],
+        // Additional Shopify optimizations
+        eager: [
+          // Generate thumbnail for faster loading in product grids
+          { width: 500, height: 500, crop: 'fill', quality: 'auto:good' },
+          // Generate medium size for product pages
+          { width: 1024, height: 1024, crop: 'fill', quality: 'auto:good' }
         ]
       });
 
