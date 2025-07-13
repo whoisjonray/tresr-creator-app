@@ -463,6 +463,17 @@ function DesignEditor() {
     drawCanvas();
   }, [activeProduct, productConfigs, designImage, showBoundingBox, isDragging, viewSide, frontDesignImage, backDesignImage]);
   
+  // Update viewSide when switching products based on their print location
+  React.useEffect(() => {
+    const config = productConfigs[activeProduct];
+    if (config?.printLocation === 'front') {
+      setViewSide('front');
+    } else if (config?.printLocation === 'back') {
+      setViewSide('back');
+    }
+    // For 'both', keep the current viewSide
+  }, [activeProduct, productConfigs[activeProduct]?.printLocation]);
+
   // Load garment image when product or color changes
   React.useEffect(() => {
     const config = productConfigs[activeProduct];

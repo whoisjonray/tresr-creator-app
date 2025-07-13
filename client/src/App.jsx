@@ -17,21 +17,28 @@ function AppContent() {
 
   return (
     <Router>
-      <AuthGuard>
-        <div className="app">
-          {creator && <Navigation />}
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/design/new" element={<DesignEditor />} />
-            <Route path="/design/:id/edit" element={<DesignEditor />} />
-            <Route path="/products" element={<ProductManager />} />
-            <Route path="/admin" element={<AdminPanel />} />
-            <Route path="/print-guidelines" element={<PrintGuidelines />} />
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          </Routes>
-        </div>
-      </AuthGuard>
+      <Routes>
+        {/* Public route - outside AuthGuard */}
+        <Route path="/print-guidelines" element={<PrintGuidelines />} />
+        
+        {/* Protected routes - inside AuthGuard */}
+        <Route path="/*" element={
+          <AuthGuard>
+            <div className="app">
+              {creator && <Navigation />}
+              <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/design/new" element={<DesignEditor />} />
+                <Route path="/design/:id/edit" element={<DesignEditor />} />
+                <Route path="/products" element={<ProductManager />} />
+                <Route path="/admin" element={<AdminPanel />} />
+                <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              </Routes>
+            </div>
+          </AuthGuard>
+        } />
+      </Routes>
     </Router>
   );
 }
