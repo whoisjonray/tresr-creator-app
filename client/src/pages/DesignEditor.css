@@ -992,3 +992,28 @@
     background: #9ca3af;
     cursor: not-allowed;
 }
+
+/* Design previews grid for front/back */
+.design-previews-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.design-preview-item {
+    text-align: center;
+}
+
+.design-preview-item h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.design-preview-item .upload-area {
+    margin-bottom: 0;
+}

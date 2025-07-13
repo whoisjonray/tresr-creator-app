@@ -447,7 +447,7 @@ function DesignEditor() {
 
   React.useEffect(() => {
     drawCanvas();
-  }, [activeProduct, productConfigs, designImage, showBoundingBox, isDragging, viewSide]);
+  }, [activeProduct, productConfigs, designImage, showBoundingBox, isDragging, viewSide, frontDesignImage, backDesignImage]);
   
   // Load garment image when product or color changes
   React.useEffect(() => {
@@ -606,6 +606,10 @@ function DesignEditor() {
           if (productData.backDesignUrl) {
             setBackDesignUrl(productData.backDesignUrl);
           }
+          // Force canvas redraw after a small delay
+          setTimeout(() => {
+            drawCanvas();
+          }, 100);
         };
         backImg.onerror = () => {
           console.error('❌ Failed to load back image:', productData.backDesignImageSrc?.substring(0, 100));
@@ -638,17 +642,9 @@ function DesignEditor() {
         });
       }
       
-      // If we have a back image, we should start viewing the back by default
-      if (productData.backDesignImageSrc && productData.productConfigs) {
-        // Check if any product has back or both print location
-        const hasBackPrint = Object.values(productData.productConfigs).some(config => 
-          config.printLocation === 'back' || config.printLocation === 'both'
-        );
-        if (hasBackPrint) {
-          // Start with back view if there's a back image and back printing is enabled
-          setViewSide('back');
-        }
-      }
+      // Always start with front view when editing, even if there's a back image
+      // Users can manually switch to back view if needed
+      setViewSide('front');
     }
   }, [params.id, location.state]);
 
@@ -1060,19 +1056,38 @@ function DesignEditor() {
         {/* Upload Section */}
         <div className="upload-section">
           <h2>Upload a Design</h2>
-          <div {...getRootProps()} className={`upload-area ${designImage ? 'has-design' : ''}`}>
-            <input {...getInputProps()} />
-            {designImageSrc ? (
-              <img src={designImageSrc} alt="Design preview" className="design-preview" />
-            ) : (
-              <div>
-                <p>Click to upload or drag & drop your design</p>
-                <p style={{ fontSize: '14px', color: '#6b7280', marginTop: '10px' }}>
-                  PNG, JPG, SVG files accepted
-                </p>
+          {/* Show both front and back previews when editing */}
+          {params.id && location.state?.productData && backDesignImageSrc ? (
+            <div className="design-previews-grid">
+              <div className="design-preview-item">
+                <h3>Front Design</h3>
+                <div {...getRootProps()} className={`upload-area has-design`}>
+                  <input {...getInputProps()} />
+                  <img src={frontDesignImageSrc} alt="Front design preview" className="design-preview" />
+                </div>
               </div>
-            )}
-          </div>
+              <div className="design-preview-item">
+                <h3>Back Design</h3>
+                <div className="upload-area has-design">
+                  <img src={backDesignImageSrc} alt="Back design preview" className="design-preview" />
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div {...getRootProps()} className={`upload-area ${designImage ? 'has-design' : ''}`}>
+              <input {...getInputProps()} />
+              {designImageSrc ? (
+                <img src={designImageSrc} alt="Design preview" className="design-preview" />
+              ) : (
+                <div>
+                  <p>Click to upload or drag & drop your design</p>
+                  <p style={{ fontSize: '14px', color: '#6b7280', marginTop: '10px' }}>
+                    PNG, JPG, SVG files accepted
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
           
           <div className="design-info">
             <div className="form-group">
