@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { getGarmentImage } from '../config/garmentImagesCloudinary';
 import './PrintGuidelines.css';
 
 function PrintGuidelines() {
@@ -162,129 +163,428 @@ function PrintGuidelines() {
       ) : (
       <div className="guidelines-container">
         <section className="garments-section">
-          <h2>📏 Garment Specifications</h2>
+          <h2>📏 Garment Specifications & Size Charts</h2>
           
           <div className="garment-grid">
-            {/* T-Shirts */}
+            {/* Soft Tee 60/40 (6410 Sueded T-Shirt) */}
             <div className="garment-card">
-              <h3>Medium Weight T-Shirt</h3>
+              <h3>Soft Tee 60/40</h3>
               <div className="garment-images">
                 <div className="garment-image">
-                  <img src="https://cdn.tresr.com/garments/tshirt-front-black.jpg" alt="T-Shirt Front" />
+                  <img src={getGarmentImage('tee', 'black', 'front')} alt="T-Shirt Front" />
                   <span>Front</span>
                 </div>
                 <div className="garment-image">
-                  <img src="https://cdn.tresr.com/garments/tshirt-back-black.jpg" alt="T-Shirt Back" />
+                  <img src={getGarmentImage('tee', 'black', 'back')} alt="T-Shirt Back" />
                   <span>Back</span>
                 </div>
               </div>
               <div className="garment-details">
-                <p><strong>Material:</strong> 100% Cotton, 6.1 oz</p>
-                <p><strong>Fit:</strong> Classic unisex fit</p>
-                <p><strong>Print Area:</strong> 12" x 16" (front/back)</p>
-                <p><strong>Available Colors:</strong> Black, White, Navy, Light Grey, Natural, Cardinal Red</p>
+                <p><strong>Material:</strong> 60/40 combed ring-spun cotton/polyester sueded jersey, 4.3 oz</p>
+                <p><strong>Fit:</strong> Classic unisex fit with side seams</p>
+                <p><strong>Features:</strong> Fabric laundered, sueded baby rib collar, satin label</p>
+                <p><strong>Print Area:</strong> 12" x 15" (front/back)</p>
+                <p><strong>Available Colors:</strong> Black, White, Navy, Heather Grey, Natural, Cardinal Red</p>
+                
+                <div className="size-chart-mini">
+                  <h4>Size Chart (inches)</h4>
+                  <table>
+                    <thead>
+                      <tr><th>Size</th><th>Chest</th><th>Length</th><th>Sleeve</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>XS</td><td>17.5</td><td>27</td><td>7</td></tr>
+                      <tr><td>S</td><td>19</td><td>28</td><td>7.5</td></tr>
+                      <tr><td>M</td><td>20.5</td><td>29</td><td>8</td></tr>
+                      <tr><td>L</td><td>22</td><td>30</td><td>8.5</td></tr>
+                      <tr><td>XL</td><td>24</td><td>31</td><td>9</td></tr>
+                      <tr><td>2XL</td><td>26</td><td>32</td><td>9.5</td></tr>
+                      <tr><td>3XL</td><td>28</td><td>33</td><td>10</td></tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
 
-            {/* Oversized Drop Shoulder */}
+            {/* Heavy Tee (Bella+Canvas 4610) */}
             <div className="garment-card">
-              <h3>Oversized Drop Shoulder</h3>
+              <h3>Heavy Tee</h3>
               <div className="garment-images">
                 <div className="garment-image">
-                  <img src="https://cdn.tresr.com/garments/oversized-front-black.jpg" alt="Oversized Front" />
+                  <img src={getGarmentImage('boxy', 'black', 'front')} alt="Heavy Tee Front" />
                   <span>Front</span>
                 </div>
                 <div className="garment-image">
-                  <img src="https://cdn.tresr.com/garments/oversized-back-black.jpg" alt="Oversized Back" />
+                  <img src={getGarmentImage('boxy', 'black', 'back')} alt="Heavy Tee Back" />
                   <span>Back</span>
                 </div>
               </div>
               <div className="garment-details">
-                <p><strong>Material:</strong> 100% Cotton, 6.5 oz</p>
-                <p><strong>Fit:</strong> Oversized boxy fit</p>
-                <p><strong>Print Area:</strong> 14" x 18" (front/back)</p>
-                <p><strong>Available Colors:</strong> Black, Natural</p>
+                <p><strong>Material:</strong> 100% Airlume combed and ring-spun cotton, 7.5 oz heavyweight</p>
+                <p><strong>Fit:</strong> Boxier, relaxed fit with drop shoulders</p>
+                <p><strong>Features:</strong> Side-seamed, double needle top stitched neckband, shoulder taping</p>
+                <p><strong>Print Area:</strong> 14" x 16" (front/back)</p>
+                <p><strong>Available Colors:</strong> Black, White, Asphalt, Athletic Heather, Cocoa, Dust</p>
+                
+                <div className="size-chart-mini">
+                  <h4>Size Chart (inches)</h4>
+                  <table>
+                    <thead>
+                      <tr><th>Size</th><th>Chest</th><th>Length</th><th>Sleeve</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>XS</td><td>19.875</td><td>27</td><td>7.25</td></tr>
+                      <tr><td>S</td><td>20.875</td><td>28</td><td>7.75</td></tr>
+                      <tr><td>M</td><td>21.875</td><td>28.5</td><td>8.25</td></tr>
+                      <tr><td>L</td><td>23.875</td><td>29.5</td><td>8.75</td></tr>
+                      <tr><td>XL</td><td>25.875</td><td>30.75</td><td>9.25</td></tr>
+                      <tr><td>2XL</td><td>27.875</td><td>32.25</td><td>9.75</td></tr>
+                      <tr><td>3XL</td><td>29.875</td><td>33.25</td><td>10.25</td></tr>
+                      <tr><td>4XL</td><td>31.875</td><td>34.25</td><td>10.75</td></tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
 
-            {/* Hoodies */}
+            {/* Medium Weight Hoodie (Independent IND4000) */}
             <div className="garment-card">
               <h3>Medium Weight Hoodie</h3>
               <div className="garment-images">
                 <div className="garment-image">
-                  <img src="https://cdn.tresr.com/garments/hoodie-front-black.jpg" alt="Hoodie Front" />
+                  <img src={getGarmentImage('med-hood', 'black', 'front')} alt="Hoodie Front" />
                   <span>Front</span>
                 </div>
                 <div className="garment-image">
-                  <img src="https://cdn.tresr.com/garments/hoodie-back-black.jpg" alt="Hoodie Back" />
+                  <img src={getGarmentImage('med-hood', 'black', 'back')} alt="Hoodie Back" />
                   <span>Back</span>
                 </div>
               </div>
               <div className="garment-details">
-                <p><strong>Material:</strong> 80/20 Cotton/Poly blend, 8.5 oz</p>
-                <p><strong>Fit:</strong> Regular fit with kangaroo pocket</p>
+                <p><strong>Material:</strong> 70/30 Cotton/Poly blend, 10 oz heavyweight fleece</p>
+                <p><strong>Fit:</strong> Generous fit with kangaroo pocket</p>
+                <p><strong>Features:</strong> Fleece lined hood, split stitch seams, 1x1 ribbing</p>
                 <p><strong>Print Area:</strong> 11" x 14" (front), 12" x 16" (back)</p>
                 <p><strong>Available Colors:</strong> Black, Gold, Light Grey, Cardinal Red, Alpine Green</p>
+                
+                <div className="size-chart-mini">
+                  <h4>Size Chart (inches)</h4>
+                  <table>
+                    <thead>
+                      <tr><th>Size</th><th>Chest</th><th>Length</th><th>Sleeve</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>XS</td><td>20.5</td><td>27.5</td><td>33.5</td></tr>
+                      <tr><td>S</td><td>21</td><td>28.5</td><td>34.5</td></tr>
+                      <tr><td>M</td><td>23</td><td>29.5</td><td>35.5</td></tr>
+                      <tr><td>L</td><td>24.5</td><td>30.5</td><td>36.5</td></tr>
+                      <tr><td>XL</td><td>26.5</td><td>31.5</td><td>37.5</td></tr>
+                      <tr><td>2XL</td><td>27.5</td><td>32.5</td><td>38.5</td></tr>
+                      <tr><td>3XL</td><td>28.5</td><td>33.5</td><td>39.5</td></tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
 
-            {/* Women's Hoodie */}
+            {/* Sweatshirt (Independent SS3000) */}
             <div className="garment-card">
-              <h3>Women's Independent Hoodie</h3>
+              <h3>Midweight Sweatshirt</h3>
               <div className="garment-images">
                 <div className="garment-image">
-                  <img src="https://cdn.tresr.com/garments/womens-hoodie-front-black.jpg" alt="Women's Hoodie Front" />
+                  <img src={getGarmentImage('sweat', 'black', 'front')} alt="Sweatshirt Front" />
                   <span>Front</span>
                 </div>
                 <div className="garment-image">
-                  <img src="https://cdn.tresr.com/garments/womens-hoodie-back-black.jpg" alt="Women's Hoodie Back" />
+                  <img src={getGarmentImage('sweat', 'black', 'back')} alt="Sweatshirt Back" />
                   <span>Back</span>
                 </div>
               </div>
               <div className="garment-details">
-                <p><strong>Material:</strong> 80/20 Cotton/Poly blend, 7.5 oz</p>
-                <p><strong>Fit:</strong> Slim fit with split kangaroo pocket</p>
-                <p><strong>Print Area:</strong> 10" x 13" (front), 11" x 15" (back)</p>
-                <p><strong>Available Colors:</strong> Black, Dark Grey, Pink, Natural, Cotton Candy, Light Grey, Mint, White</p>
+                <p><strong>Material:</strong> 80/20 Cotton/Poly blend fleece, 8.5 oz midweight</p>
+                <p><strong>Fit:</strong> Classic fit crewneck with split stitch seams</p>
+                <p><strong>Features:</strong> Twill neck tape, 1x1 ribbing at collar/cuffs/waistband</p>
+                <p><strong>Print Area:</strong> 12" x 14" (front), 12" x 16" (back)</p>
+                <p><strong>Available Colors:</strong> Black, White, Grey Heather, Classic Navy, Charcoal</p>
+                
+                <div className="size-chart-mini">
+                  <h4>Size Chart (inches)</h4>
+                  <table>
+                    <thead>
+                      <tr><th>Size</th><th>Chest</th><th>Length</th><th>Sleeve</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>XS</td><td>19</td><td>25</td><td>34</td></tr>
+                      <tr><td>S</td><td>20.5</td><td>26.5</td><td>35</td></tr>
+                      <tr><td>M</td><td>22</td><td>28</td><td>36</td></tr>
+                      <tr><td>L</td><td>23.5</td><td>29.5</td><td>37</td></tr>
+                      <tr><td>XL</td><td>25</td><td>31</td><td>38</td></tr>
+                      <tr><td>2XL</td><td>26.5</td><td>32.5</td><td>39</td></tr>
+                      <tr><td>3XL</td><td>28</td><td>34</td><td>40</td></tr>
+                      <tr><td>4XL</td><td>29.5</td><td>35.5</td><td>41</td></tr>
+                      <tr><td>5XL</td><td>31</td><td>37</td><td>42</td></tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
 
-            {/* Hats */}
+            {/* Women's Crop Hoodie */}
             <div className="garment-card">
-              <h3>Patch Hat - Curved</h3>
+              <h3>Women's Crop Hoodie</h3>
               <div className="garment-images">
                 <div className="garment-image">
-                  <img src="https://cdn.tresr.com/garments/hat-curved-front-black.jpg" alt="Curved Hat Front" />
+                  <img src={getGarmentImage('wmn-hoodie', 'black', 'front')} alt="Women's Hoodie Front" />
                   <span>Front</span>
                 </div>
                 <div className="garment-image">
-                  <img src="https://cdn.tresr.com/garments/hat-curved-side-black.jpg" alt="Curved Hat Side" />
-                  <span>Side</span>
+                  <img src={getGarmentImage('wmn-hoodie', 'black', 'back')} alt="Women's Hoodie Back" />
+                  <span>Back</span>
                 </div>
               </div>
               <div className="garment-details">
-                <p><strong>Material:</strong> 100% Cotton twill</p>
-                <p><strong>Style:</strong> 6-panel structured with curved visor</p>
-                <p><strong>Print Area:</strong> 4" x 2.25" (front patch)</p>
-                <p><strong>Available Colors:</strong> Black, Light Grey</p>
+                <p><strong>Material:</strong> 80/20 ring-spun cotton/polyester with 100% cotton face, 6.5 oz lightweight</p>
+                <p><strong>Fit:</strong> Women's crop fit with split kangaroo pocket, pre-laundered</p>
+                <p><strong>Features:</strong> Split-stitched double-needle sewing, 3/8" flat drawcord, sewn eyelets, 1x1 ribbing at cuffs</p>
+                <p><strong>Print Area:</strong> 10" x 12" (front), 11" x 14" (back)</p>
+                <p><strong>Available Colors:</strong> Black, White, Black Camo, Blush, Bone, Grey Heather, Sage, Tie Dye Cotton Candy</p>
+                
+                <div className="size-chart-mini">
+                  <h4>Size Chart (inches) - Independent Trading AFX64CRP</h4>
+                  <table>
+                    <thead>
+                      <tr><th>Size</th><th>Chest Width</th><th>Body Length</th><th>Sleeve Length</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>XS</td><td>20.75</td><td>17.25</td><td>31.25</td></tr>
+                      <tr><td>S</td><td>21.75</td><td>18.25</td><td>32.25</td></tr>
+                      <tr><td>M</td><td>22.75</td><td>19.25</td><td>33.25</td></tr>
+                      <tr><td>L</td><td>23.75</td><td>20.25</td><td>34.25</td></tr>
+                      <tr><td>XL</td><td>24.75</td><td>21.25</td><td>35.25</td></tr>
+                      <tr><td>2XL</td><td>25.75</td><td>22.25</td><td>36.25</td></tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
 
-            {/* Canvas */}
+            {/* Women's Crop Tee */}
+            <div className="garment-card">
+              <h3>Women's Crop Tee</h3>
+              <div className="garment-images">
+                <div className="garment-image">
+                  <img src={getGarmentImage('next-crop', 'black', 'front')} alt="Crop Tee Front" />
+                  <span>Front</span>
+                </div>
+                <div className="garment-image">
+                  <img src={getGarmentImage('next-crop', 'black', 'back')} alt="Crop Tee Back" />
+                  <span>Back</span>
+                </div>
+              </div>
+              <div className="garment-details">
+                <p><strong>Material:</strong> 60/40 combed ring-spun cotton/polyester, 4 oz, 30 singles</p>
+                <p><strong>Fit:</strong> Retail fit with drop shoulder sleeve, modest crop length</p>
+                <p><strong>Features:</strong> Set-in 1x1 baby rib collar and cuffs, side seams, tear-away label</p>
+                <p><strong>Print Area:</strong> 10" x 12" (front), 11" x 14" (back)</p>
+                <p><strong>Available Colors:</strong> White, Black, Antique Gold, Dark Grey, Desert Pink, Heather Grey, Midnight Navy, Red, Royal, Stonewash Denim, Tan</p>
+                
+                <div className="size-chart-mini">
+                  <h4>Size Chart (inches) - Next Level 1580</h4>
+                  <table>
+                    <thead>
+                      <tr><th>Size</th><th>Chest Width</th><th>Body Length</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>XS</td><td>17.625</td><td>18.75</td></tr>
+                      <tr><td>S</td><td>18.625</td><td>19.375</td></tr>
+                      <tr><td>M</td><td>19.625</td><td>20</td></tr>
+                      <tr><td>L</td><td>20.625</td><td>20.625</td></tr>
+                      <tr><td>XL</td><td>22.125</td><td>21.25</td></tr>
+                      <tr><td>2XL</td><td>23.625</td><td>21.875</td></tr>
+                      <tr><td>3XL</td><td>25.125</td><td>22.5</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            {/* Curved Patch Hat */}
+            <div className="garment-card">
+              <h3>Patch Hat - Curved Visor</h3>
+              <div className="garment-images">
+                <div className="garment-image">
+                  <img src={getGarmentImage('patch-c', 'black', 'front')} alt="Curved Hat Front" />
+                  <span>Front</span>
+                </div>
+                <div className="garment-image">
+                  <img src={getGarmentImage('patch-c', 'gray', 'front')} alt="Curved Hat Side" />
+                  <span>Grey</span>
+                </div>
+              </div>
+              <div className="garment-details">
+                <p><strong>Material:</strong> Cotton twill with structured mid crown</p>
+                <p><strong>Style:</strong> 6-panel Flexfit 110® technology with curved visor</p>
+                <p><strong>Features:</strong> Adjustable snapback, pre-curved visor, patch ready</p>
+                <p><strong>Print Area:</strong> 4" x 2.5" (front patch embroidery)</p>
+                <p><strong>Available Colors:</strong> Black, Light Grey</p>
+                
+                <div className="size-chart-mini">
+                  <h4>Hat Sizing</h4>
+                  <table>
+                    <thead>
+                      <tr><th>Size</th><th>Head Circumference</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>One Size</td><td>6½" - 7⅞"</td></tr>
+                      <tr><td>Fits Most</td><td>Adjustable snapback</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            {/* Flat Bill Hat */}
+            <div className="garment-card">
+              <h3>Patch Hat - Flat Bill</h3>
+              <div className="garment-images">
+                <div className="garment-image">
+                  <img src={getGarmentImage('patch-flat', 'black', 'front')} alt="Flat Hat Front" />
+                  <span>Front</span>
+                </div>
+                <div className="garment-image">
+                  <img src={getGarmentImage('patch-flat', 'navy', 'front')} alt="Flat Hat Navy" />
+                  <span>Navy</span>
+                </div>
+              </div>
+              <div className="garment-details">
+                <p><strong>Material:</strong> Wool blend with structured crown</p>
+                <p><strong>Style:</strong> 6-panel YP Classics 6089M with flat visor</p>
+                <p><strong>Features:</strong> Snapback closure, flat bill, green undervisor</p>
+                <p><strong>Print Area:</strong> 4" x 2.5" (front patch embroidery)</p>
+                <p><strong>Available Colors:</strong> Black, Navy</p>
+                
+                <div className="size-chart-mini">
+                  <h4>Hat Sizing</h4>
+                  <table>
+                    <thead>
+                      <tr><th>Size</th><th>Head Circumference</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>One Size</td><td>6⅝" - 7⅝"</td></tr>
+                      <tr><td>Crown Height</td><td>3¾" high profile</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            {/* Men's Polo */}
+            <div className="garment-card">
+              <h3>Men's Polo</h3>
+              <div className="garment-images">
+                <div className="garment-image">
+                  <img src={getGarmentImage('polo', 'black', 'front')} alt="Polo Front" />
+                  <span>Front</span>
+                </div>
+                <div className="garment-image">
+                  <img src={getGarmentImage('polo', 'black', 'back')} alt="Polo Back" />
+                  <span>Back</span>
+                </div>
+              </div>
+              <div className="garment-details">
+                <p><strong>Material:</strong> 100% polyester double knit pique, 4.6 oz</p>
+                <p><strong>Fit:</strong> Classic fit with moisture-wicking Dry Zone technology</p>
+                <p><strong>Features:</strong> UPF 30 rating, breathable mesh, snag resistant</p>
+                <p><strong>Print Area:</strong> 4" x 4" (left chest), 12" x 14" (back)</p>
+                <p><strong>Available Colors:</strong> Black, White, Navy, Grey, Red, Royal Blue</p>
+                
+                <div className="size-chart-mini">
+                  <h4>Size Chart (inches)</h4>
+                  <table>
+                    <thead>
+                      <tr><th>Size</th><th>Chest</th><th>Length</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>XS</td><td>32-34</td><td>27</td></tr>
+                      <tr><td>S</td><td>35-37</td><td>28</td></tr>
+                      <tr><td>M</td><td>38-40</td><td>29</td></tr>
+                      <tr><td>L</td><td>41-43</td><td>30</td></tr>
+                      <tr><td>XL</td><td>44-46</td><td>31</td></tr>
+                      <tr><td>2XL</td><td>47-49</td><td>32</td></tr>
+                      <tr><td>3XL</td><td>50-53</td><td>33</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            {/* Art Canvas */}
             <div className="garment-card">
               <h3>Art Canvas</h3>
               <div className="garment-images">
                 <div className="garment-image">
-                  <img src="https://cdn.tresr.com/garments/canvas-preview.jpg" alt="Canvas Preview" />
-                  <span>Canvas</span>
+                  <img src={getGarmentImage('art-sqm', 'white', 'front')} alt="Canvas Preview" />
+                  <span>Square Medium</span>
+                </div>
+                <div className="garment-image">
+                  <img src={getGarmentImage('art-lg', 'white', 'front')} alt="Canvas Large" />
+                  <span>Large</span>
                 </div>
               </div>
               <div className="garment-details">
-                <p><strong>Material:</strong> Premium poly-cotton canvas</p>
-                <p><strong>Frame:</strong> 1.5" deep wooden stretcher bars</p>
-                <p><strong>Sizes:</strong> 12x12", 16x16", 24x24"</p>
-                <p><strong>Finish:</strong> Gallery-wrapped edges</p>
+                <p><strong>Material:</strong> Premium poly-cotton canvas, museum quality</p>
+                <p><strong>Frame:</strong> 0.75" deep wooden stretcher bars</p>
+                <p><strong>Features:</strong> Gallery-wrapped edges, hanging hardware included</p>
+                <p><strong>Print Quality:</strong> Matte finish, fade-resistant inks</p>
+                <p><strong>Available Sizes:</strong> 12x12", 16x16", 24x24"</p>
+                
+                <div className="size-chart-mini">
+                  <h4>Canvas Sizes</h4>
+                  <table>
+                    <thead>
+                      <tr><th>Size</th><th>Dimensions</th><th>Print Area</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>Small</td><td>12" x 12"</td><td>11.5" x 11.5"</td></tr>
+                      <tr><td>Medium</td><td>16" x 16"</td><td>15.5" x 15.5"</td></tr>
+                      <tr><td>Large</td><td>24" x 24"</td><td>23.5" x 23.5"</td></tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="guidelines-section">
+          <h2>📐 Care Instructions</h2>
+          <div className="care-grid">
+            <div className="care-item">
+              <h3>🧺 Washing</h3>
+              <ul>
+                <li>Machine wash cold (30°C or below)</li>
+                <li>Use mild detergent, avoid bleach</li>
+                <li>Turn garments inside out before washing</li>
+                <li>Wash similar colors together</li>
+              </ul>
+            </div>
+            <div className="care-item">
+              <h3>🌬️ Drying</h3>
+              <ul>
+                <li>Tumble dry low heat or air dry</li>
+                <li>Remove promptly to prevent wrinkles</li>
+                <li>Avoid over-drying to maintain softness</li>
+                <li>Hang hoodies to maintain shape</li>
+              </ul>
+            </div>
+            <div className="care-item">
+              <h3>👕 Ironing</h3>
+              <ul>
+                <li>Iron inside out if needed</li>
+                <li>Use medium heat setting</li>
+                <li>Avoid ironing directly on prints</li>
+                <li>Steam to remove wrinkles gently</li>
+              </ul>
             </div>
           </div>
         </section>

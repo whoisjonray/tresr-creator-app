@@ -406,3 +406,134 @@
     align-items: center;
   }
 }
+
+/* Size chart mini tables within garment cards */
+.size-chart-mini {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.size-chart-mini h4 {
+  font-size: 1.1rem;
+  color: #1a202c;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.size-chart-mini table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.size-chart-mini table th,
+.size-chart-mini table td {
+  padding: 8px 12px;
+  text-align: center;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.size-chart-mini table th {
+  background: #e2e8f0;
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.size-chart-mini table td {
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.size-chart-mini table tr:last-child th,
+.size-chart-mini table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Care instructions grid */
+.care-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.care-item {
+  background: #f8f9fa;
+  padding: 25px;
+  border-radius: 12px;
+  border-left: 4px solid #00c896;
+}
+
+.care-item h3 {
+  font-size: 1.2rem;
+  color: #1a202c;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.care-item ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.care-item li {
+  padding: 8px 0;
+  color: #4a5568;
+  border-bottom: 1px solid #e2e8f0;
+  position: relative;
+  padding-left: 20px;
+}
+
+.care-item li:last-child {
+  border-bottom: none;
+}
+
+.care-item li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  color: #00c896;
+  font-weight: bold;
+}
+
+/* Enhanced responsive improvements */
+@media (max-width: 768px) {
+  .size-chart-mini table {
+    font-size: 0.8rem;
+  }
+  
+  .size-chart-mini table th,
+  .size-chart-mini table td {
+    padding: 6px 8px;
+  }
+  
+  .care-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .care-item {
+    padding: 20px;
+  }
+  
+  .garment-card {
+    padding: 20px;
+  }
+  
+  .garment-image img {
+    width: 100px;
+    height: 100px;
+  }
+}
