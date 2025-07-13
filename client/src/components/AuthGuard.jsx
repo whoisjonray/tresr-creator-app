@@ -20,20 +20,15 @@ function AuthGuard({ children }) {
       return;
     }
 
-    // If we have a creator session, we're good
+    // If we have a creator session, we're good - stop here
     if (creator) {
       setIsLoading(false);
       return;
     }
 
-    // If Dynamic.xyz is authenticated but we don't have creator session, try to get it
-    if (isAuthenticated && user) {
-      handleDynamicAuth();
-    } else {
-      // No authentication at all, need to redirect to login
-      setIsLoading(false);
-    }
-  }, [isAuthenticated, user, creator, isLoginPage]);
+    // Otherwise, redirect to login and let login handle Dynamic.xyz auth
+    setIsLoading(false);
+  }, [creator, isLoginPage]);
 
   const handleDynamicAuth = async () => {
     try {

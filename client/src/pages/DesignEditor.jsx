@@ -172,6 +172,7 @@ function DesignEditor() {
   const [isGeneratingMockup, setIsGeneratingMockup] = useState(false);
   const [printMethod, setPrintMethod] = useState('auto'); // auto = Use What's Best, dtg, dtf
   const [imageQualityWarning, setImageQualityWarning] = useState(null);
+  const [colorFilter, setColorFilter] = useState('All'); // All, Light, Dark, None
   
   const [activeProduct, setActiveProduct] = useState(PRODUCT_TEMPLATES[0].id);
   const [productConfigs, setProductConfigs] = useState(() => {
