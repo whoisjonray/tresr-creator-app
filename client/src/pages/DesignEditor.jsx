@@ -31,28 +31,34 @@ const getApiBaseURL = () => {
 //   Bone/Beige → Natural, Red variations → Cardinal Red, Blue → Royal Heather,
 //   Sage → Mint, Classic Navy → Navy
 const PRODUCT_TEMPLATES = [
-  // Core Apparel
-  { id: 'tee', name: 'Medium Weight T-Shirt', templateId: 'tshirt_front', price: 22, colors: ['Black', 'White', 'Natural', 'Cardinal Red', 'Dark Grey'] }, // Navy removed - no image available
-  { id: 'boxy', name: 'Oversized Drop Shoulder', templateId: 'tshirt_boxy_front', price: 26, colors: ['Black', 'Natural', 'Cardinal Red', 'Navy', 'White', 'Dark Grey'] }, // Expanded based on available images
-  { id: 'next-crop', name: 'Next Level Crop Top', templateId: 'croptop_front', price: 24, colors: ['Black', 'White', 'Gold', 'Royal Heather', 'Dark Grey'] },
+  // Core Apparel - Updated to match TRESR.com exactly
+  { id: 'tee', name: 'Medium Weight T-Shirt', templateId: 'tshirt_front', price: 22, colors: ['Black', 'Navy', 'Natural', 'White', 'Dark Grey', 'Cardinal Red'] },
+  { id: 'boxy', name: 'Oversized Drop Shoulder', templateId: 'tshirt_boxy_front', price: 26, colors: ['Black', 'Natural'] }, // Restored to TRESR.com colors
+  { id: 'next-crop', name: 'Next Level Crop Top', templateId: 'croptop_front', price: 24, colors: ['Black', 'Gold', 'Royal Heather', 'Dark Grey', 'Pink', 'Light Grey', 'Navy', 'Cardinal Red', 'White'] },
   
-  // Hoodies & Sweatshirts
-  { id: 'wmn-hoodie', name: "Women's Independent Hoodie", templateId: 'hoodie_front', price: 42, colors: ['Black', 'Dark Grey', 'Pink', 'Natural', 'Cotton Candy', 'Light Grey', 'Mint', 'White'] },
-  { id: 'med-hood', name: 'Medium Weight Hoodie', templateId: 'hoodie_front', price: 42, colors: ['Black', 'Gold', 'Light Grey', 'Cardinal Red', 'Alpine Green'] },
-  { id: 'mediu', name: 'Medium Weight Sweatshirt', templateId: 'crewneck_front', price: 36, colors: ['Black', 'Dark Grey', 'Navy', 'Light Grey', 'White'] },
+  // Hoodies & Sweatshirts - Updated to match TRESR.com exactly
+  { id: 'wmn-hoodie', name: "Women's Independent Hoodie", templateId: 'hoodie_front', price: 42, colors: ['Black', 'Black Camo', 'Pink', 'Natural', 'Cotton Candy', 'Light Grey', 'Mint', 'White'] },
+  { id: 'med-hood', name: 'Medium Weight Hoodie', templateId: 'hoodie_front', price: 42, colors: ['Black', 'White', 'Gold', 'Light Grey', 'Cardinal Red', 'Alpine Green', 'Navy', 'Mint'] },
+  { id: 'mediu', name: 'Medium Weight Sweatshirt', templateId: 'crewneck_front', price: 36, colors: ['Black', 'White', 'Navy', 'Light Grey', 'Army Heather', 'Cardinal Red', 'Royal Heather', 'Dark Grey'] },
   { id: 'sweat', name: 'Standard Sweatshirt', templateId: 'crewneck_front', price: 34, colors: ['Black'] },
   
   // Hats
-  { id: 'patch-c', name: 'Patch Hat - Curved', templateId: 'hat_front', price: 22, colors: ['Black', 'Light Grey'] },
+  { id: 'patch-c', name: 'Patch Hat - Curved', templateId: 'hat_front', price: 22, colors: ['Black', 'Navy'] },
   { id: 'patch-flat', name: 'Patch Hat - Flat', templateId: 'hat_flat', price: 24, colors: ['Black', 'Navy'] },
+  
+  // Polos
+  { id: 'polo', name: 'Standard Polo', templateId: 'polo_front', price: 28, colors: ['Black', 'White', 'Navy', 'Light Grey'] },
+  { id: 'long-polo', name: 'Long Sleeve Polo', templateId: 'polo_long_front', price: 32, colors: ['Black', 'White', 'Navy', 'Light Grey'] },
+  
+  // Other Products
+  { id: 'mug', name: 'Coffee Mug', templateId: 'mug_front', price: 15, colors: ['White'] },
   
   // Art Canvas
   { id: 'art-sqsm', name: 'Art Canvas - 12x12', templateId: 'canvas_square', price: 35, colors: ['White'] },
   { id: 'art-sqm', name: 'Art Canvas - 16x16', templateId: 'canvas_square', price: 45, colors: ['White'] },
   { id: 'art-lg', name: 'Art Canvas - 24x24', templateId: 'canvas_square', price: 65, colors: ['White'] },
   
-  // Other
-  { id: 'polo', name: 'Standard Polo', templateId: 'polo_front', price: 28, colors: ['Black'] },
+  // Trading Cards
   { id: 'nft', name: 'NFTREASURE NFT Cards', templateId: 'trading_card', price: 5, colors: ['Default'] }
 ];
 
@@ -60,19 +66,20 @@ const PRODUCT_TEMPLATES = [
 const COLOR_PALETTE = [
   // Core neutrals
   { name: 'Black', hex: '#000000' },
-  { name: 'Dark Grey', hex: '#4A4A4A' },  // Covers: Charcoal, Dark Heather Gray, Black Camo, Heather-Grey
+  { name: 'Black Camo', hex: '#1a1a1a' }, // Women's hoodie specific
+  { name: 'Dark Grey', hex: '#4A4A4A' },  // Covers: Charcoal, Dark Heather Gray, Heather-Grey
   { name: 'Light Grey', hex: '#9CA3AF' }, // Covers: Gray, Gray Heather, Heather Grey
   { name: 'Natural', hex: '#FEF3C7' },    // Covers: Natural, Bone, Beige tones
   { name: 'White', hex: '#FAFAFA' },
   
   // Colors
-  { name: 'Mint', hex: '#98FF98' },
+  { name: 'Mint', hex: '#98FF98' },       // Covers: Mint, Sage
   { name: 'Navy', hex: '#080F20' },       // Covers: Navy, Classic Navy, Midnight-Navy
   { name: 'Cardinal Red', hex: '#EC5039' },// Covers: Red, Burgundy, Maroon, Cardinal-Red
   { name: 'Gold', hex: '#F6CB46' },       // Covers: Gold, Antique-Gold
   { name: 'Alpine Green', hex: '#165B33' },
   { name: 'Army Heather', hex: '#6B7043' },// Military green heather
-  { name: 'Royal Heather', hex: '#4169E1' },// Royal blue heather, covers: Blue, Royal-Blue
+  { name: 'Royal Heather', hex: '#4169E1' },// Royal blue heather, covers: Blue, Royal-Blue, True Royal
   { name: 'Pink', hex: '#F82F57' },       // Covers: Pink, Desert-Pink
   { name: 'Cotton Candy', hex: '#FFB6C1' }
 ];
