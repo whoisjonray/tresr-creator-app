@@ -1058,6 +1058,7 @@ function DesignEditor() {
             message: `Generating ${product.name} in ${selectedColor}...`
           });
           
+          try {
             // Generate real composite image using canvas
             const realImage = await canvasImageGenerator.generateProductImage(
               designImage,
@@ -1101,6 +1102,7 @@ function DesignEditor() {
               error: error.message,
               url: null
             };
+          }
         }
       }
       
