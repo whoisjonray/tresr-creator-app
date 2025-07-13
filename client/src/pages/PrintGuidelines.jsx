@@ -187,7 +187,7 @@ function PrintGuidelines() {
                 <p><strong>Print Area:</strong> 12" x 15" (front/back)</p>
                 <p><strong>Available Colors:</strong> Black, White, Navy, Heather Grey, Natural, Cardinal Red</p>
                 <p><strong>Recommended Print Method:</strong> DTG (excellent ink absorption)</p>
-                <p><strong>Turnaround Time:</strong> 3–5 business days</p>
+                <p><strong>Turnaround Time:</strong> 5–7 business days plus shipping time</p>
                 <p><strong>Customer Feedback:</strong> "Super soft and comfortable" • "Perfect everyday tee"</p>
                 
                 <div className="size-chart-mini">
@@ -231,7 +231,7 @@ function PrintGuidelines() {
                 <p><strong>Print Area:</strong> 14" x 16" (front/back)</p>
                 <p><strong>Available Colors:</strong> Black, White, Asphalt, Athletic Heather, Cocoa, Dust</p>
                 <p><strong>Recommended Print Method:</strong> DTG or DTF (DTF preferred for dark garments)</p>
-                <p><strong>Turnaround Time:</strong> 5–7 business days</p>
+                <p><strong>Turnaround Time:</strong> 5–7 business days plus shipping time</p>
                 <p><strong>Customer Feedback:</strong> "Feels premium and holds its shape" • "Great for streetwear collections"</p>
                 
                 <div className="size-chart-mini">
@@ -276,7 +276,7 @@ function PrintGuidelines() {
                 <p><strong>Print Area:</strong> 11" x 14" (front), 12" x 16" (back)</p>
                 <p><strong>Available Colors:</strong> Black, Gold, Light Grey, Cardinal Red, Alpine Green</p>
                 <p><strong>Recommended Print Method:</strong> DTF (best for fleece texture)</p>
-                <p><strong>Turnaround Time:</strong> 5–7 business days</p>
+                <p><strong>Turnaround Time:</strong> 5–7 business days plus shipping time</p>
                 <p><strong>Customer Feedback:</strong> "Perfect weight for fall/winter" • "High-quality construction"</p>
                 
                 <div className="size-chart-mini">
@@ -362,7 +362,7 @@ function PrintGuidelines() {
                 <p><strong>Print Area:</strong> 10" x 12" (front), 11" x 14" (back)</p>
                 <p><strong>Available Colors:</strong> Black, White, Black Camo, Blush, Bone, Grey Heather, Sage, Tie Dye Cotton Candy</p>
                 <p><strong>Recommended Print Method:</strong> DTG or DTF (DTG for light colors)</p>
-                <p><strong>Turnaround Time:</strong> 4–6 business days</p>
+                <p><strong>Turnaround Time:</strong> 5–7 business days plus shipping time</p>
                 <p><strong>Customer Feedback:</strong> "Love the crop length" • "Great quality and fit"</p>
                 
                 <div className="size-chart-mini">
