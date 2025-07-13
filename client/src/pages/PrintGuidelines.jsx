@@ -42,7 +42,7 @@ function PrintGuidelines() {
         </button>
       </div>
 
-      {activeTab === 'print' ? (
+      {activeTab === 'print' && (
       <div className="guidelines-container">
         <section className="guidelines-section">
           <h2>🧭 Choosing the Right Print Method</h2>
@@ -668,7 +668,9 @@ function PrintGuidelines() {
           </div>
         </section>
       </div>
-      ) : activeTab === 'garments' ? (
+      )}
+
+      {activeTab === 'garments' && (
         <div className="guidelines-container">
           <section className="garments-section">
             <h2>📏 Garment Specifications & Size Charts</h2>
@@ -678,7 +680,9 @@ function PrintGuidelines() {
             </div>
           </section>
         </div>
-      ) : (
+      )}
+
+      {activeTab === 'tools' && (
         <div className="guidelines-container">
           <section className="guidelines-section">
             <h2>🛠 Design Tools & Resources</h2>
