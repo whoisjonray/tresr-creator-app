@@ -196,6 +196,11 @@ function DesignEditor() {
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [designScale, setDesignScale] = useState(100);
   const [loading, setLoading] = useState(false);
+  const [generationProgress, setGenerationProgress] = useState({
+    current: 0,
+    total: 0,
+    message: ''
+  });
   const [nfcExperienceType, setNfcExperienceType] = useState('default');
   const [showBoundingBox, setShowBoundingBox] = useState(false);
   const [isProductPublished, setIsProductPublished] = useState(false);
@@ -1026,6 +1031,13 @@ function DesignEditor() {
         return total + colorsToGenerate.length;
       }, 0);
       
+      // Initialize progress
+      setGenerationProgress({
+        current: 0,
+        total: totalVariants,
+        message: 'Starting image generation...'
+      });
+      
       let processedVariants = 0;
       
       for (const product of enabledProducts) {
@@ -1060,6 +1072,13 @@ function DesignEditor() {
             try {
               console.log(`🎨 🎨 REAL IMAGE: Generating ${product.name} in ${color}...`);
               
+              // Update progress message
+              setGenerationProgress({
+                current: processedVariants,
+                total: totalVariants,
+                message: `Generating ${product.name} in ${color}...`
+              });
+              
               // Generate real composite image using canvas
               const realImage = await canvasImageGenerator.generateProductImage(
                 designImage,
@@ -1079,7 +1098,14 @@ function DesignEditor() {
               
               processedVariants++;
               
-              // Update progress for user feedback
+              // Update progress after successful generation
+              setGenerationProgress({
+                current: processedVariants,
+                total: totalVariants,
+                message: `Generated ${product.name} in ${color}`
+              });
+              
+              // Log progress milestones
               if (processedVariants % 5 === 0) {
                 console.log(`✅ Generated ${processedVariants}/${totalVariants} product variants`);
               }
@@ -1113,9 +1139,19 @@ function DesignEditor() {
       
       // Upload generated images to Cloudinary
       console.log('📤 Uploading generated images to Cloudinary...');
+      setGenerationProgress({
+        current: processedVariants,
+        total: totalVariants,
+        message: 'Uploading images to cloud storage...'
+      });
+      
       try {
         for (const [productId, mockupData] of Object.entries(mockups)) {
           if (mockupData.variants && mockupData.variants.length > 0) {
+            setGenerationProgress(prev => ({
+              ...prev,
+              message: `Uploading ${mockupData.name} images to cloud...`
+            }));
             const response = await fetch(`${getApiBaseURL()}/mockups/upload-product-images`, {
               method: 'POST',
               headers: {
@@ -1180,6 +1216,12 @@ function DesignEditor() {
       alert('Failed to generate products');
     } finally {
       setLoading(false);
+      // Clear progress
+      setGenerationProgress({
+        current: 0,
+        total: 0,
+        message: ''
+      });
     }
   };
 
@@ -1865,6 +1907,26 @@ function DesignEditor() {
                   </>
                 )}
               </div>
+              
+              {/* Progress Bar */}
+              {loading && generationProgress.total > 0 && (
+                <div className="generation-progress">
+                  <div className="progress-message">{generationProgress.message}</div>
+                  <div className="progress-bar-container">
+                    <div className="progress-bar">
+                      <div 
+                        className="progress-fill" 
+                        style={{ 
+                          width: `${(generationProgress.current / generationProgress.total) * 100}%` 
+                        }}
+                      />
+                    </div>
+                    <div className="progress-text">
+                      {generationProgress.current} / {generationProgress.total} images
+                    </div>
+                  </div>
+                </div>
+              )}
               
               <div className="generate-info">
                 {params.id && location.state?.productData ? (
