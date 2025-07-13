@@ -840,7 +840,9 @@ function DesignEditor() {
         hasFrontDesignImageSrc: !!frontDesignImageSrc,
         hasBackDesignImageSrc: !!backDesignImageSrc,
         hasFrontDesignUrl: !!frontDesignUrl,
-        hasBackDesignUrl: !!backDesignUrl
+        hasBackDesignUrl: !!backDesignUrl,
+        frontDesignImageSrcLength: frontDesignImageSrc?.length,
+        backDesignImageSrcLength: backDesignImageSrc?.length
       });
       
       const savedProduct = {
@@ -890,6 +892,15 @@ function DesignEditor() {
       }
       
       localStorage.setItem('generatedProducts', JSON.stringify(savedProducts));
+      
+      console.log('🔥 SAVED PRODUCT DEBUG:', {
+        savedProductId: savedProduct.id,
+        hasFrontDesignImageSrc: !!savedProduct.frontDesignImageSrc,
+        hasBackDesignImageSrc: !!savedProduct.backDesignImageSrc,
+        frontImageLength: savedProduct.frontDesignImageSrc?.length,
+        backImageLength: savedProduct.backDesignImageSrc?.length,
+        allKeys: Object.keys(savedProduct)
+      });
       
       alert('Design saved! Redirecting to products page...');
       
