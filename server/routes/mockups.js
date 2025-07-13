@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const dynamicMockupsService = require('../services/dynamicMockups');
+const cloudinaryService = require('../services/cloudinary');
 const { requireAuth } = require('../middleware/auth');
 
 // Generate mockups for a design
@@ -174,6 +175,94 @@ router.post('/upload-design', requireAuth, async (req, res) => {
     console.error('Error uploading design:', error);
     res.status(500).json({ 
       error: 'Failed to upload design',
+      message: error.message 
+    });
+  }
+});
+
+// Upload generated product images to Cloudinary
+router.post('/upload-product-images', requireAuth, async (req, res) => {
+  try {
+    const { productName, variants } = req.body;
+    const { creator } = req.session;
+    
+    if (!productName || !variants || !Array.isArray(variants)) {
+      return res.status(400).json({ 
+        error: 'Product name and variants are required' 
+      });
+    }
+    
+    console.log(`📤 Uploading ${variants.length} product images for "${productName}" to Cloudinary...`);
+    
+    // Upload each variant image to Cloudinary
+    const uploadPromises = variants.map(async (variant, index) => {
+      if (!variant.image || !variant.image.startsWith('data:')) {
+        return { 
+          success: false, 
+          error: 'Invalid image data',
+          variant 
+        };
+      }
+      
+      try {
+        // Create a unique public ID for this variant
+        const timestamp = Date.now();
+        const public_id = `${creator.name.toLowerCase().replace(/\s+/g, '-')}/${productName.toLowerCase().replace(/\s+/g, '-')}-${variant.color.toLowerCase().replace(/\s+/g, '-')}-${timestamp}`;
+        
+        const result = await cloudinaryService.uploadImage(variant.image, {
+          folder: 'tresr-creator-products',
+          public_id,
+          tags: [
+            'creator-product',
+            'generated',
+            `creator:${creator.name}`,
+            `product:${productName}`,
+            `color:${variant.color}`,
+            `template:${variant.templateId || 'unknown'}`
+          ]
+        });
+        
+        return {
+          success: true,
+          color: variant.color,
+          cloudinaryUrl: result.url,
+          public_id: result.public_id,
+          width: result.width,
+          height: result.height,
+          bytes: result.bytes
+        };
+        
+      } catch (error) {
+        console.error(`Failed to upload variant ${variant.color}:`, error);
+        return {
+          success: false,
+          color: variant.color,
+          error: error.message
+        };
+      }
+    });
+    
+    const results = await Promise.all(uploadPromises);
+    
+    const successful = results.filter(r => r.success);
+    const failed = results.filter(r => !r.success);
+    
+    console.log(`✅ Uploaded ${successful.length}/${variants.length} images successfully`);
+    if (failed.length > 0) {
+      console.log(`❌ Failed to upload ${failed.length} images`);
+    }
+    
+    res.json({
+      success: true,
+      uploaded: successful.length,
+      failed: failed.length,
+      results
+    });
+
+  } catch (error) {
+    console.error('Error uploading product images:', error);
+    res.status(500).json({ 
+      error: 'Failed to upload product images',
       message: error.message 
     });
   }

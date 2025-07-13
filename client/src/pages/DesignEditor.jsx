@@ -7,6 +7,21 @@ import canvasImageGenerator from '../services/canvasImageGenerator';
 import { getGarmentImage as getCloudinaryImage } from '../config/garmentImagesCloudinary';
 import './DesignEditor.css'; // v2 - square swatches with 14 colors
 
+// Get API base URL from environment
+const getApiBaseURL = () => {
+  const currentHost = window.location.hostname;
+  
+  if (currentHost.includes('ngrok') || currentHost === 'localhost') {
+    return window.location.origin + '/api';
+  }
+  
+  if (currentHost === 'creators.tresr.com') {
+    return 'https://creators.tresr.com/api';
+  }
+  
+  return 'http://localhost:3002/api';
+};
+
 // Map product IDs to actual Sanity SKUs we migrated
 // Color mapping strategy:
 // - Each product uses color categories rather than specific color names
@@ -1006,7 +1021,9 @@ function DesignEditor() {
       // Generate REAL product images for all enabled products and colors
       const mockups = {};
       const totalVariants = enabledProducts.reduce((total, product) => {
-        return total + (product.colors?.length || 1);
+        const availableColors = product.colors || ['Default'];
+        const colorsToGenerate = availableColors.filter(color => selectedColors.includes(color));
+        return total + colorsToGenerate.length;
       }, 0);
       
       let processedVariants = 0;
@@ -1027,11 +1044,19 @@ function DesignEditor() {
           // Get current position for this product
           const currentPosition = getCurrentPosition(product.id);
           
-          // Generate images for all available colors of this product
-          const productColors = product.colors || ['Default'];
+          // Generate images ONLY for selected colors that are available for this product
+          const availableColors = product.colors || ['Default'];
+          const colorsToGenerate = availableColors.filter(color => selectedColors.includes(color));
+          
+          // If no colors selected for this product, skip it
+          if (colorsToGenerate.length === 0) {
+            console.log(`⚠️ No selected colors available for ${product.name}, skipping...`);
+            continue;
+          }
+          
           const colorVariants = [];
           
-          for (const color of productColors) {
+          for (const color of colorsToGenerate) {
             try {
               console.log(`🎨 🎨 REAL IMAGE: Generating ${product.name} in ${color}...`);
               
@@ -1085,6 +1110,45 @@ function DesignEditor() {
       }
       
       console.log('✅ Generated real product images for all variants:', mockups);
+      
+      // Upload generated images to Cloudinary
+      console.log('📤 Uploading generated images to Cloudinary...');
+      try {
+        for (const [productId, mockupData] of Object.entries(mockups)) {
+          if (mockupData.variants && mockupData.variants.length > 0) {
+            const response = await fetch(`${getApiBaseURL()}/mockups/upload-product-images`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              credentials: 'include',
+              body: JSON.stringify({
+                productName: `${designTitle}-${mockupData.name}`,
+                variants: mockupData.variants
+              })
+            });
+            
+            if (response.ok) {
+              const uploadResult = await response.json();
+              console.log(`✅ Uploaded ${uploadResult.uploaded} images for ${mockupData.name} to Cloudinary`);
+              
+              // Update mockup data with Cloudinary URLs
+              if (uploadResult.results) {
+                uploadResult.results.forEach((result, index) => {
+                  if (result.success && mockupData.variants[index]) {
+                    mockupData.variants[index].cloudinaryUrl = result.cloudinaryUrl;
+                  }
+                });
+              }
+            } else {
+              console.error(`❌ Failed to upload images for ${mockupData.name} to Cloudinary`);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error uploading to Cloudinary:', error);
+        // Continue even if upload fails - we still have the base64 images
+      }
       
       // Use front design as the primary preview image
       const finalDesignImage = frontDesignUrl || frontDesignImageSrc || (isEditMode && location.state?.productData?.originalDesignImage);
