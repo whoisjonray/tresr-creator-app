@@ -668,6 +668,16 @@ function PrintGuidelines() {
           </div>
         </section>
       </div>
+      ) : activeTab === 'garments' ? (
+      <div className="guidelines-container">
+        <section className="garments-section">
+          <h2>📏 Garment Specifications & Size Charts</h2>
+          <p>Complete details for all TRESR products including materials, sizing, and care instructions.</p>
+          <div className="info-box">
+            <p><strong>Coming Soon:</strong> Detailed garment specifications will be loaded from our product database.</p>
+          </div>
+        </section>
+      </div>
       ) : activeTab === 'tools' ? (
       <div className="guidelines-container">
         <section className="guidelines-section">
