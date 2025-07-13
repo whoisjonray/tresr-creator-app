@@ -5,7 +5,7 @@ import DesignEditor from './pages/DesignEditor';
 import ProductManager from './pages/ProductManager';
 import AdminPanel from './pages/AdminPanel';
 import Login from './pages/Login';
-import PrintGuidelines from './pages/docs/PrintGuidelines';
+import PrintGuidelines from './pages/PrintGuidelines';
 import Navigation from './components/Navigation';
 import SidebarNavigation from './components/SidebarNavigation';
 import AuthGuard from './components/AuthGuard';

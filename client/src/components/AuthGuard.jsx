@@ -40,11 +40,24 @@ function AuthGuard({ children }) {
       setIsLoading(true);
       setAuthError(null);
       
-      // Get the JWT token from Dynamic
-      const token = await user.getJWT();
+      let token;
+      
+      try {
+        // Try to get JWT token from Dynamic
+        token = await user.getJWT();
+      } catch (jwtError) {
+        console.log('JWT not available, creating custom token');
+        // If JWT not available, create custom JSON token (newer SDK compatibility)
+        token = JSON.stringify({
+          sub: user.userId,
+          email: user.email,
+          sessionId: user.sessionId,
+          name: user.firstName || user.email?.split('@')[0] || 'Creator'
+        });
+      }
       
       if (token) {
-        // Exchange Dynamic JWT for our app session
+        // Exchange Dynamic token for our app session
         const result = await login(token);
         if (result.success) {
           // Success - creator session established
