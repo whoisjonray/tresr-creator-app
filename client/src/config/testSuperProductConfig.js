@@ -71,15 +71,6 @@ export const testSuperProductConfig = {
             sizes: ['S', 'M', 'L', 'XL'],
             description: 'Next Level women\'s ideal crop top',
             cloudinaryBase: 'tresr-garments/next-crop'
-          },
-          {
-            id: 'wmn-hoodie',
-            name: 'Crop Hoodie',
-            price: '42.00',
-            colors: ['black', 'black-camo', 'pink', 'bone', 'cotton-candy', 'gray-heather', 'sage', 'white'],
-            sizes: ['S', 'M', 'L', 'XL'],
-            description: 'Women\'s lightweight crop hoodie',
-            cloudinaryBase: 'tresr-garments/wmn-hoodie'
           }
         ]
       }
