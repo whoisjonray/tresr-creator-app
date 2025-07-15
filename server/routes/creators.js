@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const shopifyService = require('../services/shopify');
+const commissionService = require('../services/commissionService');
 const { requireAuth } = require('../middleware/auth');
 
 // Get creator stats (sales, commissions, etc.)
@@ -11,6 +12,12 @@ router.get('/stats', requireAuth, async (req, res) => {
     // Return creator-specific stats
     // TODO: Once Shopify integration is complete, pull real stats from Shopify API
     console.log(`📊 Fetching stats for creator: ${creator.id} (${creator.email})`);
+    
+    // Get commission info (NFKEY level and rate)
+    const commissionInfo = await commissionService.getCreatorCommissionInfo(
+      creator.name,
+      creator.walletAddress
+    );
     
     // For now, return empty stats that are specific to each creator
     // This ensures data isolation between different authenticated users
@@ -25,6 +32,10 @@ router.get('/stats', requireAuth, async (req, res) => {
         commissionPending: 0.00,
         monthlyStats: {},
         topProducts: [],
+        // Include NFKEY info
+        nfkeyLevel: commissionInfo.level,
+        commissionRate: commissionInfo.rate,
+        hasNFKEY: commissionInfo.hasNFKEY,
         // Include creator info to verify proper user isolation
         _debug: {
           creatorId: creator.id,
@@ -63,8 +74,8 @@ router.get('/stats', requireAuth, async (req, res) => {
       topProducts: []
     };
     
-    // Calculate commissions (40% of sales)
-    stats.commissionEarned = stats.totalSales * 0.4;
+    // Calculate commissions using actual NFKEY-based rate
+    stats.commissionEarned = stats.totalSales * commissionInfo.rate;
     
     // Get top products by sales
     const productSales = {};
@@ -212,6 +223,12 @@ router.get('/commissions', requireAuth, async (req, res) => {
     const { creator } = req.session;
     const { startDate, endDate } = req.query;
     
+    // Get commission info
+    const commissionInfo = await commissionService.getCreatorCommissionInfo(
+      creator.name,
+      creator.walletAddress
+    );
+    
     // Get orders within date range
     const orders = await shopifyService.getOrdersByVendor(
       creator.name,
@@ -233,7 +250,7 @@ router.get('/commissions', requireAuth, async (req, res) => {
         customerName: order.customer?.first_name + ' ' + order.customer?.last_name,
         items: creatorItems.length,
         orderTotal,
-        commission: orderTotal * 0.4,
+        commission: orderTotal * commissionInfo.rate,
         status: order.financial_status,
         payoutStatus: 'pending' // Would be tracked in separate system
       };

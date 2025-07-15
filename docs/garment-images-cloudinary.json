@@ -1,0 +1,791 @@
+{
+  "generated": "2025-07-13T22:08:07.256Z",
+  "stats": {
+    "total": 75,
+    "successful": 42,
+    "failed": 33
+  },
+  "products": {
+    "boxy": {
+      "name": "Oversized Drop Shoulder",
+      "successful": [
+        {
+          "success": true,
+          "publicId": "tresr-garments/boxy_black_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444370/tresr-garments/boxy_black_front.jpg",
+          "productId": "boxy",
+          "colorName": "black",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 323220
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/boxy_cardinal-red_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444373/tresr-garments/boxy_cardinal-red_front.jpg",
+          "productId": "boxy",
+          "colorName": "cardinal-red",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 260323
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/boxy_heather-grey_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444376/tresr-garments/boxy_heather-grey_front.jpg",
+          "productId": "boxy",
+          "colorName": "heather-grey",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 326539
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/boxy_natural_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444378/tresr-garments/boxy_natural_front.jpg",
+          "productId": "boxy",
+          "colorName": "natural",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 212855
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/boxy_navy_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444380/tresr-garments/boxy_navy_front.jpg",
+          "productId": "boxy",
+          "colorName": "navy",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 349153
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/boxy_white_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444382/tresr-garments/boxy_white_front.jpg",
+          "productId": "boxy",
+          "colorName": "white",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 197244
+        }
+      ],
+      "failed": [
+        {
+          "success": false,
+          "productId": "boxy",
+          "colorName": "black",
+          "side": "back",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/boxy-oversized-drop-shoulder/Back Shaka Wear 7.5oz  PNG/Black-2000x2000-PS-ShakaWear-7.5ozMaxHeavyweightTShirt-F1.png"
+        },
+        {
+          "success": false,
+          "productId": "boxy",
+          "colorName": "cardinal-red",
+          "side": "back",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/boxy-oversized-drop-shoulder/Back Shaka Wear 7.5oz  PNG/Cardinal-Red-2000x2000-PS-ShakaWear-7.5ozMaxHeavyweightTShirt-F1.png"
+        },
+        {
+          "success": false,
+          "productId": "boxy",
+          "colorName": "heather-grey",
+          "side": "back",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/boxy-oversized-drop-shoulder/Back Shaka Wear 7.5oz  PNG/Heather-Grey-2000x2000-PS-ShakaWear-7.5ozMaxHeavyweightTShirt-F1.png"
+        },
+        {
+          "success": false,
+          "productId": "boxy",
+          "colorName": "natural",
+          "side": "back",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/boxy-oversized-drop-shoulder/Back Shaka Wear 7.5oz  PNG/Natural-2000x2000-PS-ShakaWear-7.5ozMaxHeavyweightTShirt-F1.png"
+        },
+        {
+          "success": false,
+          "productId": "boxy",
+          "colorName": "navy",
+          "side": "back",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/boxy-oversized-drop-shoulder/Back Shaka Wear 7.5oz  PNG/Navy-2000x2000-PS-ShakaWear-7.5ozMaxHeavyweightTShirt-F1.png"
+        },
+        {
+          "success": false,
+          "productId": "boxy",
+          "colorName": "white",
+          "side": "back",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/boxy-oversized-drop-shoulder/Back Shaka Wear 7.5oz  PNG/White-2000x2000-PS-ShakaWear-7.5ozMaxHeavyweightTShirt-F1.png"
+        }
+      ]
+    },
+    "next-crop": {
+      "name": "Next Level Crop Top",
+      "successful": [
+        {
+          "success": true,
+          "publicId": "tresr-garments/next-crop_black_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444384/tresr-garments/next-crop_black_front.jpg",
+          "productId": "next-crop",
+          "colorName": "black",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 212514
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/next-crop_black_back",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444386/tresr-garments/next-crop_black_back.jpg",
+          "productId": "next-crop",
+          "colorName": "black",
+          "side": "back",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 195648
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/next-crop_white_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444388/tresr-garments/next-crop_white_front.jpg",
+          "productId": "next-crop",
+          "colorName": "white",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 154660
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/next-crop_white_back",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444391/tresr-garments/next-crop_white_back.jpg",
+          "productId": "next-crop",
+          "colorName": "white",
+          "side": "back",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 111373
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/next-crop_grey-heather_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444393/tresr-garments/next-crop_grey-heather_front.jpg",
+          "productId": "next-crop",
+          "colorName": "grey-heather",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 306333
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/next-crop_grey-heather_back",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444396/tresr-garments/next-crop_grey-heather_back.jpg",
+          "productId": "next-crop",
+          "colorName": "grey-heather",
+          "side": "back",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 298722
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/next-crop_midnight-navy_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444398/tresr-garments/next-crop_midnight-navy_front.jpg",
+          "productId": "next-crop",
+          "colorName": "midnight-navy",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 213471
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/next-crop_midnight-navy_back",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444400/tresr-garments/next-crop_midnight-navy_back.jpg",
+          "productId": "next-crop",
+          "colorName": "midnight-navy",
+          "side": "back",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 202717
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/next-crop_red_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444403/tresr-garments/next-crop_red_front.jpg",
+          "productId": "next-crop",
+          "colorName": "red",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 192221
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/next-crop_red_back",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444405/tresr-garments/next-crop_red_back.jpg",
+          "productId": "next-crop",
+          "colorName": "red",
+          "side": "back",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 136266
+        }
+      ],
+      "failed": [
+        {
+          "success": false,
+          "productId": "next-crop",
+          "colorName": "black",
+          "side": "back",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/Women_s Crop Tee/Next Level - Women_s Ideal Crop Top - 1580 - Back - PNG/Black-2000x2000-PS-NextLevel-Womens-Ideal-Crop-Top-1580-F1.png"
+        },
+        {
+          "success": false,
+          "productId": "next-crop",
+          "colorName": "black",
+          "side": "front",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/Women_s Crop Tee/Next Level - Women_s Ideal Crop Top - 1580 - Front - PNG/Black-2000x2000-Next-Level-Womens-Ideal-Crop-Top-1580-B1.png"
+        },
+        {
+          "success": false,
+          "productId": "next-crop",
+          "colorName": "white",
+          "side": "back",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/Women_s Crop Tee/Next Level - Women_s Ideal Crop Top - 1580 - Back - PNG/White-2000x2000-PS-NextLevel-Womens-Ideal-Crop-Top-1580-F1.png"
+        },
+        {
+          "success": false,
+          "productId": "next-crop",
+          "colorName": "white",
+          "side": "front",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/Women_s Crop Tee/Next Level - Women_s Ideal Crop Top - 1580 - Front - PNG/White-Next-Level-Womens-Ideal-Crop-Top-1580-B1.png"
+        },
+        {
+          "success": false,
+          "productId": "next-crop",
+          "colorName": "grey-heather",
+          "side": "back",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/Women_s Crop Tee/Next Level - Women_s Ideal Crop Top - 1580 - Back - PNG/Grey-Heather-2000x2000-PS-NextLevel-Womens-Ideal-Crop-Top-1580-F1.png"
+        },
+        {
+          "success": false,
+          "productId": "next-crop",
+          "colorName": "grey-heather",
+          "side": "front",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/Women_s Crop Tee/Next Level - Women_s Ideal Crop Top - 1580 - Front - PNG/Grey-Heather-2000x2000-Next-Level-Womens-Ideal-Crop-Top-1580-B1.png"
+        },
+        {
+          "success": false,
+          "productId": "next-crop",
+          "colorName": "midnight-navy",
+          "side": "back",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/Women_s Crop Tee/Next Level - Women_s Ideal Crop Top - 1580 - Back - PNG/Midnight-Navy-2000x2000-PS-NextLevel-Womens-Ideal-Crop-Top-1580-F1.png"
+        },
+        {
+          "success": false,
+          "productId": "next-crop",
+          "colorName": "midnight-navy",
+          "side": "front",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/Women_s Crop Tee/Next Level - Women_s Ideal Crop Top - 1580 - Front - PNG/Midnight-Navy-2000x2000-Next-Level-Womens-Ideal-Crop-Top-1580-B1.png"
+        },
+        {
+          "success": false,
+          "productId": "next-crop",
+          "colorName": "red",
+          "side": "back",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/Women_s Crop Tee/Next Level - Women_s Ideal Crop Top - 1580 - Back - PNG/Red-2000x2000-PS-NextLevel-Womens-Ideal-Crop-Top-1580-F1.png"
+        },
+        {
+          "success": false,
+          "productId": "next-crop",
+          "colorName": "red",
+          "side": "front",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/Women_s Crop Tee/Next Level - Women_s Ideal Crop Top - 1580 - Front - PNG/Red-2000x2000-Next-Level-Womens-Ideal-Crop-Top-1580-B1.png"
+        }
+      ]
+    },
+    "polo": {
+      "name": "Standard Polo",
+      "successful": [
+        {
+          "success": true,
+          "publicId": "tresr-garments/polo_black_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444408/tresr-garments/polo_black_front.jpg",
+          "productId": "polo",
+          "colorName": "black",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 295757
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/polo_white_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444410/tresr-garments/polo_white_front.jpg",
+          "productId": "polo",
+          "colorName": "white",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 310825
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/polo_navy_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444413/tresr-garments/polo_navy_front.jpg",
+          "productId": "polo",
+          "colorName": "navy",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 283235
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/polo_red_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444415/tresr-garments/polo_red_front.jpg",
+          "productId": "polo",
+          "colorName": "red",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 298007
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/polo_graphite_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444418/tresr-garments/polo_graphite_front.jpg",
+          "productId": "polo",
+          "colorName": "graphite",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 260167
+        }
+      ],
+      "failed": [
+        {
+          "success": false,
+          "productId": "polo",
+          "colorName": "black",
+          "side": "back",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/Logo Polo/Port-Authority---Micro-Mesh-Polo K110 - Back PNG/Deep-Black-2000x2000--Port-Authority---Micro-Mesh-Polo-F1.png"
+        },
+        {
+          "success": false,
+          "productId": "polo",
+          "colorName": "white",
+          "side": "back",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/Logo Polo/Port-Authority---Micro-Mesh-Polo K110 - Back PNG/White-2000x2000--Port-Authority---Micro-Mesh-Polo-F1.png"
+        },
+        {
+          "success": false,
+          "productId": "polo",
+          "colorName": "navy",
+          "side": "back",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/Logo Polo/Port-Authority---Micro-Mesh-Polo K110 - Back PNG/River-Blue-Navy-2000x2000--Port-Authority---Micro-Mesh-Polo-F1.png"
+        },
+        {
+          "success": false,
+          "productId": "polo",
+          "colorName": "red",
+          "side": "back",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/Logo Polo/Port-Authority---Micro-Mesh-Polo K110 - Back PNG/Rich-Red-2000x2000--Port-Authority---Micro-Mesh-Polo-F1.png"
+        },
+        {
+          "success": false,
+          "productId": "polo",
+          "colorName": "graphite",
+          "side": "back",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/Logo Polo/Port-Authority---Micro-Mesh-Polo K110 - Back PNG/Graphite-2000x2000--Port-Authority---Micro-Mesh-Polo-F1.png"
+        }
+      ]
+    },
+    "mediu": {
+      "name": "Medium Weight Sweatshirt",
+      "successful": [
+        {
+          "success": true,
+          "publicId": "tresr-garments/mediu_black_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444420/tresr-garments/mediu_black_front.png",
+          "productId": "mediu",
+          "colorName": "black",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 806768
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/mediu_white_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444423/tresr-garments/mediu_white_front.png",
+          "productId": "mediu",
+          "colorName": "white",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 881113
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/mediu_navy_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444425/tresr-garments/mediu_navy_front.png",
+          "productId": "mediu",
+          "colorName": "navy",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 897397
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/mediu_red_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444428/tresr-garments/mediu_red_front.png",
+          "productId": "mediu",
+          "colorName": "red",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 1031978
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/mediu_grey-heather_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444431/tresr-garments/mediu_grey-heather_front.png",
+          "productId": "mediu",
+          "colorName": "grey-heather",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 1494476
+        }
+      ],
+      "failed": [
+        {
+          "success": false,
+          "productId": "mediu",
+          "colorName": "black",
+          "side": "back",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/Medium Weight Sweatshirt/Sweater Back Transparent PNG 2000x2000/Black-Sweater-Front-NFTreasure-Independent-SS3000-F1.png"
+        },
+        {
+          "success": false,
+          "productId": "mediu",
+          "colorName": "white",
+          "side": "back",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/Medium Weight Sweatshirt/Sweater Back Transparent PNG 2000x2000/White-Sweater-Front-NFTreasure-Independent-SS3000-F1.png"
+        },
+        {
+          "success": false,
+          "productId": "mediu",
+          "colorName": "navy",
+          "side": "back",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/Medium Weight Sweatshirt/Sweater Back Transparent PNG 2000x2000/Classic-Navy-Sweater-Front-NFTreasure-Independent-SS3000-F1.png"
+        },
+        {
+          "success": false,
+          "productId": "mediu",
+          "colorName": "red",
+          "side": "back",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/Medium Weight Sweatshirt/Sweater Back Transparent PNG 2000x2000/Red-Sweater-Front-NFTreasure-Independent-SS3000-F1.png"
+        },
+        {
+          "success": false,
+          "productId": "mediu",
+          "colorName": "grey-heather",
+          "side": "back",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/Medium Weight Sweatshirt/Sweater Back Transparent PNG 2000x2000/Grey-Heather-Sweater-Front-NFTreasure-Independent-SS3000-F1.png"
+        }
+      ]
+    },
+    "tee": {
+      "name": "Medium Weight T-Shirt",
+      "successful": [
+        {
+          "success": true,
+          "publicId": "tresr-garments/tee_black_back",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444434/tresr-garments/tee_black_back.png",
+          "productId": "tee",
+          "colorName": "black",
+          "side": "back",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 1043291
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/tee_cardinal-red_back",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444437/tresr-garments/tee_cardinal-red_back.png",
+          "productId": "tee",
+          "colorName": "cardinal-red",
+          "side": "back",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 1146101
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/tee_dark-heather-grey_back",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444439/tresr-garments/tee_dark-heather-grey_back.png",
+          "productId": "tee",
+          "colorName": "dark-heather-grey",
+          "side": "back",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 1276215
+        }
+      ],
+      "failed": [
+        {
+          "success": false,
+          "productId": "tee",
+          "colorName": "natural",
+          "side": "back",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/tee-medium-weight-tshirt/Back Next Level Tee Blank PNG 2000x2000/Natural-Back-T-shirt-Nftreasure-2000-x-2000-.png"
+        },
+        {
+          "success": false,
+          "productId": "tee",
+          "colorName": "white",
+          "side": "back",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/tee-medium-weight-tshirt/Back Next Level Tee Blank PNG 2000x2000/White-Back-T-shirt-Nftreasure-2000-x-2000-.png"
+        }
+      ]
+    },
+    "med-hood": {
+      "name": "Medium Weight Hoodie",
+      "successful": [
+        {
+          "success": true,
+          "publicId": "tresr-garments/med-hood_black_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444442/tresr-garments/med-hood_black_front.png",
+          "productId": "med-hood",
+          "colorName": "black",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 875881
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/med-hood_white_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444444/tresr-garments/med-hood_white_front.png",
+          "productId": "med-hood",
+          "colorName": "white",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 898691
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/med-hood_gold_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444447/tresr-garments/med-hood_gold_front.png",
+          "productId": "med-hood",
+          "colorName": "gold",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 988030
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/med-hood_red_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444450/tresr-garments/med-hood_red_front.png",
+          "productId": "med-hood",
+          "colorName": "red",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 1189210
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/med-hood_navy_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444453/tresr-garments/med-hood_navy_front.png",
+          "productId": "med-hood",
+          "colorName": "navy",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 1055266
+        }
+      ],
+      "failed": [
+        {
+          "success": false,
+          "productId": "med-hood",
+          "colorName": "black",
+          "side": "back",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/Hoodie/Hoodie Back PNG Transparent 2000x2000/Black-Hoody-Front-NFTreasure-PS-Independent-IND4000-F1.png"
+        },
+        {
+          "success": false,
+          "productId": "med-hood",
+          "colorName": "white",
+          "side": "back",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/Hoodie/Hoodie Back PNG Transparent 2000x2000/White-Hoody-Front-NFTreasure-PS-Independent-IND4000-F1.png"
+        },
+        {
+          "success": false,
+          "productId": "med-hood",
+          "colorName": "gold",
+          "side": "back",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/Hoodie/Hoodie Back PNG Transparent 2000x2000/Gold-Hoody-Front-NFTreasure-PS-Independent-IND4000-F1.png"
+        },
+        {
+          "success": false,
+          "productId": "med-hood",
+          "colorName": "red",
+          "side": "back",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/Hoodie/Hoodie Back PNG Transparent 2000x2000/Red-Hoody-Front-NFTreasure-PS-Independent-IND4000-F1.png"
+        },
+        {
+          "success": false,
+          "productId": "med-hood",
+          "colorName": "navy",
+          "side": "back",
+          "error": "File not found",
+          "filePath": "/Users/user/Documents/TRESR Shopify/TRESR Branded Blanks - New/Hoodie/Hoodie Back PNG Transparent 2000x2000/Classic-Navy-Hoody-Front-NFTreasure-PS-Independent-IND4000-F1.png"
+        }
+      ]
+    },
+    "patch-c": {
+      "name": "Patch Hat - Curved",
+      "successful": [
+        {
+          "success": true,
+          "publicId": "tresr-garments/patch-c_black_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444455/tresr-garments/patch-c_black_front.png",
+          "productId": "patch-c",
+          "colorName": "black",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 1561824
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/patch-c_black_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444455/tresr-garments/patch-c_black_front.png",
+          "productId": "patch-c",
+          "colorName": "black",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 1561824
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/patch-c_grey_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444463/tresr-garments/patch-c_grey_front.png",
+          "productId": "patch-c",
+          "colorName": "grey",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 3272339
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/patch-c_grey_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444463/tresr-garments/patch-c_grey_front.png",
+          "productId": "patch-c",
+          "colorName": "grey",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 3272339
+        }
+      ],
+      "failed": []
+    },
+    "patch-flat": {
+      "name": "Patch Hat - Flat",
+      "successful": [
+        {
+          "success": true,
+          "publicId": "tresr-garments/patch-flat_black_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444473/tresr-garments/patch-flat_black_front.png",
+          "productId": "patch-flat",
+          "colorName": "black",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 1495884
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/patch-flat_black_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444473/tresr-garments/patch-flat_black_front.png",
+          "productId": "patch-flat",
+          "colorName": "black",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 1495884
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/patch-flat_navy_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444480/tresr-garments/patch-flat_navy_front.png",
+          "productId": "patch-flat",
+          "colorName": "navy",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 1573962
+        },
+        {
+          "success": true,
+          "publicId": "tresr-garments/patch-flat_navy_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444480/tresr-garments/patch-flat_navy_front.png",
+          "productId": "patch-flat",
+          "colorName": "navy",
+          "side": "front",
+          "width": 2000,
+          "height": 2000,
+          "bytes": 1573962
+        }
+      ],
+      "failed": []
+    }
+  },
+  "baseFolder": "tresr-garments"
+}

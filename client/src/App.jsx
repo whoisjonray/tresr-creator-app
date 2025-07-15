@@ -8,6 +8,7 @@ import Login from './pages/Login';
 import PrintGuidelines from './pages/PrintGuidelines';
 import GarmentDetails from './pages/GarmentDetails';
 import DesignTools from './pages/DesignTools';
+import SuperProductTest from './pages/SuperProductTest';
 import Navigation from './components/Navigation';
 import SidebarNavigation from './components/SidebarNavigation';
 import AuthGuard from './components/AuthGuard';
@@ -51,6 +52,7 @@ function AppContent() {
                     <Route path="/design/:id/edit" element={<DesignEditor />} />
                     <Route path="/products" element={<ProductManager />} />
                     <Route path="/admin" element={<AdminPanel />} />
+                    <Route path="/test/superproduct" element={<SuperProductTest />} />
                     
                     {/* Documentation Routes */}
                     <Route path="/docs/getting-started" element={<div>Getting Started Guide (Coming Soon)</div>} />

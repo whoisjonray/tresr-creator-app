@@ -23,7 +23,7 @@ cloudinary.config({
 
 // Sanity configuration
 const SANITY_PROJECT_ID = 'a9vtdosx';
-const SANITY_DATASET = 'production';
+const SANITY_DATASET = process.env.SANITY_DATASET || 'production';
 const SANITY_API_VERSION = '2024-01-01';
 
 // GROQ query to fetch all productStyles with their BACK images specifically

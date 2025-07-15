@@ -118,11 +118,59 @@ router.get('/garments/status', (req, res) => {
 });
 
 // POST /api/admin/garments/upload
-router.post('/garments/upload', (req, res) => {
-  // In a real implementation, this would handle file uploads
-  res.json({ 
-    success: false, 
-    message: 'File upload not implemented in development mode' 
+router.post('/garments/upload', async (req, res) => {
+  const cloudinaryService = require('../services/cloudinary');
+  const multer = require('multer');
+  const upload = multer({ storage: multer.memoryStorage() });
+  
+  // Handle file upload with multer
+  upload.single('image')(req, res, async (err) => {
+    if (err) {
+      return res.status(400).json({ success: false, error: err.message });
+    }
+    
+    if (!req.file) {
+      return res.status(400).json({ success: false, error: 'No file uploaded' });
+    }
+    
+    try {
+      const { productId, colorName, side = 'front' } = req.body;
+      
+      if (!productId || !colorName) {
+        return res.status(400).json({ 
+          success: false, 
+          error: 'productId and colorName are required' 
+        });
+      }
+      
+      // Convert buffer to base64
+      const base64Image = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+      
+      // Upload to Cloudinary with specific naming
+      const publicId = `${productId}_${colorName.toLowerCase().replace(/\s+/g, '-')}_${side}`;
+      
+      const result = await cloudinaryService.uploadImage(base64Image, {
+        folder: 'tresr-garments',
+        public_id: publicId,
+        tags: ['garment', productId, colorName, side],
+        resource_type: 'image'
+      });
+      
+      res.json({
+        success: true,
+        ...result,
+        productId,
+        colorName,
+        side
+      });
+      
+    } catch (error) {
+      console.error('Upload error:', error);
+      res.status(500).json({ 
+        success: false, 
+        error: error.message 
+      });
+    }
   });
 });
 

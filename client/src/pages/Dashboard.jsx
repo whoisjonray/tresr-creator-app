@@ -45,6 +45,12 @@ function Dashboard() {
       <div className="container">
         <div className="welcome-section">
           <h2>Welcome back, {creator?.name || 'Creator'}!</h2>
+          {stats?.nfkeyLevel !== undefined && (
+            <p className="commission-info">
+              Your NFKEY Level: {stats.nfkeyLevel || 0} • 
+              Commission Rate: {((stats.commissionRate || 0.10) * 100).toFixed(0)}%
+            </p>
+          )}
         </div>
 
         <div className="stats-grid grid grid-4">
@@ -120,6 +126,12 @@ function Dashboard() {
 
         .welcome-section {
           margin-bottom: 30px;
+        }
+
+        .commission-info {
+          margin-top: 8px;
+          color: #666;
+          font-size: 14px;
         }
 
         .stat-card {
