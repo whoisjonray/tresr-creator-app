@@ -108,18 +108,19 @@ async function checkWalletNFKEYs(walletAddress) {
  * @returns {Promise<{level: number, rate: number, hasNFKEY: boolean}>}
  */
 async function getCreatorCommissionInfo(creatorName, walletAddress = null) {
-  // Check if we have cached NFKEY level
-  let nfkeyLevel = CREATOR_NFKEY_LEVELS[creatorName];
+  let nfkeyLevel = 0;
   
-  // If wallet address provided and no cached level, check blockchain
-  if (walletAddress && (nfkeyLevel === undefined || nfkeyLevel === 0)) {
+  // If wallet address provided, check blockchain
+  if (walletAddress) {
     const walletData = await checkWalletNFKEYs(walletAddress);
     nfkeyLevel = walletData.highestLevel;
   }
   
-  // Default to 0 if still no level found
-  if (nfkeyLevel === undefined) {
-    nfkeyLevel = 0;
+  // Try known wallet mapping if no address provided
+  if (!walletAddress && KNOWN_CREATOR_WALLETS[creatorName]) {
+    const knownWallet = KNOWN_CREATOR_WALLETS[creatorName];
+    const walletData = await checkWalletNFKEYs(knownWallet);
+    nfkeyLevel = walletData.highestLevel;
   }
   
   const commissionRate = getCommissionRate(nfkeyLevel);
@@ -154,6 +155,7 @@ module.exports = {
   checkWalletNFKEYs,
   getCreatorCommissionInfo,
   calculateCommission,
-  CREATOR_NFKEY_LEVELS,
-  COMMISSION_RATES
+  COMMISSION_RATES,
+  KNOWN_CREATOR_WALLETS,
+  SPECIAL_COMMISSION_CASES
 };
