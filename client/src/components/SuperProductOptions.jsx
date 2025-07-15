@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import MockupPreview from './MockupPreview';
 import { getStylesForFit, getStyleById, getGarmentImageUrl, getSummaryStats } from '../config/testSuperProductConfig';
 import './SuperProductOptions.css';
 
-function SuperProductOptions({ superProduct, onSelectionChange, onAddToCart }) {
+function SuperProductOptions({ superProduct, onSelectionChange, onAddToCart, hideAddToCart = false }) {
   const [selectedFit, setSelectedFit] = useState('Male'); // Default to Male
   const [selectedStyle, setSelectedStyle] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
@@ -11,6 +11,9 @@ function SuperProductOptions({ superProduct, onSelectionChange, onAddToCart }) {
   const [currentPrice, setCurrentPrice] = useState(0);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [availableStyles, setAvailableStyles] = useState([]);
+  
+  // Track previous selection to prevent infinite loops
+  const prevSelectionRef = useRef();
 
   // Update available styles when fit changes
   useEffect(() => {
@@ -37,7 +40,7 @@ function SuperProductOptions({ superProduct, onSelectionChange, onAddToCart }) {
     }
   }, [selectedStyle]);
 
-  // Notify parent of selection changes
+  // Notify parent of selection changes only when there's a real change
   useEffect(() => {
     if (selectedFit && selectedStyle && selectedColor && selectedSize) {
       const selection = {
@@ -48,9 +51,16 @@ function SuperProductOptions({ superProduct, onSelectionChange, onAddToCart }) {
         price: currentPrice
       };
       
-      onSelectionChange?.(selection);
+      // Create a simple string key for comparison
+      const selectionKey = `${selectedFit}-${selectedStyle.id}-${selectedColor}-${selectedSize}-${currentPrice}`;
+      
+      // Only call onSelectionChange if the selection actually changed
+      if (prevSelectionRef.current !== selectionKey) {
+        prevSelectionRef.current = selectionKey;
+        onSelectionChange?.(selection);
+      }
     }
-  }, [selectedFit, selectedStyle, selectedColor, selectedSize, currentPrice, onSelectionChange]);
+  }, [selectedFit, selectedStyle, selectedColor, selectedSize, currentPrice]);
 
   const handleAddToCart = async () => {
     if (!selectedFit || !selectedStyle || !selectedColor || !selectedSize) {
@@ -207,42 +217,59 @@ function SuperProductOptions({ superProduct, onSelectionChange, onAddToCart }) {
         </div>
       )}
 
-      {/* Add to Cart Section */}
-      <div className="add-to-cart-section">
-        <div className="price-display">
-          <span className="current-price">${currentPrice}</span>
-          {selectedStyle && (
-            <span className="price-note">
-              + shipping calculated at checkout
-            </span>
+      {/* Add to Cart Section - Only show in customer context */}
+      {!hideAddToCart && (
+        <div className="add-to-cart-section">
+          <div className="price-display">
+            <span className="current-price">${currentPrice}</span>
+            {selectedStyle && (
+              <span className="price-note">
+                + shipping calculated at checkout
+              </span>
+            )}
+          </div>
+          
+          <button 
+            id="add-to-cart-btn"
+            className="btn-add-to-cart"
+            onClick={handleAddToCart}
+            disabled={isAddingToCart || !selectedFit || !selectedStyle || !selectedColor || !selectedSize}
+          >
+            {isAddingToCart ? (
+              <>
+                <span className="loading-spinner"></span>
+                Adding to Cart...
+              </>
+            ) : (
+              'Add to Cart'
+            )}
+          </button>
+
+          {/* Selection Summary */}
+          {selectedFit && selectedStyle && selectedColor && selectedSize && (
+            <div className="selection-summary">
+              <span>
+                {selectedFit} • {selectedStyle.name} • {selectedColor.replace('-', ' ')} • {selectedSize}
+              </span>
+            </div>
           )}
         </div>
-        
-        <button 
-          id="add-to-cart-btn"
-          className="btn-add-to-cart"
-          onClick={handleAddToCart}
-          disabled={isAddingToCart || !selectedFit || !selectedStyle || !selectedColor || !selectedSize}
-        >
-          {isAddingToCart ? (
-            <>
-              <span className="loading-spinner"></span>
-              Adding to Cart...
-            </>
-          ) : (
-            'Add to Cart'
-          )}
-        </button>
-
-        {/* Selection Summary */}
-        {selectedFit && selectedStyle && selectedColor && selectedSize && (
-          <div className="selection-summary">
+      )}
+      
+      {/* Creator Context: Show Selection Summary without Cart */}
+      {hideAddToCart && selectedFit && selectedStyle && selectedColor && selectedSize && (
+        <div className="selection-summary-creator">
+          <div className="price-display">
+            <span className="current-price">${currentPrice}</span>
+            <span className="price-note">Customer Price</span>
+          </div>
+          <div className="selection-details">
             <span>
               {selectedFit} • {selectedStyle.name} • {selectedColor.replace('-', ' ')} • {selectedSize}
             </span>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Product Details */}
       <div className="product-details-section">

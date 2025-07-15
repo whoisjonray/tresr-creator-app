@@ -96,6 +96,7 @@ function SuperProductTest() {
             superProduct={testSuperProductConfig}
             onSelectionChange={handleSelectionChange}
             onAddToCart={handleAddToCart}
+            hideAddToCart={true}
           />
         </div>
       </div>
