@@ -9,6 +9,7 @@ import PrintGuidelines from './pages/PrintGuidelines';
 import GarmentDetails from './pages/GarmentDetails';
 import DesignTools from './pages/DesignTools';
 import SuperProductTest from './pages/SuperProductTest';
+import ScanMap from './pages/ScanMap';
 import Navigation from './components/Navigation';
 import SidebarNavigation from './components/SidebarNavigation';
 import AuthGuard from './components/AuthGuard';
@@ -53,6 +54,7 @@ function AppContent() {
                     <Route path="/products" element={<ProductManager />} />
                     <Route path="/admin" element={<AdminPanel />} />
                     <Route path="/test/superproduct" element={<SuperProductTest />} />
+                    <Route path="/scan-map" element={<ScanMap />} />
                     
                     {/* Documentation Routes */}
                     <Route path="/docs/getting-started" element={<div>Getting Started Guide (Coming Soon)</div>} />

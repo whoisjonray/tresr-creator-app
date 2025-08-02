@@ -26,6 +26,7 @@ function SidebarNavigation() {
         { path: '/dashboard', label: 'Dashboard', icon: '📊' },
         { path: '/design/new', label: 'Create Design', icon: '🎨' },
         { path: '/products', label: 'Products', icon: '📦' },
+        { path: '/scan-map', label: 'Scan Map', icon: '🗺️' },
         { path: '/analytics', label: 'Analytics', icon: '📈' },
       ]
     },

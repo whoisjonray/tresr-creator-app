@@ -13,6 +13,7 @@ const mockupsRoutes = require('./routes/mockups');
 const creatorsRoutes = require('./routes/creators');
 const adminRoutes = require('./routes/admin');
 const designsRoutes = require('./routes/designs');
+const scansRoutes = require('./routes/scans');
 
 // Initialize database
 const databaseService = require('./services/database');
@@ -108,6 +109,7 @@ app.use('/api/mockups', mockupsRoutes);
 app.use('/api/creators', creatorsRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/designs', designsRoutes);
+app.use('/api', scansRoutes);
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
