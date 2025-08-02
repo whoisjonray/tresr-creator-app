@@ -238,19 +238,8 @@
             });
         }
         
-        // Check if we have location capture enabled
-        fetch(`${NFC_URL}/api/health`)
-            .then(res => res.json())
-            .then(data => {
-                if (data.locationCaptureEnabled) {
-                    showStatus('✅ Location capture is enabled!');
-                } else {
-                    showStatus('⚠️ Location capture needs to be enabled on server (ENABLE_LOCATION_CAPTURE=true)', true);
-                }
-            })
-            .catch(() => {
-                showStatus('ℹ️ Cannot verify server status');
-            });
+        // Show ready status
+        showStatus('✅ Ready to test! Click a button above to begin.');
     </script>
 </body>
 </html>
