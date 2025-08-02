@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRESR GeoLasso Test - Authenticating...</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .container {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .logo {
+            font-size: 48px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .status {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 20px;
+        }
+        
+        .error {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        button {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🧪</div>
+        <h1>GeoLasso Test Mode</h1>
+        <p>Testing location capture without affecting normal scans...</p>
+        <div class="spinner"></div>
+        <div class="status" id="status">Requesting location access...</div>
+        <div class="error" id="error"></div>
+        <button id="retry" onclick="retryLocation()">Try Again</button>
+        <button id="continue" onclick="continueWithoutLocation()">Continue Without Location</button>
+    </div>
+
+    <script>
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const x = urlParams.get('x');
+        const n = urlParams.get('n');
+        const e = urlParams.get('e');
+        
+        // Base URL for NFC backend
+        const nfcBaseUrl = 'https://nfc.nftreasure.com/seritag';
+        
+        // Status element
+        const statusEl = document.getElementById('status');
+        const errorEl = document.getElementById('error');
+        const retryBtn = document.getElementById('retry');
+        const continueBtn = document.getElementById('continue');
+        
+        // Attempt to get location immediately
+        function attemptLocationCapture() {
+            if (!navigator.geolocation) {
+                handleNoLocation('Geolocation not supported');
+                return;
+            }
+            
+            statusEl.textContent = 'Accessing GPS location...';
+            
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    // Success! We have location
+                    statusEl.textContent = 'Location captured! Redirecting...';
+                    
+                    const params = new URLSearchParams({
+                        x: x || '',
+                        n: n || '',
+                        e: e || '',
+                        lat: position.coords.latitude.toFixed(6),
+                        lng: position.coords.longitude.toFixed(6),
+                        accuracy: Math.round(position.coords.accuracy),
+                        locationName: `GeoLasso Scan ${new Date().toLocaleString()}`
+                    });
+                    
+                    // Redirect with location
+                    setTimeout(() => {
+                        window.location.href = `${nfcBaseUrl}?${params.toString()}`;
+                    }, 500);
+                },
+                (error) => {
+                    // Location failed
+                    let message = 'Location access denied';
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            message = 'Location permission denied. Please enable location access.';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            message = 'Location information unavailable.';
+                            break;
+                        case error.TIMEOUT:
+                            message = 'Location request timed out.';
+                            break;
+                    }
+                    handleNoLocation(message);
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
+        }
+        
+        function handleNoLocation(message) {
+            statusEl.textContent = 'Location not available';
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+            retryBtn.style.display = 'inline-block';
+            continueBtn.style.display = 'inline-block';
+            document.querySelector('.spinner').style.display = 'none';
+        }
+        
+        function retryLocation() {
+            errorEl.style.display = 'none';
+            retryBtn.style.display = 'none';
+            continueBtn.style.display = 'none';
+            document.querySelector('.spinner').style.display = 'block';
+            attemptLocationCapture();
+        }
+        
+        function continueWithoutLocation() {
+            statusEl.textContent = 'Redirecting without location...';
+            const params = new URLSearchParams({
+                x: x || '',
+                n: n || '',
+                e: e || ''
+            });
+            window.location.href = `${nfcBaseUrl}?${params.toString()}`;
+        }
+        
+        // Start location capture immediately
+        window.addEventListener('load', () => {
+            if (!x || !n || !e) {
+                errorEl.textContent = 'Invalid NFC parameters';
+                errorEl.style.display = 'block';
+                document.querySelector('.spinner').style.display = 'none';
+                return;
+            }
+            
+            // Small delay to show the UI
+            setTimeout(attemptLocationCapture, 500);
+        });
+        
+        // Auto-redirect without location after 15 seconds
+        setTimeout(() => {
+            if (window.location.href.includes('scan-redirect')) {
+                continueWithoutLocation();
+            }
+        }, 15000);
+    </script>
+</body>
+</html>
