@@ -18,11 +18,8 @@ const ScanMap = () => {
 
   const fetchScanHistory = async () => {
     try {
-      const apiUrl = process.env.NODE_ENV === 'production' 
-        ? 'https://vibes.tresr.com'
-        : 'http://localhost:3002';
-      
-      const response = await axios.get(`${apiUrl}/api/scan-history`, {
+      // Use relative URL to call our own backend
+      const response = await axios.get('/api/scan-history', {
         params: { limit: 1000 }
       });
       
