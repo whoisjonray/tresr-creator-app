@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Install TRESR App</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        h2 {
+            color: #4A90E2;
+            margin-top: 30px;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+        }
+        
+        .feature-icon {
+            font-size: 30px;
+            margin-right: 15px;
+        }
+        
+        .install-button {
+            background: #4A90E2;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .install-button:hover {
+            background: #357ABD;
+        }
+        
+        .instructions {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .step {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .step-number {
+            background: #4A90E2;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            display: none;
+        }
+        
+        .success {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+        
+        .info {
+            background: #fff3cd;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>📱 Install TRESR App</h1>
+            <p>Get the full TRESR experience with our Progressive Web App!</p>
+            
+            <h2>Why Install?</h2>
+            
+            <div class="feature">
+                <span class="feature-icon">📍</span>
+                <div>
+                    <strong>Automatic Location Capture</strong><br>
+                    <small>NFC scans will automatically include GPS location</small>
+                </div>
+            </div>
+            
+            <div class="feature">
+                <span class="feature-icon">🔔</span>
+                <div>
+                    <strong>Push Notifications</strong><br>
+                    <small>Get alerts for new features and updates</small>
+                </div>
+            </div>
+            
+            <div class="feature">
+                <span class="feature-icon">📱</span>
+                <div>
+                    <strong>Full Screen Experience</strong><br>
+                    <small>No browser bars, just like a native app</small>
+                </div>
+            </div>
+            
+            <div class="feature">
+                <span class="feature-icon">⚡</span>
+                <div>
+                    <strong>Works Offline</strong><br>
+                    <small>Access key features even without internet</small>
+                </div>
+            </div>
+            
+            <button class="install-button" id="installButton">
+                Install TRESR App
+            </button>
+            
+            <div class="status success" id="successStatus">
+                ✅ App installed successfully! You can now close this page.
+            </div>
+            
+            <div class="status info" id="alreadyInstalled">
+                ℹ️ TRESR app is already installed on your device
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Manual Installation</h2>
+            
+            <div class="instructions">
+                <h4>iPhone/iPad:</h4>
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <span>Open this page in Safari</span>
+                </div>
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <span>Tap the Share button (box with arrow)</span>
+                </div>
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <span>Scroll down and tap "Add to Home Screen"</span>
+                </div>
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <span>Tap "Add" in the top right</span>
+                </div>
+            </div>
+            
+            <div class="instructions">
+                <h4>Android:</h4>
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <span>Open this page in Chrome</span>
+                </div>
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <span>Tap the menu (3 dots)</span>
+                </div>
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <span>Tap "Add to Home screen"</span>
+                </div>
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <span>Tap "Add"</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>How GeoLasso Works in the App</h2>
+            <p>Once installed, when you scan an NFC chip:</p>
+            <ol>
+                <li>The TRESR app will open (not the browser)</li>
+                <li>Your location is captured automatically</li>
+                <li>The scan is recorded with GPS coordinates</li>
+                <li>You can see all scans on the map</li>
+            </ol>
+            <p><strong>Note:</strong> You'll need to grant location permission when first opening the app.</p>
+        </div>
+    </div>
+    
+    <script>
+        let deferredPrompt;
+        const installButton = document.getElementById('installButton');
+        
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(reg => console.log('Service Worker registered'))
+                .catch(err => console.log('Service Worker registration failed'));
+        }
+        
+        // Listen for install prompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installButton.style.display = 'block';
+        });
+        
+        // Handle install button click
+        installButton.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            
+            if (outcome === 'accepted') {
+                document.getElementById('successStatus').style.display = 'block';
+                installButton.style.display = 'none';
+            }
+            
+            deferredPrompt = null;
+        });
+        
+        // Check if already installed
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+            document.getElementById('alreadyInstalled').style.display = 'block';
+        }
+        
+        // iOS specific check
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        if (isIOS && !window.navigator.standalone) {
+            // Show iOS instructions prominently
+            document.querySelector('.instructions').style.border = '2px solid #4A90E2';
+        }
+    </script>
+</body>
+</html>
