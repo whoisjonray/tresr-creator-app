@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import axios from 'axios';
 import './ScanMap.css';
 
 // Simple map component using Google Maps
 const ScanMap = () => {
-  const { user } = useAuth();
+  const { creator } = useAuth();
   const [scans, setScans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedScan, setSelectedScan] = useState(null);
