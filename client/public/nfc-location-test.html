@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFC Location Test - TRESR</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+        
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #ffffff 0%, #cccccc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            color: #888;
+            margin-bottom: 40px;
+        }
+        
+        .test-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .test-option {
+            margin-bottom: 20px;
+        }
+        
+        .test-option h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #FFD700;
+        }
+        
+        .test-option p {
+            font-size: 14px;
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+        
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #000;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 14px;
+        }
+        
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+        }
+        
+        .button.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        .info-box h4 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #3B82F6;
+        }
+        
+        .info-box p {
+            font-size: 14px;
+            color: #ccc;
+            line-height: 1.6;
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .status.show {
+            display: block;
+        }
+        
+        .status.error {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">💎</div>
+        
+        <h1>NFC Location Test</h1>
+        <p class="subtitle">Test the GeoLasso location capture system</p>
+        
+        <div class="test-section">
+            <div class="test-option">
+                <h3>Option 1: Test with Demo Tag</h3>
+                <p>Use our test tag to see the location capture flow</p>
+                <button class="button" onclick="testDemoTag()">Test Demo Tag</button>
+            </div>
+            
+            <div class="test-option">
+                <h3>Option 2: Custom Tag Parameters</h3>
+                <p>Enter your own tag parameters for testing</p>
+                <form onsubmit="testCustomTag(event)">
+                    <input type="text" id="x" placeholder="X parameter" style="width: 100%; padding: 10px; margin-bottom: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: white;">
+                    <input type="text" id="n" placeholder="N parameter" style="width: 100%; padding: 10px; margin-bottom: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: white;">
+                    <input type="text" id="e" placeholder="E parameter" style="width: 100%; padding: 10px; margin-bottom: 15px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: white;">
+                    <button type="submit" class="button">Test Custom Tag</button>
+                </form>
+            </div>
+            
+            <div class="test-option">
+                <h3>Option 3: Scan Physical Tag</h3>
+                <p>Program an NFC tag with this URL:</p>
+                <code style="display: block; padding: 10px; background: rgba(0,0,0,0.5); border-radius: 6px; font-size: 12px; margin-bottom: 15px; word-break: break-all;">
+                    https://nfc-staging.tresr.com/seritag?x=YOUR_X&n=YOUR_N&e=YOUR_E
+                </code>
+                <button class="button secondary" onclick="copyUrl()">Copy Template URL</button>
+            </div>
+        </div>
+        
+        <div class="status" id="status">
+            <p id="status-text"></p>
+        </div>
+        
+        <div class="info-box">
+            <h4>ℹ️ How It Works</h4>
+            <p>
+                1. The staging NFC backend needs ENABLE_LOCATION_CAPTURE=true<br>
+                2. Location capture screen appears after tag validation<br>
+                3. GPS coordinates are recorded with scan data<br>
+                4. Points are calculated based on location (Times Square = bonus!)
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        // Configuration
+        const STAGING_NFC_URL = 'https://nfc-staging.tresr.com';
+        const CREATORS_URL = 'https://creators.tresr.com';
+        
+        function showStatus(message, isError = false) {
+            const status = document.getElementById('status');
+            const statusText = document.getElementById('status-text');
+            statusText.textContent = message;
+            status.className = 'status show' + (isError ? ' error' : '');
+        }
+        
+        function testDemoTag() {
+            const testUrl = `${STAGING_NFC_URL}/seritag?x=test001&n=000001&e=test`;
+            showStatus(`Opening test tag: ${testUrl}`);
+            window.location.href = testUrl;
+        }
+        
+        function testCustomTag(event) {
+            event.preventDefault();
+            const x = document.getElementById('x').value;
+            const n = document.getElementById('n').value;
+            const e = document.getElementById('e').value;
+            
+            if (!x || !n || !e) {
+                showStatus('Please fill in all parameters', true);
+                return;
+            }
+            
+            const testUrl = `${STAGING_NFC_URL}/seritag?x=${x}&n=${n}&e=${e}`;
+            showStatus(`Opening custom tag: ${testUrl}`);
+            window.location.href = testUrl;
+        }
+        
+        function copyUrl() {
+            const url = 'https://nfc-staging.tresr.com/seritag?x=YOUR_X&n=YOUR_N&e=YOUR_E';
+            navigator.clipboard.writeText(url).then(() => {
+                showStatus('URL copied to clipboard!');
+            }).catch(() => {
+                showStatus('Failed to copy URL', true);
+            });
+        }
+        
+        // Check if we have location capture enabled
+        fetch(`${STAGING_NFC_URL}/api/health`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.locationCaptureEnabled) {
+                    showStatus('✅ Location capture is enabled on staging!');
+                } else {
+                    showStatus('⚠️ Location capture needs to be enabled on staging server', true);
+                }
+            })
+            .catch(() => {
+                showStatus('ℹ️ Cannot verify staging server status');
+            });
+    </script>
+</body>
+</html>
