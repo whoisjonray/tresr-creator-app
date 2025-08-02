@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>TRESR Location Scanner</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: #4A90E2;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        
+        .container {
+            flex: 1;
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .status-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .location-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .status-active {
+            background: #4CAF50;
+        }
+        
+        .status-inactive {
+            background: #f44336;
+        }
+        
+        .coordinates {
+            font-family: monospace;
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+        }
+        
+        .scan-button {
+            background: #4A90E2;
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(74, 144, 226, 0.3);
+            transition: all 0.3s;
+        }
+        
+        .scan-button:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 5px rgba(74, 144, 226, 0.3);
+        }
+        
+        .scan-button:disabled {
+            background: #ccc;
+            box-shadow: none;
+        }
+        
+        .instructions {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .instructions h3 {
+            margin-top: 0;
+            color: #1976d2;
+        }
+        
+        .instructions ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        
+        .scan-history {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        
+        .scan-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .scan-item:last-child {
+            border-bottom: none;
+        }
+        
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        
+        .success {
+            background: #c8e6c9;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .manual-button {
+            margin-top: 10px;
+            padding: 12px 20px;
+            background: #4A90E2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            width: 100%;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📍 TRESR Location Scanner</h1>
+    </div>
+    
+    <div class="container">
+        <div class="instructions">
+            <h3>How to use:</h3>
+            <ol>
+                <li>Allow location access when prompted</li>
+                <li>Click "Enable Location"</li>
+                <li>Scan your NFC chip normally</li>
+                <li>Paste the URL below to add location</li>
+            </ol>
+        </div>
+        
+        <div class="status-card">
+            <div class="location-status">
+                <div>
+                    <span class="status-indicator" id="location-indicator"></span>
+                    <strong>Location Services</strong>
+                </div>
+                <button onclick="requestLocation()" style="padding: 5px 10px; background: #4A90E2; color: white; border: none; border-radius: 5px;">
+                    Enable
+                </button>
+            </div>
+            <div class="coordinates" id="coordinates">
+                Waiting for location...
+            </div>
+        </div>
+        
+        <div id="message"></div>
+        
+        <div class="status-card">
+            <h3>Add Location to NFC Scan</h3>
+            <p>After scanning your chip, paste the URL here:</p>
+            <input type="text" id="nfc-url" placeholder="https://nfc.nftreasure.com/seritag?x=...">
+            <button class="manual-button" onclick="processManualUrl()">
+                Add Location & Redirect
+            </button>
+        </div>
+        
+        <div class="scan-history" id="scan-history" style="display: none;">
+            <h3>Recent Scans</h3>
+            <div id="scan-list"></div>
+        </div>
+    </div>
+    
+    <script>
+        let currentLocation = null;
+        let watchId = null;
+        
+        // Initialize on load
+        window.addEventListener('load', () => {
+            checkLocationPermission();
+            loadScanHistory();
+        });
+        
+        function checkLocationPermission() {
+            if ('permissions' in navigator) {
+                navigator.permissions.query({ name: 'geolocation' }).then(result => {
+                    if (result.state === 'granted') {
+                        requestLocation();
+                    }
+                });
+            }
+        }
+        
+        function requestLocation() {
+            if (!navigator.geolocation) {
+                showError('Geolocation is not supported by your device');
+                return;
+            }
+            
+            const options = {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+            };
+            
+            // Get initial position
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    updateLocation(position);
+                    // Start watching position
+                    watchId = navigator.geolocation.watchPosition(updateLocation, handleLocationError, options);
+                },
+                handleLocationError,
+                options
+            );
+        }
+        
+        function updateLocation(position) {
+            currentLocation = {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+                accuracy: Math.round(position.coords.accuracy)
+            };
+            
+            document.getElementById('location-indicator').className = 'status-indicator status-active';
+            document.getElementById('coordinates').innerHTML = `
+                Lat: ${currentLocation.latitude.toFixed(6)}<br>
+                Lng: ${currentLocation.longitude.toFixed(6)}<br>
+                Accuracy: ±${currentLocation.accuracy}m
+            `;
+            
+            showSuccess('Location enabled! Now scan your NFC chip and paste the URL below.');
+        }
+        
+        function handleLocationError(error) {
+            document.getElementById('location-indicator').className = 'status-indicator status-inactive';
+            let message = 'Unknown error';
+            
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    message = 'Location permission denied';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    message = 'Location information unavailable';
+                    break;
+                case error.TIMEOUT:
+                    message = 'Location request timed out';
+                    break;
+            }
+            
+            document.getElementById('coordinates').textContent = message;
+            showError(message);
+        }
+        
+        function processManualUrl() {
+            const urlInput = document.getElementById('nfc-url');
+            if (!urlInput || !urlInput.value) {
+                showError('Please paste the NFC URL first');
+                return;
+            }
+            
+            if (!currentLocation) {
+                showError('Please enable location services first');
+                return;
+            }
+            
+            const originalUrl = urlInput.value.trim();
+            
+            if (!originalUrl.includes('nfc.nftreasure.com')) {
+                showError('Invalid NFC URL. Should start with https://nfc.nftreasure.com/');
+                return;
+            }
+            
+            try {
+                // Parse the URL
+                const url = new URL(originalUrl);
+                
+                // Add location parameters
+                url.searchParams.set('lat', currentLocation.latitude.toFixed(6));
+                url.searchParams.set('lng', currentLocation.longitude.toFixed(6));
+                url.searchParams.set('accuracy', currentLocation.accuracy);
+                url.searchParams.set('locationName', `Scan at ${new Date().toLocaleString()}`);
+                
+                // Save to history
+                saveScanToHistory({
+                    url: url.toString(),
+                    location: currentLocation,
+                    timestamp: new Date().toISOString()
+                });
+                
+                showSuccess('Location added! Redirecting...');
+                
+                // Clear the input
+                urlInput.value = '';
+                
+                // Redirect after a short delay
+                setTimeout(() => {
+                    window.location.href = url.toString();
+                }, 1500);
+            } catch (error) {
+                showError('Error processing URL: ' + error.message);
+            }
+        }
+        
+        function saveScanToHistory(scan) {
+            let history = JSON.parse(localStorage.getItem('nfcScanHistory') || '[]');
+            history.unshift(scan);
+            history = history.slice(0, 10); // Keep last 10
+            localStorage.setItem('nfcScanHistory', JSON.stringify(history));
+            loadScanHistory();
+        }
+        
+        function loadScanHistory() {
+            const history = JSON.parse(localStorage.getItem('nfcScanHistory') || '[]');
+            if (history.length > 0) {
+                document.getElementById('scan-history').style.display = 'block';
+                const list = document.getElementById('scan-list');
+                list.innerHTML = history.map(scan => `
+                    <div class="scan-item">
+                        <strong>${new Date(scan.timestamp).toLocaleString()}</strong><br>
+                        <small>📍 ${scan.location.latitude.toFixed(4)}, ${scan.location.longitude.toFixed(4)}</small>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        function showMessage(html) {
+            document.getElementById('message').innerHTML = html;
+        }
+        
+        function showError(message) {
+            showMessage(`<div class="error">❌ ${message}</div>`);
+        }
+        
+        function showSuccess(message) {
+            showMessage(`<div class="success">✅ ${message}</div>`);
+        }
+    </script>
+</body>
+</html>
