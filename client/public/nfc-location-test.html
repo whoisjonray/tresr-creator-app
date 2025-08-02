@@ -174,7 +174,7 @@
                 <h3>Option 3: Scan Physical Tag</h3>
                 <p>Program an NFC tag with this URL:</p>
                 <code style="display: block; padding: 10px; background: rgba(0,0,0,0.5); border-radius: 6px; font-size: 12px; margin-bottom: 15px; word-break: break-all;">
-                    https://nfc.nftreasure.com/seritag?x=YOUR_X&n=YOUR_N&e=YOUR_E
+                    https://nfc.nftreasure.com/seritag?x=YOUR_X&n=YOUR_N&e=YOUR_E&enableLocation=true
                 </code>
                 <button class="button secondary" onclick="copyUrl()">Copy Template URL</button>
             </div>
@@ -187,7 +187,7 @@
         <div class="info-box">
             <h4>ℹ️ How It Works</h4>
             <p>
-                1. The NFC backend needs ENABLE_LOCATION_CAPTURE=true<br>
+                1. Use the query parameter <strong>?enableLocation=true</strong> to test<br>
                 2. Location capture screen appears after tag validation<br>
                 3. GPS coordinates are recorded with scan data<br>
                 4. Points are calculated based on location (Times Square = bonus!)
@@ -208,7 +208,7 @@
         }
         
         function testDemoTag() {
-            const testUrl = `${NFC_URL}/seritag?x=test001&n=000001&e=test`;
+            const testUrl = `${NFC_URL}/seritag?x=test001&n=000001&e=test&enableLocation=true`;
             showStatus(`Opening test tag: ${testUrl}`);
             window.location.href = testUrl;
         }
@@ -224,13 +224,13 @@
                 return;
             }
             
-            const testUrl = `${NFC_URL}/seritag?x=${x}&n=${n}&e=${e}`;
+            const testUrl = `${NFC_URL}/seritag?x=${x}&n=${n}&e=${e}&enableLocation=true`;
             showStatus(`Opening custom tag: ${testUrl}`);
             window.location.href = testUrl;
         }
         
         function copyUrl() {
-            const url = 'https://nfc.nftreasure.com/seritag?x=YOUR_X&n=YOUR_N&e=YOUR_E';
+            const url = 'https://nfc.nftreasure.com/seritag?x=YOUR_X&n=YOUR_N&e=YOUR_E&enableLocation=true';
             navigator.clipboard.writeText(url).then(() => {
                 showStatus('URL copied to clipboard!');
             }).catch(() => {
