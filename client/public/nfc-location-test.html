@@ -174,7 +174,7 @@
                 <h3>Option 3: Scan Physical Tag</h3>
                 <p>Program an NFC tag with this URL:</p>
                 <code style="display: block; padding: 10px; background: rgba(0,0,0,0.5); border-radius: 6px; font-size: 12px; margin-bottom: 15px; word-break: break-all;">
-                    https://nfc-staging.tresr.com/seritag?x=YOUR_X&n=YOUR_N&e=YOUR_E
+                    https://nfc.nftreasure.com/seritag?x=YOUR_X&n=YOUR_N&e=YOUR_E
                 </code>
                 <button class="button secondary" onclick="copyUrl()">Copy Template URL</button>
             </div>
@@ -187,7 +187,7 @@
         <div class="info-box">
             <h4>ℹ️ How It Works</h4>
             <p>
-                1. The staging NFC backend needs ENABLE_LOCATION_CAPTURE=true<br>
+                1. The NFC backend needs ENABLE_LOCATION_CAPTURE=true<br>
                 2. Location capture screen appears after tag validation<br>
                 3. GPS coordinates are recorded with scan data<br>
                 4. Points are calculated based on location (Times Square = bonus!)
@@ -197,7 +197,7 @@
     
     <script>
         // Configuration
-        const STAGING_NFC_URL = 'https://nfc-staging.tresr.com';
+        const NFC_URL = 'https://nfc.nftreasure.com';
         const CREATORS_URL = 'https://creators.tresr.com';
         
         function showStatus(message, isError = false) {
@@ -208,7 +208,7 @@
         }
         
         function testDemoTag() {
-            const testUrl = `${STAGING_NFC_URL}/seritag?x=test001&n=000001&e=test`;
+            const testUrl = `${NFC_URL}/seritag?x=test001&n=000001&e=test`;
             showStatus(`Opening test tag: ${testUrl}`);
             window.location.href = testUrl;
         }
@@ -224,13 +224,13 @@
                 return;
             }
             
-            const testUrl = `${STAGING_NFC_URL}/seritag?x=${x}&n=${n}&e=${e}`;
+            const testUrl = `${NFC_URL}/seritag?x=${x}&n=${n}&e=${e}`;
             showStatus(`Opening custom tag: ${testUrl}`);
             window.location.href = testUrl;
         }
         
         function copyUrl() {
-            const url = 'https://nfc-staging.tresr.com/seritag?x=YOUR_X&n=YOUR_N&e=YOUR_E';
+            const url = 'https://nfc.nftreasure.com/seritag?x=YOUR_X&n=YOUR_N&e=YOUR_E';
             navigator.clipboard.writeText(url).then(() => {
                 showStatus('URL copied to clipboard!');
             }).catch(() => {
@@ -239,17 +239,17 @@
         }
         
         // Check if we have location capture enabled
-        fetch(`${STAGING_NFC_URL}/api/health`)
+        fetch(`${NFC_URL}/api/health`)
             .then(res => res.json())
             .then(data => {
                 if (data.locationCaptureEnabled) {
-                    showStatus('✅ Location capture is enabled on staging!');
+                    showStatus('✅ Location capture is enabled!');
                 } else {
-                    showStatus('⚠️ Location capture needs to be enabled on staging server', true);
+                    showStatus('⚠️ Location capture needs to be enabled on server (ENABLE_LOCATION_CAPTURE=true)', true);
                 }
             })
             .catch(() => {
-                showStatus('ℹ️ Cannot verify staging server status');
+                showStatus('ℹ️ Cannot verify server status');
             });
     </script>
 </body>
