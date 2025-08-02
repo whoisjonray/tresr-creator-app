@@ -4,6 +4,11 @@
   "description": "Create designs and scan NFC chips with location tracking",
   "start_url": "/",
   "display": "standalone",
+  "url_handlers": [
+    {
+      "origin": "https://creators.tresr.com"
+    }
+  ],
   "background_color": "#ffffff",
   "theme_color": "#4A90E2",
   "orientation": "portrait",

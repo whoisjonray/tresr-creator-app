@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>TRESR NFC Handler</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .container {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        h1 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+        }
+        
+        p {
+            margin: 10px 0;
+            opacity: 0.9;
+        }
+        
+        .button {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">📍</div>
+        <h1>TRESR Location Services</h1>
+        <p>Enable location to enhance your NFC scanning experience</p>
+        
+        <button class="button" onclick="enableLocation()">
+            Enable Location Services
+        </button>
+        
+        <div class="status" id="status" style="display: none;"></div>
+    </div>
+    
+    <script>
+        // Check if we came from an NFC scan
+        const urlParams = new URLSearchParams(window.location.search);
+        const hasNFCParams = urlParams.has('x') && urlParams.has('n') && urlParams.has('e');
+        
+        // Check if we're in standalone mode (PWA)
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                           window.navigator.standalone || 
+                           document.referrer.includes('android-app://');
+        
+        function showStatus(message, type = 'info') {
+            const status = document.getElementById('status');
+            status.style.display = 'block';
+            status.textContent = message;
+            status.style.background = type === 'success' ? 'rgba(76, 175, 80, 0.3)' : 'rgba(255,255,255,0.2)';
+        }
+        
+        function enableLocation() {
+            if (!navigator.geolocation) {
+                showStatus('Location services not available on this device', 'error');
+                return;
+            }
+            
+            showStatus('Requesting location access...');
+            
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    showStatus('Location enabled! You can now scan NFC chips.', 'success');
+                    
+                    // Store permission granted status
+                    localStorage.setItem('locationPermissionGranted', 'true');
+                    localStorage.setItem('lastLocation', JSON.stringify({
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                        accuracy: position.coords.accuracy,
+                        timestamp: Date.now()
+                    }));
+                    
+                    // If we have NFC params, redirect with location
+                    if (hasNFCParams) {
+                        const redirectUrl = new URL('https://nfc.nftreasure.com/seritag');
+                        urlParams.forEach((value, key) => {
+                            redirectUrl.searchParams.set(key, value);
+                        });
+                        redirectUrl.searchParams.set('lat', position.coords.latitude.toFixed(6));
+                        redirectUrl.searchParams.set('lng', position.coords.longitude.toFixed(6));
+                        redirectUrl.searchParams.set('accuracy', Math.round(position.coords.accuracy));
+                        redirectUrl.searchParams.set('locationName', 'PWA Scan');
+                        
+                        setTimeout(() => {
+                            window.location.href = redirectUrl.toString();
+                        }, 1000);
+                    } else {
+                        setTimeout(() => {
+                            window.location.href = '/';
+                        }, 2000);
+                    }
+                },
+                (error) => {
+                    let message = 'Location access denied';
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            message = 'Please allow location access in your device settings';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            message = 'Location information unavailable';
+                            break;
+                        case error.TIMEOUT:
+                            message = 'Location request timed out';
+                            break;
+                    }
+                    showStatus(message, 'error');
+                }
+            );
+        }
+        
+        // Auto-trigger if we're in PWA mode and have NFC params
+        if (isStandalone && hasNFCParams) {
+            const hasPermission = localStorage.getItem('locationPermissionGranted') === 'true';
+            if (hasPermission) {
+                // Try to use cached location if recent (within 5 minutes)
+                const cached = localStorage.getItem('lastLocation');
+                if (cached) {
+                    const location = JSON.parse(cached);
+                    if (Date.now() - location.timestamp < 5 * 60 * 1000) {
+                        showStatus('Using recent location...', 'success');
+                        const redirectUrl = new URL('https://nfc.nftreasure.com/seritag');
+                        urlParams.forEach((value, key) => {
+                            redirectUrl.searchParams.set(key, value);
+                        });
+                        redirectUrl.searchParams.set('lat', location.lat.toFixed(6));
+                        redirectUrl.searchParams.set('lng', location.lng.toFixed(6));
+                        redirectUrl.searchParams.set('accuracy', location.accuracy);
+                        redirectUrl.searchParams.set('locationName', 'PWA Cached Location');
+                        
+                        setTimeout(() => {
+                            window.location.href = redirectUrl.toString();
+                        }, 500);
+                        return;
+                    }
+                }
+                // Otherwise request fresh location
+                enableLocation();
+            }
+        }
+        
+        // Show PWA status
+        if (isStandalone) {
+            document.querySelector('p').textContent = '✅ Running as installed app';
+        }
+    </script>
+</body>
+</html>
