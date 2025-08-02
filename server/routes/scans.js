@@ -45,8 +45,25 @@ router.get('/scan-history', async (req, res) => {
   try {
     const { tagId, userId, limit = 100, offset = 0 } = req.query;
 
-    // For now, return mock data
-    // TODO: Once NFC backend is deployed, proxy to actual endpoint
+    // Try to fetch from NFC backend first
+    const nfcBackendUrl = process.env.NFC_BACKEND_URL || 'https://nfc.nftreasure.com';
+    
+    try {
+      console.log(`Fetching scan history from NFC backend: ${nfcBackendUrl}/scan-history`);
+      const response = await axios.get(`${nfcBackendUrl}/scan-history`, {
+        params: { tagId, userId, limit, offset },
+        timeout: 5000 // 5 second timeout
+      });
+      
+      // If we got data from the backend, use it
+      if (response.data && response.data.scans) {
+        return res.json(response.data);
+      }
+    } catch (backendError) {
+      console.log('NFC backend not available, falling back to mock data:', backendError.message);
+    }
+
+    // Fall back to mock data if backend is not available
     let scans = [...mockScanData];
     
     // Filter by tagId if provided
@@ -67,17 +84,9 @@ router.get('/scan-history', async (req, res) => {
 
     res.json({
       scans: paginatedScans,
-      total: scans.length
+      total: scans.length,
+      source: 'mock' // Indicate this is mock data
     });
-
-    // Future implementation when NFC backend is ready:
-    /*
-    const nfcBackendUrl = process.env.NFC_BACKEND_URL || 'https://nfc.tresr.com';
-    const response = await axios.get(`${nfcBackendUrl}/scan-history`, {
-      params: { tagId, userId, limit, offset }
-    });
-    res.json(response.data);
-    */
   } catch (error) {
     console.error('Error fetching scan history:', error);
     res.status(500).json({ 
