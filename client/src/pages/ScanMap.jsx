@@ -13,8 +13,13 @@ const ScanMap = () => {
 
   useEffect(() => {
     fetchScanHistory();
-    loadGoogleMaps();
   }, []);
+
+  useEffect(() => {
+    if (!loading && scans.length > 0) {
+      loadGoogleMaps();
+    }
+  }, [loading, scans]);
 
   const fetchScanHistory = async () => {
     try {
@@ -186,7 +191,61 @@ const ScanMap = () => {
           <div className="loading-state">Loading scan data...</div>
         ) : (
           <>
-            <div id="scan-map" style={{ width: '100%', height: '500px' }}></div>
+            <div id="scan-map" style={{ width: '100%', height: '500px', position: 'relative' }}>
+              {/* Fallback list view if map doesn't load */}
+              {scans.length > 0 && !mapError && (
+                <div style={{ 
+                  position: 'absolute', 
+                  top: 0, 
+                  left: 0, 
+                  right: 0, 
+                  bottom: 0, 
+                  overflow: 'auto',
+                  background: '#f8f9fa',
+                  padding: '20px'
+                }}>
+                  <h3 style={{ marginTop: 0 }}>Scan Locations:</h3>
+                  <div style={{ display: 'grid', gap: '10px' }}>
+                    {scans.filter(scan => scan.latitude && scan.longitude).map((scan, index) => (
+                      <div 
+                        key={index}
+                        style={{
+                          background: 'white',
+                          padding: '15px',
+                          borderRadius: '8px',
+                          border: '1px solid #ddd',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s'
+                        }}
+                        onClick={() => setSelectedScan(scan)}
+                        onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)'}
+                        onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}
+                      >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+                          <div>
+                            <strong style={{ color: '#4A90E2' }}>{scan.locationName || 'Location'}</strong>
+                            <div style={{ fontSize: '14px', color: '#666', marginTop: '5px' }}>
+                              Tag: {scan.tagId}<br/>
+                              Coordinates: {scan.latitude.toFixed(4)}, {scan.longitude.toFixed(4)}<br/>
+                              Time: {new Date(scan.createdAt).toLocaleString()}
+                            </div>
+                          </div>
+                          <div style={{
+                            background: '#4A90E2',
+                            color: 'white',
+                            padding: '5px 10px',
+                            borderRadius: '20px',
+                            fontSize: '12px'
+                          }}>
+                            {scan.locationAccuracy ? `±${scan.locationAccuracy}m` : 'GPS'}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
             
             {selectedScan && (
               <div className="scan-details">
