@@ -83,10 +83,10 @@ function Dashboard() {
               <h4>Manage Products</h4>
               <p>View and edit your existing products</p>
             </Link>
-            <div className="action-card card disabled">
-              <h4>View Analytics</h4>
-              <p>Coming soon</p>
-            </div>
+            <Link to="/scan-map" className="action-card card">
+              <h4>NFC Scan Map</h4>
+              <p>View scan locations and data</p>
+            </Link>
           </div>
         </div>
 
