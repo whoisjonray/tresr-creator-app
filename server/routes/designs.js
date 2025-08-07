@@ -350,11 +350,9 @@ router.post('/fix-just-grok-it-url', async (req, res) => {
     // - publicId: kf2qj444lehxktpzdmkw (unique identifier for this specific image)
     // - Sanity design ID: v3f3qtskkwi3ieo5iyrfuhpo (used for cross-reference but NOT in URL)
     
-    // The correct Cloudinary URL for JUST Grok IT raw artwork (1890x2362)
+    // The correct Cloudinary URLs for JUST Grok IT raw artwork (1890x2362)
     const frontCloudinaryUrl = 'https://res.cloudinary.com/dqslerzk9/image/upload/v1740958348/designs/k2r2aa8vmghuyr3he0p2eo5e/kf2qj444lehxktpzdmkw.png';
-    
-    // For now, use the same image for back (can be updated later if back design exists)
-    const backCloudinaryUrl = frontCloudinaryUrl;
+    const backCloudinaryUrl = 'https://res.cloudinary.com/dqslerzk9/image/upload/v1740958348/designs/k2r2aa8vmghuyr3he0p2eo5e/zsk8gw3lcyl6af6fxyg1.png';
     
     // Update the design
     const [updateCount] = await Design.update(
