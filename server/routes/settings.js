@@ -5,13 +5,19 @@ const path = require('path');
 
 // Admin check middleware
 const requireAdmin = (req, res, next) => {
+  // Check both user and creator session formats
+  const email = req.session?.creator?.email || req.session?.user?.email;
+  
+  console.log('Admin check - Session email:', email);
+  
   // Only allow whoisjonray@gmail.com for now
-  if (req.session?.user?.email === 'whoisjonray@gmail.com') {
+  if (email === 'whoisjonray@gmail.com') {
     next();
   } else {
     res.status(403).json({ 
       success: false, 
-      error: 'Admin access required' 
+      error: 'Admin access required',
+      currentUser: email 
     });
   }
 };
@@ -75,13 +81,14 @@ router.post('/print-areas', requireAdmin, async (req, res) => {
       console.log('Could not update client config:', clientError.message);
     }
     
-    console.log(`✅ Global print areas updated by ${req.session.user.email}`);
+    const email = req.session?.creator?.email || req.session?.user?.email;
+    console.log(`✅ Global print areas updated by ${email}`);
     console.log('Print areas:', printAreas);
     
     res.json({
       success: true,
       message: 'Print areas saved globally for all users',
-      updatedBy: req.session.user.email,
+      updatedBy: email,
       timestamp: new Date().toISOString()
     });
     
@@ -173,10 +180,11 @@ router.post('/product-templates/create', requireAdmin, async (req, res) => {
     }
     
     // Add new template
+    const email = req.session?.creator?.email || req.session?.user?.email;
     const newTemplate = {
       ...req.body,
       createdAt: new Date().toISOString(),
-      createdBy: req.session.user.email
+      createdBy: email
     };
     
     templates.push(newTemplate);
@@ -184,7 +192,7 @@ router.post('/product-templates/create', requireAdmin, async (req, res) => {
     // Save updated templates
     await fs.writeFile(templatesPath, JSON.stringify(templates, null, 2));
     
-    console.log(`✅ New product template created: ${newTemplate.name} by ${req.session.user.email}`);
+    console.log(`✅ New product template created: ${newTemplate.name} by ${email}`);
     
     res.json({
       success: true,
@@ -226,16 +234,17 @@ router.post('/product-templates/update', requireAdmin, async (req, res) => {
       });
     }
     
+    const email = req.session?.creator?.email || req.session?.user?.email;
     templates[index] = {
       ...req.body,
       updatedAt: new Date().toISOString(),
-      updatedBy: req.session.user.email
+      updatedBy: email
     };
     
     // Save updated templates
     await fs.writeFile(templatesPath, JSON.stringify(templates, null, 2));
     
-    console.log(`✅ Product template updated: ${req.body.name} by ${req.session.user.email}`);
+    console.log(`✅ Product template updated: ${req.body.name} by ${email}`);
     
     res.json({
       success: true,
@@ -281,7 +290,8 @@ router.delete('/product-templates/:templateId', requireAdmin, async (req, res) =
     // Save updated templates
     await fs.writeFile(templatesPath, JSON.stringify(filteredTemplates, null, 2));
     
-    console.log(`✅ Product template deleted: ${templateId} by ${req.session.user.email}`);
+    const email = req.session?.creator?.email || req.session?.user?.email;
+    console.log(`✅ Product template deleted: ${templateId} by ${email}`);
     
     res.json({
       success: true,

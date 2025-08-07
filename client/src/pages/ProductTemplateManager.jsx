@@ -96,7 +96,7 @@ const ProductTemplateManager = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    setUploadStatus({ ...uploadStatus, [imageType]: 'Uploading...' });
+    setUploadStatus(prev => ({ ...prev, [imageType]: 'Uploading...' }));
 
     try {
       // Convert to base64
@@ -104,30 +104,46 @@ const ProductTemplateManager = () => {
       reader.onloadend = async () => {
         const base64 = reader.result;
         
-        // Upload to Cloudinary via backend
-        const response = await api.post('/api/settings/upload-template-image', {
-          image: base64,
-          imageType: imageType,
-          templateId: formData.id || 'new-template'
-        });
-
-        if (response.data.success) {
-          setFormData({
-            ...formData,
-            [`${imageType}Image`]: response.data.url
+        try {
+          // Upload to Cloudinary via backend
+          const response = await api.post('/api/settings/upload-template-image', {
+            image: base64,
+            imageType: imageType,
+            templateId: formData.id || 'new-template'
           });
-          setUploadStatus({ ...uploadStatus, [imageType]: 'Uploaded!' });
+
+          if (response.data.success) {
+            setFormData({
+              ...formData,
+              [`${imageType}Image`]: response.data.url
+            });
+            setUploadStatus(prev => ({ ...prev, [imageType]: '✅ Uploaded!' }));
+            
+            // Clear success message after 3 seconds
+            setTimeout(() => {
+              setUploadStatus(prev => ({ ...prev, [imageType]: '' }));
+            }, 3000);
+          }
+        } catch (apiError) {
+          console.error('API Upload error:', apiError);
+          const errorMsg = apiError.response?.data?.error || 'Upload failed';
+          setUploadStatus(prev => ({ ...prev, [imageType]: `❌ ${errorMsg}` }));
+          
+          // Clear error message after 5 seconds
+          setTimeout(() => {
+            setUploadStatus(prev => ({ ...prev, [imageType]: '' }));
+          }, 5000);
         }
       };
       reader.readAsDataURL(file);
     } catch (error) {
-      console.error('Upload error:', error);
-      setUploadStatus({ ...uploadStatus, [imageType]: 'Upload failed' });
+      console.error('File read error:', error);
+      setUploadStatus(prev => ({ ...prev, [imageType]: '❌ Failed to read file' }));
+      
+      setTimeout(() => {
+        setUploadStatus(prev => ({ ...prev, [imageType]: '' }));
+      }, 5000);
     }
-
-    setTimeout(() => {
-      setUploadStatus({ ...uploadStatus, [imageType]: '' });
-    }, 3000);
   };
 
   const addColor = () => {
@@ -162,6 +178,13 @@ const ProductTemplateManager = () => {
   };
 
   const saveTemplate = async () => {
+    // Validate required fields
+    if (!formData.id || !formData.name) {
+      setSaveStatus('❌ ID and Name are required');
+      setTimeout(() => setSaveStatus(''), 3000);
+      return;
+    }
+    
     setSaveStatus('Saving...');
     
     try {
@@ -172,17 +195,30 @@ const ProductTemplateManager = () => {
       const response = await api.post(endpoint, formData);
       
       if (response.data.success) {
-        setSaveStatus('Saved successfully!');
-        loadTemplates(); // Reload templates
+        setSaveStatus('✅ Saved successfully!');
+        await loadTemplates(); // Reload templates
         setIsEditing(false);
         setIsCreating(false);
+        
+        // If we created a new template, select it
+        if (isCreating) {
+          const newTemplate = response.data.template;
+          setSelectedTemplate(newTemplate);
+        }
       }
     } catch (error) {
       console.error('Save error:', error);
-      setSaveStatus('Save failed');
+      const errorMsg = error.response?.data?.error || 'Save failed';
+      const currentUser = error.response?.data?.currentUser;
+      
+      if (errorMsg.includes('Admin access required')) {
+        setSaveStatus(`❌ Admin access required. Current user: ${currentUser || 'unknown'}`);
+      } else {
+        setSaveStatus(`❌ ${errorMsg}`);
+      }
+      
+      setTimeout(() => setSaveStatus(''), 5000);
     }
-
-    setTimeout(() => setSaveStatus(''), 3000);
   };
 
   const deleteTemplate = async (templateId) => {
@@ -439,7 +475,14 @@ const ProductTemplateManager = () => {
                             onChange={(e) => handleImageUpload(e, 'front')}
                             id="front-upload"
                           />
-                          <label htmlFor="front-upload" className="upload-btn">
+                          <label 
+                            htmlFor="front-upload" 
+                            className={`upload-btn ${
+                              uploadStatus.front?.includes('Uploading') ? 'uploading' :
+                              uploadStatus.front?.includes('✅') ? 'success' :
+                              uploadStatus.front?.includes('❌') ? 'error' : ''
+                            }`}
+                          >
                             {uploadStatus.front || 'Upload Front Image'}
                           </label>
                         </>
@@ -460,7 +503,14 @@ const ProductTemplateManager = () => {
                               onChange={(e) => handleImageUpload(e, 'back')}
                               id="back-upload"
                             />
-                            <label htmlFor="back-upload" className="upload-btn">
+                            <label 
+                              htmlFor="back-upload" 
+                              className={`upload-btn ${
+                                uploadStatus.back?.includes('Uploading') ? 'uploading' :
+                                uploadStatus.back?.includes('✅') ? 'success' :
+                                uploadStatus.back?.includes('❌') ? 'error' : ''
+                              }`}
+                            >
                               {uploadStatus.back || 'Upload Back Image'}
                             </label>
                           </>
@@ -481,7 +531,14 @@ const ProductTemplateManager = () => {
                             onChange={(e) => handleImageUpload(e, 'thumbnail')}
                             id="thumb-upload"
                           />
-                          <label htmlFor="thumb-upload" className="upload-btn">
+                          <label 
+                            htmlFor="thumb-upload" 
+                            className={`upload-btn ${
+                              uploadStatus.thumbnail?.includes('Uploading') ? 'uploading' :
+                              uploadStatus.thumbnail?.includes('✅') ? 'success' :
+                              uploadStatus.thumbnail?.includes('❌') ? 'error' : ''
+                            }`}
+                          >
                             {uploadStatus.thumbnail || 'Upload Thumbnail'}
                           </label>
                         </>
