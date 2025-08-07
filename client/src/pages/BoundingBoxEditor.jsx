@@ -84,7 +84,27 @@ const BoundingBoxEditor = () => {
   // Load saved print areas from localStorage or use defaults
   const loadSavedAreas = () => {
     const saved = localStorage.getItem('savedPrintAreas');
-    return saved ? JSON.parse(saved) : INITIAL_PRINT_AREAS;
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      // Check if it's the old flat structure and convert it
+      if (parsed.tee && typeof parsed.tee.width === 'number') {
+        // Old structure detected, convert to new front/back structure
+        const converted = {};
+        for (const [garmentId, area] of Object.entries(parsed)) {
+          // Check if this garment should have a back side
+          const hasBack = !['patch-c', 'patch-flat', 'mug', 'art-sqsm', 'art-sqm', 'art-lg', 'nft'].includes(garmentId);
+          converted[garmentId] = {
+            front: area,
+            back: hasBack ? { ...area } : null
+          };
+        }
+        // Save the converted structure
+        localStorage.setItem('savedPrintAreas', JSON.stringify(converted));
+        return converted;
+      }
+      return parsed;
+    }
+    return INITIAL_PRINT_AREAS;
   };
 
   const [selectedGarment, setSelectedGarment] = useState('tee');
@@ -123,8 +143,24 @@ const BoundingBoxEditor = () => {
     try {
       const response = await api.get('/api/settings/print-areas');
       if (response.data.success && response.data.printAreas) {
-        setPrintAreas(response.data.printAreas);
-        console.log('Loaded print areas from database');
+        const areas = response.data.printAreas;
+        // Check if it's the old flat structure and convert it
+        if (areas.tee && typeof areas.tee.width === 'number') {
+          // Old structure detected, convert to new front/back structure
+          const converted = {};
+          for (const [garmentId, area] of Object.entries(areas)) {
+            const hasBack = !['patch-c', 'patch-flat', 'mug', 'art-sqsm', 'art-sqm', 'art-lg', 'nft'].includes(garmentId);
+            converted[garmentId] = {
+              front: area,
+              back: hasBack ? { ...area } : null
+            };
+          }
+          setPrintAreas(converted);
+          console.log('Converted old print areas to new structure');
+        } else {
+          setPrintAreas(areas);
+          console.log('Loaded print areas from database');
+        }
       }
     } catch (error) {
       console.log('Using local/default print areas');
