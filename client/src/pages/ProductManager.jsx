@@ -39,8 +39,10 @@ function ProductManager() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if user can import (admin only for now)
-    checkImportStatus();
+    // Check if user can import (admin only for now) - only once on mount
+    if (!canImport) {
+      checkImportStatus();
+    }
     
     // Check if we received data from the design editor
     if (location.state && location.state.mockups) {
@@ -137,7 +139,11 @@ function ProductManager() {
         console.log('✅ User can import designs:', response.data.user.email);
       }
     } catch (error) {
-      console.log('Import status check failed:', error);
+      // Silently fail if not authenticated - this is expected
+      if (error.response?.status !== 401) {
+        console.log('Import status check failed:', error.message);
+      }
+      setCanImport(false);
     }
   };
 
@@ -369,10 +375,10 @@ function ProductManager() {
                 
                 <div className="product-stats">
                   <span className="stat">
-                    <strong>{product.mockups.length}</strong> Products
+                    <strong>{product.mockups?.length || 0}</strong> Products
                   </span>
                   <span className="stat">
-                    <strong>{product.variants}</strong> Variants
+                    <strong>{product.variants || 0}</strong> Variants
                   </span>
                 </div>
                 
