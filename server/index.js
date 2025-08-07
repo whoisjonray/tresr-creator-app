@@ -14,6 +14,7 @@ const creatorsRoutes = require('./routes/creators');
 const adminRoutes = require('./routes/admin');
 const designsRoutes = require('./routes/designs');
 const scansRoutes = require('./routes/scans');
+const importSanityRoutes = require('./routes/importSanityDesign');
 
 // Initialize database
 const databaseService = require('./services/database');
@@ -110,6 +111,7 @@ app.use('/api/creators', creatorsRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/designs', designsRoutes);
 app.use('/api', scansRoutes);
+app.use('/api/sanity', importSanityRoutes);
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {

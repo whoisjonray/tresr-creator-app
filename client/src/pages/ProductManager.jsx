@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './Products.css';
 import { userStorage } from '../utils/userStorage';
+import api from '../services/api';
 
 // Generate SVG placeholder function for fallback images
 const generatePlaceholder = (productName, color) => {
@@ -31,10 +32,16 @@ const generatePlaceholder = (productName, color) => {
 function ProductManager() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [canImport, setCanImport] = useState(false);
+  const [importing, setImporting] = useState(false);
+  const [importProgress, setImportProgress] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Check if user can import (admin only for now)
+    checkImportStatus();
+    
     // Check if we received data from the design editor
     if (location.state && location.state.mockups) {
       const { mockups, designTitle, designDescription, supportingText, tags, nfcEnabled, productConfigs, selectedColors, designImageSrc, frontDesignImageSrc, backDesignImageSrc, frontDesignUrl, backDesignUrl, printMethod, isEditMode, editProductId } = location.state;
@@ -122,6 +129,53 @@ function ProductManager() {
     }
   }, [location.state]);
 
+  const checkImportStatus = async () => {
+    try {
+      const response = await api.get('/api/sanity/import-status');
+      if (response.data.canImport) {
+        setCanImport(true);
+        console.log('✅ User can import designs:', response.data.user.email);
+      }
+    } catch (error) {
+      console.log('Import status check failed:', error);
+    }
+  };
+
+  const handleImportJustGrokIt = async () => {
+    const JUST_GROK_IT_ID = '27b6e93d-0e7d-4f78-9905-74a66c504a17';
+    
+    setImporting(true);
+    setImportProgress('Connecting to Sanity...');
+    
+    try {
+      setImportProgress('Fetching design from Sanity...');
+      
+      const response = await api.post(`/api/sanity/import/${JUST_GROK_IT_ID}`);
+      
+      if (response.data.success) {
+        setImportProgress('Design imported successfully!');
+        
+        // Reload products from database
+        const designsResponse = await api.get('/api/designs');
+        if (designsResponse.data.designs) {
+          setProducts(designsResponse.data.designs);
+        }
+        
+        setTimeout(() => {
+          setImporting(false);
+          setImportProgress('');
+        }, 2000);
+      }
+    } catch (error) {
+      console.error('Import failed:', error);
+      setImportProgress(`Import failed: ${error.response?.data?.error || error.message}`);
+      setTimeout(() => {
+        setImporting(false);
+        setImportProgress('');
+      }, 3000);
+    }
+  };
+
   const handlePublishToShopify = async (productId) => {
     const product = products.find(p => p.id === productId);
     if (!product) return;
@@ -162,6 +216,24 @@ function ProductManager() {
       <div className="products-header">
         <h1>Your Products</h1>
         <div className="header-actions">
+          {canImport && (
+            <button 
+              onClick={handleImportJustGrokIt} 
+              className="btn-import" 
+              disabled={importing}
+              style={{
+                marginRight: '10px', 
+                background: importing ? '#9ca3af' : '#8b5cf6', 
+                color: 'white', 
+                padding: '8px 16px', 
+                border: 'none', 
+                borderRadius: '4px',
+                cursor: importing ? 'not-allowed' : 'pointer'
+              }}
+            >
+              {importing ? 'Importing...' : 'Import JUST Grok IT'}
+            </button>
+          )}
           <button onClick={handleClearAll} className="btn-clear" style={{marginRight: '10px', background: '#dc3545', color: 'white', padding: '8px 16px', border: 'none', borderRadius: '4px'}}>
             Clear All
           </button>
@@ -170,6 +242,30 @@ function ProductManager() {
           </Link>
         </div>
       </div>
+
+      {importProgress && (
+        <div style={{
+          background: '#f3f4f6',
+          padding: '12px 20px',
+          borderRadius: '8px',
+          marginBottom: '20px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px'
+        }}>
+          {importing && (
+            <div className="spinner" style={{
+              width: '20px',
+              height: '20px',
+              border: '2px solid #8b5cf6',
+              borderTopColor: 'transparent',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite'
+            }}></div>
+          )}
+          <span>{importProgress}</span>
+        </div>
+      )}
 
       {products.length === 0 ? (
         <div className="empty-state">
