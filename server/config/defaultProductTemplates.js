@@ -57,6 +57,27 @@ module.exports = [
     active: true
   },
   {
+    id: 'baby-tee',
+    name: 'Ladies Baby Tee',
+    templateId: 'babytee_front',
+    price: 23,
+    colors: ['Black', 'White'],
+    canvasWidth: 600,
+    canvasHeight: 600,
+    frontImage: null,
+    backImage: null,
+    thumbnailImage: null,
+    defaultThumbnail: 'default',
+    colorImages: {},
+    printAreas: {
+      front: { width: 240, height: 300, x: 180, y: 150 },
+      back: { width: 240, height: 300, x: 180, y: 150 }
+    },
+    hasBackPrint: true,
+    category: 'apparel',
+    active: true
+  },
+  {
     id: 'wmn-hoodie',
     name: "Women's Independent Hoodie",
     templateId: 'hoodie_front',

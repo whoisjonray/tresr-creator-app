@@ -13,6 +13,7 @@ let Design = null;
 let DesignProduct = null;
 let DesignVariant = null;
 let DesignAnalytics = null;
+let ProductTemplate = null;
 
 // In production without database, skip everything
 if (process.env.NODE_ENV === 'production' && !process.env.MYSQL_URL && !process.env.DATABASE_URL && !process.env.MYSQLHOST) {
@@ -330,6 +331,9 @@ if (process.env.NODE_ENV === 'production' && !process.env.MYSQL_URL && !process.
       createdAt: 'created_at'
     });
 
+    // ProductTemplate Model
+    ProductTemplate = require('./ProductTemplate')(sequelize);
+    
     // Define associations
     Creator.hasMany(Design, { foreignKey: 'creator_id', as: 'designs' });
     Design.belongsTo(Creator, { foreignKey: 'creator_id', as: 'creator' });
@@ -399,5 +403,6 @@ module.exports = {
   Design,
   DesignProduct,
   DesignVariant,
-  DesignAnalytics
+  DesignAnalytics,
+  ProductTemplate
 };
