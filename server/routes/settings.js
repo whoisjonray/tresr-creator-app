@@ -310,7 +310,7 @@ router.delete('/product-templates/:templateId', requireAdmin, async (req, res) =
 // Upload template image (admin only)
 router.post('/upload-template-image', requireAdmin, async (req, res) => {
   try {
-    const { image, imageType, templateId } = req.body;
+    const { image, imageType, templateId, color } = req.body;
     
     if (!image || !imageType) {
       return res.status(400).json({
@@ -319,37 +319,64 @@ router.post('/upload-template-image', requireAdmin, async (req, res) => {
       });
     }
     
-    // Upload to Cloudinary
-    const cloudinary = require('cloudinary').v2;
+    // For now, we'll save images locally as base64 in the config
+    // Later this can be replaced with actual Cloudinary upload
     
-    // Configure Cloudinary if not already configured
-    if (!cloudinary.config().cloud_name) {
+    // If Cloudinary credentials are available, use them
+    if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET) {
+      const cloudinary = require('cloudinary').v2;
+      
       cloudinary.config({
         cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
         api_key: process.env.CLOUDINARY_API_KEY,
         api_secret: process.env.CLOUDINARY_API_SECRET
       });
+      
+      try {
+        // Create public_id based on whether it's color-specific or not
+        const publicId = color 
+          ? `${templateId}-${imageType}-${color.toLowerCase().replace(/\s+/g, '-')}`
+          : `${templateId}-${imageType}`;
+        
+        const uploadResult = await cloudinary.uploader.upload(image, {
+          folder: `tresr-templates/${templateId}`,
+          public_id: publicId,
+          overwrite: true,
+          resource_type: 'auto'
+        });
+        
+        console.log(`✅ Template image uploaded: ${templateId}/${imageType}${color ? ` (${color})` : ''}`);
+        
+        res.json({
+          success: true,
+          url: uploadResult.secure_url,
+          publicId: uploadResult.public_id,
+          color: color || null
+        });
+      } catch (cloudinaryError) {
+        console.error('Cloudinary upload error:', cloudinaryError);
+        throw cloudinaryError;
+      }
+    } else {
+      // Fallback: Store as data URL in template config
+      // This is less ideal but works for testing
+      console.log('⚠️ Cloudinary not configured, storing image as data URL');
+      
+      res.json({
+        success: true,
+        url: image, // Return the base64 data URL directly
+        publicId: `local-${templateId}-${imageType}${color ? `-${color}` : ''}`,
+        color: color || null,
+        isDataUrl: true
+      });
     }
-    
-    const uploadResult = await cloudinary.uploader.upload(image, {
-      folder: `tresr-templates/${templateId}`,
-      public_id: `${templateId}-${imageType}`,
-      overwrite: true
-    });
-    
-    console.log(`✅ Template image uploaded: ${templateId}/${imageType}`);
-    
-    res.json({
-      success: true,
-      url: uploadResult.secure_url,
-      publicId: uploadResult.public_id
-    });
     
   } catch (error) {
     console.error('Error uploading template image:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to upload image'
+      error: error.message || 'Failed to upload image',
+      details: process.env.NODE_ENV === 'development' ? error.toString() : undefined
     });
   }
 });
