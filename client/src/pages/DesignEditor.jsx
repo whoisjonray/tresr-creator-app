@@ -2,6 +2,7 @@ import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react'
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
+import api from '../services/api';
 import mockupService from '../services/mockupService';
 import canvasImageGenerator from '../services/canvasImageGenerator';
 import { getGarmentImage as getCloudinaryImage } from '../config/garmentImagesCloudinary';
@@ -536,7 +537,71 @@ function DesignEditor() {
 
   // Load existing product data when editing
   useEffect(() => {
-    if (params.id && location.state?.productData) {
+    // If we have an ID but no productData in state, fetch from database
+    if (params.id && !location.state?.productData) {
+      console.log('Loading design from database:', params.id);
+      
+      // Fetch design from API
+      api.get(`/api/designs/${params.id}`)
+        .then(response => {
+          const designData = response.data.design;
+          console.log('Loaded design from database:', designData);
+          
+          // Set design title and description
+          setDesignTitle(designData.name || '');
+          setDesignDescription(designData.description || '');
+          
+          // Load design elements (images and positions)
+          if (designData.design_data?.elements) {
+            designData.design_data.elements.forEach(element => {
+              if (element.type === 'image' && element.src) {
+                // Load the design image
+                const img = new Image();
+                img.onload = () => {
+                  if (element.garmentType === 'back' || element.position?.side === 'back') {
+                    setBackDesignImage(img);
+                    setBackDesignImageSrc(element.src);
+                    setBackDesignUrl(element.src);
+                  } else {
+                    // Default to front
+                    setFrontDesignImage(img);
+                    setFrontDesignImageSrc(element.src);
+                    setFrontDesignUrl(element.src);
+                  }
+                  
+                  // Set product configs with positions
+                  if (element.garmentType && element.position) {
+                    setProductConfigs(prev => ({
+                      ...prev,
+                      [element.garmentType]: {
+                        ...prev[element.garmentType],
+                        enabled: true,
+                        frontPosition: element.position,
+                        backPosition: element.position,
+                        printLocation: element.garmentType === 'back' ? 'back' : 'front'
+                      }
+                    }));
+                  }
+                };
+                img.src = element.src;
+              }
+            });
+          }
+          
+          // Load metadata if available
+          if (designData.design_data?.metadata) {
+            const metadata = designData.design_data.metadata;
+            if (metadata.tags) setTags(Array.isArray(metadata.tags) ? metadata.tags.join(', ') : metadata.tags);
+            if (metadata.supportingText) setSupportingText(metadata.supportingText);
+            if (metadata.printMethod) setPrintMethod(metadata.printMethod);
+          }
+        })
+        .catch(error => {
+          console.error('Failed to load design from database:', error);
+          alert('Failed to load design. Please try again.');
+          navigate('/products');
+        });
+    } else if (params.id && location.state?.productData) {
       const productData = location.state.productData;
       console.log('Loading existing product for edit:', productData);
       
