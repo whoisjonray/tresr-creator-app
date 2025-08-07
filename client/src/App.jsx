@@ -9,7 +9,7 @@ import PrintGuidelines from './pages/PrintGuidelines';
 import GarmentDetails from './pages/GarmentDetails';
 import DesignTools from './pages/DesignTools';
 import SuperProductTest from './pages/SuperProductTest';
-import CanvasTestPage from './pages/CanvasTestPage';
+import BoundingBoxEditor from './pages/BoundingBoxEditor';
 import ScanMap from './pages/ScanMap';
 import Navigation from './components/Navigation';
 import SidebarNavigation from './components/SidebarNavigation';
@@ -55,7 +55,7 @@ function AppContent() {
                     <Route path="/products" element={<ProductManager />} />
                     <Route path="/admin" element={<AdminPanel />} />
                     <Route path="/test/superproduct" element={<SuperProductTest />} />
-                    <Route path="/test/canvas" element={<CanvasTestPage />} />
+                    <Route path="/test/bounding-box" element={<BoundingBoxEditor />} />
                     <Route path="/scan-map" element={<ScanMap />} />
                     
                     {/* Documentation Routes */}
