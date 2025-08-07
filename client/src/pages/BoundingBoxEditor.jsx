@@ -128,16 +128,19 @@ const BoundingBoxEditor = () => {
 
   const loadProductTemplates = async () => {
     try {
-      const response = await api.get('/api/templates/active');
+      const response = await api.get('/api/settings/product-templates');
       if (response.data.success && response.data.templates) {
         const templates = response.data.templates.map(t => ({
           id: t.id,
           name: t.name,
           templateId: t.id,
-          hasBackPrint: t.hasBackPrint
+          hasBackPrint: t.hasBackPrint,
+          frontImage: t.frontImage,
+          backImage: t.backImage,
+          colorImages: t.colorImages
         }));
         setGarmentTypes(templates);
-        console.log('Loaded product templates from API');
+        console.log('Loaded product templates from API:', templates);
       }
     } catch (error) {
       console.error('Error loading templates:', error);
@@ -194,15 +197,37 @@ const BoundingBoxEditor = () => {
     if (!garment) return;
 
     try {
-      // Map to Cloudinary garment type
-      const garmentType = selectedGarment;
-      const imageUrl = getGarmentImage(garmentType, 'white', selectedSide);
+      let imageUrl = null;
+      
+      // First check if custom template has images
+      if (selectedSide === 'front' && garment.frontImage) {
+        imageUrl = garment.frontImage;
+      } else if (selectedSide === 'back' && garment.backImage) {
+        imageUrl = garment.backImage;
+      } else if (garment.colorImages?.['White']) {
+        // Check for color-specific images
+        if (selectedSide === 'front' && garment.colorImages['White'].frontImage) {
+          imageUrl = garment.colorImages['White'].frontImage;
+        } else if (selectedSide === 'back' && garment.colorImages['White'].backImage) {
+          imageUrl = garment.colorImages['White'].backImage;
+        }
+      }
+      
+      // Fall back to Cloudinary images for standard garments
+      if (!imageUrl) {
+        const garmentType = selectedGarment;
+        imageUrl = getGarmentImage(garmentType, 'white', selectedSide);
+      }
       
       if (imageUrl) {
         const img = new Image();
         img.crossOrigin = 'anonymous';
         img.onload = () => {
           setGarmentImage(img);
+        };
+        img.onerror = () => {
+          console.error('Failed to load image:', imageUrl);
+          setGarmentImage(null);
         };
         img.src = imageUrl;
       }

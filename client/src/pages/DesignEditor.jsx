@@ -213,6 +213,50 @@ function DesignEditor() {
   const [nfcExperienceType, setNfcExperienceType] = useState('default');
   const [showBoundingBox, setShowBoundingBox] = useState(false);
   const [isProductPublished, setIsProductPublished] = useState(false);
+  
+  // Load product templates from API on mount
+  useEffect(() => {
+    loadProductTemplates();
+  }, []);
+  
+  const loadProductTemplates = async () => {
+    try {
+      const response = await api.get('/api/templates/active');
+      if (response.data.success && response.data.templates) {
+        const templates = response.data.templates;
+        setPRODUCT_TEMPLATES(templates);
+        
+        // Initialize product configs for new templates
+        const newConfigs = {};
+        templates.forEach(product => {
+          // If this is a new template not in our configs, add it
+          if (!productConfigs[product.id]) {
+            const printArea = product.printAreas?.front || PRINT_AREAS[product.id] || { x: 200, y: 80 };
+            newConfigs[product.id] = {
+              enabled: product.id === 'tee' || product.id === 'wmn-hoodie' || product.id === 'baby-tee',
+              // Separate positions for front and back
+              frontPosition: { x: printArea.x, y: printArea.y, width: printArea.width || 150, height: printArea.height || 150 },
+              backPosition: product.printAreas?.back 
+                ? { x: product.printAreas.back.x, y: product.printAreas.back.y, width: product.printAreas.back.width || 150, height: product.printAreas.back.height || 150 }
+                : { x: printArea.x, y: printArea.y, width: printArea.width || 150, height: printArea.height || 150 },
+              defaultColor: '',
+              selectedColor: '',
+              selectedColors: [],
+              printLocation: 'front'
+            };
+          }
+        });
+        
+        // Merge new configs with existing ones
+        if (Object.keys(newConfigs).length > 0) {
+          setProductConfigs(prev => ({ ...prev, ...newConfigs }));
+        }
+      }
+    } catch (error) {
+      console.error('Error loading product templates:', error);
+      // Keep using default templates on error
+    }
+  };
 
   const onDrop = useCallback((acceptedFiles) => {
     if (acceptedFiles.length === 0) return;
