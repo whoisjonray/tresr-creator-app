@@ -230,9 +230,14 @@ const BoundingBoxEditor = () => {
           setGarmentImage(null);
         };
         img.src = imageUrl;
+      } else {
+        // No image available - clear the garment image
+        setGarmentImage(null);
+        console.log(`No image available for ${selectedGarment} ${selectedSide}`);
       }
     } catch (error) {
       console.error('Failed to load garment image:', error);
+      setGarmentImage(null);
     }
   };
 
@@ -243,13 +248,23 @@ const BoundingBoxEditor = () => {
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-    // Draw garment image
+    // Draw garment image or placeholder
     if (garmentImage) {
       ctx.drawImage(garmentImage, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     } else {
-      // Draw placeholder
+      // Draw placeholder with text
       ctx.fillStyle = '#f0f0f0';
       ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+      
+      // Add text to indicate no image
+      ctx.fillStyle = '#999';
+      ctx.font = '14px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('No garment image available', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 20);
+      ctx.fillText('Upload images in Product Template Manager', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 20);
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'alphabetic';
     }
 
     // Draw bounding box
