@@ -342,14 +342,21 @@ router.post('/fix-just-grok-it-url', async (req, res) => {
   try {
     const { Design } = require('../models');
     
-    // The correct Cloudinary URL for JUST Grok IT (1890x2362 raw image)
-    const cloudinaryUrl = 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752445690/GROK_v2.1_Recovered2_ejnqmn.png';
+    // JUST Grok IT Sanity design ID: v3f3qtskkwi3ieo5iyrfuhpo
+    // The Cloudinary URLs use this ID in the path
+    // Format: https://res.cloudinary.com/dqslerzk9/image/upload/{version}/rawArtwork/{sanityDesignId}/{label}.png
+    const sanityDesignId = 'v3f3qtskkwi3ieo5iyrfuhpo';
+    
+    // The correct Cloudinary URLs for JUST Grok IT raw artwork (1890x2362)
+    const frontCloudinaryUrl = `https://res.cloudinary.com/dqslerzk9/image/upload/rawArtwork/${sanityDesignId}/Front.png`;
+    const backCloudinaryUrl = `https://res.cloudinary.com/dqslerzk9/image/upload/rawArtwork/${sanityDesignId}/Back.png`;
     
     // Update the design
     const [updateCount] = await Design.update(
       { 
-        frontDesignUrl: cloudinaryUrl,
-        thumbnail_url: cloudinaryUrl 
+        frontDesignUrl: frontCloudinaryUrl,
+        backDesignUrl: backCloudinaryUrl,
+        thumbnail_url: frontCloudinaryUrl 
       },
       { 
         where: { 
