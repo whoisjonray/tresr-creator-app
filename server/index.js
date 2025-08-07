@@ -113,6 +113,7 @@ app.use('/api/designs', designsRoutes);
 app.use('/api', scansRoutes);
 app.use('/api/sanity', importSanityRoutes);
 app.use('/api/settings', require('./routes/settings'));
+app.use('/api/templates', require('./routes/productTemplates'));
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {

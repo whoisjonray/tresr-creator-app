@@ -27,6 +27,7 @@ const ProductTemplateManager = () => {
     frontImage: '',
     backImage: '',
     thumbnailImage: '',
+    defaultThumbnail: 'default', // Which thumbnail to show in product grid
     colorImages: {}, // New: Store color-specific images
     printAreas: {
       front: { width: 200, height: 250, x: 200, y: 200 },
@@ -60,6 +61,7 @@ const ProductTemplateManager = () => {
       ...template,
       colors: template.colors || [],
       colorImages: template.colorImages || {},
+      defaultThumbnail: template.defaultThumbnail || 'default',
       canvasWidth: template.canvasWidth || DEFAULT_CANVAS.width,
       canvasHeight: template.canvasHeight || DEFAULT_CANVAS.height,
       printAreas: template.printAreas || {
@@ -87,6 +89,7 @@ const ProductTemplateManager = () => {
       frontImage: '',
       backImage: '',
       thumbnailImage: '',
+      defaultThumbnail: 'default',
       colorImages: {},
       printAreas: {
         front: { width: 200, height: 250, x: 200, y: 200 },
@@ -549,7 +552,19 @@ const ProductTemplateManager = () => {
                       )}
 
                       <div className="image-upload-group">
-                        <label>Default Thumbnail</label>
+                        <label>
+                          Default Thumbnail
+                          {(isEditing || isCreating) && (
+                            <input
+                              type="radio"
+                              name="defaultThumbnail"
+                              value="default"
+                              checked={formData.defaultThumbnail === 'default'}
+                              onChange={(e) => setFormData({ ...formData, defaultThumbnail: e.target.value })}
+                              style={{ marginLeft: '10px' }}
+                            />
+                          )}
+                        </label>
                         {formData.thumbnailImage && (
                           <img src={formData.thumbnailImage} alt="Thumbnail" className="preview-image" />
                         )}
@@ -653,7 +668,20 @@ const ProductTemplateManager = () => {
                               )}
 
                               <div className="image-upload-group">
-                                <label>{color} Thumbnail</label>
+                                <label>
+                                  {color} Thumbnail
+                                  {(isEditing || isCreating) && (
+                                    <input
+                                      type="radio"
+                                      name="defaultThumbnail"
+                                      value={color}
+                                      checked={formData.defaultThumbnail === color}
+                                      onChange={(e) => setFormData({ ...formData, defaultThumbnail: e.target.value })}
+                                      style={{ marginLeft: '10px' }}
+                                      title="Use as default thumbnail"
+                                    />
+                                  )}
+                                </label>
                                 {formData.colorImages?.[color]?.thumbnailImage && (
                                   <img src={formData.colorImages[color].thumbnailImage} alt={`${color} Thumb`} className="preview-image" />
                                 )}

@@ -138,18 +138,30 @@ router.get('/global', async (req, res) => {
 router.get('/product-templates', async (req, res) => {
   try {
     const templatesPath = path.join(__dirname, '../config/productTemplates.json');
+    const defaultTemplates = require('../config/defaultProductTemplates');
     
     try {
       const data = await fs.readFile(templatesPath, 'utf8');
-      const templates = JSON.parse(data);
+      const customTemplates = JSON.parse(data);
+      
+      // Merge default templates with custom ones
+      // Custom templates override defaults with same ID
+      const templateMap = new Map();
+      
+      // Add defaults first
+      defaultTemplates.forEach(t => templateMap.set(t.id, t));
+      
+      // Override/add custom templates
+      customTemplates.forEach(t => templateMap.set(t.id, t));
+      
+      const mergedTemplates = Array.from(templateMap.values());
       
       res.json({
         success: true,
-        templates: templates
+        templates: mergedTemplates
       });
     } catch (error) {
       // Return default templates if no saved config
-      const defaultTemplates = require('../config/defaultProductTemplates');
       res.json({
         success: true,
         templates: defaultTemplates
@@ -170,13 +182,15 @@ router.post('/product-templates/create', requireAdmin, async (req, res) => {
     const configDir = path.join(__dirname, '../config');
     const templatesPath = path.join(configDir, 'productTemplates.json');
     
-    // Load existing templates
+    // Load existing templates OR default templates
     let templates = [];
     try {
       const data = await fs.readFile(templatesPath, 'utf8');
       templates = JSON.parse(data);
     } catch (error) {
-      // Start with empty array if no file exists
+      // Start with default templates if no file exists
+      const defaultTemplates = require('../config/defaultProductTemplates');
+      templates = [...defaultTemplates];
     }
     
     // Add new template

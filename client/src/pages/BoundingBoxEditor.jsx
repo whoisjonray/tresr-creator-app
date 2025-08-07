@@ -63,24 +63,9 @@ const INITIAL_PRINT_AREAS = {
   }
 };
 
-const GARMENT_TYPES = [
-  { id: 'tee', name: 'Medium Weight T-Shirt', templateId: 'tshirt_front' },
-  { id: 'boxy', name: 'Oversized Drop Shoulder', templateId: 'tshirt_boxy_front' },
-  { id: 'next-crop', name: 'Next Level Crop Top', templateId: 'croptop_front' },
-  { id: 'wmn-hoodie', name: "Women's Independent Hoodie", templateId: 'hoodie_front' },
-  { id: 'med-hood', name: 'Medium Weight Hoodie', templateId: 'hoodie_front' },
-  { id: 'mediu', name: 'Medium Weight Sweatshirt', templateId: 'crewneck_front' },
-  { id: 'polo', name: 'Standard Polo', templateId: 'polo_front' },
-  { id: 'patch-c', name: 'Patch Hat - Curved', templateId: 'hat_front' },
-  { id: 'patch-flat', name: 'Patch Hat - Flat', templateId: 'hat_flat' },
-  { id: 'mug', name: 'Coffee Mug', templateId: 'mug_front' },
-  { id: 'art-sqsm', name: 'Art Canvas - 12x12', templateId: 'canvas_square' },
-  { id: 'art-sqm', name: 'Art Canvas - 16x16', templateId: 'canvas_square' },
-  { id: 'art-lg', name: 'Art Canvas - 24x24', templateId: 'canvas_square' },
-  { id: 'nft', name: 'NFTREASURE NFT Cards', templateId: 'trading_card' }
-];
-
 const BoundingBoxEditor = () => {
+  // Will be loaded from API
+  const [garmentTypes, setGarmentTypes] = useState([]);
   // Load saved print areas from localStorage or use defaults
   const loadSavedAreas = () => {
     const saved = localStorage.getItem('savedPrintAreas');
@@ -129,6 +114,8 @@ const BoundingBoxEditor = () => {
   useEffect(() => {
     // Load saved settings from database on mount
     loadSavedSettings();
+    // Load product templates from API
+    loadProductTemplates();
   }, []);
 
   useEffect(() => {
@@ -138,6 +125,41 @@ const BoundingBoxEditor = () => {
   useEffect(() => {
     drawCanvas();
   }, [garmentImage, printAreas, selectedGarment, selectedSide]);
+
+  const loadProductTemplates = async () => {
+    try {
+      const response = await api.get('/api/templates/active');
+      if (response.data.success && response.data.templates) {
+        const templates = response.data.templates.map(t => ({
+          id: t.id,
+          name: t.name,
+          templateId: t.id,
+          hasBackPrint: t.hasBackPrint
+        }));
+        setGarmentTypes(templates);
+        console.log('Loaded product templates from API');
+      }
+    } catch (error) {
+      console.error('Error loading templates:', error);
+      // Fall back to defaults if API fails
+      setGarmentTypes([
+        { id: 'tee', name: 'Medium Weight T-Shirt', templateId: 'tshirt_front' },
+        { id: 'boxy', name: 'Oversized Drop Shoulder', templateId: 'tshirt_boxy_front' },
+        { id: 'next-crop', name: 'Next Level Crop Top', templateId: 'croptop_front' },
+        { id: 'wmn-hoodie', name: "Women's Independent Hoodie", templateId: 'hoodie_front' },
+        { id: 'med-hood', name: 'Medium Weight Hoodie', templateId: 'hoodie_front' },
+        { id: 'mediu', name: 'Medium Weight Sweatshirt', templateId: 'crewneck_front' },
+        { id: 'polo', name: 'Standard Polo', templateId: 'polo_front' },
+        { id: 'patch-c', name: 'Patch Hat - Curved', templateId: 'hat_front' },
+        { id: 'patch-flat', name: 'Patch Hat - Flat', templateId: 'hat_flat' },
+        { id: 'mug', name: 'Coffee Mug', templateId: 'mug_front' },
+        { id: 'art-sqsm', name: 'Art Canvas - 12x12', templateId: 'canvas_square' },
+        { id: 'art-sqm', name: 'Art Canvas - 16x16', templateId: 'canvas_square' },
+        { id: 'art-lg', name: 'Art Canvas - 24x24', templateId: 'canvas_square' },
+        { id: 'nft', name: 'NFTREASURE NFT Cards', templateId: 'trading_card' }
+      ]);
+    }
+  };
 
   const loadSavedSettings = async () => {
     try {
@@ -168,7 +190,7 @@ const BoundingBoxEditor = () => {
   };
 
   const loadGarmentImage = async () => {
-    const garment = GARMENT_TYPES.find(g => g.id === selectedGarment);
+    const garment = garmentTypes.find(g => g.id === selectedGarment);
     if (!garment) return;
 
     try {
@@ -519,7 +541,7 @@ const BoundingBoxEditor = () => {
   };
 
   const currentArea = printAreas[selectedGarment]?.[selectedSide];
-  const currentGarment = GARMENT_TYPES.find(g => g.id === selectedGarment);
+  const currentGarment = garmentTypes.find(g => g.id === selectedGarment);
   const hasBackSide = printAreas[selectedGarment]?.back !== null;
 
   return (
@@ -556,7 +578,7 @@ const BoundingBoxEditor = () => {
               onChange={(e) => setSelectedGarment(e.target.value)}
               className="garment-select"
             >
-              {GARMENT_TYPES.map(garment => (
+              {garmentTypes.map(garment => (
                 <option key={garment.id} value={garment.id}>
                   {garment.name}
                 </option>
