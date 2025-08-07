@@ -568,30 +568,45 @@ function DesignEditor() {
             elementsCount: parsedDesignData?.elements?.length,
             hasThumbnail: !!designData.thumbnail_url,
             thumbnailUrl: designData.thumbnail_url,
-            hasFrontDesignUrl: !!designData.front_design_url,
-            frontDesignUrl: designData.front_design_url,
-            hasBackDesignUrl: !!designData.back_design_url,
-            backDesignUrl: designData.back_design_url
+            hasFrontDesignUrl: !!designData.frontDesignUrl,
+            frontDesignUrl: designData.frontDesignUrl,
+            hasBackDesignUrl: !!designData.backDesignUrl,
+            backDesignUrl: designData.backDesignUrl
           });
           
           // Set design title and description
           setDesignTitle(designData.name || '');
           setDesignDescription(designData.description || '');
           
+          // Load position data if available
+          if (designData.frontPosition) {
+            console.log('Found front position data:', designData.frontPosition);
+          }
+          if (designData.frontScale) {
+            const scale = parseFloat(designData.frontScale) * 100;
+            setDesignScale(scale);
+            console.log('Set design scale to:', scale);
+          }
+          
           // Try multiple sources for the design image
           let imageUrl = null;
           
-          // Priority 1: front_design_url from database
-          if (designData.front_design_url) {
+          // Priority 1: frontDesignUrl from database (camelCase)
+          if (designData.frontDesignUrl) {
+            imageUrl = designData.frontDesignUrl;
+            console.log('Using frontDesignUrl:', imageUrl);
+          }
+          // Priority 2: front_design_url (snake_case)
+          else if (designData.front_design_url) {
             imageUrl = designData.front_design_url;
             console.log('Using front_design_url:', imageUrl);
           }
-          // Priority 2: thumbnail_url
+          // Priority 3: thumbnail_url
           else if (designData.thumbnail_url) {
             imageUrl = designData.thumbnail_url;
             console.log('Using thumbnail_url:', imageUrl);
           }
-          // Priority 3: First element in design_data
+          // Priority 4: First element in design_data
           else if (parsedDesignData?.elements?.[0]?.src) {
             imageUrl = parsedDesignData.elements[0].src;
             console.log('Using first element src:', imageUrl);
@@ -608,13 +623,26 @@ function DesignEditor() {
               setFrontDesignImageSrc(imageUrl);
               setFrontDesignUrl(imageUrl);
               
-              // Enable the t-shirt product by default with centered position
+              // Load back design if available
+              if (designData.backDesignUrl) {
+                const backImg = new Image();
+                backImg.crossOrigin = 'anonymous';
+                backImg.onload = () => {
+                  console.log('✅ Back image loaded successfully:', designData.backDesignUrl);
+                  setBackDesignImage(backImg);
+                  setBackDesignImageSrc(designData.backDesignUrl);
+                  setBackDesignUrl(designData.backDesignUrl);
+                };
+                backImg.src = designData.backDesignUrl;
+              }
+              
+              // Enable the t-shirt product by default with position from database or centered
               const teeProduct = PRODUCT_TEMPLATES.find(p => p.id === 'tee');
               if (teeProduct) {
                 const newConfig = {
                   enabled: true,
-                  frontPosition: { x: 500, y: 400 },
-                  backPosition: { x: 500, y: 400 },
+                  frontPosition: designData.frontPosition || { x: 500, y: 400 },
+                  backPosition: designData.backPosition || { x: 500, y: 400 },
                   selectedColor: teeProduct.colors[0] || 'Black',
                   printLocation: 'front'
                 };
