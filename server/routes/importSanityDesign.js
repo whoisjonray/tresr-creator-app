@@ -24,6 +24,28 @@ const convertSanityToTRESRCoordinates = (topLeft, bottomRight) => {
   };
 };
 
+// Convert Sanity CDN URL to Cloudinary URL
+// Sanity URL: https://cdn.sanity.io/images/{projectId}/{dataset}/{assetId}-{dimensions}.{ext}
+// We need to find the corresponding Cloudinary URL using the Sanity design ID
+const convertSanityUrlToCloudinary = async (sanityUrl, sanityDesignId) => {
+  // For now, we need to maintain a mapping or use Cloudinary API to search
+  // In the future, this should query Cloudinary API with the Sanity design ID as metadata
+  
+  // Extract the asset ID from Sanity URL
+  const urlParts = sanityUrl.split('/');
+  const filename = urlParts[urlParts.length - 1];
+  const assetId = filename.split('-')[0];
+  
+  console.log(`📎 Converting Sanity URL to Cloudinary:`);
+  console.log(`   Sanity URL: ${sanityUrl}`);
+  console.log(`   Sanity Design ID: ${sanityDesignId}`);
+  console.log(`   Asset ID: ${assetId}`);
+  
+  // TODO: Implement Cloudinary API search using metadata
+  // For now, return the Sanity URL as fallback (will need manual fixing)
+  return sanityUrl;
+};
+
 // Import specific design from Sanity
 router.post('/import/:designId', async (req, res) => {
   try {
