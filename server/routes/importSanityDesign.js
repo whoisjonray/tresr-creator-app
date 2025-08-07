@@ -171,4 +171,145 @@ router.get('/import-status', async (req, res) => {
   }
 });
 
+// TEST ENDPOINT: Import JUST Grok IT without authentication
+router.post('/test-import-just-grok-it', async (req, res) => {
+  try {
+    const JUST_GROK_IT_ID = '27b6e93d-0e7d-4f78-9905-74a66c504a17';
+    const TEST_CREATOR_ID = '31162d55-0da5-4b13-ad7c-3cafd170cebf'; // whoisjonray@gmail.com
+    
+    console.log('🧪 TEST: Importing JUST Grok IT design...');
+    
+    // Fetch design from Sanity
+    const query = `*[_type == "design" && _id == "${JUST_GROK_IT_ID}"][0]{
+      _id,
+      name,
+      slug,
+      description,
+      "images": rawArtwork[]{
+        _key,
+        "url": asset->url,
+        canvasData
+      },
+      "creator": person->{
+        _id,
+        name,
+        slug,
+        email
+      }
+    }`;
+    
+    const sanityUrl = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}?query=${encodeURIComponent(query)}`;
+    
+    const sanityResponse = await axios.get(sanityUrl);
+    const sanityDesign = sanityResponse.data.result;
+    
+    if (!sanityDesign) {
+      return res.status(404).json({ error: 'JUST Grok IT design not found in Sanity' });
+    }
+    
+    console.log('📦 Found Sanity design:', sanityDesign.name);
+    console.log('📸 Images found:', sanityDesign.images?.length || 0);
+    
+    // Convert Sanity design to TRESR format with coordinate conversion
+    const designElements = [];
+    const coordinateLog = [];
+    
+    if (sanityDesign.images && sanityDesign.images.length > 0) {
+      sanityDesign.images.forEach((image, index) => {
+        console.log(`\n🖼️ Processing image ${index + 1}:`, image.url);
+        
+        if (image.canvasData) {
+          // Extract garment positions from canvasData
+          Object.entries(image.canvasData).forEach(([garmentType, positionData]) => {
+            if (positionData.topLeft && positionData.bottomRight) {
+              // Convert from Sanity bounding box to TRESR center-based coordinates
+              const tresrCoords = convertSanityToTRESRCoordinates(
+                positionData.topLeft,
+                positionData.bottomRight
+              );
+              
+              designElements.push({
+                type: 'image',
+                src: image.url,
+                garmentType: garmentType,
+                position: tresrCoords,
+                scale: 1,
+                rotation: 0
+              });
+              
+              const logEntry = {
+                garmentType,
+                sanity: {
+                  topLeft: positionData.topLeft,
+                  bottomRight: positionData.bottomRight,
+                  width: positionData.bottomRight.x - positionData.topLeft.x,
+                  height: positionData.bottomRight.y - positionData.topLeft.y
+                },
+                tresr: tresrCoords
+              };
+              
+              coordinateLog.push(logEntry);
+              console.log(`  📐 Converted ${garmentType} coordinates:`, logEntry);
+            }
+          });
+        } else {
+          // If no canvas data, use default centered position
+          console.log('  ⚠️ No canvas data found, using default position');
+          designElements.push({
+            type: 'image',
+            src: image.url,
+            garmentType: 'default',
+            position: { x: 500, y: 500, width: 400, height: 400 },
+            scale: 1,
+            rotation: 0
+          });
+        }
+      });
+    }
+    
+    // Create design in database
+    const designData = {
+      name: sanityDesign.name || 'JUST Grok IT',
+      description: sanityDesign.description || 'Imported from Sanity with coordinate conversion',
+      design_data: {
+        elements: designElements,
+        backgroundColor: '#ffffff',
+        metadata: {
+          importedFrom: 'sanity',
+          sanityId: sanityDesign._id,
+          importDate: new Date().toISOString(),
+          coordinateConversion: 'bounding-box-to-center',
+          coordinateLog: coordinateLog
+        }
+      },
+      thumbnail_url: sanityDesign.images?.[0]?.url || null,
+      is_public: false
+    };
+    
+    console.log('\n💾 Creating design in database with converted coordinates...');
+    const newDesign = await databaseService.createDesign(TEST_CREATOR_ID, designData);
+    
+    console.log('✅ Design imported successfully with coordinate conversion:', newDesign.id);
+    
+    res.json({
+      success: true,
+      design: {
+        id: newDesign.id,
+        name: newDesign.name,
+        elementCount: designElements.length,
+        coordinatesConverted: coordinateLog.length
+      },
+      coordinateConversion: coordinateLog,
+      message: `Successfully imported "${sanityDesign.name}" with ${coordinateLog.length} coordinate conversions`
+    });
+    
+  } catch (error) {
+    console.error('❌ Test import error:', error);
+    res.status(500).json({ 
+      error: 'Failed to import JUST Grok IT',
+      details: error.message 
+    });
+  }
+});
+
 module.exports = router;
