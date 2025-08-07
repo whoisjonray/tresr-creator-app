@@ -3,22 +3,64 @@ import { getGarmentImage } from '../config/garmentImagesCloudinary';
 import api from '../services/api';
 import './BoundingBoxEditor.css';
 
-// Current print areas from DesignEditor.jsx
+// Current print areas from DesignEditor.jsx - now with front and back
 const INITIAL_PRINT_AREAS = {
-  'tee': { width: 280, height: 350, x: 200, y: 200 },
-  'boxy': { width: 300, height: 350, x: 200, y: 200 },
-  'next-crop': { width: 250, height: 250, x: 200, y: 180 },
-  'wmn-hoodie': { width: 280, height: 340, x: 200, y: 220 },
-  'med-hood': { width: 280, height: 340, x: 200, y: 220 },
-  'mediu': { width: 280, height: 340, x: 200, y: 200 },
-  'polo': { width: 250, height: 320, x: 200, y: 200 },
-  'patch-c': { width: 120, height: 80, x: 200, y: 150 },
-  'patch-flat': { width: 120, height: 80, x: 200, y: 150 },
-  'mug': { width: 200, height: 200, x: 200, y: 200 },
-  'art-sqsm': { width: 400, height: 400, x: 200, y: 200 },
-  'art-sqm': { width: 400, height: 400, x: 200, y: 200 },
-  'art-lg': { width: 400, height: 400, x: 200, y: 200 },
-  'nft': { width: 300, height: 400, x: 200, y: 200 }
+  'tee': { 
+    front: { width: 280, height: 350, x: 200, y: 200 },
+    back: { width: 280, height: 350, x: 200, y: 200 }
+  },
+  'boxy': { 
+    front: { width: 300, height: 350, x: 200, y: 200 },
+    back: { width: 300, height: 350, x: 200, y: 200 }
+  },
+  'next-crop': { 
+    front: { width: 250, height: 250, x: 200, y: 180 },
+    back: { width: 250, height: 250, x: 200, y: 180 }
+  },
+  'wmn-hoodie': { 
+    front: { width: 280, height: 340, x: 200, y: 220 },
+    back: { width: 280, height: 340, x: 200, y: 220 }
+  },
+  'med-hood': { 
+    front: { width: 280, height: 340, x: 200, y: 220 },
+    back: { width: 280, height: 340, x: 200, y: 220 }
+  },
+  'mediu': { 
+    front: { width: 280, height: 340, x: 200, y: 200 },
+    back: { width: 280, height: 340, x: 200, y: 200 }
+  },
+  'polo': { 
+    front: { width: 250, height: 320, x: 200, y: 200 },
+    back: { width: 250, height: 320, x: 200, y: 200 }
+  },
+  'patch-c': { 
+    front: { width: 120, height: 80, x: 200, y: 150 },
+    back: null // Hats typically don't have back print
+  },
+  'patch-flat': { 
+    front: { width: 120, height: 80, x: 200, y: 150 },
+    back: null // Hats typically don't have back print
+  },
+  'mug': { 
+    front: { width: 200, height: 200, x: 200, y: 200 },
+    back: null // Mugs have one print area
+  },
+  'art-sqsm': { 
+    front: { width: 400, height: 400, x: 200, y: 200 },
+    back: null // Canvas art is single-sided
+  },
+  'art-sqm': { 
+    front: { width: 400, height: 400, x: 200, y: 200 },
+    back: null
+  },
+  'art-lg': { 
+    front: { width: 400, height: 400, x: 200, y: 200 },
+    back: null
+  },
+  'nft': { 
+    front: { width: 300, height: 400, x: 200, y: 200 },
+    back: null // Cards are typically single-sided
+  }
 };
 
 const GARMENT_TYPES = [
@@ -46,6 +88,7 @@ const BoundingBoxEditor = () => {
   };
 
   const [selectedGarment, setSelectedGarment] = useState('tee');
+  const [selectedSide, setSelectedSide] = useState('front');
   const [printAreas, setPrintAreas] = useState(loadSavedAreas());
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
@@ -70,11 +113,11 @@ const BoundingBoxEditor = () => {
 
   useEffect(() => {
     loadGarmentImage();
-  }, [selectedGarment]);
+  }, [selectedGarment, selectedSide]);
 
   useEffect(() => {
     drawCanvas();
-  }, [garmentImage, printAreas, selectedGarment]);
+  }, [garmentImage, printAreas, selectedGarment, selectedSide]);
 
   const loadSavedSettings = async () => {
     try {
@@ -95,7 +138,7 @@ const BoundingBoxEditor = () => {
     try {
       // Map to Cloudinary garment type
       const garmentType = selectedGarment;
-      const imageUrl = getGarmentImage(garmentType, 'white', 'front');
+      const imageUrl = getGarmentImage(garmentType, 'white', selectedSide);
       
       if (imageUrl) {
         const img = new Image();
@@ -127,7 +170,7 @@ const BoundingBoxEditor = () => {
     }
 
     // Draw bounding box
-    const area = printAreas[selectedGarment];
+    const area = printAreas[selectedGarment]?.[selectedSide];
     if (area) {
       // Draw semi-transparent fill
       ctx.fillStyle = 'rgba(0, 123, 255, 0.1)';
@@ -185,7 +228,8 @@ const BoundingBoxEditor = () => {
   };
 
   const getResizeHandle = (pos) => {
-    const area = printAreas[selectedGarment];
+    const area = printAreas[selectedGarment]?.[selectedSide];
+    if (!area) return null;
     const handleSize = 8;
     const tolerance = 5;
 
@@ -206,7 +250,8 @@ const BoundingBoxEditor = () => {
 
   const handleMouseDown = (e) => {
     const pos = getMousePos(e);
-    const area = printAreas[selectedGarment];
+    const area = printAreas[selectedGarment]?.[selectedSide];
+    if (!area) return;
     const handle = getResizeHandle(pos);
 
     if (handle) {
@@ -222,7 +267,8 @@ const BoundingBoxEditor = () => {
 
   const handleMouseMove = (e) => {
     const pos = getMousePos(e);
-    const area = printAreas[selectedGarment];
+    const area = printAreas[selectedGarment]?.[selectedSide];
+    if (!area) return;
 
     // Update cursor
     const canvas = canvasRef.current;
@@ -246,7 +292,13 @@ const BoundingBoxEditor = () => {
         x: Math.max(0, Math.min(CANVAS_WIDTH - area.width, pos.x - dragStart.x)),
         y: Math.max(0, Math.min(CANVAS_HEIGHT - area.height, pos.y - dragStart.y))
       };
-      setPrintAreas(prev => ({ ...prev, [selectedGarment]: newArea }));
+      setPrintAreas(prev => ({ 
+        ...prev, 
+        [selectedGarment]: {
+          ...prev[selectedGarment],
+          [selectedSide]: newArea
+        }
+      }));
     } else if (isResizing && resizeHandle) {
       let newArea = { ...area };
 
@@ -306,7 +358,13 @@ const BoundingBoxEditor = () => {
         }
       }
 
-      setPrintAreas(prev => ({ ...prev, [selectedGarment]: newArea }));
+      setPrintAreas(prev => ({ 
+        ...prev, 
+        [selectedGarment]: {
+          ...prev[selectedGarment],
+          [selectedSide]: newArea
+        }
+      }));
     }
   };
 
@@ -318,8 +376,11 @@ const BoundingBoxEditor = () => {
 
   const updateValue = (field, value) => {
     const numValue = parseInt(value) || 0;
+    const currentArea = printAreas[selectedGarment]?.[selectedSide];
+    if (!currentArea) return;
+    
     let newArea = {
-      ...printAreas[selectedGarment],
+      ...currentArea,
       [field]: numValue
     };
 
@@ -334,7 +395,10 @@ const BoundingBoxEditor = () => {
 
     setPrintAreas(prev => ({
       ...prev,
-      [selectedGarment]: newArea
+      [selectedGarment]: {
+        ...prev[selectedGarment],
+        [selectedSide]: newArea
+      }
     }));
   };
 
@@ -374,7 +438,10 @@ const BoundingBoxEditor = () => {
   const resetCurrent = () => {
     setPrintAreas(prev => ({
       ...prev,
-      [selectedGarment]: INITIAL_PRINT_AREAS[selectedGarment]
+      [selectedGarment]: {
+        ...prev[selectedGarment],
+        [selectedSide]: INITIAL_PRINT_AREAS[selectedGarment]?.[selectedSide]
+      }
     }));
   };
 
@@ -383,20 +450,41 @@ const BoundingBoxEditor = () => {
   };
 
   const applyDTGRatio = () => {
-    const area = printAreas[selectedGarment];
+    const area = printAreas[selectedGarment]?.[selectedSide];
+    if (!area) return;
+    
     const newHeight = Math.round(area.width / DTG_ASPECT_RATIO);
     
     setPrintAreas(prev => ({
       ...prev,
       [selectedGarment]: {
-        ...area,
-        height: newHeight
+        ...prev[selectedGarment],
+        [selectedSide]: {
+          ...area,
+          height: newHeight
+        }
       }
     }));
   };
 
-  const currentArea = printAreas[selectedGarment];
+  const copyFromFront = () => {
+    const frontArea = printAreas[selectedGarment]?.front;
+    if (!frontArea) return;
+    
+    setPrintAreas(prev => ({
+      ...prev,
+      [selectedGarment]: {
+        ...prev[selectedGarment],
+        back: { ...frontArea }
+      }
+    }));
+    setSaveStatus('Copied front to back!');
+    setTimeout(() => setSaveStatus(''), 2000);
+  };
+
+  const currentArea = printAreas[selectedGarment]?.[selectedSide];
   const currentGarment = GARMENT_TYPES.find(g => g.id === selectedGarment);
+  const hasBackSide = printAreas[selectedGarment]?.back !== null;
 
   return (
     <div className="bounding-box-editor">
@@ -440,49 +528,87 @@ const BoundingBoxEditor = () => {
             </select>
           </div>
 
-          <div className="numeric-controls">
-            <h3>Bounding Box Values</h3>
-            <div className="control-grid">
-              <div className="control-group">
-                <label>X Position:</label>
-                <input
-                  type="number"
-                  value={currentArea.x}
-                  onChange={(e) => updateValue('x', e.target.value)}
-                />
-              </div>
-              <div className="control-group">
-                <label>Y Position:</label>
-                <input
-                  type="number"
-                  value={currentArea.y}
-                  onChange={(e) => updateValue('y', e.target.value)}
-                />
-              </div>
-              <div className="control-group">
-                <label>Width:</label>
-                <input
-                  type="number"
-                  value={currentArea.width}
-                  onChange={(e) => updateValue('width', e.target.value)}
-                />
-              </div>
-              <div className="control-group">
-                <label>Height:</label>
-                <input
-                  type="number"
-                  value={currentArea.height}
-                  onChange={(e) => updateValue('height', e.target.value)}
-                />
-              </div>
+          <div className="side-selector">
+            <h3>Select Side</h3>
+            <div className="side-buttons">
+              <button
+                onClick={() => setSelectedSide('front')}
+                className={`side-btn ${selectedSide === 'front' ? 'active' : ''}`}
+              >
+                Front
+              </button>
+              {hasBackSide && (
+                <button
+                  onClick={() => setSelectedSide('back')}
+                  className={`side-btn ${selectedSide === 'back' ? 'active' : ''}`}
+                >
+                  Back
+                </button>
+              )}
+              {selectedSide === 'back' && hasBackSide && (
+                <button
+                  onClick={copyFromFront}
+                  className="btn-copy"
+                  title="Copy front dimensions to back"
+                >
+                  Copy from Front
+                </button>
+              )}
             </div>
+            {!hasBackSide && (
+              <p className="no-back-note">This garment type has no back print area</p>
+            )}
           </div>
 
-          <div className="center-info">
-            <h3>Center Point</h3>
-            <p>X: {Math.round(currentArea.x + currentArea.width / 2)}</p>
-            <p>Y: {Math.round(currentArea.y + currentArea.height / 2)}</p>
+          <div className="numeric-controls">
+            <h3>Bounding Box Values ({selectedSide})</h3>
+            {currentArea ? (
+              <div className="control-grid">
+                <div className="control-group">
+                  <label>X Position:</label>
+                  <input
+                    type="number"
+                    value={currentArea.x}
+                    onChange={(e) => updateValue('x', e.target.value)}
+                  />
+                </div>
+                <div className="control-group">
+                  <label>Y Position:</label>
+                  <input
+                    type="number"
+                    value={currentArea.y}
+                    onChange={(e) => updateValue('y', e.target.value)}
+                  />
+                </div>
+                <div className="control-group">
+                  <label>Width:</label>
+                  <input
+                    type="number"
+                    value={currentArea.width}
+                    onChange={(e) => updateValue('width', e.target.value)}
+                  />
+                </div>
+                <div className="control-group">
+                  <label>Height:</label>
+                  <input
+                    type="number"
+                    value={currentArea.height}
+                    onChange={(e) => updateValue('height', e.target.value)}
+                  />
+                </div>
+              </div>
+            ) : (
+              <p className="no-area-note">No print area for {selectedSide} side</p>
+            )}
           </div>
+
+          {currentArea && (
+            <div className="center-info">
+              <h3>Center Point</h3>
+              <p>X: {Math.round(currentArea.x + currentArea.width / 2)}</p>
+              <p>Y: {Math.round(currentArea.y + currentArea.height / 2)}</p>
+            </div>
+          )}
 
           <div className="dtg-controls">
             <h3>DTG Printer Settings</h3>
