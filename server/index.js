@@ -112,6 +112,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/designs', designsRoutes);
 app.use('/api', scansRoutes);
 app.use('/api/sanity', importSanityRoutes);
+app.use('/api/settings', require('./routes/settings'));
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {

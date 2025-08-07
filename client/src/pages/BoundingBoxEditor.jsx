@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { getGarmentImage } from '../config/garmentImagesCloudinary';
+import api from '../services/api';
 import './BoundingBoxEditor.css';
 
 // Current print areas from DesignEditor.jsx
@@ -38,18 +39,34 @@ const GARMENT_TYPES = [
 ];
 
 const BoundingBoxEditor = () => {
+  // Load saved print areas from localStorage or use defaults
+  const loadSavedAreas = () => {
+    const saved = localStorage.getItem('savedPrintAreas');
+    return saved ? JSON.parse(saved) : INITIAL_PRINT_AREAS;
+  };
+
   const [selectedGarment, setSelectedGarment] = useState('tee');
-  const [printAreas, setPrintAreas] = useState(INITIAL_PRINT_AREAS);
+  const [printAreas, setPrintAreas] = useState(loadSavedAreas());
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const [resizeHandle, setResizeHandle] = useState(null);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [garmentImage, setGarmentImage] = useState(null);
+  const [aspectRatioLocked, setAspectRatioLocked] = useState(false);
+  const [saveStatus, setSaveStatus] = useState('');
   const canvasRef = useRef(null);
+
+  // DTG printer platen is 14x20 inches (0.7 ratio)
+  const DTG_ASPECT_RATIO = 14 / 20; // 0.7
 
   // Canvas size
   const CANVAS_WIDTH = 600;
   const CANVAS_HEIGHT = 600;
+
+  useEffect(() => {
+    // Load saved settings from database on mount
+    loadSavedSettings();
+  }, []);
 
   useEffect(() => {
     loadGarmentImage();
@@ -58,6 +75,18 @@ const BoundingBoxEditor = () => {
   useEffect(() => {
     drawCanvas();
   }, [garmentImage, printAreas, selectedGarment]);
+
+  const loadSavedSettings = async () => {
+    try {
+      const response = await api.get('/api/settings/print-areas');
+      if (response.data.success && response.data.printAreas) {
+        setPrintAreas(response.data.printAreas);
+        console.log('Loaded print areas from database');
+      }
+    } catch (error) {
+      console.log('Using local/default print areas');
+    }
+  };
 
   const loadGarmentImage = async () => {
     const garment = GARMENT_TYPES.find(g => g.id === selectedGarment);
@@ -262,6 +291,21 @@ const BoundingBoxEditor = () => {
       newArea.width = Math.max(50, newArea.width);
       newArea.height = Math.max(50, newArea.height);
 
+      // Apply aspect ratio lock if enabled
+      if (aspectRatioLocked) {
+        // Maintain 14:20 ratio (width:height = 0.7)
+        if (resizeHandle === 'n' || resizeHandle === 's') {
+          // Height changed, adjust width
+          newArea.width = Math.round(newArea.height * DTG_ASPECT_RATIO);
+        } else if (resizeHandle === 'w' || resizeHandle === 'e') {
+          // Width changed, adjust height
+          newArea.height = Math.round(newArea.width / DTG_ASPECT_RATIO);
+        } else {
+          // Corner resize - prioritize width
+          newArea.height = Math.round(newArea.width / DTG_ASPECT_RATIO);
+        }
+      }
+
       setPrintAreas(prev => ({ ...prev, [selectedGarment]: newArea }));
     }
   };
@@ -274,13 +318,51 @@ const BoundingBoxEditor = () => {
 
   const updateValue = (field, value) => {
     const numValue = parseInt(value) || 0;
+    let newArea = {
+      ...printAreas[selectedGarment],
+      [field]: numValue
+    };
+
+    // Apply aspect ratio lock if enabled
+    if (aspectRatioLocked) {
+      if (field === 'width') {
+        newArea.height = Math.round(numValue / DTG_ASPECT_RATIO);
+      } else if (field === 'height') {
+        newArea.width = Math.round(numValue * DTG_ASPECT_RATIO);
+      }
+    }
+
     setPrintAreas(prev => ({
       ...prev,
-      [selectedGarment]: {
-        ...prev[selectedGarment],
-        [field]: numValue
-      }
+      [selectedGarment]: newArea
     }));
+  };
+
+  const saveToDatabase = async () => {
+    try {
+      // Save to localStorage immediately for local persistence
+      localStorage.setItem('savedPrintAreas', JSON.stringify(printAreas));
+      
+      // Save to database via API
+      setSaveStatus('Saving...');
+      const response = await api.post('/api/settings/print-areas', {
+        printAreas: printAreas
+      });
+      
+      if (response.data.success) {
+        setSaveStatus('Saved to Database!');
+        console.log('Print areas saved to database');
+      } else {
+        setSaveStatus('Saved Locally');
+        console.log('Database save failed, saved locally');
+      }
+    } catch (error) {
+      console.error('Error saving to database:', error);
+      // Still saved to localStorage even if database fails
+      setSaveStatus('Saved Locally');
+    }
+    
+    setTimeout(() => setSaveStatus(''), 3000);
   };
 
   const copyToClipboard = () => {
@@ -300,12 +382,29 @@ const BoundingBoxEditor = () => {
     setPrintAreas(INITIAL_PRINT_AREAS);
   };
 
+  const applyDTGRatio = () => {
+    const area = printAreas[selectedGarment];
+    const newHeight = Math.round(area.width / DTG_ASPECT_RATIO);
+    
+    setPrintAreas(prev => ({
+      ...prev,
+      [selectedGarment]: {
+        ...area,
+        height: newHeight
+      }
+    }));
+  };
+
   const currentArea = printAreas[selectedGarment];
   const currentGarment = GARMENT_TYPES.find(g => g.id === selectedGarment);
 
   return (
     <div className="bounding-box-editor">
-      <h1>Garment Bounding Box Editor</h1>
+      <h1>Garment Bounding Box Editor (Admin Only)</h1>
+      <div className="admin-warning">
+        ⚠️ <strong>Admin Tool:</strong> Changes here affect ALL products and ALL users globally. 
+        The bounding boxes define the printable area for each garment type across the entire platform.
+      </div>
       
       <div className="editor-container">
         <div className="canvas-section">
@@ -385,15 +484,34 @@ const BoundingBoxEditor = () => {
             <p>Y: {Math.round(currentArea.y + currentArea.height / 2)}</p>
           </div>
 
+          <div className="dtg-controls">
+            <h3>DTG Printer Settings</h3>
+            <p className="dtg-info">14" × 20" Platen (Ratio: {DTG_ASPECT_RATIO.toFixed(2)})</p>
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={aspectRatioLocked}
+                onChange={(e) => setAspectRatioLocked(e.target.checked)}
+              />
+              Lock 14:20 Aspect Ratio
+            </label>
+            <button onClick={applyDTGRatio} className="btn-dtg">
+              Apply 14:20 Ratio to Current
+            </button>
+          </div>
+
           <div className="action-buttons">
+            <button onClick={saveToDatabase} className="btn-save">
+              {saveStatus || 'Save Globally (All Users)'}
+            </button>
             <button onClick={resetCurrent} className="btn-secondary">
               Reset Current
             </button>
             <button onClick={resetAll} className="btn-warning">
-              Reset All
+              Reset All to Defaults
             </button>
             <button onClick={copyToClipboard} className="btn-primary">
-              Copy All to Clipboard
+              Export to Code
             </button>
           </div>
         </div>
