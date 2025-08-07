@@ -5,12 +5,27 @@ const path = require('path');
 const cloudinary = require('cloudinary').v2;
 const { ProductTemplate } = require('../models');
 
+// Load environment variables
+require('dotenv').config({ path: path.join(__dirname, '../../.env') });
+
+// Get Cloudinary credentials (support both naming conventions)
+const cloudName = process.env.CLOUDINARY_CLOUD_NAME || process.env.CLOUDINARY_NAME;
+const apiKey = process.env.CLOUDINARY_API_KEY;
+const apiSecret = process.env.CLOUDINARY_API_SECRET;
+
 // Configure Cloudinary
-if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET) {
+if (cloudName && apiKey && apiSecret) {
   cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
+    cloud_name: cloudName,
+    api_key: apiKey,
+    api_secret: apiSecret
+  });
+  console.log('✅ Cloudinary configured with cloud name:', cloudName);
+} else {
+  console.log('⚠️ Cloudinary not configured. Missing env vars:', {
+    CLOUD_NAME: !!cloudName,
+    API_KEY: !!apiKey,
+    API_SECRET: !!apiSecret
   });
 }
 
@@ -431,11 +446,29 @@ router.post('/upload-template-image', requireAdmin, async (req, res) => {
       });
     }
     
+    // Get Cloudinary credentials (support both naming conventions)
+    const cloudName = process.env.CLOUDINARY_CLOUD_NAME || process.env.CLOUDINARY_NAME;
+    const apiKey = process.env.CLOUDINARY_API_KEY;
+    const apiSecret = process.env.CLOUDINARY_API_SECRET;
+    
     // Ensure Cloudinary is configured
-    if (!process.env.CLOUDINARY_CLOUD_NAME) {
+    if (!cloudName || !apiKey || !apiSecret) {
+      console.log('Cloudinary check failed. Environment variables:', {
+        CLOUD_NAME: !!cloudName,
+        API_KEY: !!apiKey,
+        API_SECRET: !!apiSecret,
+        NODE_ENV: process.env.NODE_ENV,
+        RAILWAY_ENVIRONMENT: process.env.RAILWAY_ENVIRONMENT
+      });
+      
       return res.status(500).json({
         success: false,
-        error: 'Cloudinary not configured'
+        error: 'Cloudinary not configured. Please add CLOUDINARY_NAME (or CLOUDINARY_CLOUD_NAME), CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET to environment variables.',
+        debug: {
+          hasCloudName: !!cloudName,
+          hasApiKey: !!apiKey,
+          hasApiSecret: !!apiSecret
+        }
       });
     }
     
