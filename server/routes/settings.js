@@ -127,4 +127,221 @@ router.get('/global', async (req, res) => {
   }
 });
 
+// Get all product templates
+router.get('/product-templates', async (req, res) => {
+  try {
+    const templatesPath = path.join(__dirname, '../config/productTemplates.json');
+    
+    try {
+      const data = await fs.readFile(templatesPath, 'utf8');
+      const templates = JSON.parse(data);
+      
+      res.json({
+        success: true,
+        templates: templates
+      });
+    } catch (error) {
+      // Return default templates if no saved config
+      const defaultTemplates = require('../config/defaultProductTemplates');
+      res.json({
+        success: true,
+        templates: defaultTemplates
+      });
+    }
+  } catch (error) {
+    console.error('Error loading product templates:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to load product templates'
+    });
+  }
+});
+
+// Create new product template (admin only)
+router.post('/product-templates/create', requireAdmin, async (req, res) => {
+  try {
+    const configDir = path.join(__dirname, '../config');
+    const templatesPath = path.join(configDir, 'productTemplates.json');
+    
+    // Load existing templates
+    let templates = [];
+    try {
+      const data = await fs.readFile(templatesPath, 'utf8');
+      templates = JSON.parse(data);
+    } catch (error) {
+      // Start with empty array if no file exists
+    }
+    
+    // Add new template
+    const newTemplate = {
+      ...req.body,
+      createdAt: new Date().toISOString(),
+      createdBy: req.session.user.email
+    };
+    
+    templates.push(newTemplate);
+    
+    // Save updated templates
+    await fs.writeFile(templatesPath, JSON.stringify(templates, null, 2));
+    
+    console.log(`✅ New product template created: ${newTemplate.name} by ${req.session.user.email}`);
+    
+    res.json({
+      success: true,
+      template: newTemplate,
+      message: 'Product template created successfully'
+    });
+    
+  } catch (error) {
+    console.error('Error creating product template:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to create product template'
+    });
+  }
+});
+
+// Update product template (admin only)
+router.post('/product-templates/update', requireAdmin, async (req, res) => {
+  try {
+    const configDir = path.join(__dirname, '../config');
+    const templatesPath = path.join(configDir, 'productTemplates.json');
+    
+    // Load existing templates
+    let templates = [];
+    try {
+      const data = await fs.readFile(templatesPath, 'utf8');
+      templates = JSON.parse(data);
+    } catch (error) {
+      templates = [];
+    }
+    
+    // Find and update template
+    const index = templates.findIndex(t => t.id === req.body.id);
+    
+    if (index === -1) {
+      return res.status(404).json({
+        success: false,
+        error: 'Template not found'
+      });
+    }
+    
+    templates[index] = {
+      ...req.body,
+      updatedAt: new Date().toISOString(),
+      updatedBy: req.session.user.email
+    };
+    
+    // Save updated templates
+    await fs.writeFile(templatesPath, JSON.stringify(templates, null, 2));
+    
+    console.log(`✅ Product template updated: ${req.body.name} by ${req.session.user.email}`);
+    
+    res.json({
+      success: true,
+      template: templates[index],
+      message: 'Product template updated successfully'
+    });
+    
+  } catch (error) {
+    console.error('Error updating product template:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to update product template'
+    });
+  }
+});
+
+// Delete product template (admin only)
+router.delete('/product-templates/:templateId', requireAdmin, async (req, res) => {
+  try {
+    const { templateId } = req.params;
+    const configDir = path.join(__dirname, '../config');
+    const templatesPath = path.join(configDir, 'productTemplates.json');
+    
+    // Load existing templates
+    let templates = [];
+    try {
+      const data = await fs.readFile(templatesPath, 'utf8');
+      templates = JSON.parse(data);
+    } catch (error) {
+      templates = [];
+    }
+    
+    // Filter out the template to delete
+    const filteredTemplates = templates.filter(t => t.id !== templateId);
+    
+    if (filteredTemplates.length === templates.length) {
+      return res.status(404).json({
+        success: false,
+        error: 'Template not found'
+      });
+    }
+    
+    // Save updated templates
+    await fs.writeFile(templatesPath, JSON.stringify(filteredTemplates, null, 2));
+    
+    console.log(`✅ Product template deleted: ${templateId} by ${req.session.user.email}`);
+    
+    res.json({
+      success: true,
+      message: 'Product template deleted successfully'
+    });
+    
+  } catch (error) {
+    console.error('Error deleting product template:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to delete product template'
+    });
+  }
+});
+
+// Upload template image (admin only)
+router.post('/upload-template-image', requireAdmin, async (req, res) => {
+  try {
+    const { image, imageType, templateId } = req.body;
+    
+    if (!image || !imageType) {
+      return res.status(400).json({
+        success: false,
+        error: 'Image and imageType are required'
+      });
+    }
+    
+    // Upload to Cloudinary
+    const cloudinary = require('cloudinary').v2;
+    
+    // Configure Cloudinary if not already configured
+    if (!cloudinary.config().cloud_name) {
+      cloudinary.config({
+        cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+        api_key: process.env.CLOUDINARY_API_KEY,
+        api_secret: process.env.CLOUDINARY_API_SECRET
+      });
+    }
+    
+    const uploadResult = await cloudinary.uploader.upload(image, {
+      folder: `tresr-templates/${templateId}`,
+      public_id: `${templateId}-${imageType}`,
+      overwrite: true
+    });
+    
+    console.log(`✅ Template image uploaded: ${templateId}/${imageType}`);
+    
+    res.json({
+      success: true,
+      url: uploadResult.secure_url,
+      publicId: uploadResult.public_id
+    });
+    
+  } catch (error) {
+    console.error('Error uploading template image:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to upload image'
+    });
+  }
+});
+
 module.exports = router;
