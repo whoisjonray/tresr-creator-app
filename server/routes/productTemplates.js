@@ -2,41 +2,45 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const fs = require('fs').promises;
+const { ProductTemplate } = require('../models');
 
 // Get all active product templates for display in design editor
 router.get('/active', async (req, res) => {
   try {
-    const templatesPath = path.join(__dirname, '../config/productTemplates.json');
     const defaultTemplates = require('../config/defaultProductTemplates');
     
-    let mergedTemplates = [];
-    
-    try {
-      const data = await fs.readFile(templatesPath, 'utf8');
-      const customTemplates = JSON.parse(data);
-      
-      // Merge default templates with custom ones
-      const templateMap = new Map();
-      
-      // Add defaults first
-      defaultTemplates.forEach(t => {
-        if (t.active !== false) {
-          templateMap.set(t.id, t);
-        }
-      });
-      
-      // Override/add custom templates
-      customTemplates.forEach(t => {
-        if (t.active !== false) {
-          templateMap.set(t.id, t);
-        }
-      });
-      
-      mergedTemplates = Array.from(templateMap.values());
-    } catch (error) {
-      // Use only default templates if no custom ones exist
-      mergedTemplates = defaultTemplates.filter(t => t.active !== false);
+    // If database is available, fetch custom templates
+    let customTemplates = [];
+    if (ProductTemplate) {
+      try {
+        customTemplates = await ProductTemplate.findAll({
+          where: { active: true },
+          order: [['createdAt', 'DESC']]
+        });
+      } catch (dbError) {
+        console.log('Database not available, using defaults only');
+      }
     }
+    
+    // Merge default templates with custom ones
+    const templateMap = new Map();
+    
+    // Add defaults first
+    defaultTemplates.forEach(t => {
+      if (t.active !== false) {
+        templateMap.set(t.id, t);
+      }
+    });
+    
+    // Override/add custom templates from database
+    customTemplates.forEach(t => {
+      const templateData = t.toJSON ? t.toJSON() : t;
+      if (templateData.active !== false) {
+        templateMap.set(templateData.id, templateData);
+      }
+    });
+    
+    const mergedTemplates = Array.from(templateMap.values());
     
     // Format for design editor
     const formattedTemplates = mergedTemplates.map(t => {
