@@ -545,7 +545,9 @@ function DesignEditor() {
       api.get(`/api/designs/${params.id}`)
         .then(response => {
           const designData = response.data.design;
-          console.log('Loaded design from database:', designData);
+          console.log('=== FULL DESIGN DATA FROM DATABASE ===');
+          console.log(JSON.stringify(designData, null, 2));
+          console.log('=====================================');
           
           // Parse design_data if it's a string
           let parsedDesignData = designData.design_data;
@@ -565,129 +567,82 @@ function DesignEditor() {
             hasElements: !!(parsedDesignData?.elements),
             elementsCount: parsedDesignData?.elements?.length,
             hasThumbnail: !!designData.thumbnail_url,
-            thumbnailUrl: designData.thumbnail_url
+            thumbnailUrl: designData.thumbnail_url,
+            hasFrontDesignUrl: !!designData.front_design_url,
+            frontDesignUrl: designData.front_design_url,
+            hasBackDesignUrl: !!designData.back_design_url,
+            backDesignUrl: designData.back_design_url
           });
           
           // Set design title and description
           setDesignTitle(designData.name || '');
           setDesignDescription(designData.description || '');
           
-          // First, try to load from thumbnail_url if no design_data
-          if (!parsedDesignData?.elements && designData.thumbnail_url) {
-            console.log('No design elements found, loading from thumbnail URL:', designData.thumbnail_url);
+          // Try multiple sources for the design image
+          let imageUrl = null;
+          
+          // Priority 1: front_design_url from database
+          if (designData.front_design_url) {
+            imageUrl = designData.front_design_url;
+            console.log('Using front_design_url:', imageUrl);
+          }
+          // Priority 2: thumbnail_url
+          else if (designData.thumbnail_url) {
+            imageUrl = designData.thumbnail_url;
+            console.log('Using thumbnail_url:', imageUrl);
+          }
+          // Priority 3: First element in design_data
+          else if (parsedDesignData?.elements?.[0]?.src) {
+            imageUrl = parsedDesignData.elements[0].src;
+            console.log('Using first element src:', imageUrl);
+          }
+          
+          // Load the image if we found one
+          if (imageUrl) {
+            console.log('Loading design image from:', imageUrl);
             const img = new Image();
+            img.crossOrigin = 'anonymous'; // Handle CORS for Cloudinary
             img.onload = () => {
+              console.log('✅ Image loaded successfully:', imageUrl);
               setFrontDesignImage(img);
-              setFrontDesignImageSrc(designData.thumbnail_url);
-              setFrontDesignUrl(designData.thumbnail_url);
+              setFrontDesignImageSrc(imageUrl);
+              setFrontDesignUrl(imageUrl);
               
-              // Enable the first product by default
-              const firstProduct = PRODUCT_TEMPLATES[0];
-              setProductConfigs(prev => ({
-                ...prev,
-                [firstProduct.id]: {
-                  ...prev[firstProduct.id],
+              // Enable the t-shirt product by default with centered position
+              const teeProduct = PRODUCT_TEMPLATES.find(p => p.id === 'tee');
+              if (teeProduct) {
+                const newConfig = {
                   enabled: true,
                   frontPosition: { x: 500, y: 400 },
                   backPosition: { x: 500, y: 400 },
+                  selectedColor: teeProduct.colors[0] || 'Black',
                   printLocation: 'front'
-                }
-              }));
-            };
-            img.src = designData.thumbnail_url;
-          }
-          
-          // Map Sanity garment types to TRESR product IDs
-          const garmentTypeMapping = {
-            'tshirt': 'tee',           // Medium Weight T-Shirt
-            't-shirt': 'tee',
-            'hoodie': 'med-hood',       // Medium Weight Hoodie
-            'sweatshirt': 'mediu',      // Medium Weight Sweatshirt
-            'crewneck': 'mediu',
-            'hat': 'patch-c',           // Patch Hat - Curved
-            'cap': 'patch-c',
-            'polo': 'polo',             // Standard Polo
-            'croptop': 'next-crop',     // Next Level Crop Top
-            'boxy': 'boxy',             // Oversized Drop Shoulder
-            'default': 'tee'            // Default to t-shirt
-          };
-          
-          // Load design elements (images and positions)
-          if (parsedDesignData?.elements && parsedDesignData.elements.length > 0) {
-            console.log('Loading design elements:', parsedDesignData.elements);
-            
-            // Get the first element to use as the main design
-            const firstElement = parsedDesignData.elements[0];
-            if (firstElement && firstElement.src) {
-              console.log('Loading design from element:', firstElement);
-              
-              // Load the main design image
-              const img = new Image();
-              img.onload = () => {
-                // Always load as front design for editing
-                setFrontDesignImage(img);
-                setFrontDesignImageSrc(firstElement.src);
-                setFrontDesignUrl(firstElement.src);
+                };
                 
-                // Process all elements to set up product configs
-                const newProductConfigs = {};
-                
-                parsedDesignData.elements.forEach(element => {
-                  if (element.garmentType && element.position) {
-                    // Map the garment type to TRESR product ID
-                    const productId = garmentTypeMapping[element.garmentType.toLowerCase()] || 'tee';
-                    console.log(`Mapping garment type '${element.garmentType}' to product '${productId}'`);
-                    
-                    // Set up the product configuration with the converted coordinates
-                    newProductConfigs[productId] = {
-                      enabled: true,
-                      frontPosition: {
-                        x: element.position.x || 500,
-                        y: element.position.y || 400
-                      },
-                      backPosition: {
-                        x: element.position.x || 500,
-                        y: element.position.y || 400
-                      },
-                      selectedColor: PRODUCT_TEMPLATES.find(p => p.id === productId)?.colors?.[0] || 'Black',
-                      printLocation: 'front',
-                      scale: element.position.scale || 1
-                    };
-                    
-                    // Store the design scale if width/height are provided
-                    if (element.position.width && element.position.height) {
-                      // Calculate scale based on standard design size (400px width)
-                      const scale = (element.position.width / 400) * 100;
-                      setDesignScale(scale);
-                      console.log(`Set design scale to ${scale}% based on width ${element.position.width}`);
-                    }
-                  }
-                });
-                
-                // Enable at least the t-shirt if no products were configured
-                if (Object.keys(newProductConfigs).length === 0) {
-                  newProductConfigs['tee'] = {
-                    enabled: true,
-                    frontPosition: { x: 500, y: 400 },
-                    backPosition: { x: 500, y: 400 },
-                    selectedColor: 'Black',
-                    printLocation: 'front'
-                  };
-                }
+                console.log('Setting t-shirt product config:', newConfig);
                 
                 setProductConfigs(prev => ({
                   ...prev,
-                  ...newProductConfigs
+                  'tee': newConfig
                 }));
                 
-                // Set the first enabled product as active
-                const firstEnabledProduct = Object.keys(newProductConfigs)[0];
-                if (firstEnabledProduct) {
-                  setActiveProduct(firstEnabledProduct);
-                }
-              };
-              img.src = firstElement.src;
-            }
+                setActiveProduct('tee');
+                
+                // Trigger canvas redraw after state updates
+                setTimeout(() => {
+                  console.log('Triggering canvas redraw...');
+                  drawCanvas();
+                }, 100);
+              }
+            };
+            img.onerror = (err) => {
+              console.error('❌ Failed to load image:', imageUrl, err);
+              alert('Failed to load design image. Please try uploading a new image.');
+            };
+            img.src = imageUrl;
+          } else {
+            console.warn('⚠️ No image URL found in design data');
+            alert('No design image found. Please upload a new image.');
           }
           
           // Load metadata if available
