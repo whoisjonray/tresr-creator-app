@@ -337,4 +337,53 @@ router.post('/migrate', requireAuth, async (req, res) => {
   }
 });
 
+// FIX endpoint: Update JUST Grok IT with correct Cloudinary URL
+router.post('/fix-just-grok-it-url', async (req, res) => {
+  try {
+    const { Design } = require('../models');
+    
+    // The correct Cloudinary URL for JUST Grok IT (1890x2362 raw image)
+    const cloudinaryUrl = 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752445690/GROK_v2.1_Recovered2_ejnqmn.png';
+    
+    // Update the design
+    const [updateCount] = await Design.update(
+      { 
+        frontDesignUrl: cloudinaryUrl,
+        thumbnail_url: cloudinaryUrl 
+      },
+      { 
+        where: { 
+          id: 'b389d0a0-932c-4d14-9ab0-8e29057af06e' 
+        } 
+      }
+    );
+    
+    if (updateCount > 0) {
+      // Get the updated design
+      const updatedDesign = await Design.findByPk('b389d0a0-932c-4d14-9ab0-8e29057af06e');
+      
+      res.json({
+        success: true,
+        message: 'Updated JUST Grok IT with correct Cloudinary URL',
+        design: {
+          id: updatedDesign.id,
+          name: updatedDesign.name,
+          frontDesignUrl: updatedDesign.frontDesignUrl
+        }
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        error: 'Design not found'
+      });
+    }
+  } catch (error) {
+    console.error('Error fixing design URL:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to update design URL'
+    });
+  }
+});
+
 module.exports = router;
