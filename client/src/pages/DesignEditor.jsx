@@ -105,16 +105,16 @@ const PRODUCT_ICONS = {
 // Print area configurations for each product type
 // Dimensions are relative to a 400x400 canvas
 const PRINT_AREAS = {
-  // T-shirts - standard chest print area
-  'tee': { width: 200, height: 286, x: 200, y: 80 },
-  'boxy': { width: 220, height: 286, x: 200, y: 90 },
-  'next-crop': { width: 180, height: 200, x: 200, y: 100 },
+  // T-shirts - larger print area for better visibility
+  'tee': { width: 280, height: 350, x: 200, y: 200 },
+  'boxy': { width: 300, height: 350, x: 200, y: 200 },
+  'next-crop': { width: 260, height: 280, x: 200, y: 180 },
   
-  // Hoodies - slightly lower and wider
-  'wmn-hoodie': { width: 200, height: 260, x: 200, y: 120 },
-  'med-hood': { width: 200, height: 260, x: 200, y: 120 },
-  'mediu': { width: 200, height: 280, x: 200, y: 100 },
-  'sweat': { width: 200, height: 280, x: 200, y: 100 },
+  // Hoodies - centered with good coverage
+  'wmn-hoodie': { width: 280, height: 340, x: 200, y: 220 },
+  'med-hood': { width: 280, height: 340, x: 200, y: 220 },
+  'mediu': { width: 280, height: 350, x: 200, y: 200 },
+  'sweat': { width: 280, height: 350, x: 200, y: 200 },
   
   // Hats - smaller centered area
   'patch-c': { width: 120, height: 80, x: 200, y: 160 },
@@ -619,9 +619,20 @@ function DesignEditor() {
             img.crossOrigin = 'anonymous'; // Handle CORS for Cloudinary
             img.onload = () => {
               console.log('✅ Image loaded successfully:', imageUrl);
+              console.log('   Image dimensions:', img.width, 'x', img.height);
+              
               setFrontDesignImage(img);
               setFrontDesignImageSrc(imageUrl);
               setFrontDesignUrl(imageUrl);
+              
+              // For large raw images (like 1890x2362), set appropriate scale
+              if (img.width > 1000 || img.height > 1000) {
+                // Calculate scale to fit in a reasonable design area (about 400px)
+                const targetWidth = 400;
+                const scale = (targetWidth / img.width) * 100;
+                setDesignScale(scale);
+                console.log('   Auto-scaling large image to:', scale + '%');
+              }
               
               // Load back design if available
               if (designData.backDesignUrl) {
@@ -636,13 +647,17 @@ function DesignEditor() {
                 backImg.src = designData.backDesignUrl;
               }
               
-              // Enable the t-shirt product by default with position from database or centered
+              // Enable the t-shirt product by default with better default position
               const teeProduct = PRODUCT_TEMPLATES.find(p => p.id === 'tee');
               if (teeProduct) {
+                // Use centered position for better visibility
+                // The canvas is 400x400, so center is at 200,200
+                const defaultPosition = { x: 200, y: 200 };
+                
                 const newConfig = {
                   enabled: true,
-                  frontPosition: designData.frontPosition || { x: 500, y: 400 },
-                  backPosition: designData.backPosition || { x: 500, y: 400 },
+                  frontPosition: designData.frontPosition && designData.frontPosition.x ? designData.frontPosition : defaultPosition,
+                  backPosition: designData.backPosition && designData.backPosition.x ? designData.backPosition : defaultPosition,
                   selectedColor: teeProduct.colors[0] || 'Black',
                   printLocation: 'front'
                 };
