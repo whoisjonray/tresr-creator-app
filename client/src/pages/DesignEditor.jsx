@@ -547,13 +547,59 @@ function DesignEditor() {
           const designData = response.data.design;
           console.log('Loaded design from database:', designData);
           
+          // Parse design_data if it's a string
+          let parsedDesignData = designData.design_data;
+          if (typeof designData.design_data === 'string') {
+            try {
+              parsedDesignData = JSON.parse(designData.design_data);
+              console.log('Parsed design_data from string');
+            } catch (e) {
+              console.error('Failed to parse design_data:', e);
+              parsedDesignData = null;
+            }
+          }
+          
+          console.log('Design data structure:', {
+            hasDesignData: !!parsedDesignData,
+            designDataType: typeof parsedDesignData,
+            hasElements: !!(parsedDesignData?.elements),
+            elementsCount: parsedDesignData?.elements?.length,
+            hasThumbnail: !!designData.thumbnail_url,
+            thumbnailUrl: designData.thumbnail_url
+          });
+          
           // Set design title and description
           setDesignTitle(designData.name || '');
           setDesignDescription(designData.description || '');
           
+          // First, try to load from thumbnail_url if no design_data
+          if (!parsedDesignData?.elements && designData.thumbnail_url) {
+            console.log('No design elements found, loading from thumbnail URL:', designData.thumbnail_url);
+            const img = new Image();
+            img.onload = () => {
+              setFrontDesignImage(img);
+              setFrontDesignImageSrc(designData.thumbnail_url);
+              setFrontDesignUrl(designData.thumbnail_url);
+              
+              // Enable the first product by default
+              const firstProduct = PRODUCT_TEMPLATES[0];
+              setProductConfigs(prev => ({
+                ...prev,
+                [firstProduct.id]: {
+                  ...prev[firstProduct.id],
+                  enabled: true,
+                  frontPosition: { x: 500, y: 400 },
+                  backPosition: { x: 500, y: 400 },
+                  printLocation: 'front'
+                }
+              }));
+            };
+            img.src = designData.thumbnail_url;
+          }
+          
           // Load design elements (images and positions)
-          if (designData.design_data?.elements) {
-            designData.design_data.elements.forEach(element => {
+          if (parsedDesignData?.elements) {
+            parsedDesignData.elements.forEach(element => {
               if (element.type === 'image' && element.src) {
                 // Load the design image
                 const img = new Image();
@@ -589,8 +635,8 @@ function DesignEditor() {
           }
           
           // Load metadata if available
-          if (designData.design_data?.metadata) {
-            const metadata = designData.design_data.metadata;
+          if (parsedDesignData?.metadata) {
+            const metadata = parsedDesignData.metadata;
             if (metadata.tags) setTags(Array.isArray(metadata.tags) ? metadata.tags.join(', ') : metadata.tags);
             if (metadata.supportingText) setSupportingText(metadata.supportingText);
             if (metadata.printMethod) setPrintMethod(metadata.printMethod);
