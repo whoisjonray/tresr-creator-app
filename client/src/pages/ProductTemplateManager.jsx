@@ -12,6 +12,8 @@ const ProductTemplateManager = () => {
   const [isCreating, setIsCreating] = useState(false);
   const [saveStatus, setSaveStatus] = useState('');
   const [uploadStatus, setUploadStatus] = useState({});
+  const [selectedUploadColor, setSelectedUploadColor] = useState('default');
+  const [expandedColors, setExpandedColors] = useState({});
   
   // Form state for editing/creating
   const [formData, setFormData] = useState({
@@ -25,6 +27,7 @@ const ProductTemplateManager = () => {
     frontImage: '',
     backImage: '',
     thumbnailImage: '',
+    colorImages: {}, // New: Store color-specific images
     printAreas: {
       front: { width: 200, height: 250, x: 200, y: 200 },
       back: null
@@ -56,6 +59,7 @@ const ProductTemplateManager = () => {
     setFormData({
       ...template,
       colors: template.colors || [],
+      colorImages: template.colorImages || {},
       canvasWidth: template.canvasWidth || DEFAULT_CANVAS.width,
       canvasHeight: template.canvasHeight || DEFAULT_CANVAS.height,
       printAreas: template.printAreas || {
@@ -65,6 +69,7 @@ const ProductTemplateManager = () => {
     });
     setIsEditing(false);
     setIsCreating(false);
+    setSelectedUploadColor('default');
   };
 
   const handleCreateNew = () => {
@@ -82,6 +87,7 @@ const ProductTemplateManager = () => {
       frontImage: '',
       backImage: '',
       thumbnailImage: '',
+      colorImages: {},
       printAreas: {
         front: { width: 200, height: 250, x: 200, y: 200 },
         back: { width: 200, height: 250, x: 200, y: 200 }
@@ -90,13 +96,16 @@ const ProductTemplateManager = () => {
       category: 'apparel',
       active: true
     });
+    setSelectedUploadColor('default');
   };
 
-  const handleImageUpload = async (e, imageType) => {
+  const handleImageUpload = async (e, imageType, color = null) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    setUploadStatus(prev => ({ ...prev, [imageType]: 'Uploading...' }));
+    // Create unique status key for color-specific uploads
+    const statusKey = color ? `${imageType}-${color}` : imageType;
+    setUploadStatus(prev => ({ ...prev, [statusKey]: 'Uploading...' }));
 
     try {
       // Convert to base64
@@ -109,39 +118,56 @@ const ProductTemplateManager = () => {
           const response = await api.post('/api/settings/upload-template-image', {
             image: base64,
             imageType: imageType,
-            templateId: formData.id || 'new-template'
+            templateId: formData.id || 'new-template',
+            color: color // Pass color if provided
           });
 
           if (response.data.success) {
-            setFormData({
-              ...formData,
-              [`${imageType}Image`]: response.data.url
-            });
-            setUploadStatus(prev => ({ ...prev, [imageType]: '✅ Uploaded!' }));
+            if (color) {
+              // Store color-specific image
+              setFormData(prev => ({
+                ...prev,
+                colorImages: {
+                  ...prev.colorImages,
+                  [color]: {
+                    ...prev.colorImages[color],
+                    [`${imageType}Image`]: response.data.url
+                  }
+                }
+              }));
+            } else {
+              // Store default image
+              setFormData(prev => ({
+                ...prev,
+                [`${imageType}Image`]: response.data.url
+              }));
+            }
+            
+            setUploadStatus(prev => ({ ...prev, [statusKey]: '✅ Uploaded!' }));
             
             // Clear success message after 3 seconds
             setTimeout(() => {
-              setUploadStatus(prev => ({ ...prev, [imageType]: '' }));
+              setUploadStatus(prev => ({ ...prev, [statusKey]: '' }));
             }, 3000);
           }
         } catch (apiError) {
           console.error('API Upload error:', apiError);
           const errorMsg = apiError.response?.data?.error || 'Upload failed';
-          setUploadStatus(prev => ({ ...prev, [imageType]: `❌ ${errorMsg}` }));
+          setUploadStatus(prev => ({ ...prev, [statusKey]: `❌ ${errorMsg}` }));
           
           // Clear error message after 5 seconds
           setTimeout(() => {
-            setUploadStatus(prev => ({ ...prev, [imageType]: '' }));
+            setUploadStatus(prev => ({ ...prev, [statusKey]: '' }));
           }, 5000);
         }
       };
       reader.readAsDataURL(file);
     } catch (error) {
       console.error('File read error:', error);
-      setUploadStatus(prev => ({ ...prev, [imageType]: '❌ Failed to read file' }));
+      setUploadStatus(prev => ({ ...prev, [statusKey]: '❌ Failed to read file' }));
       
       setTimeout(() => {
-        setUploadStatus(prev => ({ ...prev, [imageType]: '' }));
+        setUploadStatus(prev => ({ ...prev, [statusKey]: '' }));
       }, 5000);
     }
   };
@@ -461,90 +487,203 @@ const ProductTemplateManager = () => {
 
                 <div className="form-section">
                   <h3>Garment Images</h3>
-                  <div className="image-uploads">
-                    <div className="image-upload-group">
-                      <label>Front Image</label>
-                      {formData.frontImage && (
-                        <img src={formData.frontImage} alt="Front" className="preview-image" />
-                      )}
-                      {(isEditing || isCreating) && (
-                        <>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => handleImageUpload(e, 'front')}
-                            id="front-upload"
-                          />
-                          <label 
-                            htmlFor="front-upload" 
-                            className={`upload-btn ${
-                              uploadStatus.front?.includes('Uploading') ? 'uploading' :
-                              uploadStatus.front?.includes('✅') ? 'success' :
-                              uploadStatus.front?.includes('❌') ? 'error' : ''
-                            }`}
-                          >
-                            {uploadStatus.front || 'Upload Front Image'}
-                          </label>
-                        </>
-                      )}
-                    </div>
-
-                    {formData.hasBackPrint && (
+                  
+                  {/* Default Images Section */}
+                  <div className="image-section">
+                    <h4>Default Images (Used when no color-specific image exists)</h4>
+                    <div className="image-uploads">
                       <div className="image-upload-group">
-                        <label>Back Image</label>
-                        {formData.backImage && (
-                          <img src={formData.backImage} alt="Back" className="preview-image" />
+                        <label>Default Front</label>
+                        {formData.frontImage && (
+                          <img src={formData.frontImage} alt="Front" className="preview-image" />
                         )}
                         {(isEditing || isCreating) && (
                           <>
                             <input
                               type="file"
                               accept="image/*"
-                              onChange={(e) => handleImageUpload(e, 'back')}
-                              id="back-upload"
+                              onChange={(e) => handleImageUpload(e, 'front')}
+                              id="front-upload"
                             />
                             <label 
-                              htmlFor="back-upload" 
+                              htmlFor="front-upload" 
                               className={`upload-btn ${
-                                uploadStatus.back?.includes('Uploading') ? 'uploading' :
-                                uploadStatus.back?.includes('✅') ? 'success' :
-                                uploadStatus.back?.includes('❌') ? 'error' : ''
+                                uploadStatus.front?.includes('Uploading') ? 'uploading' :
+                                uploadStatus.front?.includes('✅') ? 'success' :
+                                uploadStatus.front?.includes('❌') ? 'error' : ''
                               }`}
                             >
-                              {uploadStatus.back || 'Upload Back Image'}
+                              {uploadStatus.front || 'Upload Default Front'}
                             </label>
                           </>
                         )}
                       </div>
-                    )}
 
-                    <div className="image-upload-group">
-                      <label>Thumbnail</label>
-                      {formData.thumbnailImage && (
-                        <img src={formData.thumbnailImage} alt="Thumbnail" className="preview-image" />
+                      {formData.hasBackPrint && (
+                        <div className="image-upload-group">
+                          <label>Default Back</label>
+                          {formData.backImage && (
+                            <img src={formData.backImage} alt="Back" className="preview-image" />
+                          )}
+                          {(isEditing || isCreating) && (
+                            <>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => handleImageUpload(e, 'back')}
+                                id="back-upload"
+                              />
+                              <label 
+                                htmlFor="back-upload" 
+                                className={`upload-btn ${
+                                  uploadStatus.back?.includes('Uploading') ? 'uploading' :
+                                  uploadStatus.back?.includes('✅') ? 'success' :
+                                  uploadStatus.back?.includes('❌') ? 'error' : ''
+                                }`}
+                              >
+                                {uploadStatus.back || 'Upload Default Back'}
+                              </label>
+                            </>
+                          )}
+                        </div>
                       )}
-                      {(isEditing || isCreating) && (
-                        <>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => handleImageUpload(e, 'thumbnail')}
-                            id="thumb-upload"
-                          />
-                          <label 
-                            htmlFor="thumb-upload" 
-                            className={`upload-btn ${
-                              uploadStatus.thumbnail?.includes('Uploading') ? 'uploading' :
-                              uploadStatus.thumbnail?.includes('✅') ? 'success' :
-                              uploadStatus.thumbnail?.includes('❌') ? 'error' : ''
-                            }`}
-                          >
-                            {uploadStatus.thumbnail || 'Upload Thumbnail'}
-                          </label>
-                        </>
-                      )}
+
+                      <div className="image-upload-group">
+                        <label>Default Thumbnail</label>
+                        {formData.thumbnailImage && (
+                          <img src={formData.thumbnailImage} alt="Thumbnail" className="preview-image" />
+                        )}
+                        {(isEditing || isCreating) && (
+                          <>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => handleImageUpload(e, 'thumbnail')}
+                              id="thumb-upload"
+                            />
+                            <label 
+                              htmlFor="thumb-upload" 
+                              className={`upload-btn ${
+                                uploadStatus.thumbnail?.includes('Uploading') ? 'uploading' :
+                                uploadStatus.thumbnail?.includes('✅') ? 'success' :
+                                uploadStatus.thumbnail?.includes('❌') ? 'error' : ''
+                              }`}
+                            >
+                              {uploadStatus.thumbnail || 'Upload Default Thumbnail'}
+                            </label>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
+
+                  {/* Color-Specific Images Section */}
+                  {formData.colors.length > 0 && (
+                    <div className="image-section">
+                      <h4>Color-Specific Images</h4>
+                      {formData.colors.map(color => (
+                        <div key={color} className="color-image-section">
+                          <div className="color-header">
+                            <h5>{color} Images</h5>
+                            <button
+                              type="button"
+                              onClick={() => setExpandedColors(prev => ({ ...prev, [color]: !prev[color] }))}
+                              className="expand-btn"
+                            >
+                              {expandedColors[color] ? '▼' : '▶'}
+                            </button>
+                          </div>
+                          
+                          {expandedColors[color] && (
+                            <div className="image-uploads">
+                              <div className="image-upload-group">
+                                <label>{color} Front</label>
+                                {formData.colorImages?.[color]?.frontImage && (
+                                  <img src={formData.colorImages[color].frontImage} alt={`${color} Front`} className="preview-image" />
+                                )}
+                                {(isEditing || isCreating) && (
+                                  <>
+                                    <input
+                                      type="file"
+                                      accept="image/*"
+                                      onChange={(e) => handleImageUpload(e, 'front', color)}
+                                      id={`front-${color}-upload`}
+                                    />
+                                    <label 
+                                      htmlFor={`front-${color}-upload`}
+                                      className={`upload-btn ${
+                                        uploadStatus[`front-${color}`]?.includes('Uploading') ? 'uploading' :
+                                        uploadStatus[`front-${color}`]?.includes('✅') ? 'success' :
+                                        uploadStatus[`front-${color}`]?.includes('❌') ? 'error' : ''
+                                      }`}
+                                    >
+                                      {uploadStatus[`front-${color}`] || `Upload ${color} Front`}
+                                    </label>
+                                  </>
+                                )}
+                              </div>
+
+                              {formData.hasBackPrint && (
+                                <div className="image-upload-group">
+                                  <label>{color} Back</label>
+                                  {formData.colorImages?.[color]?.backImage && (
+                                    <img src={formData.colorImages[color].backImage} alt={`${color} Back`} className="preview-image" />
+                                  )}
+                                  {(isEditing || isCreating) && (
+                                    <>
+                                      <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => handleImageUpload(e, 'back', color)}
+                                        id={`back-${color}-upload`}
+                                      />
+                                      <label 
+                                        htmlFor={`back-${color}-upload`}
+                                        className={`upload-btn ${
+                                          uploadStatus[`back-${color}`]?.includes('Uploading') ? 'uploading' :
+                                          uploadStatus[`back-${color}`]?.includes('✅') ? 'success' :
+                                          uploadStatus[`back-${color}`]?.includes('❌') ? 'error' : ''
+                                        }`}
+                                      >
+                                        {uploadStatus[`back-${color}`] || `Upload ${color} Back`}
+                                      </label>
+                                    </>
+                                  )}
+                                </div>
+                              )}
+
+                              <div className="image-upload-group">
+                                <label>{color} Thumbnail</label>
+                                {formData.colorImages?.[color]?.thumbnailImage && (
+                                  <img src={formData.colorImages[color].thumbnailImage} alt={`${color} Thumb`} className="preview-image" />
+                                )}
+                                {(isEditing || isCreating) && (
+                                  <>
+                                    <input
+                                      type="file"
+                                      accept="image/*"
+                                      onChange={(e) => handleImageUpload(e, 'thumbnail', color)}
+                                      id={`thumb-${color}-upload`}
+                                    />
+                                    <label 
+                                      htmlFor={`thumb-${color}-upload`}
+                                      className={`upload-btn ${
+                                        uploadStatus[`thumbnail-${color}`]?.includes('Uploading') ? 'uploading' :
+                                        uploadStatus[`thumbnail-${color}`]?.includes('✅') ? 'success' :
+                                        uploadStatus[`thumbnail-${color}`]?.includes('❌') ? 'error' : ''
+                                      }`}
+                                    >
+                                      {uploadStatus[`thumbnail-${color}`] || `Upload ${color} Thumbnail`}
+                                    </label>
+                                  </>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <div className="form-section">
