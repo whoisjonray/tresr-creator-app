@@ -92,7 +92,7 @@ const BoundingBoxEditor = () => {
     return INITIAL_PRINT_AREAS;
   };
 
-  const [selectedGarment, setSelectedGarment] = useState('tee');
+  const [selectedGarment, setSelectedGarment] = useState(null);
   const [selectedSide, setSelectedSide] = useState('front');
   const [printAreas, setPrintAreas] = useState(loadSavedAreas());
   const [isDragging, setIsDragging] = useState(false);
@@ -140,12 +140,18 @@ const BoundingBoxEditor = () => {
           colorImages: t.colorImages
         }));
         setGarmentTypes(templates);
+        
+        // Set initial garment if not already set
+        if (!selectedGarment && templates.length > 0) {
+          setSelectedGarment(templates[0].id);
+        }
+        
         console.log('Loaded product templates from API:', templates);
       }
     } catch (error) {
       console.error('Error loading templates:', error);
       // Fall back to defaults if API fails
-      setGarmentTypes([
+      const fallbackTemplates = [
         { id: 'tee', name: 'Medium Weight T-Shirt', templateId: 'tshirt_front' },
         { id: 'boxy', name: 'Oversized Drop Shoulder', templateId: 'tshirt_boxy_front' },
         { id: 'next-crop', name: 'Next Level Crop Top', templateId: 'croptop_front' },
@@ -160,7 +166,13 @@ const BoundingBoxEditor = () => {
         { id: 'art-sqm', name: 'Art Canvas - 16x16', templateId: 'canvas_square' },
         { id: 'art-lg', name: 'Art Canvas - 24x24', templateId: 'canvas_square' },
         { id: 'nft', name: 'NFTREASURE NFT Cards', templateId: 'trading_card' }
-      ]);
+      ];
+      setGarmentTypes(fallbackTemplates);
+      
+      // Set initial garment if not already set
+      if (!selectedGarment && fallbackTemplates.length > 0) {
+        setSelectedGarment(fallbackTemplates[0].id);
+      }
     }
   };
 
@@ -614,10 +626,13 @@ const BoundingBoxEditor = () => {
           <div className="garment-selector">
             <h3>Select Garment</h3>
             <select 
-              value={selectedGarment} 
+              value={selectedGarment || ''} 
               onChange={(e) => setSelectedGarment(e.target.value)}
               className="garment-select"
             >
+              {garmentTypes.length === 0 && (
+                <option value="">Loading templates...</option>
+              )}
               {garmentTypes.map(garment => (
                 <option key={garment.id} value={garment.id}>
                   {garment.name}
