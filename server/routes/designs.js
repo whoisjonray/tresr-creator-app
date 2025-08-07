@@ -369,16 +369,28 @@ router.post('/fix-just-grok-it-url', async (req, res) => {
     );
     
     if (updateCount > 0) {
-      // Get the updated design
-      const updatedDesign = await Design.findByPk('b389d0a0-932c-4d14-9ab0-8e29057af06e');
+      // Get the updated design with raw query to ensure fresh data
+      const updatedDesign = await Design.findByPk('b389d0a0-932c-4d14-9ab0-8e29057af06e', {
+        raw: true
+      });
+      
+      console.log('✅ Updated JUST Grok IT URLs:', {
+        front: frontCloudinaryUrl,
+        back: backCloudinaryUrl,
+        updateCount,
+        actualFront: updatedDesign.frontDesignUrl,
+        actualBack: updatedDesign.backDesignUrl
+      });
       
       res.json({
         success: true,
         message: 'Updated JUST Grok IT with correct Cloudinary URL',
+        updateCount,
         design: {
           id: updatedDesign.id,
           name: updatedDesign.name,
-          frontDesignUrl: updatedDesign.frontDesignUrl
+          frontDesignUrl: updatedDesign.frontDesignUrl,
+          backDesignUrl: updatedDesign.backDesignUrl
         }
       });
     } else {
