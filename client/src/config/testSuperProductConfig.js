@@ -71,6 +71,16 @@ export const testSuperProductConfig = {
             sizes: ['S', 'M', 'L', 'XL'],
             description: 'Next Level women\'s ideal crop top',
             cloudinaryBase: 'tresr-garments/next-crop'
+          },
+          {
+            id: 'baby-tee',
+            name: 'Ladies Baby Tee',
+            price: '23.00',
+            colors: ['black', 'white'],
+            sizes: ['S', 'M', 'L', 'XL'],
+            description: 'Fitted ladies baby tee with a feminine cut',
+            cloudinaryBase: 'tresr-garments/baby-tee',
+            thumbnailImage: 'https://res.cloudinary.com/dqslerzk9/image/upload/v1754608323/tresr-templates/tresr-templates/baby-tee/thumbnail-black.png'
           }
         ]
       }
@@ -134,6 +144,10 @@ export const getGarmentImageUrl = (garmentId, color, side = 'front') => {
       'grey-heather': side === 'front' ? 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752444393/tresr-garments/next-crop_grey-heather_front.jpg' : 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752444396/tresr-garments/next-crop_grey-heather_back.jpg',
       'midnight-navy': side === 'front' ? 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752444398/tresr-garments/next-crop_midnight-navy_front.jpg' : 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752444400/tresr-garments/next-crop_midnight-navy_back.jpg',
       'red': side === 'front' ? 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752444403/tresr-garments/next-crop_red_front.jpg' : 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752444405/tresr-garments/next-crop_red_back.jpg'
+    },
+    'baby-tee': {
+      'black': side === 'front' ? 'https://res.cloudinary.com/dqslerzk9/image/upload/v1754608310/tresr-templates/tresr-templates/baby-tee/front-black.png' : 'https://res.cloudinary.com/dqslerzk9/image/upload/v1754608317/tresr-templates/tresr-templates/baby-tee/back-black.png',
+      'white': side === 'front' ? 'https://res.cloudinary.com/dqslerzk9/image/upload/v1754608329/tresr-templates/tresr-templates/baby-tee/front-white.png' : 'https://res.cloudinary.com/dqslerzk9/image/upload/v1754608335/tresr-templates/tresr-templates/baby-tee/back-white.png'
     },
     'polo': {
       'black': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752444408/tresr-garments/polo_black_front.jpg',
