@@ -226,7 +226,6 @@ function DesignEditor() {
       if (response.data.success && response.data.templates) {
         const templates = response.data.templates;
         setProductTemplates(templates); // Set the state for templates
-        setPRODUCT_TEMPLATES(templates);
         
         // Initialize product configs for new templates
         const newConfigs = {};
