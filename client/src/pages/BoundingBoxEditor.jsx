@@ -3,27 +3,27 @@ import { getGarmentImage } from '../config/garmentImagesCloudinary';
 import api from '../services/api';
 import './BoundingBoxEditor.css';
 
-// Current print areas from DesignEditor.jsx - now with front and back
+// Default print areas for 600x600 canvas - using top-left coordinates
 const INITIAL_PRINT_AREAS = {
   'tee': { 
-    front: { width: 280, height: 350, x: 200, y: 200 },
-    back: { width: 280, height: 350, x: 200, y: 200 }
+    front: { width: 280, height: 350, x: 160, y: 125 },  // Center at 300,300 -> top-left at 160,125
+    back: { width: 280, height: 350, x: 160, y: 125 }
   },
   'boxy': { 
-    front: { width: 300, height: 350, x: 200, y: 200 },
-    back: { width: 300, height: 350, x: 200, y: 200 }
+    front: { width: 300, height: 350, x: 150, y: 125 },  // Center at 300,300 -> top-left at 150,125
+    back: { width: 300, height: 350, x: 150, y: 125 }
   },
   'next-crop': { 
-    front: { width: 250, height: 250, x: 200, y: 180 },
-    back: { width: 250, height: 250, x: 200, y: 180 }
+    front: { width: 250, height: 250, x: 175, y: 175 },  // Center at 300,300 -> top-left at 175,175
+    back: { width: 250, height: 250, x: 175, y: 175 }
   },
   'wmn-hoodie': { 
-    front: { width: 280, height: 340, x: 200, y: 220 },
-    back: { width: 280, height: 340, x: 200, y: 220 }
+    front: { width: 280, height: 340, x: 160, y: 130 },  // Center at 300,300 -> top-left at 160,130
+    back: { width: 280, height: 340, x: 160, y: 130 }
   },
   'med-hood': { 
-    front: { width: 280, height: 340, x: 200, y: 220 },
-    back: { width: 280, height: 340, x: 200, y: 220 }
+    front: { width: 280, height: 340, x: 160, y: 130 },  // Center at 300,300 -> top-left at 160,130
+    back: { width: 280, height: 340, x: 160, y: 130 }
   },
   'mediu': { 
     front: { width: 280, height: 340, x: 200, y: 200 },

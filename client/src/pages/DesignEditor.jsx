@@ -104,39 +104,39 @@ const PRODUCT_ICONS = {
 };
 
 // Default print area configurations (will be overridden by API data)
-// Dimensions are relative to a 400x400 canvas
+// Using top-left coordinates for a 600x600 canvas
 const DEFAULT_PRINT_AREAS = {
-  // T-shirts - larger print area for better visibility
-  'tee': { width: 280, height: 350, x: 200, y: 200 },
-  'boxy': { width: 300, height: 350, x: 200, y: 200 },
-  'next-crop': { width: 260, height: 280, x: 200, y: 180 },
+  // T-shirts - larger print area centered on canvas
+  'tee': { width: 280, height: 350, x: 160, y: 125 },
+  'boxy': { width: 300, height: 350, x: 150, y: 125 },
+  'next-crop': { width: 260, height: 280, x: 170, y: 160 },
   
   // Hoodies - centered with good coverage
-  'wmn-hoodie': { width: 280, height: 340, x: 200, y: 220 },
-  'med-hood': { width: 280, height: 340, x: 200, y: 220 },
-  'mediu': { width: 280, height: 350, x: 200, y: 200 },
-  'sweat': { width: 280, height: 350, x: 200, y: 200 },
+  'wmn-hoodie': { width: 280, height: 340, x: 160, y: 130 },
+  'med-hood': { width: 280, height: 340, x: 160, y: 130 },
+  'mediu': { width: 280, height: 350, x: 160, y: 125 },
+  'sweat': { width: 280, height: 350, x: 160, y: 125 },
   
   // Hats - smaller centered area
-  'patch-c': { width: 120, height: 80, x: 200, y: 160 },
-  'patch-flat': { width: 140, height: 80, x: 200, y: 160 },
+  'patch-c': { width: 120, height: 80, x: 240, y: 260 },
+  'patch-flat': { width: 140, height: 80, x: 230, y: 260 },
   
   // Canvas - full area with small margin
-  'art-sqsm': { width: 360, height: 360, x: 200, y: 200 },
-  'art-sqm': { width: 360, height: 360, x: 200, y: 200 },
-  'art-lg': { width: 360, height: 360, x: 200, y: 200 },
+  'art-sqsm': { width: 560, height: 560, x: 20, y: 20 },
+  'art-sqm': { width: 560, height: 560, x: 20, y: 20 },
+  'art-lg': { width: 560, height: 560, x: 20, y: 20 },
   
   // Polo - smaller chest area
-  'polo': { width: 160, height: 200, x: 200, y: 100 },
+  'polo': { width: 200, height: 250, x: 200, y: 100 },
   
   // Trading card - full area
-  'nft': { width: 300, height: 400, x: 200, y: 200 },
+  'nft': { width: 400, height: 560, x: 100, y: 20 },
   
   // Baby tee
-  'baby-tee': { width: 240, height: 300, x: 200, y: 180 },
+  'baby-tee': { width: 240, height: 300, x: 180, y: 150 },
   
   // Default fallback
-  'default': { width: 280, height: 350, x: 200, y: 200 }
+  'default': { width: 280, height: 350, x: 160, y: 125 }
 };
 
 function DesignEditor() {
@@ -153,22 +153,12 @@ function DesignEditor() {
   // Helper function to get print area from templates or fallback to defaults
   const getPrintArea = (productId, side = 'front') => {
     const template = productTemplates.find(t => t.id === productId);
-    let area;
     
     if (template && template.printAreas && template.printAreas[side]) {
-      area = template.printAreas[side];
-    } else {
-      area = DEFAULT_PRINT_AREAS[productId] || DEFAULT_PRINT_AREAS['default'];
+      return template.printAreas[side];
     }
     
-    // Scale coordinates from 600x600 (bounding box editor) to 400x400 (design editor)
-    const scale = 400 / 600;
-    return {
-      x: area.x * scale,
-      y: area.y * scale,
-      width: area.width * scale,
-      height: area.height * scale
-    };
+    return DEFAULT_PRINT_AREAS[productId] || DEFAULT_PRINT_AREAS['default'];
   };
   
   // Separate design images for front and back
@@ -216,19 +206,11 @@ function DesignEditor() {
     const configs = {};
     PRODUCT_TEMPLATES.forEach(product => {
       const printArea = DEFAULT_PRINT_AREAS[product.id] || DEFAULT_PRINT_AREAS['default'];
-      // Scale coordinates from assumed 600x600 to 400x400 canvas
-      const scale = 400 / 600;
-      const scaledArea = {
-        x: printArea.x * scale,
-        y: printArea.y * scale,
-        width: printArea.width * scale,
-        height: printArea.height * scale
-      };
       
-      // Center a 150x150 design within the print area
-      const designSize = 150;
-      const centerX = scaledArea.x + (scaledArea.width - designSize) / 2;
-      const centerY = scaledArea.y + (scaledArea.height - designSize) / 2;
+      // Center a 200x200 design within the print area
+      const designSize = 200;
+      const centerX = printArea.x + (printArea.width - designSize) / 2;
+      const centerY = printArea.y + (printArea.height - designSize) / 2;
       
       configs[product.id] = {
         enabled: product.id === 'tee' || product.id === 'wmn-hoodie',
@@ -635,7 +617,7 @@ function DesignEditor() {
       const { x, y, width, height } = currentPosition;
       ctx.strokeStyle = '#3b82f6';
       ctx.lineWidth = 2;
-      ctx.strokeRect(x - width/2, y - height/2, width, height);
+      ctx.strokeRect(x, y, width, height);  // Use top-left coordinates
     }
     
     // Restore zoom transformation
@@ -1025,8 +1007,10 @@ function DesignEditor() {
     if (!designImage) return;
     
     const rect = canvasRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    // Scale mouse coordinates from display size (400px) to canvas size (600px)
+    const scale = 600 / 400;
+    const x = (e.clientX - rect.left) * scale;
+    const y = (e.clientY - rect.top) * scale;
     const config = productConfigs[activeProduct];
     
     // Check if click is on the design (using top-left coordinates)
@@ -1044,8 +1028,10 @@ function DesignEditor() {
     if (!designImage) return;
     
     const rect = canvasRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    // Scale mouse coordinates from display size (400px) to canvas size (600px)
+    const scale = 600 / 400;
+    const x = (e.clientX - rect.left) * scale;
+    const y = (e.clientY - rect.top) * scale;
     
     // Update cursor on hover
     if (!isDragging) {
@@ -1849,8 +1835,8 @@ function DesignEditor() {
                   )}
                   <canvas
                     ref={canvasRef}
-                    width={400}
-                    height={400}
+                    width={600}
+                    height={600}
                     className="product-canvas"
                     onMouseDown={handleCanvasMouseDown}
                     onMouseMove={handleCanvasMouseMove}
