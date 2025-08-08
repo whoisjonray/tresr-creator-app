@@ -26,39 +26,39 @@ const INITIAL_PRINT_AREAS = {
     back: { width: 280, height: 340, x: 160, y: 130 }
   },
   'mediu': { 
-    front: { width: 280, height: 340, x: 200, y: 200 },
-    back: { width: 280, height: 340, x: 200, y: 200 }
+    front: { width: 280, height: 350, x: 160, y: 125 },  // Same as regular tee
+    back: { width: 280, height: 350, x: 160, y: 125 }
   },
   'polo': { 
-    front: { width: 250, height: 320, x: 200, y: 200 },
-    back: { width: 250, height: 320, x: 200, y: 200 }
+    front: { width: 200, height: 250, x: 200, y: 100 },  // Smaller chest area
+    back: { width: 200, height: 250, x: 200, y: 100 }
   },
   'patch-c': { 
-    front: { width: 120, height: 80, x: 200, y: 150 },
+    front: { width: 120, height: 80, x: 240, y: 260 },  // Centered on canvas
     back: null // Hats typically don't have back print
   },
   'patch-flat': { 
-    front: { width: 120, height: 80, x: 200, y: 150 },
+    front: { width: 140, height: 80, x: 230, y: 260 },  // Centered on canvas
     back: null // Hats typically don't have back print
   },
   'mug': { 
-    front: { width: 200, height: 200, x: 200, y: 200 },
+    front: { width: 200, height: 200, x: 200, y: 200 },  // Centered
     back: null // Mugs have one print area
   },
   'art-sqsm': { 
-    front: { width: 400, height: 400, x: 200, y: 200 },
+    front: { width: 560, height: 560, x: 20, y: 20 },  // Full canvas with margin
     back: null // Canvas art is single-sided
   },
   'art-sqm': { 
-    front: { width: 400, height: 400, x: 200, y: 200 },
+    front: { width: 560, height: 560, x: 20, y: 20 },  // Full canvas with margin
     back: null
   },
   'art-lg': { 
-    front: { width: 400, height: 400, x: 200, y: 200 },
+    front: { width: 560, height: 560, x: 20, y: 20 },  // Full canvas with margin
     back: null
   },
   'nft': { 
-    front: { width: 300, height: 400, x: 200, y: 200 },
+    front: { width: 400, height: 560, x: 100, y: 20 },  // Tall card format
     back: null // Cards are typically single-sided
   }
 };

@@ -14,14 +14,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Essential Commands
 
-### Development
+### IMPORTANT: Always Deploy to Railway
+**DO NOT USE LOCALHOST** - Always push changes to Railway for testing
 ```bash
+git add -A && git commit -m "description" && git push
+# Changes deploy automatically to https://creators.tresr.com (2-3 min)
+```
+
+### Local Development (Reference Only - DO NOT USE)
+```bash
+# These commands are for reference only - always use Railway
 npm run dev              # Start both frontend (3003) and backend (3002)
 npm run dev:client       # Frontend only (React + Vite)
 npm run dev:server       # Backend only (Express.js)
 ```
 
-### Production
+### Production Build
 ```bash
 npm run build           # Build both client and server
 npm start              # Start production server
