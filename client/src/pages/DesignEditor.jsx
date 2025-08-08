@@ -244,7 +244,67 @@ function DesignEditor() {
   // Load product templates from API on mount
   useEffect(() => {
     loadProductTemplates();
+    loadPrintAreas();
   }, []);
+  
+  // Load saved print areas from bounding box editor
+  const loadPrintAreas = async () => {
+    try {
+      const response = await api.get('/api/settings/print-areas');
+      if (response.data.success && response.data.printAreas) {
+        const savedAreas = response.data.printAreas;
+        
+        // Update product templates with saved print areas
+        setProductTemplates(prev => {
+          const updated = [...prev];
+          // If we have saved print areas, use them
+          Object.keys(savedAreas).forEach(productId => {
+            const template = updated.find(t => t.id === productId);
+            if (template) {
+              template.printAreas = savedAreas[productId];
+            } else {
+              // Add template if it doesn't exist (like baby-tee)
+              updated.push({
+                id: productId,
+                name: productId.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+                printAreas: savedAreas[productId]
+              });
+            }
+          });
+          return updated;
+        });
+        
+        // Also update product configs with new print areas
+        setProductConfigs(prev => {
+          const updatedConfigs = { ...prev };
+          
+          Object.keys(savedAreas).forEach(productId => {
+            const printArea = savedAreas[productId]?.front;
+            if (printArea && !updatedConfigs[productId]) {
+              // Add config for new products (like baby-tee)
+              const designSize = 200;
+              const centerX = printArea.x + (printArea.width - designSize) / 2;
+              const centerY = printArea.y + (printArea.height - designSize) / 2;
+              
+              updatedConfigs[productId] = {
+                enabled: false,
+                frontPosition: { x: centerX, y: centerY, width: designSize, height: designSize },
+                backPosition: { x: centerX, y: centerY, width: designSize, height: designSize },
+                defaultColor: '',
+                selectedColor: '',
+                selectedColors: [],
+                printLocation: 'front'
+              };
+            }
+          });
+          
+          return updatedConfigs;
+        });
+      }
+    } catch (error) {
+      console.error('Error loading print areas:', error);
+    }
+  };
   
   const loadProductTemplates = async () => {
     try {
