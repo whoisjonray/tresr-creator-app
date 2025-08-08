@@ -213,7 +213,9 @@ function DesignEditor() {
     message: ''
   });
   const [nfcExperienceType, setNfcExperienceType] = useState('default');
-  const [showBoundingBox, setShowBoundingBox] = useState(false);
+  const [showBoundingBox, setShowBoundingBox] = useState(true); // Default to showing bounding box
+  const [showCenterLines, setShowCenterLines] = useState(true); // Toggle for center lines
+  const [isZoomed, setIsZoomed] = useState(false); // Magnifying glass zoom state
   const [isProductPublished, setIsProductPublished] = useState(false);
   
   // Load product templates from API on mount
@@ -444,6 +446,20 @@ function DesignEditor() {
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
+    // Apply zoom transformation if zoomed
+    ctx.save();
+    if (isZoomed) {
+      const printArea = PRINT_AREAS[activeProduct] || { width: 200, height: 286, x: 200, y: 80 };
+      const zoomFactor = 2;
+      const centerX = printArea.x;
+      const centerY = printArea.y;
+      
+      // Translate to center of print area and scale
+      ctx.translate(canvas.width/2, canvas.height/2);
+      ctx.scale(zoomFactor, zoomFactor);
+      ctx.translate(-centerX, -centerY);
+    }
+    
     // Fill background with light gray
     ctx.fillStyle = '#f8f9fa';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -499,45 +515,60 @@ function DesignEditor() {
       ctx.restore();
     }
     
-    // Only show print area guides if there's a design
-    if (designImage) {
-      // Draw subtle print area outline
-      ctx.strokeStyle = 'rgba(156, 163, 175, 0.3)';
-      ctx.setLineDash([5, 5]);
+    // Always show print area bounding box when enabled
+    if (showBoundingBox) {
+      ctx.strokeStyle = 'rgba(59, 130, 246, 0.5)'; // Semi-transparent blue
+      ctx.lineWidth = 2;
+      ctx.setLineDash([5, 3]);
       ctx.strokeRect(printAreaX, printAreaY, printAreaWidth, printAreaHeight);
       ctx.setLineDash([]);
+      
+      // Draw corner handles
+      ctx.fillStyle = '#3b82f6';
+      const handleSize = 4;
+      // Top-left
+      ctx.fillRect(printAreaX - handleSize/2, printAreaY - handleSize/2, handleSize, handleSize);
+      // Top-right
+      ctx.fillRect(printAreaX + printAreaWidth - handleSize/2, printAreaY - handleSize/2, handleSize, handleSize);
+      // Bottom-left
+      ctx.fillRect(printAreaX - handleSize/2, printAreaY + printAreaHeight - handleSize/2, handleSize, handleSize);
+      // Bottom-right
+      ctx.fillRect(printAreaX + printAreaWidth - handleSize/2, printAreaY + printAreaHeight - handleSize/2, handleSize, handleSize);
     }
     
-    // Draw center guides when dragging
-    if (isDragging) {
-      ctx.strokeStyle = '#3b82f6';
+    // Draw center guides (based on print area center, not canvas center)
+    if (showCenterLines && (isDragging || showBoundingBox)) {
+      ctx.strokeStyle = '#10b981';
       ctx.setLineDash([2, 4]);
       ctx.lineWidth = 1;
-      // Vertical center line
+      // Vertical center line through print area
       ctx.beginPath();
-      ctx.moveTo(canvas.width / 2, 0);
-      ctx.lineTo(canvas.width / 2, canvas.height);
+      ctx.moveTo(printArea.x, printAreaY - 10);
+      ctx.lineTo(printArea.x, printAreaY + printAreaHeight + 10);
       ctx.stroke();
-      // Horizontal center line
+      // Horizontal center line through print area
       ctx.beginPath();
-      ctx.moveTo(0, canvas.height / 2);
-      ctx.lineTo(canvas.width, canvas.height / 2);
+      ctx.moveTo(printAreaX - 10, printArea.y);
+      ctx.lineTo(printAreaX + printAreaWidth + 10, printArea.y);
       ctx.stroke();
       ctx.setLineDash([]);
     }
     
-    // Draw selection border only when hovering over canvas
+    // Draw selection border for design when hovering
     if (designImage && config && showBoundingBox) {
       const { x, y, width, height } = currentPosition;
       ctx.strokeStyle = '#3b82f6';
       ctx.lineWidth = 2;
       ctx.strokeRect(x - width/2, y - height/2, width, height);
     }
+    
+    // Restore zoom transformation
+    ctx.restore();
   };
 
   React.useEffect(() => {
     drawCanvas();
-  }, [activeProduct, productConfigs, designImage, showBoundingBox, isDragging, viewSide, frontDesignImage, backDesignImage]);
+  }, [activeProduct, productConfigs, designImage, showBoundingBox, showCenterLines, isZoomed, isDragging, viewSide, frontDesignImage, backDesignImage]);
   
   // Update viewSide when switching products based on their print location
   React.useEffect(() => {
@@ -1750,10 +1781,9 @@ function DesignEditor() {
                     onMouseDown={handleCanvasMouseDown}
                     onMouseMove={handleCanvasMouseMove}
                     onMouseUp={handleCanvasMouseUp}
-                    onMouseEnter={() => setShowBoundingBox(true)}
+                    onMouseEnter={() => {}}
                     onMouseLeave={() => {
                       handleCanvasMouseUp();
-                      setShowBoundingBox(false);
                       if (canvasRef.current) canvasRef.current.style.cursor = 'default';
                     }}
                   />
@@ -1763,6 +1793,47 @@ function DesignEditor() {
                   <div className="tools-header">
                     <h3>Tools</h3>
                     <div className="tools-grid">
+                      <button 
+                        className={`tool-btn ${showBoundingBox ? 'active' : ''}`}
+                        onClick={() => setShowBoundingBox(!showBoundingBox)}
+                        title="Toggle bounding box"
+                      >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <rect x="3" y="3" width="18" height="18" rx="2" strokeDasharray={showBoundingBox ? "0" : "5 3"}/>
+                          <circle cx="7" cy="7" r="1" fill="currentColor"/>
+                          <circle cx="17" cy="7" r="1" fill="currentColor"/>
+                          <circle cx="7" cy="17" r="1" fill="currentColor"/>
+                          <circle cx="17" cy="17" r="1" fill="currentColor"/>
+                        </svg>
+                      </button>
+                      <button 
+                        className={`tool-btn ${showCenterLines ? 'active' : ''}`}
+                        onClick={() => setShowCenterLines(!showCenterLines)}
+                        title="Toggle center lines"
+                      >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <line x1="12" y1="3" x2="12" y2="21" strokeDasharray="2 2"/>
+                          <line x1="3" y1="12" x2="21" y2="12" strokeDasharray="2 2"/>
+                        </svg>
+                      </button>
+                      <button 
+                        className={`tool-btn ${isZoomed ? 'active' : ''}`}
+                        onClick={() => setIsZoomed(!isZoomed)}
+                        title="Toggle zoom"
+                      >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <circle cx="11" cy="11" r="8"/>
+                          <path d="M21 21l-4.35-4.35"/>
+                          {isZoomed ? (
+                            <path d="M8 11h6" strokeLinecap="round"/>
+                          ) : (
+                            <>
+                              <path d="M11 8v6" strokeLinecap="round"/>
+                              <path d="M8 11h6" strokeLinecap="round"/>
+                            </>
+                          )}
+                        </svg>
+                      </button>
                       <button 
                         className="tool-btn align-top"
                         onClick={() => {
