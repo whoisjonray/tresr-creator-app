@@ -604,7 +604,7 @@ function DesignEditor() {
     const garmentImageUrl = getCloudinaryImage(activeProduct, selectedColor, displaySide);
     
     if (garmentImageUrl && garmentImage.current) {
-      // Draw garment image at full canvas size to match bounding box editor
+      // Draw garment at full canvas size like bounding box editor
       ctx.drawImage(garmentImage.current, 0, 0, canvas.width, canvas.height);
     }
     
@@ -612,9 +612,16 @@ function DesignEditor() {
     if (designImage && config) {
       ctx.save();
       
+      // Scale print area coordinates from 600x600 to our 400x400 canvas
+      const scale = canvas.width / 600; // 400/600 = 0.667
+      const adjustedPrintAreaX = printAreaX * scale;
+      const adjustedPrintAreaY = printAreaY * scale;
+      const adjustedPrintAreaWidth = printAreaWidth * scale;
+      const adjustedPrintAreaHeight = printAreaHeight * scale;
+      
       // Clip to print area
       ctx.beginPath();
-      ctx.rect(printAreaX, printAreaY, printAreaWidth, printAreaHeight);
+      ctx.rect(adjustedPrintAreaX, adjustedPrintAreaY, adjustedPrintAreaWidth, adjustedPrintAreaHeight);
       ctx.clip();
       
       const { x, y, width, height } = currentPosition;
@@ -634,7 +641,9 @@ function DesignEditor() {
       ctx.strokeStyle = 'rgba(59, 130, 246, 0.5)'; // Semi-transparent blue
       ctx.lineWidth = 2;
       ctx.setLineDash([5, 3]);
-      ctx.strokeRect(printAreaX, printAreaY, printAreaWidth, printAreaHeight);
+      // Scale the bounding box coordinates from 600x600 to 400x400 canvas
+      const scale = canvas.width / 600;
+      ctx.strokeRect(printAreaX * scale, printAreaY * scale, printAreaWidth * scale, printAreaHeight * scale);
       ctx.setLineDash([]);
       
       // Draw corner handles
