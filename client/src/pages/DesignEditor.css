@@ -168,6 +168,7 @@
     flex-direction: row;
     gap: 8px;
     align-items: center;
+    flex-wrap: nowrap;
 }
 
 .tool-btn {

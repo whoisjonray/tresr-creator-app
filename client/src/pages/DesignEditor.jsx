@@ -1848,12 +1848,10 @@ function DesignEditor() {
                         }}
                         title="Align to top"
                       >
-                        <div className="icon-top-align">
-                          <div className="icon-t-shape">
-                            <div className="icon-t-top"></div>
-                            <div className="icon-t-stem"></div>
-                          </div>
-                        </div>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <rect x="4" y="4" width="16" height="2" fill="currentColor" rx="1"/>
+                          <rect x="7" y="9" width="10" height="11" fill="none" strokeWidth="2" rx="1"/>
+                        </svg>
                       </button>
                       <button 
                         className="tool-btn align-center"
@@ -1867,12 +1865,15 @@ function DesignEditor() {
                         }}
                         title="Center horizontally"
                       >
-                        <div className="icon-center-align">
-                          <div className="icon-plus">
-                            <div className="icon-plus-v"></div>
-                            <div className="icon-plus-h"></div>
-                          </div>
-                        </div>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                          <rect x="11" y="3" width="2" height="18" fill="currentColor"/>
+                          <rect x="4" y="7" width="6" height="2" fill="currentColor"/>
+                          <rect x="14" y="7" width="6" height="2" fill="currentColor"/>
+                          <rect x="5" y="11" width="5" height="2" fill="currentColor"/>
+                          <rect x="14" y="11" width="5" height="2" fill="currentColor"/>
+                          <rect x="6" y="15" width="4" height="2" fill="currentColor"/>
+                          <rect x="14" y="15" width="4" height="2" fill="currentColor"/>
+                        </svg>
                       </button>
                     </div>
                   </div>
