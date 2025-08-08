@@ -60,6 +60,10 @@ const INITIAL_PRINT_AREAS = {
   'nft': { 
     front: { width: 400, height: 560, x: 100, y: 20 },  // Tall card format
     back: null // Cards are typically single-sided
+  },
+  'baby-tee': { 
+    front: { width: 240, height: 300, x: 180, y: 150 },  // Ladies baby tee
+    back: { width: 240, height: 300, x: 180, y: 150 }
   }
 };
 
