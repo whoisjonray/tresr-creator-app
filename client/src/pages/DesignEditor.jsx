@@ -89,6 +89,7 @@ const PRODUCT_ICONS = {
   'tee': '👕',
   'boxy': '👕',
   'next-crop': '👚',
+  'baby-tee': '👚',
   'wmn-hoodie': '🧥',
   'med-hood': '🧥',
   'mediu': '👔',
@@ -1560,7 +1561,18 @@ function DesignEditor() {
                     </svg>
                   </div>
                 )}
-                <div className="product-icon">{PRODUCT_ICONS[product.id]}</div>
+                {product.thumbnail ? (
+                  <img 
+                    src={product.thumbnail} 
+                    alt={product.name}
+                    className="product-thumbnail"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.nextSibling.style.display = 'block';
+                    }}
+                  />
+                ) : null}
+                <div className="product-icon" style={product.thumbnail ? {display: 'none'} : {}}>{PRODUCT_ICONS[product.id] || '📦'}</div>
                 <div className="product-name">{product.name}</div>
                 <button 
                   className="product-toggle-btn"
@@ -1834,7 +1846,7 @@ function DesignEditor() {
                 </div>
                 
                 <div className="product-list">
-                  {PRODUCT_TEMPLATES.filter(product => productConfigs[product.id]?.enabled).map(product => (
+                  {(productTemplates.length > 0 ? productTemplates : PRODUCT_TEMPLATES).filter(product => productConfigs[product.id]?.enabled).map(product => (
                     <div key={product.id} className="product-section">
                       <div className={`product-item ${activeProduct === product.id ? 'active' : ''}`}>
                         <div 

@@ -895,6 +895,13 @@
     margin-bottom: 8px;
 }
 
+.product-card .product-thumbnail {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    margin-bottom: 8px;
+}
+
 .product-card .product-name {
     color: #374151;
     font-size: 0.9rem;
