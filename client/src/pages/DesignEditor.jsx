@@ -103,9 +103,9 @@ const PRODUCT_ICONS = {
   'nft': '🎴'
 };
 
-// Print area configurations for each product type
+// Default print area configurations (will be overridden by API data)
 // Dimensions are relative to a 400x400 canvas
-const PRINT_AREAS = {
+const DEFAULT_PRINT_AREAS = {
   // T-shirts - larger print area for better visibility
   'tee': { width: 280, height: 350, x: 200, y: 200 },
   'boxy': { width: 300, height: 350, x: 200, y: 200 },
@@ -130,7 +130,13 @@ const PRINT_AREAS = {
   'polo': { width: 160, height: 200, x: 200, y: 100 },
   
   // Trading card - full area
-  'nft': { width: 300, height: 400, x: 200, y: 200 }
+  'nft': { width: 300, height: 400, x: 200, y: 200 },
+  
+  // Baby tee
+  'baby-tee': { width: 240, height: 300, x: 200, y: 180 },
+  
+  // Default fallback
+  'default': { width: 280, height: 350, x: 200, y: 200 }
 };
 
 function DesignEditor() {
@@ -143,6 +149,15 @@ function DesignEditor() {
   // Track which side we're viewing - MUST be defined before useMemo hooks
   const [viewSide, setViewSide] = useState('front');
   const [productTemplates, setProductTemplates] = useState([]);
+  
+  // Helper function to get print area from templates or fallback to defaults
+  const getPrintArea = (productId, side = 'front') => {
+    const template = productTemplates.find(t => t.id === productId);
+    if (template && template.printAreas && template.printAreas[side]) {
+      return template.printAreas[side];
+    }
+    return DEFAULT_PRINT_AREAS[productId] || DEFAULT_PRINT_AREAS['default'];
+  };
   
   // Separate design images for front and back
   const [frontDesignImage, setFrontDesignImage] = useState(null);
@@ -188,7 +203,7 @@ function DesignEditor() {
   const [productConfigs, setProductConfigs] = useState(() => {
     const configs = {};
     PRODUCT_TEMPLATES.forEach(product => {
-      const printArea = PRINT_AREAS[product.id] || { x: 200, y: 80 };
+      const printArea = DEFAULT_PRINT_AREAS[product.id] || { x: 200, y: 80 };
       configs[product.id] = {
         enabled: product.id === 'tee' || product.id === 'wmn-hoodie',
         // Separate positions for front and back
@@ -230,31 +245,56 @@ function DesignEditor() {
         const templates = response.data.templates;
         setProductTemplates(templates); // Set the state for templates
         
-        // Initialize product configs for new templates
-        const newConfigs = {};
-        templates.forEach(product => {
-          // If this is a new template not in our configs, add it
-          if (!productConfigs[product.id]) {
-            const printArea = product.printAreas?.front || PRINT_AREAS[product.id] || { x: 200, y: 80 };
-            newConfigs[product.id] = {
-              enabled: product.id === 'tee' || product.id === 'wmn-hoodie' || product.id === 'baby-tee',
-              // Separate positions for front and back
-              frontPosition: { x: printArea.x, y: printArea.y, width: printArea.width || 150, height: printArea.height || 150 },
-              backPosition: product.printAreas?.back 
-                ? { x: product.printAreas.back.x, y: product.printAreas.back.y, width: product.printAreas.back.width || 150, height: product.printAreas.back.height || 150 }
-                : { x: printArea.x, y: printArea.y, width: printArea.width || 150, height: printArea.height || 150 },
-              defaultColor: '',
-              selectedColor: '',
-              selectedColors: [],
-              printLocation: 'front'
-            };
-          }
+        // Reinitialize ALL product configs with the correct print areas from API
+        setProductConfigs(prev => {
+          const updatedConfigs = { ...prev };
+          
+          templates.forEach(product => {
+            const printArea = product.printAreas?.front || DEFAULT_PRINT_AREAS[product.id] || { x: 200, y: 80 };
+            
+            // Update existing config or create new one
+            if (updatedConfigs[product.id]) {
+              // Update print areas while preserving other settings
+              updatedConfigs[product.id] = {
+                ...updatedConfigs[product.id],
+                frontPosition: { 
+                  x: printArea.x, 
+                  y: printArea.y, 
+                  width: printArea.width || 150, 
+                  height: printArea.height || 150 
+                },
+                backPosition: product.printAreas?.back 
+                  ? { 
+                      x: product.printAreas.back.x, 
+                      y: product.printAreas.back.y, 
+                      width: product.printAreas.back.width || 150, 
+                      height: product.printAreas.back.height || 150 
+                    }
+                  : { 
+                      x: printArea.x, 
+                      y: printArea.y, 
+                      width: printArea.width || 150, 
+                      height: printArea.height || 150 
+                    }
+              };
+            } else {
+              // Create new config
+              updatedConfigs[product.id] = {
+                enabled: product.id === 'tee' || product.id === 'wmn-hoodie' || product.id === 'baby-tee',
+                frontPosition: { x: printArea.x, y: printArea.y, width: printArea.width || 150, height: printArea.height || 150 },
+                backPosition: product.printAreas?.back 
+                  ? { x: product.printAreas.back.x, y: product.printAreas.back.y, width: product.printAreas.back.width || 150, height: product.printAreas.back.height || 150 }
+                  : { x: printArea.x, y: printArea.y, width: printArea.width || 150, height: printArea.height || 150 },
+                defaultColor: '',
+                selectedColor: '',
+                selectedColors: [],
+                printLocation: 'front'
+              };
+            }
+          });
+          
+          return updatedConfigs;
         });
-        
-        // Merge new configs with existing ones
-        if (Object.keys(newConfigs).length > 0) {
-          setProductConfigs(prev => ({ ...prev, ...newConfigs }));
-        }
       }
     } catch (error) {
       console.error('Error loading product templates:', error);
@@ -295,7 +335,7 @@ function DesignEditor() {
         setProductConfigs(prev => {
           const newConfigs = {};
           Object.keys(prev).forEach(productId => {
-            const printArea = PRINT_AREAS[productId] || { width: 200, height: 286, x: 200, y: 80 };
+            const printArea = getPrintArea(productId, viewSide);
             
             // Calculate size to fit within print area while maintaining aspect ratio
             let designWidth, designHeight;
@@ -449,7 +489,7 @@ function DesignEditor() {
     // Apply zoom transformation if zoomed
     ctx.save();
     if (isZoomed) {
-      const printArea = PRINT_AREAS[activeProduct] || { width: 200, height: 286, x: 200, y: 80 };
+      const printArea = getPrintArea(activeProduct, viewSide);
       const zoomFactor = 2;
       const centerX = printArea.x;
       const centerY = printArea.y;
@@ -465,7 +505,7 @@ function DesignEditor() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
     // Get print area dimensions for current product
-    const printArea = PRINT_AREAS[activeProduct] || { width: 200, height: 286, x: 200, y: 80 };
+    const printArea = getPrintArea(activeProduct, viewSide);
     const printAreaWidth = printArea.width;
     const printAreaHeight = printArea.height;
     const printAreaX = printArea.x - (printAreaWidth / 2);
@@ -984,7 +1024,7 @@ function DesignEditor() {
     
     // Handle dragging
     if (isDragging) {
-      const printArea = PRINT_AREAS[activeProduct] || { width: 200, height: 286, x: 200, y: 80 };
+      const printArea = getPrintArea(activeProduct, viewSide);
       const currentPosition = getCurrentPosition();
       const halfWidth = currentPosition.width / 2;
       const halfHeight = currentPosition.height / 2;
@@ -1017,7 +1057,7 @@ function DesignEditor() {
     
     // Calculate new dimensions maintaining aspect ratio
     const aspectRatio = designImage.width / designImage.height;
-    const printArea = PRINT_AREAS[activeProduct] || { width: 200, height: 286 };
+    const printArea = getPrintArea(activeProduct, viewSide);
     const baseSize = Math.min(printArea.width, printArea.height) * 0.5;
     const newWidth = baseSize * (scale / 100);
     const newHeight = newWidth / aspectRatio;
