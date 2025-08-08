@@ -18,8 +18,8 @@ const INITIAL_PRINT_AREAS = {
     back: { width: 250, height: 250, x: 175, y: 175 }
   },
   'wmn-hoodie': { 
-    front: { width: 280, height: 340, x: 160, y: 130 },  // Center at 300,300 -> top-left at 160,130
-    back: { width: 280, height: 340, x: 160, y: 130 }
+    front: { width: 280, height: 340, x: 160, y: 80 },  // Positioned higher on chest
+    back: { width: 280, height: 340, x: 160, y: 80 }
   },
   'med-hood': { 
     front: { width: 280, height: 340, x: 160, y: 130 },  // Center at 300,300 -> top-left at 160,130
@@ -62,8 +62,8 @@ const INITIAL_PRINT_AREAS = {
     back: null // Cards are typically single-sided
   },
   'baby-tee': { 
-    front: { width: 240, height: 300, x: 180, y: 150 },  // Ladies baby tee
-    back: { width: 240, height: 300, x: 180, y: 150 }
+    front: { width: 240, height: 300, x: 180, y: 100 },  // Ladies baby tee - positioned higher
+    back: { width: 240, height: 300, x: 180, y: 100 }
   }
 };
 

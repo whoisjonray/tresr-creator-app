@@ -36,6 +36,7 @@ const PRODUCT_TEMPLATES = [
   { id: 'tee', name: 'Medium Weight T-Shirt', templateId: 'tshirt_front', price: 22, colors: ['Black', 'Navy', 'Natural', 'White', 'Dark Grey', 'Cardinal Red'] },
   { id: 'boxy', name: 'Oversized Drop Shoulder', templateId: 'tshirt_boxy_front', price: 26, colors: ['Black', 'Natural'] }, // Restored to TRESR.com colors
   { id: 'next-crop', name: 'Next Level Crop Top', templateId: 'croptop_front', price: 24, colors: ['Black', 'Gold', 'Royal Heather', 'Dark Grey', 'Pink', 'Light Grey', 'Navy', 'Cardinal Red', 'White'] },
+  { id: 'baby-tee', name: 'Ladies Baby Tee', templateId: 'babytee_front', price: 23, colors: ['Black', 'White'] },
   
   // Hoodies & Sweatshirts - Updated to match TRESR.com exactly
   { id: 'wmn-hoodie', name: "Women's Independent Hoodie", templateId: 'hoodie_front', price: 42, colors: ['Black', 'Black Camo', 'Pink', 'Natural', 'Cotton Candy', 'Light Grey', 'Mint', 'White'] },
@@ -111,8 +112,8 @@ const DEFAULT_PRINT_AREAS = {
   'boxy': { width: 300, height: 350, x: 150, y: 125 },
   'next-crop': { width: 260, height: 280, x: 170, y: 160 },
   
-  // Hoodies - centered with good coverage
-  'wmn-hoodie': { width: 280, height: 340, x: 160, y: 130 },
+  // Hoodies - positioned higher on the chest
+  'wmn-hoodie': { width: 280, height: 340, x: 160, y: 80 },
   'med-hood': { width: 280, height: 340, x: 160, y: 130 },
   'mediu': { width: 280, height: 350, x: 160, y: 125 },
   'sweat': { width: 280, height: 350, x: 160, y: 125 },
@@ -132,8 +133,8 @@ const DEFAULT_PRINT_AREAS = {
   // Trading card - full area
   'nft': { width: 400, height: 560, x: 100, y: 20 },
   
-  // Baby tee
-  'baby-tee': { width: 240, height: 300, x: 180, y: 150 },
+  // Baby tee - positioned higher on the chest
+  'baby-tee': { width: 240, height: 300, x: 180, y: 100 },
   
   // Default fallback
   'default': { width: 280, height: 350, x: 160, y: 125 }
@@ -148,16 +149,18 @@ function DesignEditor() {
   
   // Track which side we're viewing - MUST be defined before useMemo hooks
   const [viewSide, setViewSide] = useState('front');
-  const [productTemplates, setProductTemplates] = useState([]);
+  const [productTemplates, setProductTemplates] = useState(PRODUCT_TEMPLATES);
   
   // Helper function to get print area from templates or fallback to defaults
   const getPrintArea = (productId, side = 'front') => {
     const template = productTemplates.find(t => t.id === productId);
     
     if (template && template.printAreas && template.printAreas[side]) {
+      console.log(`Using saved print area for ${productId} ${side}:`, template.printAreas[side]);
       return template.printAreas[side];
     }
     
+    console.log(`Using default print area for ${productId} ${side}`);
     return DEFAULT_PRINT_AREAS[productId] || DEFAULT_PRINT_AREAS['default'];
   };
   
@@ -251,27 +254,31 @@ function DesignEditor() {
   const loadPrintAreas = async () => {
     try {
       const response = await api.get('/api/settings/print-areas');
+      console.log('Loaded print areas from database:', response.data);
+      
       if (response.data.success && response.data.printAreas) {
         const savedAreas = response.data.printAreas;
+        console.log('Processing saved areas:', savedAreas);
         
         // Update product templates with saved print areas
         setProductTemplates(prev => {
-          const updated = [...prev];
-          // If we have saved print areas, use them
-          Object.keys(savedAreas).forEach(productId => {
-            const template = updated.find(t => t.id === productId);
-            if (template) {
-              template.printAreas = savedAreas[productId];
-            } else {
-              // Add template if it doesn't exist (like baby-tee)
-              updated.push({
-                id: productId,
-                name: productId.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-                printAreas: savedAreas[productId]
-              });
+          return prev.map(template => {
+            if (savedAreas[template.id]) {
+              console.log(`Updating ${template.id} with saved print areas:`, savedAreas[template.id]);
+              return {
+                ...template,
+                printAreas: savedAreas[template.id]
+              };
             }
+            // If no saved areas, create default structure
+            return {
+              ...template,
+              printAreas: {
+                front: DEFAULT_PRINT_AREAS[template.id] || DEFAULT_PRINT_AREAS['default'],
+                back: DEFAULT_PRINT_AREAS[template.id] || DEFAULT_PRINT_AREAS['default']
+              }
+            };
           });
-          return updated;
         });
         
         // Also update product configs with new print areas
