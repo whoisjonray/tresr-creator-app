@@ -141,6 +141,7 @@ function DesignEditor() {
   
   // Track which side we're viewing - MUST be defined before useMemo hooks
   const [viewSide, setViewSide] = useState('front');
+  const [productTemplates, setProductTemplates] = useState([]);
   
   // Separate design images for front and back
   const [frontDesignImage, setFrontDesignImage] = useState(null);
@@ -224,6 +225,7 @@ function DesignEditor() {
       const response = await api.get('/api/templates/active');
       if (response.data.success && response.data.templates) {
         const templates = response.data.templates;
+        setProductTemplates(templates); // Set the state for templates
         setPRODUCT_TEMPLATES(templates);
         
         // Initialize product configs for new templates
@@ -1544,7 +1546,7 @@ function DesignEditor() {
         <div className="configure-section">
           <h2>Configure Products</h2>
           <div className="product-grid">
-            {PRODUCT_TEMPLATES.map(product => (
+            {(productTemplates.length > 0 ? productTemplates : PRODUCT_TEMPLATES).map(product => (
               <div 
                 key={product.id}
                 className={`product-card ${productConfigs[product.id]?.enabled ? 'active' : ''} ${activeProduct === product.id ? 'editing' : ''}`}

@@ -137,9 +137,19 @@ const BoundingBoxEditor = () => {
           hasBackPrint: t.hasBackPrint,
           frontImage: t.frontImage,
           backImage: t.backImage,
-          colorImages: t.colorImages
+          colorImages: t.colorImages,
+          printAreas: t.printAreas // Include print areas from template
         }));
         setGarmentTypes(templates);
+        
+        // Add template print areas to the printAreas state
+        const newPrintAreas = { ...printAreas };
+        templates.forEach(template => {
+          if (template.printAreas && !newPrintAreas[template.id]) {
+            newPrintAreas[template.id] = template.printAreas;
+          }
+        });
+        setPrintAreas(newPrintAreas);
         
         // Set initial garment if not already set
         if (!selectedGarment && templates.length > 0) {
