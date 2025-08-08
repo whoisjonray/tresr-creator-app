@@ -1,11 +1,91 @@
 import React, { useState, useEffect } from 'react';
 import SuperProductOptions, { SuperProductImage, RelatedAccessories } from '../components/SuperProductOptions';
 import { testSuperProductConfig, getSummaryStats } from '../config/testSuperProductConfig';
+import api from '../services/api';
 import './SuperProductTest.css';
 
 function SuperProductTest() {
   const [selection, setSelection] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [superProductConfig, setSuperProductConfig] = useState(testSuperProductConfig);
+  const [templatesLoaded, setTemplatesLoaded] = useState(false);
+  
+  // Load templates from API and add to config
+  useEffect(() => {
+    loadProductTemplates();
+  }, []);
+  
+  const loadProductTemplates = async () => {
+    try {
+      const response = await api.get('/api/settings/product-templates');
+      if (response.data.success && response.data.templates) {
+        const templates = response.data.templates;
+        
+        // Add new templates to the config
+        const updatedConfig = { ...testSuperProductConfig };
+        
+        // Add female templates that aren't already in the config
+        const femaleTemplates = templates.filter(t => 
+          t.category === 'apparel' && 
+          (t.id === 'baby-tee' || t.id === 'next-crop' || t.id === 'wmn-hoodie')
+        );
+        
+        femaleTemplates.forEach(template => {
+          // Check if this template is already in female styles
+          const existingIndex = updatedConfig.options.style.values.female.findIndex(
+            s => s.id === template.id
+          );
+          
+          if (existingIndex === -1 && template.id === 'baby-tee') {
+            // Add baby tee to female styles
+            updatedConfig.options.style.values.female.push({
+              id: template.id,
+              name: template.name,
+              price: template.price || '23.00',
+              colors: template.colors?.map(c => c.toLowerCase().replace(/\s+/g, '-')) || ['black', 'white'],
+              sizes: ['S', 'M', 'L', 'XL'],
+              description: 'Fitted ladies baby tee',
+              cloudinaryBase: `tresr-garments/${template.id}`,
+              thumbnailImage: template.thumbnail
+            });
+          }
+        });
+        
+        // Add male templates that aren't already in the config
+        const maleTemplates = templates.filter(t => 
+          t.category === 'apparel' && 
+          !['baby-tee', 'next-crop', 'wmn-hoodie'].includes(t.id)
+        );
+        
+        maleTemplates.forEach(template => {
+          const existingIndex = updatedConfig.options.style.values.male.findIndex(
+            s => s.id === template.id
+          );
+          
+          if (existingIndex === -1) {
+            updatedConfig.options.style.values.male.push({
+              id: template.id,
+              name: template.name,
+              price: template.price || '25.00',
+              colors: template.colors?.map(c => c.toLowerCase().replace(/\s+/g, '-')) || ['black', 'white'],
+              sizes: ['S', 'M', 'L', 'XL', '2XL'],
+              description: template.name,
+              cloudinaryBase: `tresr-garments/${template.id}`,
+              thumbnailImage: template.thumbnail
+            });
+          }
+        });
+        
+        setSuperProductConfig(updatedConfig);
+        setTemplatesLoaded(true);
+        console.log('Loaded templates and updated SuperProduct config:', updatedConfig);
+      }
+    } catch (error) {
+      console.error('Error loading templates:', error);
+      // Still use default config if API fails
+      setTemplatesLoaded(true);
+    }
+  };
 
   const handleSelectionChange = (newSelection) => {
     setSelection(newSelection);
@@ -85,7 +165,7 @@ function SuperProductTest() {
       <div className="superproduct-container">
         <div className="product-image-section">
           <SuperProductImage
-            superProduct={testSuperProductConfig}
+            superProduct={superProductConfig}
             selectedStyle={selection?.style}
             selectedColor={selection?.color}
           />
@@ -93,7 +173,7 @@ function SuperProductTest() {
 
         <div className="product-options-section">
           <SuperProductOptions
-            superProduct={testSuperProductConfig}
+            superProduct={superProductConfig}
             onSelectionChange={handleSelectionChange}
             onAddToCart={handleAddToCart}
             hideAddToCart={true}
@@ -103,8 +183,8 @@ function SuperProductTest() {
 
       {/* Related Accessories */}
       <RelatedAccessories
-        designId={testSuperProductConfig.id}
-        accessories={testSuperProductConfig.accessories}
+        designId={superProductConfig.id}
+        accessories={superProductConfig.accessories}
       />
 
       {/* Debug Information */}
