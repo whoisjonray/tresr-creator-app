@@ -1901,13 +1901,13 @@ function DesignEditor() {
                       <button 
                         className="tool-btn align-top"
                         onClick={() => {
-                          // Top align - only move vertically to top of print area
-                          const config = productConfigs[activeProduct];
+                          // Top align - move to top of actual print area
+                          const printArea = getPrintArea(activeProduct, viewSide);
                           const currentPos = getCurrentPosition();
-                          const printAreaTop = 50 + currentPos.height / 2; // Top edge of print area
+                          // Position design at top of print area (top-left coordinates)
                           updateCurrentPosition(activeProduct, {
                             ...currentPos,
-                            y: printAreaTop // Only change Y, keep X the same
+                            y: printArea.y // Align to top edge of print area
                           });
                         }}
                         title="Align to top"
@@ -1920,11 +1920,14 @@ function DesignEditor() {
                       <button 
                         className="tool-btn align-center"
                         onClick={() => {
-                          // Center align - only move horizontally to center
+                          // Center align - center horizontally within print area
+                          const printArea = getPrintArea(activeProduct, viewSide);
                           const currentPos = getCurrentPosition();
+                          // Center design horizontally within print area
+                          const centerX = printArea.x + (printArea.width - currentPos.width) / 2;
                           updateCurrentPosition(activeProduct, {
                             ...currentPos,
-                            x: 200 // Only change X to center, keep Y the same
+                            x: centerX // Center within print area
                           });
                         }}
                         title="Center horizontally"
