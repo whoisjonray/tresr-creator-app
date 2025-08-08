@@ -133,6 +133,22 @@ export const GARMENT_IMAGES = {
       "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270748/garments/next-crop/back/red.jpg"
     }
   },
+  "baby-tee": {
+    "front": {
+      "main": "https://res.cloudinary.com/dqslerzk9/image/upload/v1754608310/tresr-templates/tresr-templates/baby-tee/front-black.png"
+    },
+    "black": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1754608310/tresr-templates/tresr-templates/baby-tee/front-black.png",
+      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1754608317/tresr-templates/tresr-templates/baby-tee/back-black.png"
+    },
+    "white": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1754608329/tresr-templates/tresr-templates/baby-tee/front-white.png",
+      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1754608335/tresr-templates/tresr-templates/baby-tee/back-white.png"
+    },
+    "back": {
+      "main": "https://res.cloudinary.com/dqslerzk9/image/upload/v1754608317/tresr-templates/tresr-templates/baby-tee/back-black.png"
+    }
+  },
   "gen": {},
   "nft": {
     "front": {
