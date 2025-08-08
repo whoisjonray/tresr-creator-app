@@ -604,16 +604,8 @@ function DesignEditor() {
     const garmentImageUrl = getCloudinaryImage(activeProduct, selectedColor, displaySide);
     
     if (garmentImageUrl && garmentImage.current) {
-      // If garment image is loaded, draw it centered on canvas
-      const imgWidth = garmentImage.current.width;
-      const imgHeight = garmentImage.current.height;
-      const scale = Math.min(canvas.width / imgWidth, canvas.height / imgHeight) * 0.9;
-      const scaledWidth = imgWidth * scale;
-      const scaledHeight = imgHeight * scale;
-      const x = (canvas.width - scaledWidth) / 2;
-      const y = (canvas.height - scaledHeight) / 2;
-      
-      ctx.drawImage(garmentImage.current, x, y, scaledWidth, scaledHeight);
+      // Draw garment image at full canvas size to match bounding box editor
+      ctx.drawImage(garmentImage.current, 0, 0, canvas.width, canvas.height);
     }
     
     // Draw design if available (AFTER garment image)
