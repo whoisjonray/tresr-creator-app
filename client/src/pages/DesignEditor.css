@@ -532,9 +532,7 @@
 }
 
 .color-grid {
-    /* display: grid; */
-    /* grid-template-columns: repeat(auto-fill, minmax(35px, 1fr)); */
-    display: flex;
+    display: flex !important;
     flex-wrap: wrap;
     gap: 8px;
     max-width: 800px;
@@ -663,7 +661,7 @@
 }
 
 .color-grid {
-    display: flex;
+    display: flex !important;
     flex-wrap: wrap;
     gap: 8px;
     margin-top: 10px;
