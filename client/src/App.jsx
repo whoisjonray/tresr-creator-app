@@ -18,6 +18,7 @@ import AuthGuard from './components/AuthGuard';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import { DataMigration } from './components/DataMigration';
 import DynamicProvider from './providers/DynamicProvider';
+import { PrintAreasProvider } from './contexts/PrintAreasContext';
 import './App.css';
 
 function AppContent() {
@@ -91,7 +92,9 @@ function App() {
   return (
     <DynamicProvider>
       <AuthProvider>
-        <AppContent />
+        <PrintAreasProvider>
+          <AppContent />
+        </PrintAreasProvider>
       </AuthProvider>
     </DynamicProvider>
   );

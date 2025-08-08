@@ -8,6 +8,7 @@ import canvasImageGenerator from '../services/canvasImageGenerator';
 import { getGarmentImage as getCloudinaryImage } from '../config/garmentImagesCloudinary';
 import './DesignEditor.css'; // v2 - square swatches with 14 colors
 import { userStorage } from '../utils/userStorage';
+import { usePrintAreas } from '../contexts/PrintAreasContext';
 
 // Get API base URL from environment
 const getApiBaseURL = () => {
@@ -104,41 +105,8 @@ const PRODUCT_ICONS = {
   'nft': '🎴'
 };
 
-// Default print area configurations (will be overridden by API data)
-// Using top-left coordinates for a 600x600 canvas
-const DEFAULT_PRINT_AREAS = {
-  // T-shirts - larger print area centered on canvas
-  'tee': { width: 280, height: 350, x: 160, y: 125 },
-  'boxy': { width: 300, height: 350, x: 150, y: 125 },
-  'next-crop': { width: 260, height: 280, x: 170, y: 160 },
-  
-  // Hoodies - positioned higher on the chest
-  'wmn-hoodie': { width: 280, height: 340, x: 160, y: 80 },
-  'med-hood': { width: 280, height: 340, x: 160, y: 130 },
-  'mediu': { width: 280, height: 350, x: 160, y: 125 },
-  'sweat': { width: 280, height: 350, x: 160, y: 125 },
-  
-  // Hats - smaller centered area
-  'patch-c': { width: 120, height: 80, x: 240, y: 260 },
-  'patch-flat': { width: 140, height: 80, x: 230, y: 260 },
-  
-  // Canvas - full area with small margin
-  'art-sqsm': { width: 560, height: 560, x: 20, y: 20 },
-  'art-sqm': { width: 560, height: 560, x: 20, y: 20 },
-  'art-lg': { width: 560, height: 560, x: 20, y: 20 },
-  
-  // Polo - smaller chest area
-  'polo': { width: 200, height: 250, x: 200, y: 100 },
-  
-  // Trading card - full area
-  'nft': { width: 400, height: 560, x: 100, y: 20 },
-  
-  // Baby tee - positioned higher on the chest
-  'baby-tee': { width: 240, height: 300, x: 180, y: 100 },
-  
-  // Default fallback
-  'default': { width: 280, height: 350, x: 160, y: 125 }
-};
+// Print areas are now loaded from context/database
+// No more hardcoded defaults!
 
 function DesignEditor() {
   const navigate = useNavigate();
@@ -147,22 +115,15 @@ function DesignEditor() {
   const canvasRef = useRef(null);
   const garmentImage = useRef(new Image());
   
+  // Get print areas from context
+  const { getPrintArea, loading: printAreasLoading, error: printAreasError } = usePrintAreas();
+  
   // Track which side we're viewing - MUST be defined before useMemo hooks
   const [viewSide, setViewSide] = useState('front');
   const [productTemplates, setProductTemplates] = useState(PRODUCT_TEMPLATES);
   
   // Helper function to get print area from templates or fallback to defaults
-  const getPrintArea = (productId, side = 'front') => {
-    const template = productTemplates.find(t => t.id === productId);
-    
-    if (template && template.printAreas && template.printAreas[side]) {
-      console.log(`Using saved print area for ${productId} ${side}:`, template.printAreas[side]);
-      return template.printAreas[side];
-    }
-    
-    console.log(`Using default print area for ${productId} ${side}`);
-    return DEFAULT_PRINT_AREAS[productId] || DEFAULT_PRINT_AREAS['default'];
-  };
+  // getPrintArea is now provided by context, no need to define it here
   
   // Separate design images for front and back
   const [frontDesignImage, setFrontDesignImage] = useState(null);
@@ -205,29 +166,7 @@ function DesignEditor() {
   const [colorFilter, setColorFilter] = useState('All'); // All, Light, Dark, None
   
   const [activeProduct, setActiveProduct] = useState(PRODUCT_TEMPLATES[0].id);
-  const [productConfigs, setProductConfigs] = useState(() => {
-    const configs = {};
-    PRODUCT_TEMPLATES.forEach(product => {
-      const printArea = DEFAULT_PRINT_AREAS[product.id] || DEFAULT_PRINT_AREAS['default'];
-      
-      // Center a 200x200 design within the print area
-      const designSize = 200;
-      const centerX = printArea.x + (printArea.width - designSize) / 2;
-      const centerY = printArea.y + (printArea.height - designSize) / 2;
-      
-      configs[product.id] = {
-        enabled: product.id === 'tee' || product.id === 'wmn-hoodie',
-        // Separate positions for front and back
-        frontPosition: { x: centerX, y: centerY, width: designSize, height: designSize },
-        backPosition: { x: centerX, y: centerY, width: designSize, height: designSize },
-        defaultColor: '', // Start with no default color selected
-        selectedColor: '',
-        selectedColors: [], // Array of selected colors for variants
-        printLocation: 'front' // New: track front/back/both
-      };
-    });
-    return configs;
-  });
+  const [productConfigs, setProductConfigs] = useState({});
   
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
@@ -247,71 +186,36 @@ function DesignEditor() {
   // Load product templates from API on mount
   useEffect(() => {
     loadProductTemplates();
-    loadPrintAreas();
   }, []);
   
-  // Load saved print areas from bounding box editor
-  const loadPrintAreas = async () => {
-    try {
-      const response = await api.get('/api/settings/print-areas');
-      console.log('Loaded print areas from database:', response.data);
-      
-      if (response.data.success && response.data.printAreas) {
-        const savedAreas = response.data.printAreas;
-        console.log('Processing saved areas:', savedAreas);
+  // Initialize product configs once print areas are loaded
+  useEffect(() => {
+    if (!printAreasLoading && !productConfigs.tee) {
+      const configs = {};
+      PRODUCT_TEMPLATES.forEach(product => {
+        const printArea = getPrintArea(product.id, 'front');
         
-        // Update product templates with saved print areas
-        setProductTemplates(prev => {
-          return prev.map(template => {
-            if (savedAreas[template.id]) {
-              console.log(`Updating ${template.id} with saved print areas:`, savedAreas[template.id]);
-              return {
-                ...template,
-                printAreas: savedAreas[template.id]
-              };
-            }
-            // If no saved areas, create default structure
-            return {
-              ...template,
-              printAreas: {
-                front: DEFAULT_PRINT_AREAS[template.id] || DEFAULT_PRINT_AREAS['default'],
-                back: DEFAULT_PRINT_AREAS[template.id] || DEFAULT_PRINT_AREAS['default']
-              }
-            };
-          });
-        });
+        // Center a 200x200 design within the print area
+        const designSize = 200;
+        const centerX = printArea.x + (printArea.width - designSize) / 2;
+        const centerY = printArea.y + (printArea.height - designSize) / 2;
         
-        // Also update product configs with new print areas
-        setProductConfigs(prev => {
-          const updatedConfigs = { ...prev };
-          
-          Object.keys(savedAreas).forEach(productId => {
-            const printArea = savedAreas[productId]?.front;
-            if (printArea && !updatedConfigs[productId]) {
-              // Add config for new products (like baby-tee)
-              const designSize = 200;
-              const centerX = printArea.x + (printArea.width - designSize) / 2;
-              const centerY = printArea.y + (printArea.height - designSize) / 2;
-              
-              updatedConfigs[productId] = {
-                enabled: false,
-                frontPosition: { x: centerX, y: centerY, width: designSize, height: designSize },
-                backPosition: { x: centerX, y: centerY, width: designSize, height: designSize },
-                defaultColor: '',
-                selectedColor: '',
-                selectedColors: [],
-                printLocation: 'front'
-              };
-            }
-          });
-          
-          return updatedConfigs;
-        });
-      }
-    } catch (error) {
-      console.error('Error loading print areas:', error);
+        configs[product.id] = {
+          enabled: product.id === 'tee' || product.id === 'wmn-hoodie',
+          // Separate positions for front and back
+          frontPosition: { x: centerX, y: centerY, width: designSize, height: designSize },
+          backPosition: { x: centerX, y: centerY, width: designSize, height: designSize },
+          defaultColor: '', // Start with no default color selected
+          selectedColor: '',
+          selectedColors: [], // Array of selected colors for variants
+          printLocation: 'front' // New: track front/back/both
+        };
+      });
+      setProductConfigs(configs);
     }
-  };
+  }, [printAreasLoading, getPrintArea]);
+  
+  // Print areas are now loaded from context, no need for separate loading
   
   const loadProductTemplates = async () => {
     try {
@@ -1576,6 +1480,38 @@ function DesignEditor() {
     if (colorFilter === 'None') return false;
     return true;
   });
+
+  // Show loading state while print areas are being fetched
+  if (printAreasLoading) {
+    return (
+      <div className="design-editor-page">
+        <div className="design-editor-header">
+          <h1>TRESR Design Editor</h1>
+          <p>Loading print areas...</p>
+        </div>
+        <div className="container" style={{ textAlign: 'center', padding: '50px' }}>
+          <div className="loading-spinner">Loading print area configurations...</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error if print areas failed to load
+  if (printAreasError) {
+    return (
+      <div className="design-editor-page">
+        <div className="design-editor-header">
+          <h1>TRESR Design Editor</h1>
+          <p>Error loading print areas</p>
+        </div>
+        <div className="container" style={{ textAlign: 'center', padding: '50px' }}>
+          <div className="error-message">
+            Failed to load print area configurations. Please refresh the page or contact support.
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="design-editor-page">
