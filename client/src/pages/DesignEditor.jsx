@@ -153,10 +153,22 @@ function DesignEditor() {
   // Helper function to get print area from templates or fallback to defaults
   const getPrintArea = (productId, side = 'front') => {
     const template = productTemplates.find(t => t.id === productId);
+    let area;
+    
     if (template && template.printAreas && template.printAreas[side]) {
-      return template.printAreas[side];
+      area = template.printAreas[side];
+    } else {
+      area = DEFAULT_PRINT_AREAS[productId] || DEFAULT_PRINT_AREAS['default'];
     }
-    return DEFAULT_PRINT_AREAS[productId] || DEFAULT_PRINT_AREAS['default'];
+    
+    // Scale coordinates from 600x600 (bounding box editor) to 400x400 (design editor)
+    const scale = 400 / 600;
+    return {
+      x: area.x * scale,
+      y: area.y * scale,
+      width: area.width * scale,
+      height: area.height * scale
+    };
   };
   
   // Separate design images for front and back
@@ -203,12 +215,26 @@ function DesignEditor() {
   const [productConfigs, setProductConfigs] = useState(() => {
     const configs = {};
     PRODUCT_TEMPLATES.forEach(product => {
-      const printArea = DEFAULT_PRINT_AREAS[product.id] || { x: 200, y: 80 };
+      const printArea = DEFAULT_PRINT_AREAS[product.id] || DEFAULT_PRINT_AREAS['default'];
+      // Scale coordinates from assumed 600x600 to 400x400 canvas
+      const scale = 400 / 600;
+      const scaledArea = {
+        x: printArea.x * scale,
+        y: printArea.y * scale,
+        width: printArea.width * scale,
+        height: printArea.height * scale
+      };
+      
+      // Center a 150x150 design within the print area
+      const designSize = 150;
+      const centerX = scaledArea.x + (scaledArea.width - designSize) / 2;
+      const centerY = scaledArea.y + (scaledArea.height - designSize) / 2;
+      
       configs[product.id] = {
         enabled: product.id === 'tee' || product.id === 'wmn-hoodie',
         // Separate positions for front and back
-        frontPosition: { x: printArea.x, y: printArea.y, width: 150, height: 150 },
-        backPosition: { x: printArea.x, y: printArea.y, width: 150, height: 150 },
+        frontPosition: { x: centerX, y: centerY, width: designSize, height: designSize },
+        backPosition: { x: centerX, y: centerY, width: designSize, height: designSize },
         defaultColor: '', // Start with no default color selected
         selectedColor: '',
         selectedColors: [], // Array of selected colors for variants
@@ -495,7 +521,7 @@ function DesignEditor() {
     if (isZoomed) {
       const printArea = getPrintArea(activeProduct, viewSide);
       const zoomFactor = 2;
-      // Calculate actual center of print area (top-left + half dimensions)
+      // Calculate actual center of print area (printArea.x/y are already top-left, scaled)
       const centerX = printArea.x + (printArea.width / 2);
       const centerY = printArea.y + (printArea.height / 2);
       
@@ -513,7 +539,7 @@ function DesignEditor() {
     const printArea = getPrintArea(activeProduct, viewSide);
     const printAreaWidth = printArea.width;
     const printAreaHeight = printArea.height;
-    // Print areas from bounding box editor use top-left coordinates
+    // Coordinates are already top-left from bounding box editor (scaled to 400x400)
     const printAreaX = printArea.x;
     const printAreaY = printArea.y;
     
@@ -588,7 +614,7 @@ function DesignEditor() {
       ctx.strokeStyle = '#10b981';
       ctx.setLineDash([2, 4]);
       ctx.lineWidth = 1;
-      // Calculate actual center of print area
+      // Calculate actual center of print area (printAreaX/Y are top-left)
       const centerX = printAreaX + (printAreaWidth / 2);
       const centerY = printAreaY + (printAreaHeight / 2);
       // Vertical center line through print area
