@@ -353,17 +353,21 @@ function DesignEditor() {
             }
             
             // Update both front and back positions with the new dimensions
+            // Center the design within the print area
+            const centerX = printArea.x + (printArea.width - designWidth) / 2;
+            const centerY = printArea.y + (printArea.height - designHeight) / 2;
+            
             newConfigs[productId] = {
               ...prev[productId],
               frontPosition: {
-                x: printArea.x, // Center in print area
-                y: printArea.y,
+                x: centerX, // Center horizontally in print area
+                y: centerY, // Center vertically in print area
                 width: designWidth,
                 height: designHeight
               },
               backPosition: {
-                x: printArea.x, // Center in print area
-                y: printArea.y,
+                x: centerX, // Center horizontally in print area
+                y: centerY, // Center vertically in print area
                 width: designWidth,
                 height: designHeight
               }
@@ -491,8 +495,9 @@ function DesignEditor() {
     if (isZoomed) {
       const printArea = getPrintArea(activeProduct, viewSide);
       const zoomFactor = 2;
-      const centerX = printArea.x;
-      const centerY = printArea.y;
+      // Calculate actual center of print area (top-left + half dimensions)
+      const centerX = printArea.x + (printArea.width / 2);
+      const centerY = printArea.y + (printArea.height / 2);
       
       // Translate to center of print area and scale
       ctx.translate(canvas.width/2, canvas.height/2);
@@ -508,8 +513,9 @@ function DesignEditor() {
     const printArea = getPrintArea(activeProduct, viewSide);
     const printAreaWidth = printArea.width;
     const printAreaHeight = printArea.height;
-    const printAreaX = printArea.x - (printAreaWidth / 2);
-    const printAreaY = printArea.y - (printAreaHeight / 2);
+    // Print areas from bounding box editor use top-left coordinates
+    const printAreaX = printArea.x;
+    const printAreaY = printArea.y;
     
     // Try to get and draw the garment image
     const selectedColor = config?.hoverColor || config?.selectedColor || config?.defaultColor || 'Black';
@@ -547,7 +553,8 @@ function DesignEditor() {
       const { x, y, width, height } = currentPosition;
       
       try {
-        ctx.drawImage(designImage, x - width/2, y - height/2, width, height);
+        // Draw design at the specified position (x,y are top-left coordinates)
+        ctx.drawImage(designImage, x, y, width, height);
       } catch (e) {
         console.error('Error drawing design:', e);
       }
@@ -581,15 +588,18 @@ function DesignEditor() {
       ctx.strokeStyle = '#10b981';
       ctx.setLineDash([2, 4]);
       ctx.lineWidth = 1;
+      // Calculate actual center of print area
+      const centerX = printAreaX + (printAreaWidth / 2);
+      const centerY = printAreaY + (printAreaHeight / 2);
       // Vertical center line through print area
       ctx.beginPath();
-      ctx.moveTo(printArea.x, printAreaY - 10);
-      ctx.lineTo(printArea.x, printAreaY + printAreaHeight + 10);
+      ctx.moveTo(centerX, printAreaY - 10);
+      ctx.lineTo(centerX, printAreaY + printAreaHeight + 10);
       ctx.stroke();
       // Horizontal center line through print area
       ctx.beginPath();
-      ctx.moveTo(printAreaX - 10, printArea.y);
-      ctx.lineTo(printAreaX + printAreaWidth + 10, printArea.y);
+      ctx.moveTo(printAreaX - 10, centerY);
+      ctx.lineTo(printAreaX + printAreaWidth + 10, centerY);
       ctx.stroke();
       ctx.setLineDash([]);
     }
@@ -993,9 +1003,9 @@ function DesignEditor() {
     const y = e.clientY - rect.top;
     const config = productConfigs[activeProduct];
     
-    // Check if click is on the design
+    // Check if click is on the design (using top-left coordinates)
     const { x: cx, y: cy, width, height } = getCurrentPosition();
-    if (x >= cx - width/2 && x <= cx + width/2 && y >= cy - height/2 && y <= cy + height/2) {
+    if (x >= cx && x <= cx + width && y >= cy && y <= cy + height) {
       setIsDragging(true);
       setDragStart({ 
         x: x - cx, 
@@ -1015,7 +1025,7 @@ function DesignEditor() {
     if (!isDragging) {
       const { x: cx, y: cy, width, height } = getCurrentPosition();
       
-      if (x >= cx - width/2 && x <= cx + width/2 && y >= cy - height/2 && y <= cy + height/2) {
+      if (x >= cx && x <= cx + width && y >= cy && y <= cy + height) {
         canvasRef.current.style.cursor = 'move';
       } else {
         canvasRef.current.style.cursor = 'default';
@@ -1026,14 +1036,12 @@ function DesignEditor() {
     if (isDragging) {
       const printArea = getPrintArea(activeProduct, viewSide);
       const currentPosition = getCurrentPosition();
-      const halfWidth = currentPosition.width / 2;
-      const halfHeight = currentPosition.height / 2;
       
-      // Calculate boundaries based on print area
-      const minX = (printArea.x - printArea.width/2) + halfWidth;
-      const maxX = (printArea.x + printArea.width/2) - halfWidth;
-      const minY = (printArea.y - printArea.height/2) + halfHeight;
-      const maxY = (printArea.y + printArea.height/2) - halfHeight;
+      // Calculate boundaries based on print area (using top-left coordinates)
+      const minX = printArea.x;
+      const maxX = printArea.x + printArea.width - currentPosition.width;
+      const minY = printArea.y;
+      const maxY = printArea.y + printArea.height - currentPosition.height;
       
       const newPosition = {
         ...currentPosition,
