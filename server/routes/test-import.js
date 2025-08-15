@@ -40,13 +40,20 @@ router.get('/test-sanity-fetch', async (req, res) => {
     
     const specificProduct = await sanityClient.fetch(specificProductQuery);
     
-    // Try different ways to find products
+    // Try different ways to find products - get FULL counts
     const queries = {
       byCreatorRef: `*[_type == "product" && creator._ref == "k2r2aa8vmghuyr3he0p2eo5e"][0...5] { _id, title, creator }`,
       byCreatorsArray: `*[_type == "product" && "k2r2aa8vmghuyr3he0p2eo5e" in creators[]._ref][0...5] { _id, title, creators }`,
       byReferences: `*[_type == "product" && references("k2r2aa8vmghuyr3he0p2eo5e")][0...5] { _id, title, creators, creator }`,
       anyProduct: `*[_type == "product"][0...5] { _id, title, creator, creators, "hasCreators": defined(creators), "hasCreator": defined(creator) }`,
       byName: `*[_type == "product" && (creator->name == "memelord" || creator->username == "memelord" || "memelord" in creators[]->username)][0...5] { _id, title, creator, creators }`
+    };
+    
+    // Get TOTAL counts (not limited)
+    const countQueries = {
+      totalMemelordProducts: `count(*[_type == "product" && "k2r2aa8vmghuyr3he0p2eo5e" in creators[]._ref])`,
+      totalAllProducts: `count(*[_type == "product"])`,
+      totalWithCreators: `count(*[_type == "product" && defined(creators) && count(creators) > 0])`
     };
     
     const results = {};
@@ -62,6 +69,16 @@ router.get('/test-sanity-fetch', async (req, res) => {
       }
     }
     
+    // Get the actual counts
+    const counts = {};
+    for (const [key, query] of Object.entries(countQueries)) {
+      try {
+        counts[key] = await sanityClient.fetch(query);
+      } catch (err) {
+        counts[key] = `Error: ${err.message}`;
+      }
+    }
+    
     // Also check what persons exist
     const personsQuery = `*[_type == "person"][0...10] { _id, name, username }`;
     const persons = await sanityClient.fetch(personsQuery);
@@ -71,12 +88,15 @@ router.get('/test-sanity-fetch', async (req, res) => {
       person: person || 'Person not found',
       specificProduct: specificProduct || 'Product asjpjqvsg84wtk59nl9ywlga not found',
       queryResults: results,
+      ACTUAL_COUNTS: counts,
       availablePersons: persons,
       analysis: {
         personExists: !!person,
         personId: 'k2r2aa8vmghuyr3he0p2eo5e',
-        totalProductsFound: results.anyProduct?.count || 0,
-        memelordProductStructure: specificProduct ? 'See specificProduct field' : 'Could not fetch'
+        TOTAL_MEMELORD_PRODUCTS: counts.totalMemelordProducts || 'Could not count',
+        totalAllProducts: counts.totalAllProducts || 0,
+        memelordProductStructure: specificProduct ? 'See specificProduct field' : 'Could not fetch',
+        NOTE: 'queryResults shows only first 5 as samples, see ACTUAL_COUNTS for real totals'
       }
     });
   } catch (error) {
