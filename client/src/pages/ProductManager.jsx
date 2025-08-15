@@ -186,6 +186,37 @@ function ProductManager() {
     }
   };
   
+  const handleDirectImport = async () => {
+    setImporting(true);
+    setImportProgress('Direct import starting...');
+    
+    try {
+      const response = await api.post('/api/direct/import-memelord-direct');
+      
+      if (response.data.success) {
+        setImportProgress(`Successfully imported ${response.data.imported} of ${response.data.total} designs!`);
+        
+        // Reload products from database
+        const designsResponse = await api.get('/api/designs');
+        if (designsResponse.data.designs) {
+          setProducts(designsResponse.data.designs);
+        }
+        
+        setTimeout(() => {
+          setImporting(false);
+          setImportProgress('');
+        }, 3000);
+      }
+    } catch (error) {
+      console.error('Direct import failed:', error);
+      setImportProgress(`Import failed: ${error.response?.data?.error || error.message}`);
+      setTimeout(() => {
+        setImporting(false);
+        setImportProgress('');
+      }, 5000);
+    }
+  };
+  
   const handleImportSanityDesigns = async () => {
     setImporting(true);
     setImportProgress('Importing your Sanity designs...');
@@ -273,22 +304,40 @@ function ProductManager() {
         <h1>Your Products</h1>
         <div className="header-actions">
           {isAdmin && (
-            <button 
-              onClick={handleImportSanityDesigns} 
-              className="btn-import" 
-              disabled={importing}
-              style={{
-                marginRight: '10px', 
-                background: importing ? '#9ca3af' : '#10b981', 
-                color: 'white', 
-                padding: '8px 16px', 
-                border: 'none', 
-                borderRadius: '4px',
-                cursor: importing ? 'not-allowed' : 'pointer'
-              }}
-            >
-              {importing ? 'Importing...' : 'Import My Sanity Designs'}
-            </button>
+            <>
+              <button 
+                onClick={handleDirectImport} 
+                className="btn-import" 
+                disabled={importing}
+                style={{
+                  marginRight: '10px', 
+                  background: importing ? '#9ca3af' : '#ef4444', 
+                  color: 'white', 
+                  padding: '8px 16px', 
+                  border: 'none', 
+                  borderRadius: '4px',
+                  cursor: importing ? 'not-allowed' : 'pointer'
+                }}
+              >
+                {importing ? 'Importing...' : 'Direct Import (151 designs)'}
+              </button>
+              <button 
+                onClick={handleImportSanityDesigns} 
+                className="btn-import" 
+                disabled={importing}
+                style={{
+                  marginRight: '10px', 
+                  background: importing ? '#9ca3af' : '#10b981', 
+                  color: 'white', 
+                  padding: '8px 16px', 
+                  border: 'none', 
+                  borderRadius: '4px',
+                  cursor: importing ? 'not-allowed' : 'pointer'
+                }}
+              >
+                {importing ? 'Importing...' : 'Import My Sanity Designs'}
+              </button>
+            </>
           )}
           {canImport && (
             <button 
