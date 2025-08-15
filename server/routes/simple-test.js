@@ -128,22 +128,61 @@ router.post('/import-one', async (req, res) => {
       logging: false
     });
     
-    // Create table if needed
+    // Create the real designs table if needed (matches Sequelize model)
     await sequelize.query(`
-      CREATE TABLE IF NOT EXISTS test_imports (
+      CREATE TABLE IF NOT EXISTS designs (
         id VARCHAR(36) PRIMARY KEY,
-        sanity_id VARCHAR(255),
-        title VARCHAR(255),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        creator_id VARCHAR(36) NOT NULL,
+        sanity_id VARCHAR(255) UNIQUE,
+        name VARCHAR(255) NOT NULL,
+        description TEXT,
+        status ENUM('draft', 'published', 'archived') DEFAULT 'draft',
+        front_design_url VARCHAR(500),
+        front_design_public_id VARCHAR(255),
+        back_design_url VARCHAR(500),
+        back_design_public_id VARCHAR(255),
+        front_position JSON,
+        back_position JSON,
+        front_scale DECIMAL(3,2) DEFAULT 1.0,
+        back_scale DECIMAL(3,2) DEFAULT 1.0,
+        tags JSON,
+        print_method VARCHAR(50) DEFAULT 'DTG',
+        nfc_experience VARCHAR(50),
+        thumbnail_url VARCHAR(500),
+        design_data JSON,
+        published_at DATETIME,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
       )
     `).catch(() => {});
     
-    // Insert the one design
+    // Get first image if available
+    const imageUrl = design.images?.[0]?.asset?.url || '';
+    
+    // Insert the one design into the real table using correct field names
     const id = uuidv4();
     await sequelize.query(
-      'INSERT INTO test_imports (id, sanity_id, title) VALUES (?, ?, ?)',
+      `INSERT INTO designs (
+        id, creator_id, sanity_id, name, description, 
+        thumbnail_url, front_design_url, status, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
+      ON DUPLICATE KEY UPDATE
+        name = VALUES(name),
+        description = VALUES(description),
+        thumbnail_url = VALUES(thumbnail_url),
+        front_design_url = VALUES(front_design_url),
+        updated_at = NOW()`,
       {
-        replacements: [id, design._id, design.title]
+        replacements: [
+          id, 
+          req.session.creator.id,
+          design._id, 
+          design.title || 'Untitled Design',
+          design.description || '',
+          imageUrl,
+          imageUrl,
+          'published'
+        ]
       }
     );
     
