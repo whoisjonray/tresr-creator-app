@@ -126,6 +126,9 @@ app.use('/api/settings', require('./routes/settings-db'));
 app.use('/api/templates', require('./routes/productTemplates'));
 app.use('/api/env', require('./routes/env-check'));
 
+// Temporary setup route (remove after setup)
+app.use('/api/setup', require('./routes/setup-mapping'));
+
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
   // Serve static files from the React app
