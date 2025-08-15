@@ -13,30 +13,52 @@ router.get('/test-sanity-fetch', async (req, res) => {
       apiVersion: '2024-01-01'
     });
     
-    // Fetch designs for memelord
-    const query = `*[_type == "product" && creator._ref == "k2r2aa8vmghuyr3he0p2eo5e"] {
+    // First, let's check if the person exists
+    const personQuery = `*[_id == "k2r2aa8vmghuyr3he0p2eo5e"][0] {
       _id,
-      title,
-      "slug": slug.current,
-      description,
-      "images": images[] {
-        asset-> {
-          url
-        }
-      }
-    }[0...5]`; // Limit to 5 for testing
+      _type,
+      name,
+      username,
+      email
+    }`;
     
-    const designs = await sanityClient.fetch(query);
+    const person = await sanityClient.fetch(personQuery);
+    
+    // Try different ways to find products
+    const queries = {
+      byCreatorRef: `*[_type == "product" && creator._ref == "k2r2aa8vmghuyr3he0p2eo5e"][0...5] { _id, title, creator }`,
+      byCreatorRefString: `*[_type == "product" && creator == "k2r2aa8vmghuyr3he0p2eo5e"][0...5] { _id, title, creator }`,
+      anyProduct: `*[_type == "product"][0...5] { _id, title, creator, "creatorType": creator._type }`,
+      byName: `*[_type == "product" && (creator->name == "memelord" || creator->username == "memelord")][0...5] { _id, title, creator }`
+    };
+    
+    const results = {};
+    for (const [key, query] of Object.entries(queries)) {
+      try {
+        const data = await sanityClient.fetch(query);
+        results[key] = {
+          count: data ? data.length : 0,
+          sample: data && data.length > 0 ? data[0] : null
+        };
+      } catch (err) {
+        results[key] = { error: err.message };
+      }
+    }
+    
+    // Also check what persons exist
+    const personsQuery = `*[_type == "person"][0...10] { _id, name, username }`;
+    const persons = await sanityClient.fetch(personsQuery);
     
     res.json({
       success: true,
-      message: `Found ${designs.length} designs from Sanity`,
-      designs: designs.map(d => ({
-        id: d._id,
-        title: d.title,
-        slug: d.slug,
-        hasImages: !!(d.images && d.images.length > 0)
-      }))
+      person: person || 'Person not found',
+      queryResults: results,
+      availablePersons: persons,
+      analysis: {
+        personExists: !!person,
+        personId: 'k2r2aa8vmghuyr3he0p2eo5e',
+        totalProductsFound: results.anyProduct?.count || 0
+      }
     });
   } catch (error) {
     res.status(500).json({
@@ -72,7 +94,7 @@ router.get('/test-database', async (req, res) => {
 });
 
 // Test import with hardcoded values
-router.post('/test-import-hardcoded', async (req, res) => {
+router.get('/test-import-hardcoded', async (req, res) => {
   try {
     // Get models directly
     const path = require('path');
