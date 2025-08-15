@@ -143,15 +143,44 @@ router.post('/import-my-designs', requireAuth, async (req, res) => {
     
     const dynamicId = req.session.creator.id;
     
+    console.log('🔍 Looking for mapping for Dynamic ID:', dynamicId);
+    console.log('   Session email:', req.session.creator.email);
+    
     // Find mapping
-    const mapping = await CreatorMapping.findOne({
+    let mapping = await CreatorMapping.findOne({
       where: { dynamicId }
     });
     
     if (!mapping) {
-      return res.status(404).json({
-        error: 'No Sanity mapping found for your account. Please contact admin.'
+      // Also try to find by email as fallback
+      const emailMapping = await CreatorMapping.findOne({
+        where: { email: req.session.creator.email }
       });
+      
+      if (emailMapping) {
+        console.log('📧 Found mapping by email, updating Dynamic ID');
+        // Update the Dynamic ID to match current session
+        await emailMapping.update({ dynamicId });
+        mapping = emailMapping; // Use the email mapping
+      } else {
+        console.log('❌ No mapping found for:', dynamicId, 'or email:', req.session.creator.email);
+        
+        // List all existing mappings for debugging
+        const allMappings = await CreatorMapping.findAll();
+        console.log('📋 Existing mappings:');
+        for (const m of allMappings) {
+          console.log(`  - ${m.email}: ${m.dynamicId}`);
+        }
+        
+        return res.status(404).json({
+          error: 'No Sanity mapping found for your account. Please contact admin.',
+          debug: {
+            yourDynamicId: dynamicId,
+            yourEmail: req.session.creator.email,
+            hint: 'Visit /api/setup/setup-memelord to create mapping'
+          }
+        });
+      }
     }
     
     // Log the query details for debugging

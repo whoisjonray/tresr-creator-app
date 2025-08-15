@@ -211,7 +211,12 @@ function ProductManager() {
     } catch (error) {
       console.error('Import failed:', error);
       if (error.response?.status === 404) {
-        setImportProgress('No Sanity mapping found. Please contact admin to set up your account mapping.');
+        if (error.response?.data?.debug) {
+          console.log('Debug info:', error.response.data.debug);
+          setImportProgress(`No Sanity mapping found. Your Dynamic ID: ${error.response.data.debug.yourDynamicId}. Visit /api/setup/setup-memelord to create mapping.`);
+        } else {
+          setImportProgress('No Sanity mapping found. Please contact admin to set up your account mapping.');
+        }
       } else if (error.response?.data?.details) {
         setImportProgress(`Import failed: ${error.response.data.details}`);
         if (error.response.data.hint) {
@@ -223,7 +228,7 @@ function ProductManager() {
       setTimeout(() => {
         setImporting(false);
         setImportProgress('');
-      }, 5000);
+      }, 8000);
     }
   };
 
