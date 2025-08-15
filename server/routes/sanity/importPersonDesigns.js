@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { createClient } = require('@sanity/client');
 const { Design, CreatorMapping, UserRole } = require('../../models');
-const { requireAdmin } = require('../../middleware/auth');
+const { requireAdmin, requireAuth } = require('../../middleware/auth');
 
 // Sanity client
 const sanityClient = createClient({
@@ -112,7 +112,143 @@ router.post('/map-person', requireAdmin, async (req, res) => {
   }
 });
 
-// Import designs for a mapped person
+// Import designs for current user (simplified endpoint)
+router.post('/import-my-designs', requireAuth, async (req, res) => {
+  try {
+    const dynamicId = req.session.creator.id;
+    
+    // Find mapping
+    const mapping = await CreatorMapping.findOne({
+      where: { dynamicId }
+    });
+    
+    if (!mapping) {
+      return res.status(404).json({
+        error: 'No Sanity mapping found for your account. Please contact admin.'
+      });
+    }
+    
+    // Fetch all products/designs from Sanity for this person
+    const designs = await sanityClient.fetch(`*[_type == "product" && creator._ref == "${mapping.sanityPersonId}"] {
+      _id,
+      title,
+      "slug": slug.current,
+      description,
+      creator,
+      "images": images[] {
+        _key,
+        asset-> {
+          _id,
+          url
+        }
+      },
+      overlayTopLeft,
+      overlayBottomRight,
+      overlayPosition,
+      printArea,
+      productStyles[]-> {
+        _id,
+        name,
+        sku,
+        garmentType
+      },
+      tags[],
+      isActive,
+      publishedAt,
+      createdAt,
+      ...
+    }`);
+    
+    console.log(`Found ${designs.length} designs for ${mapping.email}`);
+    
+    const importedDesigns = [];
+    const errors = [];
+    
+    for (const sanityDesign of designs) {
+      try {
+        // Convert bounding box coordinates
+        const frontPosition = convertBoundingBoxToCenter(
+          sanityDesign.overlayTopLeft,
+          sanityDesign.overlayBottomRight
+        );
+        
+        // Get main image URL
+        const mainImage = sanityDesign.images?.[0]?.asset?.url;
+        
+        // Check if design already exists
+        let design = await Design.findOne({
+          where: { 
+            sanityId: sanityDesign._id,
+            creatorId: dynamicId
+          }
+        });
+        
+        const designData = {
+          sanityId: sanityDesign._id,
+          creatorId: dynamicId,
+          name: sanityDesign.title,
+          description: sanityDesign.description || '',
+          thumbnailUrl: mainImage || '',
+          frontDesignUrl: mainImage || '',
+          backDesignUrl: '', // Will be updated if back image exists
+          designData: {
+            sanitySlug: sanityDesign.slug,
+            tags: sanityDesign.tags || [],
+            productStyles: sanityDesign.productStyles || [],
+            originalCreator: mapping.sanityName
+          },
+          frontPosition: frontPosition,
+          backPosition: frontPosition, // Same as front by default
+          frontScale: 1,
+          backScale: 1,
+          status: sanityDesign.isActive ? 'published' : 'draft'
+        };
+        
+        if (design) {
+          // Update existing design
+          await design.update(designData);
+          console.log(`Updated design: ${sanityDesign.title}`);
+        } else {
+          // Create new design
+          design = await Design.create(designData);
+          console.log(`Created design: ${sanityDesign.title}`);
+        }
+        
+        importedDesigns.push({
+          id: design.id,
+          name: design.name,
+          sanityId: design.sanityId
+        });
+        
+      } catch (designError) {
+        console.error(`Error importing design ${sanityDesign.title}:`, designError);
+        errors.push({
+          design: sanityDesign.title,
+          error: designError.message
+        });
+      }
+    }
+    
+    // Update last synced time
+    await mapping.update({
+      lastSyncedAt: new Date()
+    });
+    
+    res.json({
+      success: true,
+      message: `Imported ${importedDesigns.length} designs`,
+      imported: importedDesigns,
+      errors: errors,
+      total: designs.length
+    });
+    
+  } catch (error) {
+    console.error('Error importing designs:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Import designs for a mapped person (admin endpoint)
 router.post('/import-designs/:dynamicId', requireAdmin, async (req, res) => {
   try {
     const { dynamicId } = req.params;

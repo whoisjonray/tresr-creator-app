@@ -187,6 +187,20 @@ if (process.env.NODE_ENV === 'production' && !process.env.MYSQL_URL && !process.
         type: DataTypes.STRING(50),
         field: 'nfc_experience'
       },
+      sanityId: {
+        type: DataTypes.STRING(255),
+        field: 'sanity_id',
+        unique: true
+      },
+      thumbnailUrl: {
+        type: DataTypes.STRING(500),
+        field: 'thumbnail_url'
+      },
+      designData: {
+        type: DataTypes.JSON,
+        field: 'design_data',
+        defaultValue: {}
+      },
       publishedAt: {
         type: DataTypes.DATE,
         field: 'published_at'

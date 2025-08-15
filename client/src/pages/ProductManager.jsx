@@ -191,8 +191,8 @@ function ProductManager() {
     setImportProgress('Importing your Sanity designs...');
     
     try {
-      // Import designs for current user
-      const response = await api.post(`/api/sanity/person/import-designs/${creator.id}`);
+      // Import designs for current user (simplified endpoint)
+      const response = await api.post('/api/sanity/person/import-my-designs');
       
       if (response.data.success) {
         setImportProgress(`Successfully imported ${response.data.imported.length} designs!`);
