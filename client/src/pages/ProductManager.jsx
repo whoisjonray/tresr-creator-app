@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './Products.css';
 import { userStorage } from '../utils/userStorage';
 import api from '../services/api';
+import { useAuth } from '../hooks/useAuth';
 
 // Generate SVG placeholder function for fallback images
 const generatePlaceholder = (productName, color) => {
@@ -30,6 +31,7 @@ const generatePlaceholder = (productName, color) => {
 };
 
 function ProductManager() {
+  const { creator } = useAuth();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [canImport, setCanImport] = useState(false);
@@ -37,6 +39,8 @@ function ProductManager() {
   const [importProgress, setImportProgress] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
+  
+  const isAdmin = creator?.role === 'admin' || creator?.isAdmin;
 
   useEffect(() => {
     // Check if user can import (admin only for now) - only once on mount
@@ -181,6 +185,42 @@ function ProductManager() {
       }, 3000);
     }
   };
+  
+  const handleImportSanityDesigns = async () => {
+    setImporting(true);
+    setImportProgress('Importing your Sanity designs...');
+    
+    try {
+      // Import designs for current user
+      const response = await api.post(`/api/sanity/person/import-designs/${creator.id}`);
+      
+      if (response.data.success) {
+        setImportProgress(`Successfully imported ${response.data.imported.length} designs!`);
+        
+        // Reload products from database
+        const designsResponse = await api.get('/api/designs');
+        if (designsResponse.data.designs) {
+          setProducts(designsResponse.data.designs);
+        }
+        
+        setTimeout(() => {
+          setImporting(false);
+          setImportProgress('');
+        }, 3000);
+      }
+    } catch (error) {
+      console.error('Import failed:', error);
+      if (error.response?.status === 404) {
+        setImportProgress('No Sanity mapping found. Please contact admin to set up your account mapping.');
+      } else {
+        setImportProgress(`Import failed: ${error.response?.data?.error || error.message}`);
+      }
+      setTimeout(() => {
+        setImporting(false);
+        setImportProgress('');
+      }, 5000);
+    }
+  };
 
   const handlePublishToShopify = async (productId) => {
     const product = products.find(p => p.id === productId);
@@ -222,6 +262,24 @@ function ProductManager() {
       <div className="products-header">
         <h1>Your Products</h1>
         <div className="header-actions">
+          {isAdmin && (
+            <button 
+              onClick={handleImportSanityDesigns} 
+              className="btn-import" 
+              disabled={importing}
+              style={{
+                marginRight: '10px', 
+                background: importing ? '#9ca3af' : '#10b981', 
+                color: 'white', 
+                padding: '8px 16px', 
+                border: 'none', 
+                borderRadius: '4px',
+                cursor: importing ? 'not-allowed' : 'pointer'
+              }}
+            >
+              {importing ? 'Importing...' : 'Import My Sanity Designs'}
+            </button>
+          )}
           {canImport && (
             <button 
               onClick={handleImportJustGrokIt} 

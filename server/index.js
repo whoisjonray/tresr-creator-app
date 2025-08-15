@@ -113,6 +113,7 @@ app.use('/api/admin/impersonate', require('./routes/admin/impersonate'));
 app.use('/api/designs', designsRoutes);
 app.use('/api', scansRoutes);
 app.use('/api/sanity', importSanityRoutes);
+app.use('/api/sanity/person', require('./routes/sanity/importPersonDesigns'));
 app.use('/api/settings', require('./routes/settings-db'));
 app.use('/api/templates', require('./routes/productTemplates'));
 app.use('/api/env', require('./routes/env-check'));

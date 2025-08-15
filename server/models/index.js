@@ -15,6 +15,7 @@ let DesignVariant = null;
 let DesignAnalytics = null;
 let ProductTemplate = null;
 let UserRole = null;
+let CreatorMapping = null;
 
 // In production without database, skip everything
 if (process.env.NODE_ENV === 'production' && !process.env.MYSQL_URL && !process.env.DATABASE_URL && !process.env.MYSQLHOST) {
@@ -401,6 +402,10 @@ if (process.env.NODE_ENV === 'production' && !process.env.MYSQL_URL && !process.
   if (sequelize) {
     const UserRoleInit = require('./UserRole');
     UserRole = UserRoleInit(sequelize);
+    
+    // Initialize CreatorMapping model
+    const CreatorMappingInit = require('./CreatorMapping');
+    CreatorMapping = CreatorMappingInit(sequelize);
   }
 }
 
@@ -412,5 +417,6 @@ module.exports = {
   DesignVariant,
   DesignAnalytics,
   ProductTemplate,
-  UserRole
+  UserRole,
+  CreatorMapping
 };
