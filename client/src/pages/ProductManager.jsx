@@ -306,6 +306,37 @@ function ProductManager() {
           {isAdmin && (
             <>
               <button 
+                onClick={async () => {
+                  setImporting(true);
+                  setImportProgress('Testing import of ONE design...');
+                  try {
+                    const response = await api.post('/api/simple/import-one');
+                    setImportProgress(`Test result: ${response.data.message}`);
+                    console.log('Import one result:', response.data);
+                  } catch (error) {
+                    setImportProgress(`Test failed: ${error.response?.data?.error || error.message}`);
+                    console.error('Import one error:', error.response?.data);
+                  }
+                  setTimeout(() => {
+                    setImporting(false);
+                    setImportProgress('');
+                  }, 5000);
+                }}
+                className="btn-import" 
+                disabled={importing}
+                style={{
+                  marginRight: '10px', 
+                  background: importing ? '#9ca3af' : '#6366f1', 
+                  color: 'white', 
+                  padding: '8px 16px', 
+                  border: 'none', 
+                  borderRadius: '4px',
+                  cursor: importing ? 'not-allowed' : 'pointer'
+                }}
+              >
+                {importing ? 'Testing...' : 'Test Import ONE'}
+              </button>
+              <button 
                 onClick={handleDirectImport} 
                 className="btn-import" 
                 disabled={importing}
