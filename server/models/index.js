@@ -414,12 +414,20 @@ if (process.env.NODE_ENV === 'production' && !process.env.MYSQL_URL && !process.
   
   // Initialize UserRole model
   if (sequelize) {
-    const UserRoleInit = require('./UserRole');
-    UserRole = UserRoleInit(sequelize);
+    try {
+      const UserRoleInit = require('./UserRole');
+      UserRole = UserRoleInit(sequelize);
+    } catch (error) {
+      console.error('Warning: Could not initialize UserRole model:', error.message);
+    }
     
     // Initialize CreatorMapping model
-    const CreatorMappingInit = require('./CreatorMapping');
-    CreatorMapping = CreatorMappingInit(sequelize);
+    try {
+      const CreatorMappingInit = require('./CreatorMapping');
+      CreatorMapping = CreatorMappingInit(sequelize);
+    } catch (error) {
+      console.error('Warning: Could not initialize CreatorMapping model:', error.message);
+    }
   }
 }
 

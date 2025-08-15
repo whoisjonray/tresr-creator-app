@@ -18,6 +18,7 @@ const importSanityRoutes = require('./routes/importSanityDesign');
 
 // Initialize database
 const databaseService = require('./services/database');
+const { initializeDatabase } = require('./services/database-init');
 
 const app = express();
 const PORT = process.env.PORT || process.env.CREATOR_APP_PORT || 3002;
@@ -151,9 +152,14 @@ app.use((req, res) => {
 const actualPort = process.env.PORT || PORT;
 console.log(`Railway PORT: ${process.env.PORT}, Configured PORT: ${PORT}, Using: ${actualPort}`);
 
-app.listen(actualPort, '0.0.0.0', () => {
+app.listen(actualPort, '0.0.0.0', async () => {
   console.log(`TRESR Creator Server running on port ${actualPort}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`Dynamic.xyz Auth URL: ${process.env.DYNAMIC_AUTH_URL || 'Not configured'}`);
   console.log(`Shopify Backend URL: ${process.env.SHOPIFY_APP_URL || 'Not configured'}`);
+  
+  // Initialize database tables after server starts
+  setTimeout(async () => {
+    await initializeDatabase();
+  }, 2000);
 });

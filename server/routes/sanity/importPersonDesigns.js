@@ -1,8 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const { createClient } = require('@sanity/client');
-const { Design, CreatorMapping, UserRole } = require('../../models');
 const { requireAdmin, requireAuth } = require('../../middleware/auth');
+
+// Import models with fallback
+let Design, CreatorMapping, UserRole;
+try {
+  const models = require('../../models');
+  Design = models.Design;
+  CreatorMapping = models.CreatorMapping;
+  UserRole = models.UserRole;
+} catch (error) {
+  console.error('Warning: Some models not available:', error.message);
+}
 
 // Sanity client
 const sanityClient = createClient({
@@ -115,6 +125,13 @@ router.post('/map-person', requireAdmin, async (req, res) => {
 // Import designs for current user (simplified endpoint)
 router.post('/import-my-designs', requireAuth, async (req, res) => {
   try {
+    // Check if models are available
+    if (!CreatorMapping || !Design) {
+      return res.status(503).json({
+        error: 'Database models not initialized. Please try again in a few seconds.'
+      });
+    }
+    
     const dynamicId = req.session.creator.id;
     
     // Find mapping
