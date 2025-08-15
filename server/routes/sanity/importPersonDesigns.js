@@ -210,7 +210,8 @@ router.post('/import-my-designs', requireAuth, async (req, res) => {
     console.log(`   Name: ${mapping.sanityName}`);
     
     // Fetch all products/designs from Sanity for this person
-    const query = `*[_type == "product" && creator._ref == "${mapping.sanityPersonId}"] {
+    // Note: Products may use 'creators' array (not 'creator' singular)
+    const query = `*[_type == "product" && (references("${mapping.sanityPersonId}") || "${mapping.sanityPersonId}" in creators[]._ref)] {
       _id,
       title,
       "slug": slug.current,
@@ -363,7 +364,8 @@ router.post('/import-designs/:dynamicId', requireAdmin, async (req, res) => {
     console.log(`   Name: ${mapping.sanityName}`);
     
     // Fetch all products/designs from Sanity for this person
-    const query = `*[_type == "product" && creator._ref == "${mapping.sanityPersonId}"] {
+    // Note: Products may use 'creators' array (not 'creator' singular)
+    const query = `*[_type == "product" && (references("${mapping.sanityPersonId}") || "${mapping.sanityPersonId}" in creators[]._ref)] {
       _id,
       title,
       "slug": slug.current,

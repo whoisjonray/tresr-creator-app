@@ -24,12 +24,29 @@ router.get('/test-sanity-fetch', async (req, res) => {
     
     const person = await sanityClient.fetch(personQuery);
     
+    // Check the specific memelord product to see its structure
+    const specificProductQuery = `*[_id == "asjpjqvsg84wtk59nl9ywlga"][0] {
+      _id,
+      title,
+      creator,
+      creators,
+      "creatorRefs": creators[]._ref,
+      "creatorDetails": creators[]-> {
+        _id,
+        name,
+        username
+      }
+    }`;
+    
+    const specificProduct = await sanityClient.fetch(specificProductQuery);
+    
     // Try different ways to find products
     const queries = {
       byCreatorRef: `*[_type == "product" && creator._ref == "k2r2aa8vmghuyr3he0p2eo5e"][0...5] { _id, title, creator }`,
-      byCreatorRefString: `*[_type == "product" && creator == "k2r2aa8vmghuyr3he0p2eo5e"][0...5] { _id, title, creator }`,
-      anyProduct: `*[_type == "product"][0...5] { _id, title, creator, "creatorType": creator._type }`,
-      byName: `*[_type == "product" && (creator->name == "memelord" || creator->username == "memelord")][0...5] { _id, title, creator }`
+      byCreatorsArray: `*[_type == "product" && "k2r2aa8vmghuyr3he0p2eo5e" in creators[]._ref][0...5] { _id, title, creators }`,
+      byReferences: `*[_type == "product" && references("k2r2aa8vmghuyr3he0p2eo5e")][0...5] { _id, title, creators, creator }`,
+      anyProduct: `*[_type == "product"][0...5] { _id, title, creator, creators, "hasCreators": defined(creators), "hasCreator": defined(creator) }`,
+      byName: `*[_type == "product" && (creator->name == "memelord" || creator->username == "memelord" || "memelord" in creators[]->username)][0...5] { _id, title, creator, creators }`
     };
     
     const results = {};
@@ -52,12 +69,14 @@ router.get('/test-sanity-fetch', async (req, res) => {
     res.json({
       success: true,
       person: person || 'Person not found',
+      specificProduct: specificProduct || 'Product asjpjqvsg84wtk59nl9ywlga not found',
       queryResults: results,
       availablePersons: persons,
       analysis: {
         personExists: !!person,
         personId: 'k2r2aa8vmghuyr3he0p2eo5e',
-        totalProductsFound: results.anyProduct?.count || 0
+        totalProductsFound: results.anyProduct?.count || 0,
+        memelordProductStructure: specificProduct ? 'See specificProduct field' : 'Could not fetch'
       }
     });
   } catch (error) {
