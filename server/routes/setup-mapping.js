@@ -232,4 +232,46 @@ router.get('/check-mapping/:dynamicId', async (req, res) => {
   }
 });
 
+// Test import without auth (for debugging)
+router.get('/test-import-models', async (req, res) => {
+  try {
+    // Try to load models
+    const models = require('../models');
+    const CreatorMapping = models.CreatorMapping;
+    const Design = models.Design;
+    
+    // Test if models work
+    let testResult = {
+      modelsLoaded: {
+        CreatorMapping: !!CreatorMapping,
+        Design: !!Design
+      },
+      canQuery: false,
+      mappingCount: 0,
+      mappings: []
+    };
+    
+    if (CreatorMapping) {
+      try {
+        const mappings = await CreatorMapping.findAll();
+        testResult.canQuery = true;
+        testResult.mappingCount = mappings.length;
+        testResult.mappings = mappings.map(m => ({
+          email: m.email,
+          dynamicId: m.dynamicId
+        }));
+      } catch (queryError) {
+        testResult.queryError = queryError.message;
+      }
+    }
+    
+    res.json(testResult);
+  } catch (error) {
+    res.status(500).json({ 
+      error: 'Test failed', 
+      details: error.message 
+    });
+  }
+});
+
 module.exports = router;

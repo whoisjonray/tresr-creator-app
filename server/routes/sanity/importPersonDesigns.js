@@ -134,22 +134,46 @@ router.post('/map-person', requireAdmin, async (req, res) => {
 // Import designs for current user (simplified endpoint)
 router.post('/import-my-designs', requireAuth, async (req, res) => {
   try {
+    console.log('🚀 Import endpoint called');
+    console.log('   Models available:', { 
+      CreatorMapping: !!CreatorMapping, 
+      Design: !!Design 
+    });
+    
     // Check if models are available
     if (!CreatorMapping || !Design) {
-      return res.status(503).json({
-        error: 'Database models not initialized. Please try again in a few seconds.'
-      });
+      // Try to get models again
+      const models = require('../../models');
+      CreatorMapping = models.CreatorMapping;
+      Design = models.Design;
+      
+      if (!CreatorMapping || !Design) {
+        return res.status(503).json({
+          error: 'Database models not initialized. Please try again in a few seconds.'
+        });
+      }
     }
     
     const dynamicId = req.session.creator.id;
     
     console.log('🔍 Looking for mapping for Dynamic ID:', dynamicId);
     console.log('   Session email:', req.session.creator.email);
+    console.log('   CreatorMapping model:', typeof CreatorMapping);
     
     // Find mapping
-    let mapping = await CreatorMapping.findOne({
-      where: { dynamicId }
-    });
+    let mapping;
+    try {
+      mapping = await CreatorMapping.findOne({
+        where: { dynamicId }
+      });
+      console.log('   Mapping query result:', mapping ? 'Found' : 'Not found');
+    } catch (queryError) {
+      console.error('❌ Query error:', queryError);
+      return res.status(500).json({
+        error: 'Database query failed',
+        details: queryError.message
+      });
+    }
     
     if (!mapping) {
       // Also try to find by email as fallback
