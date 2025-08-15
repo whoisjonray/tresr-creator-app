@@ -116,8 +116,6 @@ app.use('/api/sanity', importSanityRoutes);
 app.use('/api/settings', require('./routes/settings-db'));
 app.use('/api/templates', require('./routes/productTemplates'));
 app.use('/api/env', require('./routes/env-check'));
-// TEMPORARY - Remove after admin setup
-app.use('/api/temp', require('./routes/setup-admin-temp'));
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
