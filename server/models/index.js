@@ -14,6 +14,7 @@ let DesignProduct = null;
 let DesignVariant = null;
 let DesignAnalytics = null;
 let ProductTemplate = null;
+let UserRole = null;
 
 // In production without database, skip everything
 if (process.env.NODE_ENV === 'production' && !process.env.MYSQL_URL && !process.env.DATABASE_URL && !process.env.MYSQLHOST) {
@@ -395,6 +396,12 @@ if (process.env.NODE_ENV === 'production' && !process.env.MYSQL_URL && !process.
       console.log(`Clearing image cache for design ${designId}`);
     };
   }
+  
+  // Initialize UserRole model
+  if (sequelize) {
+    const UserRoleInit = require('./UserRole');
+    UserRole = UserRoleInit(sequelize);
+  }
 }
 
 module.exports = {
@@ -404,5 +411,6 @@ module.exports = {
   DesignProduct,
   DesignVariant,
   DesignAnalytics,
-  ProductTemplate
+  ProductTemplate,
+  UserRole
 };

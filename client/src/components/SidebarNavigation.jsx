@@ -17,7 +17,11 @@ function SidebarNavigation() {
     );
   };
 
-  const navSections = [
+  // Check if user is admin
+  const isAdmin = creator?.role === 'admin' || creator?.isAdmin;
+
+  // Base navigation for all users (creators)
+  const creatorNavSections = [
     {
       id: 'main',
       title: 'Main',
@@ -26,8 +30,8 @@ function SidebarNavigation() {
         { path: '/dashboard', label: 'Dashboard', icon: '📊' },
         { path: '/design/new', label: 'Create Design', icon: '🎨' },
         { path: '/products', label: 'Products', icon: '📦' },
-        { path: '/scan-map', label: 'Scan Map', icon: '🗺️' },
-        { path: '/analytics', label: 'Analytics', icon: '📈' },
+        { path: '/scan-map', label: 'Scan Map', icon: '🗺️', comingSoon: !isAdmin },
+        { path: '/analytics', label: 'Analytics', icon: '📈', comingSoon: !isAdmin },
       ]
     },
     {
@@ -51,6 +55,26 @@ function SidebarNavigation() {
       ]
     }
   ];
+
+  // Admin-only sections
+  const adminSections = isAdmin ? [
+    {
+      id: 'backend',
+      title: 'Backend Management',
+      icon: '⚡',
+      items: [
+        { path: '/admin/users', label: 'User Management', icon: '👥' },
+        { path: '/admin', label: 'Admin Panel', icon: '🎛️' },
+        { path: '/test/product-templates', label: 'Product Templates', icon: '📝' },
+        { path: '/test/bounding-box', label: 'Bounding Box Editor', icon: '📐' },
+        { path: '/admin/commissions', label: 'Commission Management', icon: '💰' },
+        { path: '/admin/garments', label: 'Garment Management', icon: '👕' },
+        { path: '/admin/system', label: 'System Settings', icon: '⚙️' },
+      ]
+    }
+  ] : [];
+
+  const navSections = [...creatorNavSections, ...adminSections];
 
   const handleLogout = async () => {
     try {
@@ -101,14 +125,26 @@ function SidebarNavigation() {
               {expandedSections.includes(section.id) && (
                 <div className="section-items">
                   {section.items.map((item) => (
-                    <Link
-                      key={item.path}
-                      to={item.path}
-                      className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}
-                    >
-                      <span className="item-icon">{item.icon}</span>
-                      <span className="item-label">{item.label}</span>
-                    </Link>
+                    item.comingSoon ? (
+                      <div
+                        key={item.path}
+                        className="nav-item disabled"
+                        title="Coming Soon"
+                      >
+                        <span className="item-icon">{item.icon}</span>
+                        <span className="item-label">{item.label}</span>
+                        <span className="coming-soon-badge">Soon</span>
+                      </div>
+                    ) : (
+                      <Link
+                        key={item.path}
+                        to={item.path}
+                        className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}
+                      >
+                        <span className="item-icon">{item.icon}</span>
+                        <span className="item-label">{item.label}</span>
+                      </Link>
+                    )
                   ))}
                 </div>
               )}
@@ -263,7 +299,7 @@ function SidebarNavigation() {
           position: relative;
         }
 
-        .nav-item:hover {
+        .nav-item:hover:not(.disabled) {
           color: #fff;
           background: #1a1a1a;
         }
@@ -271,6 +307,25 @@ function SidebarNavigation() {
         .nav-item.active {
           color: #00c896;
           background: #1a1a1a;
+        }
+
+        .nav-item.disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          color: #666;
+        }
+
+        .coming-soon-badge {
+          position: absolute;
+          right: 12px;
+          background: #444;
+          color: #999;
+          font-size: 10px;
+          padding: 2px 6px;
+          border-radius: 4px;
+          text-transform: uppercase;
+          font-weight: 600;
+          letter-spacing: 0.5px;
         }
 
         .nav-item.active::before {

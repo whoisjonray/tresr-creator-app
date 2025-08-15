@@ -109,6 +109,7 @@ app.use('/api/products', productsRoutes);
 app.use('/api/mockups', mockupsRoutes);
 app.use('/api/creators', creatorsRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/admin/impersonate', require('./routes/admin/impersonate'));
 app.use('/api/designs', designsRoutes);
 app.use('/api', scansRoutes);
 app.use('/api/sanity', importSanityRoutes);

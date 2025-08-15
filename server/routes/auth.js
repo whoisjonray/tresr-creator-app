@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 const jwt = require('jsonwebtoken');
+const { UserRole } = require('../models');
 
 // Verify Dynamic.xyz JWT and create creator session
 router.post('/verify', async (req, res) => {
@@ -59,16 +60,36 @@ router.post('/verify', async (req, res) => {
         sessionId: decoded.sessionId
       };
       
-      // For now, allow all authenticated users as creators
-      // TODO: Implement proper creator permission checking
+      // Check or create user role in database
+      let userRole = await UserRole.findOne({
+        where: { dynamicId: userData.id }
+      });
       
-      // Create session with unique user data
+      if (!userRole) {
+        // Create new user with creator role by default
+        userRole = await UserRole.create({
+          dynamicId: userData.id,
+          email: userData.email,
+          name: userData.alias || userData.email.split('@')[0],
+          role: 'creator' // Default role
+        });
+        console.log(`📝 Created new user role for: ${userData.email}`);
+      } else {
+        // Update name if changed
+        if (userRole.name !== userData.alias) {
+          await userRole.update({ name: userData.alias });
+        }
+      }
+      
+      // Create session with unique user data and role
       req.session.creator = {
         id: userData.id,
         email: userData.email,
         walletAddress: userData.verifiedCredentials?.[0]?.address,
         name: userData.alias || userData.email.split('@')[0],
-        isCreator: true
+        isCreator: true,
+        role: userRole.role,
+        isAdmin: userRole.role === 'admin'
       };
       
       // SECURITY: Log session creation for audit trail
@@ -76,6 +97,7 @@ router.post('/verify', async (req, res) => {
       console.log(`User ID: ${req.session.creator.id}`);
       console.log(`Email: ${req.session.creator.email}`);
       console.log(`Name: ${req.session.creator.name}`);
+      console.log(`Role: ${req.session.creator.role}`);
       console.log(`Session ID: ${req.sessionID}`);
       console.log(`Timestamp: ${new Date().toISOString()}`);
       console.log('🔐 ==========================');

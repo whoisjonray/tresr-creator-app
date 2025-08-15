@@ -1,0 +1,80 @@
+.impersonation-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(90deg, #ff6b6b 0%, #ff8787 100%);
+  color: white;
+  z-index: 9999;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.impersonation-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.impersonation-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.impersonation-icon {
+  font-size: 20px;
+}
+
+.impersonation-text {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.impersonation-text strong {
+  font-weight: 600;
+}
+
+.stop-impersonation {
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.stop-impersonation:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Adjust main content when banner is present */
+body.has-impersonation-banner {
+  padding-top: 48px;
+}
+
+body.has-impersonation-banner.has-sidebar .sidebar-navigation {
+  top: 48px;
+  height: calc(100vh - 48px);
+}
+
+body.has-impersonation-banner .main-content {
+  padding-top: 48px;
+}

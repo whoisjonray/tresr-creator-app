@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard';
 import DesignEditor from './pages/DesignEditor';
 import ProductManager from './pages/ProductManager';
 import AdminPanel from './pages/AdminPanel';
+import UserManagement from './pages/UserManagement';
 import Login from './pages/Login';
 import PrintGuidelines from './pages/PrintGuidelines';
 import GarmentDetails from './pages/GarmentDetails';
@@ -14,6 +15,7 @@ import ProductTemplateManager from './pages/ProductTemplateManager';
 import ScanMap from './pages/ScanMap';
 import Navigation from './components/Navigation';
 import SidebarNavigation from './components/SidebarNavigation';
+import ImpersonationBanner from './components/ImpersonationBanner';
 import AuthGuard from './components/AuthGuard';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import { DataMigration } from './components/DataMigration';
@@ -45,6 +47,7 @@ function AppContent() {
         <Route path="/*" element={
           <AuthGuard>
             <DataMigration>
+              <ImpersonationBanner />
               <div className="app">
                 {creator && useSidebar && <SidebarNavigation />}
                 {creator && !useSidebar && <Navigation />}
@@ -56,6 +59,7 @@ function AppContent() {
                     <Route path="/design/:id/edit" element={<DesignEditor />} />
                     <Route path="/products" element={<ProductManager />} />
                     <Route path="/admin" element={<AdminPanel />} />
+                    <Route path="/admin/users" element={<UserManagement />} />
                     <Route path="/test/superproduct" element={<SuperProductTest />} />
                     <Route path="/test/bounding-box" element={<BoundingBoxEditor />} />
                     <Route path="/test/product-templates" element={<ProductTemplateManager />} />
