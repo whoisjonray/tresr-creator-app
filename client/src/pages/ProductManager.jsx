@@ -42,6 +42,36 @@ function ProductManager() {
   
   const isAdmin = creator?.role === 'admin' || creator?.isAdmin;
 
+  // Function to load products from database
+  const loadProductsFromDatabase = async () => {
+    try {
+      console.log('📋 Loading products from database...');
+      const designsResponse = await api.get('/api/designs');
+      if (designsResponse.data.designs) {
+        console.log('✅ Loaded', designsResponse.data.designs.length, 'designs from database');
+        setProducts(designsResponse.data.designs);
+      } else {
+        console.log('📭 No designs in database, falling back to localStorage');
+        // Fallback to localStorage
+        const savedProducts = userStorage.getProducts();
+        if (savedProducts && savedProducts.length > 0) {
+          setProducts([...savedProducts]);
+        } else {
+          setProducts([]);
+        }
+      }
+    } catch (error) {
+      console.log('❌ Failed to load from database, using localStorage:', error.message);
+      // Fallback to localStorage on error
+      const savedProducts = userStorage.getProducts();
+      if (savedProducts && savedProducts.length > 0) {
+        setProducts([...savedProducts]);
+      } else {
+        setProducts([]);
+      }
+    }
+  };
+
   useEffect(() => {
     // Check if user can import (admin only for now) - only once on mount
     if (!canImport) {
@@ -125,13 +155,8 @@ function ProductManager() {
       // Clear the navigation state
       window.history.replaceState({}, document.title);
     } else {
-      // Load products from localStorage or API
-      const savedProducts = userStorage.getProducts();
-      if (savedProducts && savedProducts.length > 0) {
-        setProducts([...savedProducts]);
-      } else {
-        setProducts([]);
-      }
+      // Load products from database first, then fallback to localStorage
+      loadProductsFromDatabase();
     }
   }, [location.state]);
 
@@ -166,10 +191,7 @@ function ProductManager() {
         setImportProgress('Design imported successfully!');
         
         // Reload products from database
-        const designsResponse = await api.get('/api/designs');
-        if (designsResponse.data.designs) {
-          setProducts(designsResponse.data.designs);
-        }
+        await loadProductsFromDatabase();
         
         setTimeout(() => {
           setImporting(false);
@@ -197,10 +219,8 @@ function ProductManager() {
         setImportProgress(`Successfully imported ${response.data.imported} of ${response.data.total} designs!`);
         
         // Reload products from database
-        const designsResponse = await api.get('/api/designs');
-        if (designsResponse.data.designs) {
-          setProducts(designsResponse.data.designs);
-        }
+        await loadProductsFromDatabase();
+        setImportProgress(`Import successful! Loaded designs from database.`);
         
         setTimeout(() => {
           setImporting(false);
@@ -229,10 +249,7 @@ function ProductManager() {
         setImportProgress(`Successfully imported ${response.data.imported.length} designs!`);
         
         // Reload products from database
-        const designsResponse = await api.get('/api/designs');
-        if (designsResponse.data.designs) {
-          setProducts(designsResponse.data.designs);
-        }
+        await loadProductsFromDatabase();
         
         setTimeout(() => {
           setImporting(false);
@@ -313,6 +330,13 @@ function ProductManager() {
                     const response = await api.post('/api/simple/import-one');
                     setImportProgress(`Test result: ${response.data.message}`);
                     console.log('Import one result:', response.data);
+                    
+                    // Reload products from database after successful import
+                    if (response.data.success) {
+                      setImportProgress('Reloading products from database...');
+                      await loadProductsFromDatabase();
+                      setImportProgress(`Import successful! Check your products below.`);
+                    }
                   } catch (error) {
                     setImportProgress(`Test failed: ${error.response?.data?.error || error.message}`);
                     console.error('Import one error:', error.response?.data);
