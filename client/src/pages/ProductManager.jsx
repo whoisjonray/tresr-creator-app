@@ -212,6 +212,11 @@ function ProductManager() {
       console.error('Import failed:', error);
       if (error.response?.status === 404) {
         setImportProgress('No Sanity mapping found. Please contact admin to set up your account mapping.');
+      } else if (error.response?.data?.details) {
+        setImportProgress(`Import failed: ${error.response.data.details}`);
+        if (error.response.data.hint) {
+          console.log('Hint:', error.response.data.hint);
+        }
       } else {
         setImportProgress(`Import failed: ${error.response?.data?.error || error.message}`);
       }

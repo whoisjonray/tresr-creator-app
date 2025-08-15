@@ -14,14 +14,21 @@ try {
   console.error('Warning: Some models not available:', error.message);
 }
 
-// Sanity client
+// Sanity client - works without token for public data
 const sanityClient = createClient({
   projectId: process.env.SANITY_PROJECT_ID || 'a9vtdosx',
   dataset: process.env.SANITY_DATASET || 'production',
-  token: process.env.SANITY_API_TOKEN,
-  useCdn: false,
+  token: process.env.SANITY_API_TOKEN, // Optional - works without token for public data
+  useCdn: true, // Use CDN for better performance with public data
   apiVersion: '2024-01-01'
 });
+
+// Log Sanity configuration (without exposing token)
+console.log('📦 Sanity configuration:');
+console.log('  Project ID:', process.env.SANITY_PROJECT_ID || 'a9vtdosx');
+console.log('  Dataset:', process.env.SANITY_DATASET || 'production');
+console.log('  Token configured:', !!process.env.SANITY_API_TOKEN);
+console.log('  Using CDN:', true);
 
 // Convert Sanity bounding box to center-based coordinates
 function convertBoundingBoxToCenter(topLeft, bottomRight) {
@@ -71,7 +78,9 @@ router.post('/map-person', requireAdmin, async (req, res) => {
       bio,
       isVerified,
       ...
-    }`);
+    }`;
+    
+    const designs = await sanityClient.fetch(query);
     
     if (!person) {
       return res.status(404).json({
@@ -145,8 +154,13 @@ router.post('/import-my-designs', requireAuth, async (req, res) => {
       });
     }
     
+    // Log the query details for debugging
+    console.log(`📋 Fetching designs for Sanity person: ${mapping.sanityPersonId}`);
+    console.log(`   Email: ${mapping.email}`);
+    console.log(`   Name: ${mapping.sanityName}`);
+    
     // Fetch all products/designs from Sanity for this person
-    const designs = await sanityClient.fetch(`*[_type == "product" && creator._ref == "${mapping.sanityPersonId}"] {
+    const query = `*[_type == "product" && creator._ref == "${mapping.sanityPersonId}"] {
       _id,
       title,
       "slug": slug.current,
@@ -174,9 +188,20 @@ router.post('/import-my-designs', requireAuth, async (req, res) => {
       publishedAt,
       createdAt,
       ...
-    }`);
+    }`;
     
-    console.log(`Found ${designs.length} designs for ${mapping.email}`);
+    let designs;
+    try {
+      designs = await sanityClient.fetch(query);
+      console.log(`✅ Found ${designs.length} designs for ${mapping.email}`);
+    } catch (fetchError) {
+      console.error('❌ Failed to fetch from Sanity:', fetchError);
+      return res.status(500).json({
+        error: 'Failed to fetch designs from Sanity',
+        details: fetchError.message,
+        hint: 'Check if SANITY_API_TOKEN is configured in Railway environment variables'
+      });
+    }
     
     const importedDesigns = [];
     const errors = [];
@@ -281,8 +306,13 @@ router.post('/import-designs/:dynamicId', requireAdmin, async (req, res) => {
       });
     }
     
+    // Log the query details for debugging
+    console.log(`📋 Fetching designs for Sanity person: ${mapping.sanityPersonId}`);
+    console.log(`   Email: ${mapping.email}`);
+    console.log(`   Name: ${mapping.sanityName}`);
+    
     // Fetch all products/designs from Sanity for this person
-    const designs = await sanityClient.fetch(`*[_type == "product" && creator._ref == "${mapping.sanityPersonId}"] {
+    const query = `*[_type == "product" && creator._ref == "${mapping.sanityPersonId}"] {
       _id,
       title,
       "slug": slug.current,
@@ -310,9 +340,20 @@ router.post('/import-designs/:dynamicId', requireAdmin, async (req, res) => {
       publishedAt,
       createdAt,
       ...
-    }`);
+    }`;
     
-    console.log(`Found ${designs.length} designs for ${mapping.email}`);
+    let designs;
+    try {
+      designs = await sanityClient.fetch(query);
+      console.log(`✅ Found ${designs.length} designs for ${mapping.email}`);
+    } catch (fetchError) {
+      console.error('❌ Failed to fetch from Sanity:', fetchError);
+      return res.status(500).json({
+        error: 'Failed to fetch designs from Sanity',
+        details: fetchError.message,
+        hint: 'Check if SANITY_API_TOKEN is configured in Railway environment variables'
+      });
+    }
     
     const importedDesigns = [];
     const errors = [];
