@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { createClient } = require('@sanity/client');
+const { v4: uuidv4 } = require('uuid');
 
 // Direct import - minimal complexity
 router.post('/import-memelord-direct', async (req, res) => {
@@ -61,15 +62,40 @@ router.post('/import-memelord-direct', async (req, res) => {
       isActive,
       publishedAt,
       createdAt
-    }`;
+    }[0...10]`; // Start with just 10 for testing
     
     const designs = await sanityClient.fetch(query);
-    console.log(`✅ Found ${designs.length} designs`);
+    console.log(`✅ Found ${designs.length} designs (limited to 10 for testing)`);
     
     // Get database connection
-    const { sequelize } = require('../models');
-    if (!sequelize) {
-      return res.status(500).json({ error: 'No database connection' });
+    let sequelize;
+    try {
+      const models = require('../models');
+      sequelize = models.sequelize;
+      
+      if (!sequelize) {
+        // Try to create connection directly
+        const { Sequelize } = require('sequelize');
+        const dbUrl = process.env.MYSQL_URL || process.env.DATABASE_URL;
+        
+        if (!dbUrl) {
+          return res.status(500).json({ error: 'No database URL configured' });
+        }
+        
+        sequelize = new Sequelize(dbUrl, {
+          dialect: 'mysql',
+          logging: false
+        });
+        
+        await sequelize.authenticate();
+        console.log('✅ Direct database connection established');
+      }
+    } catch (dbError) {
+      console.error('Database connection error:', dbError);
+      return res.status(500).json({ 
+        error: 'Database connection failed',
+        details: dbError.message 
+      });
     }
     
     // Create designs table if it doesn't exist
@@ -100,8 +126,14 @@ router.post('/import-memelord-direct', async (req, res) => {
     const imported = [];
     const errors = [];
     
-    for (const sanityDesign of designs) {
+    console.log(`📦 Starting import of ${designs.length} designs...`);
+    
+    for (let i = 0; i < designs.length; i++) {
+      const sanityDesign = designs[i];
+      
       try {
+        console.log(`  [${i + 1}/${designs.length}] Importing: ${sanityDesign.title || 'Untitled'}`);
+        
         // Convert bounding box if exists
         let frontPosition = { x: 150, y: 150, width: 150, height: 150 };
         if (sanityDesign.overlayTopLeft && sanityDesign.overlayBottomRight) {
@@ -116,7 +148,7 @@ router.post('/import-memelord-direct', async (req, res) => {
         }
         
         const mainImage = sanityDesign.images?.[0]?.asset?.url || '';
-        const designId = `design_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const designId = uuidv4();
         
         // Insert or update
         await sequelize.query(`

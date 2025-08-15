@@ -319,7 +319,7 @@ function ProductManager() {
                   cursor: importing ? 'not-allowed' : 'pointer'
                 }}
               >
-                {importing ? 'Importing...' : 'Direct Import (151 designs)'}
+                {importing ? 'Importing...' : 'Direct Import (Test 10)'}
               </button>
               <button 
                 onClick={handleImportSanityDesigns} 
