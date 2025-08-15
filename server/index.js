@@ -114,7 +114,14 @@ app.use('/api/admin/impersonate', require('./routes/admin/impersonate'));
 app.use('/api/designs', designsRoutes);
 app.use('/api', scansRoutes);
 app.use('/api/sanity', importSanityRoutes);
-app.use('/api/sanity/person', require('./routes/sanity/importPersonDesigns'));
+
+// Only load Sanity person routes if @sanity/client is available
+try {
+  require('@sanity/client');
+  app.use('/api/sanity/person', require('./routes/sanity/importPersonDesigns'));
+} catch (error) {
+  console.log('⚠️ Sanity client not available, skipping person import routes');
+}
 app.use('/api/settings', require('./routes/settings-db'));
 app.use('/api/templates', require('./routes/productTemplates'));
 app.use('/api/env', require('./routes/env-check'));
