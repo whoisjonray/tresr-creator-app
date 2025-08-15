@@ -128,6 +128,7 @@ app.use('/api/env', require('./routes/env-check'));
 
 // Temporary setup route (remove after setup)
 app.use('/api/setup', require('./routes/setup-mapping'));
+app.use('/api/test', require('./routes/test-import'));
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
