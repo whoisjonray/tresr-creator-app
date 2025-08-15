@@ -3,16 +3,15 @@ const router = express.Router();
 const { createClient } = require('@sanity/client');
 const { requireAdmin, requireAuth } = require('../../middleware/auth');
 
-// Import models with fallback
-let Design, CreatorMapping, UserRole;
-try {
+// Import models - must be done inside route handlers to ensure they're initialized
+const getModels = () => {
   const models = require('../../models');
-  Design = models.Design;
-  CreatorMapping = models.CreatorMapping;
-  UserRole = models.UserRole;
-} catch (error) {
-  console.error('Warning: Some models not available:', error.message);
-}
+  return {
+    Design: models.Design,
+    CreatorMapping: models.CreatorMapping,
+    UserRole: models.UserRole
+  };
+};
 
 // Sanity client - works without token for public data
 const sanityClient = createClient({
@@ -58,6 +57,7 @@ function convertBoundingBoxToCenter(topLeft, bottomRight) {
 // Map a Sanity person to a Dynamic.xyz user
 router.post('/map-person', requireAdmin, async (req, res) => {
   try {
+    const { CreatorMapping } = getModels();
     const { sanityPersonId, dynamicId, email } = req.body;
     
     if (!sanityPersonId || !dynamicId || !email) {
@@ -135,23 +135,20 @@ router.post('/map-person', requireAdmin, async (req, res) => {
 router.post('/import-my-designs', requireAuth, async (req, res) => {
   try {
     console.log('🚀 Import endpoint called');
-    console.log('   Models available:', { 
+    
+    // Get models fresh each time
+    const { CreatorMapping, Design } = getModels();
+    
+    console.log('   Models loaded:', { 
       CreatorMapping: !!CreatorMapping, 
       Design: !!Design 
     });
     
     // Check if models are available
     if (!CreatorMapping || !Design) {
-      // Try to get models again
-      const models = require('../../models');
-      CreatorMapping = models.CreatorMapping;
-      Design = models.Design;
-      
-      if (!CreatorMapping || !Design) {
-        return res.status(503).json({
-          error: 'Database models not initialized. Please try again in a few seconds.'
-        });
-      }
+      return res.status(503).json({
+        error: 'Database models not initialized. Please try again in a few seconds.'
+      });
     }
     
     const dynamicId = req.session.creator.id;
@@ -346,6 +343,7 @@ router.post('/import-my-designs', requireAuth, async (req, res) => {
 // Import designs for a mapped person (admin endpoint)
 router.post('/import-designs/:dynamicId', requireAdmin, async (req, res) => {
   try {
+    const { CreatorMapping, Design } = getModels();
     const { dynamicId } = req.params;
     
     // Find mapping
@@ -498,6 +496,7 @@ router.post('/import-designs/:dynamicId', requireAdmin, async (req, res) => {
 // Setup memelord mapping (one-time setup)
 router.post('/setup-memelord', requireAdmin, async (req, res) => {
   try {
+    const { CreatorMapping, UserRole } = getModels();
     // Create mapping for memelord
     const memelordMapping = {
       sanityPersonId: 'k2r2aa8vmghuyr3he0p2eo5e',
@@ -558,6 +557,7 @@ router.post('/setup-memelord', requireAdmin, async (req, res) => {
 // Get all mappings
 router.get('/mappings', requireAdmin, async (req, res) => {
   try {
+    const { CreatorMapping } = getModels();
     const mappings = await CreatorMapping.findAll({
       order: [['createdAt', 'DESC']]
     });
@@ -575,6 +575,7 @@ router.get('/mappings', requireAdmin, async (req, res) => {
 // Get designs for current user
 router.get('/my-designs', async (req, res) => {
   try {
+    const { Design } = getModels();
     if (!req.session.creator) {
       return res.status(401).json({ error: 'Not authenticated' });
     }
