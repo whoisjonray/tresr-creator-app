@@ -75,12 +75,18 @@ router.get('/test-db-only', async (req, res) => {
 // Minimal import - just one design, no loops
 router.post('/import-one', async (req, res) => {
   try {
+    console.log('🚀 Simple test import-one started');
+    
     // Check session
     if (!req.session?.creator?.email) {
+      console.log('❌ No session or email found');
       return res.status(401).json({ error: 'Not logged in' });
     }
     
+    console.log('👤 Session user:', req.session.creator.email, 'ID:', req.session.creator.id);
+    
     if (req.session.creator.email !== 'whoisjonray@gmail.com') {
+      console.log('❌ Not authorized user:', req.session.creator.email);
       return res.status(403).json({ error: 'Not authorized' });
     }
     
@@ -93,15 +99,24 @@ router.post('/import-one', async (req, res) => {
       apiVersion: '2024-01-01'
     });
     
+    console.log('📋 Fetching designs from Sanity...');
     const designs = await sanityClient.fetch(`
       *[_type == "product" && "k2r2aa8vmghuyr3he0p2eo5e" in creators[]._ref][0...1] {
         _id,
         title,
-        description
+        description,
+        "images": images[] {
+          asset-> {
+            url
+          }
+        }
       }
     `);
     
+    console.log('📋 Sanity query result:', designs?.length || 0, 'designs found');
+    
     if (!designs || designs.length === 0) {
+      console.log('❌ No designs found in Sanity');
       return res.json({ 
         success: false, 
         message: 'No designs found in Sanity' 
@@ -109,6 +124,7 @@ router.post('/import-one', async (req, res) => {
     }
     
     const design = designs[0];
+    console.log('🎨 Selected design:', design.title, 'ID:', design._id);
     
     // Try to save to database
     const { Sequelize } = require('sequelize');
@@ -161,7 +177,12 @@ router.post('/import-one', async (req, res) => {
     
     // Insert the one design into the real table using correct field names
     const id = uuidv4();
-    await sequelize.query(
+    console.log('💾 Inserting design into database...');
+    console.log('   ID:', id);
+    console.log('   Creator ID:', req.session.creator.id);
+    console.log('   Image URL:', imageUrl || 'NO IMAGE');
+    
+    const insertResult = await sequelize.query(
       `INSERT INTO designs (
         id, creator_id, sanity_id, name, description, 
         thumbnail_url, front_design_url, status, created_at, updated_at
@@ -186,14 +207,26 @@ router.post('/import-one', async (req, res) => {
       }
     );
     
+    console.log('✅ Database insert result:', insertResult?.[0]?.affectedRows || 'unknown');
+    
+    // Verify the insert by querying back
+    const [verifyResult] = await sequelize.query(
+      `SELECT id, name, status, thumbnail_url FROM designs WHERE id = ?`,
+      { replacements: [id] }
+    );
+    
+    console.log('🔍 Verification query result:', verifyResult);
+    
     res.json({
       success: true,
       message: 'Imported one design successfully',
       design: {
         id: id,
         sanityId: design._id,
-        title: design.title
-      }
+        title: design.title,
+        imageUrl: imageUrl
+      },
+      verification: verifyResult
     });
     
   } catch (error) {
