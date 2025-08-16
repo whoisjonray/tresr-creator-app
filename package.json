@@ -16,7 +16,10 @@
     "build:server": "cd server && npm run build",
     "install:all": "npm install && cd client && npm install && cd ../server && npm install",
     "start": "cd server && npm start",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:integration": "jest tests/integration.test.js"
   },
   "keywords": [
     "shopify",
@@ -27,10 +30,17 @@
   "author": "TRESR",
   "license": "ISC",
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "@types/jest": "^30.0.0",
+    "concurrently": "^8.2.2",
+    "jest": "^30.0.5",
+    "nock": "^14.0.10",
+    "supertest": "^7.1.4"
   },
   "dependencies": {
     "cloudinary": "^2.7.0",
+    "express-rate-limit": "^8.0.1",
+    "express-validator": "^7.2.1",
+    "helmet": "^8.1.0",
     "node-fetch": "^3.3.2"
   }
 }

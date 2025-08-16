@@ -3,10 +3,11 @@ const express = require('express');
 console.log('🚀 SERVER STARTED - BUILD v2.0 -', new Date().toISOString());
 const cors = require('cors');
 const session = require('express-session');
+const rateLimit = require('express-rate-limit');
 const { createClient } = require('redis');
 const path = require('path');
 
-// Import routes
+// Import routes - v1 (legacy)
 const authRoutes = require('./routes/auth');
 const productsRoutes = require('./routes/products');
 const mockupsRoutes = require('./routes/mockups');
@@ -15,6 +16,13 @@ const adminRoutes = require('./routes/admin');
 const designsRoutes = require('./routes/designs');
 const scansRoutes = require('./routes/scans');
 const importSanityRoutes = require('./routes/importSanityDesign');
+
+// Import v2 routes with enhanced features
+// v2 routes - temporarily using fixed versions
+const authV2Routes = require('./routes/auth-v2');
+const usersV2Routes = require('./routes/users-v2-fixed');
+// const sanityImportV2Routes = require('./routes/sanity-import-v2');
+// const shopifyV2Routes = require('./routes/shopify-v2');
 
 // Initialize database
 const databaseService = require('./services/database');
@@ -95,16 +103,99 @@ if (useDbSessions) {
   }));
 }
 
+// Security headers middleware for v2 routes
+app.use('/api/v2', (req, res, next) => {
+  // Security headers
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  
+  // API version header
+  res.setHeader('X-API-Version', '2.0');
+  
+  next();
+});
+
+// Rate limiting for v2 routes
+const v2RateLimit = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 200, // Limit each IP to 200 requests per windowMs for v2 routes
+  message: {
+    success: false,
+    error: 'RATE_LIMIT_EXCEEDED',
+    message: 'Too many requests to v2 API. Please try again later.',
+    retryAfter: Math.ceil(15 * 60 * 1000 / 1000) // in seconds
+  },
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  skip: (req) => {
+    // Skip rate limiting for health checks
+    return req.path === '/health';
+  }
+});
+
+app.use('/api/v2', v2RateLimit);
+
+// Request logging middleware for v2 routes
+app.use('/api/v2', (req, res, next) => {
+  const startTime = Date.now();
+  
+  // Generate request ID if not present
+  const requestId = req.headers['x-request-id'] || `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  req.requestId = requestId;
+  res.setHeader('X-Request-ID', requestId);
+  
+  // Log request details
+  console.log(`🔗 [${new Date().toISOString()}] ${req.method} ${req.originalUrl}`, {
+    requestId,
+    userAgent: req.get('User-Agent'),
+    ip: req.ip || req.connection.remoteAddress,
+    sessionId: req.session?.id || 'no-session',
+    contentType: req.get('Content-Type')
+  });
+  
+  // Override res.json to log response details
+  const originalJson = res.json;
+  res.json = function(body) {
+    const duration = Date.now() - startTime;
+    console.log(`✅ [${new Date().toISOString()}] ${req.method} ${req.originalUrl} - ${res.statusCode} (${duration}ms)`, {
+      requestId,
+      responseSize: JSON.stringify(body).length
+    });
+    
+    if (res.statusCode >= 400) {
+      console.error(`❌ Error Response [${requestId}]:`, body);
+    }
+    
+    return originalJson.call(this, body);
+  };
+  
+  next();
+});
+
 // Health check
 app.get('/health', (req, res) => {
   res.json({
     status: 'ok',
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
+    environment: process.env.NODE_ENV || 'development',
+    version: '2.0',
+    routes: {
+      v1: ['auth', 'products', 'mockups', 'creators', 'admin', 'designs', 'scans', 'sanity', 'shopify'],
+      v2: ['auth', 'users', 'sanity', 'shopify']
+    }
   });
 });
 
-// API Routes
+// API Routes - v2 (Enhanced) - Mount first for priority
+app.use('/api/v2/auth', authV2Routes);
+app.use('/api/v2/users', usersV2Routes);
+// Temporarily disabled until fixed
+// app.use('/api/v2/sanity', sanityImportV2Routes);
+// app.use('/api/v2/shopify', shopifyV2Routes);
+
+// API Routes - v1 (Legacy) - Maintain backward compatibility
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);
 app.use('/api/mockups', mockupsRoutes);
@@ -114,6 +205,9 @@ app.use('/api/admin/impersonate', require('./routes/admin/impersonate'));
 app.use('/api/designs', designsRoutes);
 app.use('/api', scansRoutes);
 app.use('/api/sanity', importSanityRoutes);
+
+// Legacy shopify route (keep for backward compatibility)
+// app.use('/api/shopify', shopifyV2Routes);
 
 // Only load Sanity person routes if @sanity/client is available
 try {
@@ -146,9 +240,50 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-// Error handling middleware
+// Enhanced error handling middleware for v2 routes
+app.use('/api/v2', (err, req, res, next) => {
+  console.error(`❌ [v2 Error] ${req.method} ${req.originalUrl}:`, {
+    error: err.message,
+    stack: err.stack,
+    timestamp: new Date().toISOString(),
+    sessionId: req.session?.id || 'no-session'
+  });
+
+  // Enhanced error response for v2 routes
+  const errorResponse = {
+    success: false,
+    error: err.code || 'INTERNAL_ERROR',
+    message: err.message || 'An unexpected error occurred',
+    timestamp: new Date().toISOString(),
+    requestId: req.headers['x-request-id'] || `req_${Date.now()}`,
+    ...(process.env.NODE_ENV !== 'production' && { 
+      stack: err.stack,
+      details: err.details || null 
+    })
+  };
+
+  // Set appropriate status code
+  let statusCode = err.status || err.statusCode || 500;
+  
+  // Map common error types to status codes
+  if (err.code === 'VALIDATION_ERROR') statusCode = 400;
+  else if (err.code === 'UNAUTHORIZED') statusCode = 401;
+  else if (err.code === 'FORBIDDEN') statusCode = 403;
+  else if (err.code === 'NOT_FOUND') statusCode = 404;
+  else if (err.code === 'RATE_LIMIT_EXCEEDED') statusCode = 429;
+
+  res.status(statusCode).json(errorResponse);
+});
+
+// General error handling middleware (for v1 routes)
 app.use((err, req, res, next) => {
   console.error('Error:', err);
+  
+  // Check if response was already sent
+  if (res.headersSent) {
+    return next(err);
+  }
+  
   res.status(err.status || 500).json({
     error: true,
     message: err.message || 'Internal server error',
@@ -156,12 +291,29 @@ app.use((err, req, res, next) => {
   });
 });
 
-// 404 handler
+// Enhanced 404 handler
 app.use((req, res) => {
-  res.status(404).json({
-    error: true,
-    message: 'Route not found'
-  });
+  const isV2Route = req.originalUrl.startsWith('/api/v2');
+  
+  if (isV2Route) {
+    res.status(404).json({
+      success: false,
+      error: 'ROUTE_NOT_FOUND',
+      message: `API endpoint ${req.originalUrl} not found`,
+      timestamp: new Date().toISOString(),
+      availableEndpoints: {
+        auth: '/api/v2/auth',
+        users: '/api/v2/users', 
+        sanity: '/api/v2/sanity',
+        shopify: '/api/v2/shopify'
+      }
+    });
+  } else {
+    res.status(404).json({
+      error: true,
+      message: 'Route not found'
+    });
+  }
 });
 
 // Start server
@@ -174,8 +326,23 @@ app.listen(actualPort, '0.0.0.0', async () => {
   console.log(`Dynamic.xyz Auth URL: ${process.env.DYNAMIC_AUTH_URL || 'Not configured'}`);
   console.log(`Shopify Backend URL: ${process.env.SHOPIFY_APP_URL || 'Not configured'}`);
   
+  // Display available API routes
+  console.log('\n📡 API Routes Available:');
+  console.log('🔹 v2 Routes (Enhanced):');
+  console.log('  • POST   /api/v2/auth/login        - Enhanced authentication');
+  console.log('  • GET    /api/v2/users/profile     - User profile management');
+  console.log('  • POST   /api/v2/sanity/import     - Batch Sanity imports');
+  console.log('  • GET    /api/v2/shopify/products  - Shopify product sync');
+  console.log('🔹 v1 Routes (Legacy - Maintained):');
+  console.log('  • /api/auth/* - Authentication');
+  console.log('  • /api/products/* - Product management');
+  console.log('  • /api/creators/* - Creator management');
+  console.log('  • /api/admin/* - Admin functions');
+  console.log('  • /api/designs/* - Design operations');
+  
   // Initialize database tables after server starts
   setTimeout(async () => {
     await initializeDatabase();
+    console.log('✅ Server initialization complete\n');
   }, 2000);
 });
