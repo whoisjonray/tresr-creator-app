@@ -348,6 +348,55 @@ function ProductManager() {
               </button>
               <button 
                 onClick={async () => {
+                  try {
+                    console.log('Testing super simple import...');
+                    const response = await api.post('/api/super-simple/import-one-minimal');
+                    console.log('✅ Super simple import result:', response.data);
+                    alert(`Success! Imported: ${response.data.design.name}`);
+                    // Reload products
+                    await loadProductsFromDatabase();
+                  } catch (error) {
+                    console.error('❌ Super simple import failed:', error);
+                    alert(`Failed: ${error.response?.data?.error || error.message}`);
+                  }
+                }}
+                style={{
+                  marginRight: '10px',
+                  background: '#059669',
+                  color: 'white',
+                  padding: '8px 16px',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer'
+                }}
+              >
+                ✅ Simple Import
+              </button>
+              <button 
+                onClick={async () => {
+                  try {
+                    const response = await api.get('/api/super-simple/list-all-designs');
+                    console.log('📋 ALL DESIGNS IN DATABASE:', response.data);
+                    alert(`Database contains ${response.data.totalDesigns} total designs. Check console for details.`);
+                  } catch (error) {
+                    console.error('List failed:', error);
+                    alert('Failed to list designs');
+                  }
+                }}
+                style={{
+                  marginRight: '10px',
+                  background: '#7c3aed',
+                  color: 'white',
+                  padding: '8px 16px',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer'
+                }}
+              >
+                📋 List All
+              </button>
+              <button 
+                onClick={async () => {
                   setImporting(true);
                   setImportProgress('Testing import of ONE design...');
                   try {
