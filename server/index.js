@@ -133,6 +133,7 @@ app.use('/api/direct', require('./routes/direct-import'));
 app.use('/api/simple', require('./routes/simple-test'));
 app.use('/api/debug', require('./routes/debug-database'));
 app.use('/api/super-simple', require('./routes/super-simple-import'));
+app.use('/api/import-now', require('./routes/import-all-now'));
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {

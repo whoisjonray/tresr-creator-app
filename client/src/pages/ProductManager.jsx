@@ -327,6 +327,39 @@ function ProductManager() {
             <>
               <button 
                 onClick={async () => {
+                  if (!window.confirm('This will import ALL 151 memelord designs. Continue?')) return;
+                  
+                  try {
+                    console.log('🚀 IMPORTING ALL DESIGNS...');
+                    const response = await api.post('/api/import-now/import-all-memelord');
+                    console.log('✅ IMPORT COMPLETE:', response.data);
+                    
+                    // Directly set the products from the response
+                    if (response.data.designs) {
+                      setProducts(response.data.designs);
+                      alert(`SUCCESS! Imported ${response.data.imported} designs. They are now displayed below.`);
+                    }
+                  } catch (error) {
+                    console.error('❌ Import failed:', error);
+                    alert(`FAILED: ${error.response?.data?.error || error.message}`);
+                  }
+                }}
+                style={{
+                  marginRight: '10px',
+                  background: '#dc2626',
+                  color: 'white',
+                  padding: '12px 24px',
+                  border: '2px solid #991b1b',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                  fontSize: '16px'
+                }}
+              >
+                🚀 IMPORT ALL 151 DESIGNS NOW
+              </button>
+              <button 
+                onClick={async () => {
                   try {
                     // Debug: Check what's actually in database
                     const response = await api.get('/api/debug/check-designs');
