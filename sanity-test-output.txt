@@ -1,0 +1,1406 @@
+🔧 Sanity Test Client initialized:
+   Project ID: a9vtdosx
+   Dataset: production
+   Token configured: true
+   CDN disabled: true
+
+🚀 Starting Sanity Memelord Product Query Tests
+============================================================
+
+🔍 TEST 1: Checking if memelord person exists...
+✅ Person found!
+{
+  "_createdAt": "2025-01-19T18:18:54Z",
+  "_id": "k2r2aa8vmghuyr3he0p2eo5e",
+  "_rev": "1hj3tJP0IaKgRmKaWttNuf",
+  "_type": "person",
+  "_updatedAt": "2025-01-19T18:19:28Z",
+  "avatar": null,
+  "bio": "time traveler",
+  "createdAt": null,
+  "email": null,
+  "isVerified": null,
+  "name": "memelord",
+  "socialLinks": null,
+  "updatedAt": null,
+  "username": null,
+  "walletAddress": null,
+  "wallets": null
+}
+
+🔍 TEST 2: Counting products for memelord...
+   Method 1: 151 products
+   Method 2: 175 products
+   Method 3: 0 products
+   Method 4: 175 products
+
+🔍 TEST 3: Fetching ONE complete product with ALL fields...
+📝 Query being executed:
+*[_type == "product" && (
+        "k2r2aa8vmghuyr3he0p2eo5e" in creators[]._ref || 
+        references("k2r2aa8vmghuyr3he0p2eo5e") ||
+        creator._ref == "k2r2aa8vmghuyr3he0p2eo5e"
+      )][0] {
+        // Core fields
+        _id,
+        _type,
+        _rev,
+        _createdAt,
+        _updatedAt,
+        
+        // Product information
+        title,
+        "slug": slug.current,
+        description,
+        
+        // Creator relationships
+        creator,
+        creators[]-> {
+          _id,
+          _type,
+          name,
+          username,
+          email,
+          walletAddress,
+          wallets[]
+        },
+        
+        // Images with full metadata
+        "images": images[] {
+          _key,
+          _type,
+          asset-> {
+            _id,
+            _type,
+            url,
+            originalFilename,
+            size,
+            mimeType,
+            metadata {
+              dimensions {
+                width,
+                height,
+                aspectRatio
+              },
+              palette {
+                dominant {
+                  background,
+                  foreground
+                },
+                darkMuted {
+                  background,
+                  foreground
+                },
+                lightVibrant {
+                  background,
+                  foreground
+                }
+              },
+              hasAlpha,
+              isOpaque
+            }
+          },
+          alt,
+          caption
+        },
+        
+        // Design positioning
+        overlayTopLeft {
+          x,
+          y
+        },
+        overlayBottomRight {
+          x,
+          y
+        },
+        overlayPosition,
+        printArea,
+        
+        // Product styles and variants
+        productStyles[]-> {
+          _id,
+          _type,
+          name,
+          sku,
+          garmentType,
+          basePrice,
+          colors[],
+          sizes[],
+          description,
+          isActive
+        },
+        
+        // Categories and tags
+        category-> {
+          _id,
+          title,
+          slug
+        },
+        tags[],
+        
+        // Status and visibility
+        isActive,
+        isFeatured,
+        isPublic,
+        publishedAt,
+        
+        // Analytics
+        salesCount,
+        viewCount,
+        likeCount,
+        
+        // Timestamps
+        createdAt,
+        updatedAt,
+        
+        // Additional metadata that might exist
+        price,
+        currency,
+        commission,
+        royalty,
+        nftData,
+        blockchain,
+        mintedAt,
+        tokenId,
+        contractAddress,
+        
+        // Any other fields
+        ...
+      }
+
+✅ Product found! Here's the complete data structure:
+
+================================================================================
+{
+  "_createdAt": "2025-02-20T23:05:08Z",
+  "_id": "a36k48qepktunrx0fqroo4bd",
+  "_rev": "RjTCee2PQE0AJzg3F8eXy2",
+  "_type": "product",
+  "_updatedAt": "2025-07-08T05:55:20Z",
+  "allTimeViews": 148,
+  "blockchain": null,
+  "brands": [],
+  "category": null,
+  "commission": null,
+  "contractAddress": null,
+  "createdAt": null,
+  "creator": null,
+  "creators": [
+    {
+      "_key": "k2r2aa8vmghuyr3he0p2eo5e",
+      "_ref": "k2r2aa8vmghuyr3he0p2eo5e",
+      "_type": "reference"
+    },
+    {
+      "_ref": "k2r2aa8vmghuyr3he0p2eo5e",
+      "_type": "reference"
+    }
+  ],
+  "currency": null,
+  "defaultExperienceOptions": {
+    "_type": "default_experience",
+    "edition": "limited"
+  },
+  "description": null,
+  "designId": "f7hcmxbb6mibulhcw5mk5mcd",
+  "details": " ",
+  "experienceType": "default",
+  "images": null,
+  "isActive": null,
+  "isFeatured": null,
+  "isPublic": null,
+  "likeCount": null,
+  "limit": 1,
+  "mainImage": {
+    "_key": "f7hcmxbb6mibulhcw5mk5mcd_Front_main",
+    "_type": "cloudinaryImage",
+    "format": "png",
+    "height": 2000,
+    "title": "f7hcmxbb6mibulhcw5mk5mcd_Front_main",
+    "uri": "https://res.cloudinary.com/dqslerzk9/image/upload/v1740092706/products/k2r2aa8vmghuyr3he0p2eo5e/opqymryepnkawtg8sf8q.png",
+    "width": 2000
+  },
+  "mintedAt": null,
+  "nftData": null,
+  "overlayBottomRight": null,
+  "overlayPosition": null,
+  "overlayTopLeft": null,
+  "owner": {
+    "_ref": "k2r2aa8vmghuyr3he0p2eo5e",
+    "_type": "reference"
+  },
+  "price": null,
+  "printArea": null,
+  "productStyle": {
+    "_ref": "0b579946-5c68-43d1-8b8d-1aa276abd156",
+    "_type": "reference"
+  },
+  "productStyles": null,
+  "publishedAt": null,
+  "regularPrice": 42,
+  "royalty": null,
+  "salesCount": null,
+  "secondaryImages": [
+    {
+      "_key": "https://res.cloudinary.com/dqslerzk9/image/upload/v1740092706/products/k2r2aa8vmghuyr3he0p2eo5e/mo7nirjsybcrirt6u7n8.png",
+      "_type": "cloudinaryImage",
+      "format": "png",
+      "height": 2000,
+      "title": "f7hcmxbb6mibulhcw5mk5mcd_Back_main",
+      "uri": "https://res.cloudinary.com/dqslerzk9/image/upload/v1740092706/products/k2r2aa8vmghuyr3he0p2eo5e/mo7nirjsybcrirt6u7n8.png",
+      "width": 2000
+    }
+  ],
+  "sku": "TEE-TEE-ANDY_SLAPS_X_WAYFINDERS",
+  "slug": {
+    "_type": "slug",
+    "current": "andy-slaps-x-wayfinders"
+  },
+  "tags": [],
+  "title": "ANDY SLAPS  x WAYFINDERS",
+  "tokenId": null,
+  "updatedAt": null,
+  "variants": [
+    {
+      "_key": "a36k48qepktunrx0fqroo4bd_spbbkmz9mi9yhxtkftjcm3sz",
+      "_type": "variant",
+      "color": {
+        "_ref": "16TM4BKs9KfTmPQkll4HCB",
+        "_type": "reference"
+      },
+      "id": "spbbkmz9mi9yhxtkftjcm3sz",
+      "images": [
+        {
+          "_key": "products/k2r2aa8vmghuyr3he0p2eo5e/mlafv4aw1qzmycefaexk",
+          "_type": "cloudinaryImage",
+          "format": "png",
+          "height": 2000,
+          "title": "a36k48qepktunrx0fqroo4bd_16TM4BKs9KfTmPQkll4HCB",
+          "uri": "https://res.cloudinary.com/dqslerzk9/image/upload/v1740092711/products/k2r2aa8vmghuyr3he0p2eo5e/mlafv4aw1qzmycefaexk.png",
+          "width": 2000
+        },
+        {
+          "_key": "products/k2r2aa8vmghuyr3he0p2eo5e/msx7rfr1mpwvwrezielc",
+          "_type": "cloudinaryImage",
+          "format": "png",
+          "height": 2000,
+          "title": "a36k48qepktunrx0fqroo4bd_16TM4BKs9KfTmPQkll4HCB",
+          "uri": "https://res.cloudinary.com/dqslerzk9/image/upload/v1740092711/products/k2r2aa8vmghuyr3he0p2eo5e/msx7rfr1mpwvwrezielc.png",
+          "width": 2000
+        }
+      ],
+      "size": {
+        "_ref": "51dde126-91c2-4c83-9efb-2f8a1ab72b04",
+        "_type": "reference"
+      },
+      "sku": "TEE-TEE-ANDY_SLAPS_X_WAYFINDERS-BLK-XS",
+      "title": "Black - X-Small"
+    },
+    {
+      "_key": "a36k48qepktunrx0fqroo4bd_nh5ra03lkghv2xdpll67ojd7",
+      "_type": "variant",
+      "color": {
+        "_ref": "16TM4BKs9KfTmPQkll4HCB",
+        "_type": "reference"
+      },
+      "id": "nh5ra03lkghv2xdpll67ojd7",
+      "images": [
+        {
+          "_key": "products/k2r2aa8vmghuyr3he0p2eo5e/mlafv4aw1qzmycefaexk",
+          "_type": "cloudinaryImage",
+          "format": "png",
+          "height": 2000,
+          "title": "a36k48qepktunrx0fqroo4bd_16TM4BKs9KfTmPQkll4HCB",
+          "uri": "https://res.cloudinary.com/dqslerzk9/image/upload/v1740092711/products/k2r2aa8vmghuyr3he0p2eo5e/mlafv4aw1qzmycefaexk.png",
+          "width": 2000
+        },
+        {
+          "_key": "products/k2r2aa8vmghuyr3he0p2eo5e/msx7rfr1mpwvwrezielc",
+          "_type": "cloudinaryImage",
+          "format": "png",
+          "height": 2000,
+          "title": "a36k48qepktunrx0fqroo4bd_16TM4BKs9KfTmPQkll4HCB",
+          "uri": "https://res.cloudinary.com/dqslerzk9/image/upload/v1740092711/products/k2r2aa8vmghuyr3he0p2eo5e/msx7rfr1mpwvwrezielc.png",
+          "width": 2000
+        }
+      ],
+      "size": {
+        "_ref": "8c337212-a46c-4031-8cb6-b67f5edc9a06",
+        "_type": "reference"
+      },
+      "sku": "TEE-TEE-ANDY_SLAPS_X_WAYFINDERS-BLK-S",
+      "title": "Black - Small"
+    },
+    {
+      "_key": "a36k48qepktunrx0fqroo4bd_m1eo21ka77sue0cktnu7xbst",
+      "_type": "variant",
+      "color": {
+        "_ref": "16TM4BKs9KfTmPQkll4HCB",
+        "_type": "reference"
+      },
+      "id": "m1eo21ka77sue0cktnu7xbst",
+      "images": [
+        {
+          "_key": "products/k2r2aa8vmghuyr3he0p2eo5e/mlafv4aw1qzmycefaexk",
+          "_type": "cloudinaryImage",
+          "format": "png",
+          "height": 2000,
+          "title": "a36k48qepktunrx0fqroo4bd_16TM4BKs9KfTmPQkll4HCB",
+          "uri": "https://res.cloudinary.com/dqslerzk9/image/upload/v1740092711/products/k2r2aa8vmghuyr3he0p2eo5e/mlafv4aw1qzmycefaexk.png",
+          "width": 2000
+        },
+        {
+          "_key": "products/k2r2aa8vmghuyr3he0p2eo5e/msx7rfr1mpwvwrezielc",
+          "_type": "cloudinaryImage",
+          "format": "png",
+          "height": 2000,
+          "title": "a36k48qepktunrx0fqroo4bd_16TM4BKs9KfTmPQkll4HCB",
+          "uri": "https://res.cloudinary.com/dqslerzk9/image/upload/v1740092711/products/k2r2aa8vmghuyr3he0p2eo5e/msx7rfr1mpwvwrezielc.png",
+          "width": 2000
+        }
+      ],
+      "size": {
+        "_ref": "6f770635-b651-4015-8ab0-a38af9ad068e",
+        "_type": "reference"
+      },
+      "sku": "TEE-TEE-ANDY_SLAPS_X_WAYFINDERS-BLK-M",
+      "title": "Black - Medium"
+    },
+    {
+      "_key": "a36k48qepktunrx0fqroo4bd_biqzxg7y9wp512ihynb0p9us",
+      "_type": "variant",
+      "color": {
+        "_ref": "16TM4BKs9KfTmPQkll4HCB",
+        "_type": "reference"
+      },
+      "id": "biqzxg7y9wp512ihynb0p9us",
+      "images": [
+        {
+          "_key": "products/k2r2aa8vmghuyr3he0p2eo5e/mlafv4aw1qzmycefaexk",
+          "_type": "cloudinaryImage",
+          "format": "png",
+          "height": 2000,
+          "title": "a36k48qepktunrx0fqroo4bd_16TM4BKs9KfTmPQkll4HCB",
+          "uri": "https://res.cloudinary.com/dqslerzk9/image/upload/v1740092711/products/k2r2aa8vmghuyr3he0p2eo5e/mlafv4aw1qzmycefaexk.png",
+          "width": 2000
+        },
+        {
+          "_key": "products/k2r2aa8vmghuyr3he0p2eo5e/msx7rfr1mpwvwrezielc",
+          "_type": "cloudinaryImage",
+          "format": "png",
+          "height": 2000,
+          "title": "a36k48qepktunrx0fqroo4bd_16TM4BKs9KfTmPQkll4HCB",
+          "uri": "https://res.cloudinary.com/dqslerzk9/image/upload/v1740092711/products/k2r2aa8vmghuyr3he0p2eo5e/msx7rfr1mpwvwrezielc.png",
+          "width": 2000
+        }
+      ],
+      "size": {
+        "_ref": "cb8e5de4-d85a-4123-a35f-d90891bad767",
+        "_type": "reference"
+      },
+      "sku": "TEE-TEE-ANDY_SLAPS_X_WAYFINDERS-BLK-L",
+      "title": "Black - Large"
+    },
+    {
+      "_key": "a36k48qepktunrx0fqroo4bd_icqk0kw2t9r5zkdjc57t1isc",
+      "_type": "variant",
+      "color": {
+        "_ref": "16TM4BKs9KfTmPQkll4HCB",
+        "_type": "reference"
+      },
+      "id": "icqk0kw2t9r5zkdjc57t1isc",
+      "images": [
+        {
+          "_key": "products/k2r2aa8vmghuyr3he0p2eo5e/mlafv4aw1qzmycefaexk",
+          "_type": "cloudinaryImage",
+          "format": "png",
+          "height": 2000,
+          "title": "a36k48qepktunrx0fqroo4bd_16TM4BKs9KfTmPQkll4HCB",
+          "uri": "https://res.cloudinary.com/dqslerzk9/image/upload/v1740092711/products/k2r2aa8vmghuyr3he0p2eo5e/mlafv4aw1qzmycefaexk.png",
+          "width": 2000
+        },
+        {
+          "_key": "products/k2r2aa8vmghuyr3he0p2eo5e/msx7rfr1mpwvwrezielc",
+          "_type": "cloudinaryImage",
+          "format": "png",
+          "height": 2000,
+          "title": "a36k48qepktunrx0fqroo4bd_16TM4BKs9KfTmPQkll4HCB",
+          "uri": "https://res.cloudinary.com/dqslerzk9/image/upload/v1740092711/products/k2r2aa8vmghuyr3he0p2eo5e/msx7rfr1mpwvwrezielc.png",
+          "width": 2000
+        }
+      ],
+      "size": {
+        "_ref": "07938179-59f5-434d-b854-29730f2c39eb",
+        "_type": "reference"
+      },
+      "sku": "TEE-TEE-ANDY_SLAPS_X_WAYFINDERS-BLK-XL",
+      "title": "Black - X-Large"
+    },
+    {
+      "_key": "a36k48qepktunrx0fqroo4bd_pnffy6g5n5q48nyasges7mvl",
+      "_type": "variant",
+      "color": {
+        "_ref": "16TM4BKs9KfTmPQkll4HCB",
+        "_type": "reference"
+      },
+      "id": "pnffy6g5n5q48nyasges7mvl",
+      "images": [
+        {
+          "_key": "products/k2r2aa8vmghuyr3he0p2eo5e/mlafv4aw1qzmycefaexk",
+          "_type": "cloudinaryImage",
+          "format": "png",
+          "height": 2000,
+          "title": "a36k48qepktunrx0fqroo4bd_16TM4BKs9KfTmPQkll4HCB",
+          "uri": "https://res.cloudinary.com/dqslerzk9/image/upload/v1740092711/products/k2r2aa8vmghuyr3he0p2eo5e/mlafv4aw1qzmycefaexk.png",
+          "width": 2000
+        },
+        {
+          "_key": "products/k2r2aa8vmghuyr3he0p2eo5e/msx7rfr1mpwvwrezielc",
+          "_type": "cloudinaryImage",
+          "format": "png",
+          "height": 2000,
+          "title": "a36k48qepktunrx0fqroo4bd_16TM4BKs9KfTmPQkll4HCB",
+          "uri": "https://res.cloudinary.com/dqslerzk9/image/upload/v1740092711/products/k2r2aa8vmghuyr3he0p2eo5e/msx7rfr1mpwvwrezielc.png",
+          "width": 2000
+        }
+      ],
+      "size": {
+        "_ref": "ac99ae35-bee6-4042-82e2-1ee5b20a2cd9",
+        "_type": "reference"
+      },
+      "sku": "TEE-TEE-ANDY_SLAPS_X_WAYFINDERS-BLK-XXL",
+      "title": "Black - XX-Large"
+    }
+  ],
+  "viewCount": null,
+  "views": 159,
+  "visibility": "hidden"
+}
+================================================================================
+
+📊 PRODUCT STRUCTURE ANALYSIS:
+
+🔢 Top-level fields (52): _createdAt, _id, _rev, _type, _updatedAt, allTimeViews, blockchain, brands, category, commission, contractAddress, createdAt, creator, creators, currency, defaultExperienceOptions, description, designId, details, experienceType, images, isActive, isFeatured, isPublic, likeCount, limit, mainImage, mintedAt, nftData, overlayBottomRight, overlayPosition, overlayTopLeft, owner, price, printArea, productStyle, productStyles, publishedAt, regularPrice, royalty, salesCount, secondaryImages, sku, slug, tags, title, tokenId, updatedAt, variants, viewCount, views, visibility
+
+👤 Creators: 2 found
+   Creator 1: undefined
+   Creator 2: undefined
+
+📈 Analytics: Sales: 0, Views: 0, Likes: 0
+
+
+🔍 TEST 4: Listing all products for memelord (IDs and titles only)...
+✅ Found 175 products:
+   1. ANDY SLAPS  x WAYFINDERS (a36k48qepktunrx0fqroo4bd)
+      Slug: andy-slaps-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   2. KYROH x WAYFINDERS (aabytz1klktb64intpkjssd1)
+      Slug: kyroh-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   3. COOP x WAYFINDERS (af5i6yo4k2zhg2flpp90kl41)
+      Slug: coop-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   4. Awaken Your 3rd Eye - Flat Brim (aks9yfbde2ifst98q843m7sl)
+      Slug: awaken-your-3rd-eye-flat-brim
+      Active: null
+      Sales: 0, Views: 0
+
+   5. Top Coq Patch Hat (amum9xmjrxffcabqdrcn50l4)
+      Slug: top-coq-patch-hat-2
+      Active: null
+      Sales: 0, Views: 0
+
+   6. MATDEFIES x WAYFINDERS (an65i9spy7idr667cwzum5k0)
+      Slug: matdefies-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   7. JUST Grok IT - Banner Tee (asjpjqvsg84wtk59nl9ywlga)
+      Slug: just-grok-it-banner-t
+      Active: null
+      Sales: 0, Views: 0
+
+   8. VANHO x WAYFINDERS (aykq1ovgbsh3kfq1il47nvck)
+      Slug: vanho-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   9. Pool Hat (b6em17c47po86j6kci2utu7a)
+      Slug: pool-hat
+      Active: null
+      Sales: 0, Views: 0
+
+   10. AVAX Houston Meetup Hoodie (be4e6rju0fnu53pvpxunruh3)
+      Slug: avax-houston-meetup-hoodie
+      Active: null
+      Sales: 0, Views: 0
+
+   11. Pool Medium Weight Shirt (bi080e0d0aj9vkak0uekpdh5)
+      Slug: pool-medium-weight-shirt
+      Active: null
+      Sales: 0, Views: 0
+
+   12. Send the Memes dab (blmji8x3bvu61sdn5e2i96sj)
+      Slug: send-the-memes-dab
+      Active: null
+      Sales: 0, Views: 0
+
+   13. King Coq Mad Men (bpht8w55168p0ki8ynzwnaq3)
+      Slug: king-coq-mad-men-2
+      Active: null
+      Sales: 0, Views: 0
+
+   14. Soltar Hat (c43tmajg9jc2y6al12goti2h)
+      Slug: soltar-hat
+      Active: null
+      Sales: 0, Views: 0
+
+   15. AvaCloud Banner Tee (c6uv4u4c4mvfcqu65c1maeki)
+      Slug: avacloud-banner-te
+      Active: null
+      Sales: 0, Views: 0
+
+   16. HUSTLEPEDIA x WAYFINDERS (c80rx3cx0da76twvhm8w370m)
+      Slug: hustlepedia-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   17. TRESR Logo Banner Tee (cb4bno0r1j122ptgrzn35swa)
+      Slug: tresr-logo-banner-tee
+      Active: null
+      Sales: 0, Views: 0
+
+   18. CRYPTOGORILLA x WAYFINDERS (cdgpf2btabgbvibgg2hy9e38)
+      Slug: cryptogorilla-x-wayfinders-2
+      Active: null
+      Sales: 0, Views: 0
+
+   19. BABYBEAR x WAYFINDERS (cgwzh8d0nv2rqftxwed0t9co)
+      Slug: babybear-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   20. AVAX Houston Meetup Tee (csiwlgj1ej6kqmuwdakcfreg)
+      Slug: avax-houston-meetup-tee
+      Active: null
+      Sales: 0, Views: 0
+
+   21. YELLOW PANTHER x WAYFINDERS (dg1egz0lu4nhs45wssz8v1yv)
+      Slug: yellow-panther-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   22. BABYBAY x WAYFINDERS (dpscsk1cox9yzah0xbtcoeqg)
+      Slug: babybay-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   23. Red, IHL Curved Brim Smart Hat (dqz7qq3sfbakp7p11qgo7or4)
+      Slug: red-ihl-curved-brim-smart-hat
+      Active: null
+      Sales: 0, Views: 0
+
+   24. BTC died (drafts.obq6p98vzz597exwmjyxy0h1)
+      Slug: btc-died
+      Active: null
+      Sales: 0, Views: 0
+
+   25. COQ AI has you (drafts.oc8vasl6qw21mwbr5ksrda6q)
+      Slug: coq-ai-has-you
+      Active: null
+      Sales: 0, Views: 0
+
+   26. STORMING x WAYFINDERS (dvodsci6u0l4msz3frduotzt)
+      Slug: storming-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   27. AVAX Queen (dwqne8fv7p80u7ugj0porj76)
+      Slug: avax-queen
+      Active: null
+      Sales: 0, Views: 0
+
+   28. MASONGOS x WAYFINDERS (e8lqmpapxurfbr09r5xmify1)
+      Slug: masongos-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   29. Meme Szn '24 (e8p3s5by07k6rq4759cfeas1)
+      Slug: meme-szn-24-v2-medium-weight-t-shirt
+      Active: null
+      Sales: 0, Views: 0
+
+   30. ROGER x WAYFINDER (Hoodie) (ejzhoo3lkrm61586wgoqpi9m)
+      Slug: roger-x-wayfinder-hoodie
+      Active: null
+      Sales: 0, Views: 0
+
+   31. Soltar Sweatshirt (eka9tlhn5r6dpdgbuw4zxale)
+      Slug: soltar-sweatshirt-black
+      Active: null
+      Sales: 0, Views: 0
+
+   32. Luxis Polo (ektr1e6wu5lf9t6anfpkwpif)
+      Slug: luxis-polo
+      Active: null
+      Sales: 0, Views: 0
+
+   33. Lil Coq (Lil Coq Auction Winner Lil Dokyo) (etsgqnnwcn3j2oet1xkm3b0h)
+      Slug: lil-coq-lil-coq-auction-winner-lil-dokyo
+      Active: null
+      Sales: 0, Views: 0
+
+   34. ADOM x WAYFINDERS (ezm05dx0pj5fi0iuovqhwb1o)
+      Slug: adom-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   35. STACHE x WAYFINDERS (f6n3oz3o3mpyqfd6elqr7ees)
+      Slug: stache-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   36. Reformed Degen (fgi6msmfx2gne8c5s25ffwex)
+      Slug: reformed-degen
+      Active: null
+      Sales: 0, Views: 0
+
+   37. Swol Lyfe (embroidered white) (fpxfa5ckosk4en6fvljm91o4)
+      Slug: swol-lyfe-embroidered-white
+      Active: null
+      Sales: 0, Views: 0
+
+   38. RAIDENDERP x WAYFINDERS (ftneymcg77zpimiexg86gyjo)
+      Slug: raidenderp-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   39. FATAL x WAYFINDERS (g1d23tqcq1c7mk53qooead5d)
+      Slug: fatal-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   40. King of the Coop (gekupj33bibn0dqlv7l9tcxq)
+      Slug: king-of-the-coop
+      Active: null
+      Sales: 0, Views: 0
+
+   41. King Coq Mad Men (gh1ol41m73ieyxkt6nitmgq3)
+      Slug: king-coq-mad-men
+      Active: null
+      Sales: 0, Views: 0
+
+   42. tresr banner tee (gvav3kbmam5i2q5msv1amhyn)
+      Slug: tresr-banner-tee
+      Active: null
+      Sales: 0, Views: 0
+
+   43. tester (h6v5bc33td4jq30us29q1hxi)
+      Slug: tester
+      Active: null
+      Sales: 0, Views: 0
+
+   44. MLG ANAKIN x WAYFINDERS (hfhnqsp4zhslcuid1yxsmbyg)
+      Slug: mlg-anakin-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   45. SPIKE x WAYFINDERS (hg4fvul6nzwboldxig8lyi1c)
+      Slug: spike-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   46. Vintage Tape #61 (htql0eumxal4smla9eprhn84)
+      Slug: vintage-tape-61-nftreasure-nft-cards-2
+      Active: null
+      Sales: 0, Views: 0
+
+   47. ICEYYY x WAYFINDERS (huq27eppt7mpodxtispwxtag)
+      Slug: iceyyy-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   48. TEDDY x WAYFINDERS (idyekw956timyjylahkux9os)
+      Slug: teddy-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   49. Kovin x Pango (Dark Mode) (ieq05l89rnkfeq8f9zdypb57)
+      Slug: kovin-x-pango-super-farms-dark-mode
+      Active: null
+      Sales: 0, Views: 0
+
+   50. Test922 (ik0dgtk7d5e1in51yb8ij4cv)
+      Slug: test922-2
+      Active: null
+      Sales: 0, Views: 0
+
+   51. MONTA x WAYFINDERS (im3tgitop5suheqy91rhdec9)
+      Slug: monta-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   52. SWIFF x WAYFINDERS (ionn2hd4we9oau7o00bcec6z)
+      Slug: swiff-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   53. AvaCloud Icon Tee (ip7rc5mksapo4dc5jymh7o4l)
+      Slug: avacloud-icon-tee
+      Active: null
+      Sales: 0, Views: 0
+
+   54. EASY x WAYFINDERS (iun19w0cqtnowttcrr6l2t2h)
+      Slug: easy-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   55. Red, Full Logo Smart T-Shirt (iuzbg5kphv9alq8yjgwn333o)
+      Slug: red-full-logo-smart-t-shirt
+      Active: null
+      Sales: 0, Views: 0
+
+   56. TRESR Logo Banner (j3lv8fhum8oxds7tf50imd32)
+      Slug: tresr-logo-banner
+      Active: null
+      Sales: 0, Views: 0
+
+   57. BABYBAY x WAYFINDER (Hoodie) (j7mjf39ntopirif7gnxcpx3f)
+      Slug: babybay-x-wayfinder-hoodie
+      Active: null
+      Sales: 0, Views: 0
+
+   58. HODL TEST (j885eapsmx5a1x38ttcmoukv)
+      Slug: hodl-test
+      Active: null
+      Sales: 0, Views: 0
+
+   59. Navy, Full Logo Smart Hoodie (jpmjkpied19icyd5411het2b)
+      Slug: navy-full-logo-smart-hoodie
+      Active: null
+      Sales: 0, Views: 0
+
+   60. ROGER x WAYFINDERS (js24ydwdhnpxlvbdn14627j5)
+      Slug: roger-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   61. Black, Coin Flat Brim Smart Hat (k74kq1m8gjg8zjt36mhqrbl4)
+      Slug: black-coin-flat-brim-smart-hat
+      Active: null
+      Sales: 0, Views: 0
+
+   62. Kovin x Pangolin Superfarm (kdhe9ui01bq59xshnxvrfsa8)
+      Slug: kovin-x-pangolin-superfar
+      Active: null
+      Sales: 0, Views: 0
+
+   63. DAXXZITI x WAYFINDERS (ke1d1mtlxti9zvltz3zltopz)
+      Slug: daxxziti-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   64. Solana Network congestion (kgjjcqgyb01tz8ct475c16ll)
+      Slug: solana-network-congestion
+      Active: null
+      Sales: 0, Views: 0
+
+   65. Awaken Your 3rd Eye (kim2b9e18k8wq07mujlbezm4)
+      Slug: awaken-your-3rd-eye
+      Active: null
+      Sales: 0, Views: 0
+
+   66. Test chart canvas 2 (klf5wv5wq5c5gqrz0o58ozzi)
+      Slug: test-chart-canvas-2
+      Active: null
+      Sales: 0, Views: 0
+
+   67. Legendary Lil Coq (Koroshi) (kpnz14f5pkb4j55ypwqhxgz7)
+      Slug: legendary-lil-coq-koroshi
+      Active: null
+      Sales: 0, Views: 0
+
+   68. MONGRAAL x WAYFINDERS (kpuy7mjtcsct0wr4z9p1ndpo)
+      Slug: mongraal-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   69. Outlaw Gal Test Card (kqtj7t3syjut1goo6sbo0s8k)
+      Slug: outlaw-gal-test-card
+      Active: null
+      Sales: 0, Views: 0
+
+   70. BLONDE BROKER x WAYFINDERS (l05i3uiev9m9c356scgzhvko)
+      Slug: blonde-broker-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   71. Navy, IHodlLife Smart T-Shirt (l13bbtfr83nr1bqdxbaev4gh)
+      Slug: navy-ihodllife-smart-t-shirt
+      Active: null
+      Sales: 0, Views: 0
+
+   72. ALLIESTRASZA x WAYFINDERS (l50frhuwii8slabmmvidzagx)
+      Slug: alliestrasza-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   73. Team Elon (lde6cpp7wcl55ad54z4lm0w3)
+      Slug: team-elon
+      Active: null
+      Sales: 0, Views: 0
+
+   74. JAMBRE x WAYFINDERS (liowe3mqrya3e2lc7b6koobb)
+      Slug: jambre-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   75. Tester10-1 (lkipvogqz9ckvjjqjn8dijt9)
+      Slug: tester10-11
+      Active: null
+      Sales: 0, Views: 0
+
+   76. JONAH x WAYFINDERS (lljepmnurh7omcxyup9zunhv)
+      Slug: jonah-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   77. PAYTPLAY x WAYFINDERS (lln135q3ri0s9us2tj3ywu0c)
+      Slug: paytplay-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   78. GAGMI GDC Hoodie (lmmtxvbw5v3h1guerp1u26kv)
+      Slug: gagmi-gdc-hoodie
+      Active: null
+      Sales: 0, Views: 0
+
+   79. iHodlLife Black, Full Logo Smart T-Shirt (ltj065omqi653tgw3mo6es4q)
+      Slug: ihodllife-black-full-logo-smart-t-shirt
+      Active: null
+      Sales: 0, Views: 0
+
+   80. Reformed (lx7nc7gzolfj6wnfe221y6w6)
+      Slug: reformed
+      Active: null
+      Sales: 0, Views: 0
+
+   81. IDMINTTHAT x WAYFINDERS (mb0ldnv6sxvyqliejzq9lnkk)
+      Slug: idmintthat-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   82. Max Extract - LIBRA Flat Brim Hat (mdt5oazlqkjhq8fct70l7dy3)
+      Slug: max-extract-libra-flat-brim-hat
+      Active: null
+      Sales: 0, Views: 0
+
+   83.  CLEMENTE x WAYFINDERS (mfctzpkf65rzha9qejn7uyf9)
+      Slug: clemente-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   84. All My Money (mjvhqocfk21qmuozm953uspf)
+      Slug: all-my-money
+      Active: null
+      Sales: 0, Views: 0
+
+   85. AVAX Queen (mk93anj5rti1ickmde6igh0j)
+      Slug: avax-queen-boxy
+      Active: null
+      Sales: 0, Views: 0
+
+   86. Sato (mtit7hj6zwa2hoq3t55rl9fx)
+      Slug: sato
+      Active: null
+      Sales: 0, Views: 0
+
+   87. In Dust We Trust (n2eygcifdrll04ykjomc5i3j)
+      Slug: in-dust-we-trust
+      Active: null
+      Sales: 0, Views: 0
+
+   88. Max Extract - Libra Wide Tee (n7gqn2y9a517z00fnrwwjpj5)
+      Slug: max-extract-libra-wide-tee
+      Active: null
+      Sales: 0, Views: 0
+
+   89. Black, IHL Curved Brim Smart Hat (ncymnqmdqywdlqhj9kmcutds)
+      Slug: black-ihl-curved-brim-smart-hat
+      Active: null
+      Sales: 0, Views: 0
+
+   90. TRIP x WAYFINDERS (nl80b598xuex2zx8iwv9100r)
+      Slug: trip-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   91. Nochillio - Tiles (nup89oez8152hw440kf621zr)
+      Slug: nochillio-tiles
+      Active: null
+      Sales: 0, Views: 0
+
+   92. Coq Fury - Curved Brim Hat (nz5cgqh09c9ik9e4plpbskkm)
+      Slug: coq-fury-curved-brim-hat
+      Active: null
+      Sales: 0, Views: 0
+
+   93. PAISAN x WAYFINDERS (o7fw2ovk362flxd4zvin12s5)
+      Slug: paisan-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   94. AVAX Cards Airdrop (o99mtwlgtm04oa9qve64t49c)
+      Slug: avax-cards-airdrop
+      Active: null
+      Sales: 0, Views: 0
+
+   95. Red, IHodlLife Smart T-Shirt (obksm005ac7019it9oa0pq9g)
+      Slug: red-ihodllife-smart-t-shirt
+      Active: null
+      Sales: 0, Views: 0
+
+   96. BTC died (obq6p98vzz597exwmjyxy0h1)
+      Slug: btc-died
+      Active: null
+      Sales: 0, Views: 0
+
+   97. COQ AI has you (oc8vasl6qw21mwbr5ksrda6q)
+      Slug: coq-ai-has-you
+      Active: null
+      Sales: 0, Views: 0
+
+   98. BELLY x WAYFINDERS (od7my1rp96tuhe1erk8o48m3)
+      Slug: belly-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   99. CBASS x WAYFINDERS (ohjqj5jz92mg88n05x16c6yp)
+      Slug: cbass-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   100. Test Chart Canvas (ohoy46qd2imwrafragvir12g)
+      Slug: test-chart-canvas
+      Active: null
+      Sales: 0, Views: 0
+
+   101. iHodlLife Black, Coin Curved Brim Smart Hat (ojli7cna9ayhlgm4m6he6ej8)
+      Slug: ihodllife-black-coin-curved-brim-smart-hat
+      Active: null
+      Sales: 0, Views: 0
+
+   102. DRAGOONN x WAYFINDERS (oletxtxqwmg51etsywjfoqdk)
+      Slug: dragoonn-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   103. Top Coq Patch Hat (ommxq3234cmbvpzpvs2rv71h)
+      Slug: top-coq-patch-hat
+      Active: null
+      Sales: 0, Views: 0
+
+   104. OSIRIS x WAYFINDERS (oo1o95kgo3v3kryu06qllb73)
+      Slug: osiris-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   105. SPX9000 - Flat Brim Hat (p7ihdhfyoa8ldgy68ic4o9ns)
+      Slug: spx9000-dca-believe-repeat-flat-brim-hat
+      Active: null
+      Sales: 0, Views: 0
+
+   106. Grey, Full Logo Smart T-Shirt (p91gmzaqhvr9qkp9ibh3ymwj)
+      Slug: grey-full-logo-smart-t-shirt
+      Active: null
+      Sales: 0, Views: 0
+
+   107. Navy, Full Logo Smart T-Shirt (p95xzuds5f0juhjj8fl75wyt)
+      Slug: navy-full-logo-smart-t-shirt
+      Active: null
+      Sales: 0, Views: 0
+
+   108. CABS x WAYFINDERS (pavjpc6jv2bc0uzg75spqp6f)
+      Slug: cabs-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   109. Tezza Poker Box Tee (pfdtma9xknaauu63830k3iqd)
+      Slug: tezza-poker-box-tee-black
+      Active: null
+      Sales: 0, Views: 0
+
+   110. GAGMI- SF Event - Crop (pj3sd1jynp6hd1wr2txevesm)
+      Slug: gagmi-sf-event-crop
+      Active: null
+      Sales: 0, Views: 0
+
+   111. Mad Hatter Test (pr75kz8ni2n17wi5imn1b5xx)
+      Slug: mad-hatter-test-patch-hat-flat
+      Active: null
+      Sales: 0, Views: 0
+
+   112. OLIVERMARONEY x WAYFINDERS (pte9eu2wm3xm5ux7nverzygh)
+      Slug: olivermaroney-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   113. AVAX Queen (q808tos47ceehuq32il0bqpr)
+      Slug: avax-queen-sweater
+      Active: null
+      Sales: 0, Views: 0
+
+   114. Vintage Tape #59 (qh4msvvlru1z3f8iywdisjvk)
+      Slug: vintage-tape-59-nftreasure-nft-cards
+      Active: null
+      Sales: 0, Views: 0
+
+   115. Grey, Full Logo Smart Hoodie (qihvl72gvdlbg7cbza9vre75)
+      Slug: grey-full-logo-smart-hoodie
+      Active: null
+      Sales: 0, Views: 0
+
+   116. Jersey Drones (qmsccu18prb693kanbmyv1dx)
+      Slug: jersey-drones
+      Active: null
+      Sales: 0, Views: 0
+
+   117. TikTok Ban (qn7acdbo4g40weyp5nhknm18)
+      Slug: tiktok-ban
+      Active: null
+      Sales: 0, Views: 0
+
+   118. Wide Tape (qs4rb4kpn5wnfvw8k49wqbdr)
+      Slug: wide-ta
+      Active: null
+      Sales: 0, Views: 0
+
+   119. FOROKH x WAYFINDERS (r5j86wzgjtkmnumc0rh32r9f)
+      Slug: forokh-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   120. MadSkullz #2017 (reqhl430c27eyp8ynondcwl9)
+      Slug: madskullz-201
+      Active: null
+      Sales: 0, Views: 0
+
+   121. Solana Network congestion (rqkvojpmkuzcga8b1lfjqmog)
+      Slug: solana-test
+      Active: null
+      Sales: 0, Views: 0
+
+   122. Kovin x Pango (Light Mode) (rvbpa8sfk2aad4khkwf7mr5j)
+      Slug: kovin-x-pagno-liquidity-provider
+      Active: null
+      Sales: 0, Views: 0
+
+   123. Navy, IHL Curved Brim Smart Hat (rz52jzmhppyl6j1p2c0wn3yq)
+      Slug: navy-ihl-curved-brim-smart-hat
+      Active: null
+      Sales: 0, Views: 0
+
+   124. DOUG HYPE x WAYFINDERS (s988wc59gptea3m0roil380e)
+      Slug: doug-hype-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   125. PARK x WAYFINDERS (sj29br7vnzvdo7lys4rqdjyn)
+      Slug: park-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   126. AVAX Yacht Incident (skkklo4ovn9pkfdsu7tueblx)
+      Slug: avax-yacht-incident
+      Active: null
+      Sales: 0, Views: 0
+
+   127. Wayfinders Tee (srk8enqmyxc1itruz8sbcnnk)
+      Slug: wayfinders-tee
+      Active: null
+      Sales: 0, Views: 0
+
+   128. PREDZ0RX x WAYFINDERS (stg5zoq89j90uflouai1ufui)
+      Slug: predz0rx-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   129. Vintage Tape 61 (su3ueggbc1hpf51ij4et84zc)
+      Slug: vintage-tape-61-nftreasure-nft-cards-2
+      Active: null
+      Sales: 0, Views: 0
+
+   130. BRYCENT x WAYFINDERS (sxyk5lgsh2b08jm2r93selka)
+      Slug: brycent-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   131. LUANA x WAYFINDERS (szsm8aaelc20tsc7npnljpj5)
+      Slug: luana-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   132. AVAX Queen (t2ii97k2b8h2yigbivnfdxsn)
+      Slug: avax-queen-hoodie
+      Active: null
+      Sales: 0, Views: 0
+
+   133. GAGMI - SF Event (t53sgcp3uggkk1ma5opj5c99)
+      Slug: gagmi-sf-even
+      Active: null
+      Sales: 0, Views: 0
+
+   134. SPIKE x WAYFINDERS (t6e3s8fbryocmzdjpj60sifk)
+      Slug: spike-x-wayfinders-t
+      Active: null
+      Sales: 0, Views: 0
+
+   135. MONEYPLANEIDOL x WAYFINDERS (t9kpbjlds8xnbdl2ukihi65v)
+      Slug: moneyplaneidol-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   136. EXCELSORPH x WAYFINDERS (tesfyx3a1a8kzjzkh0xy20ub)
+      Slug: excelsorph-x-wayfinders-2
+      Active: null
+      Sales: 0, Views: 0
+
+   137. Keep Calm and HODL Coq (th0dmm8ooo8igu0xswfne1z0)
+      Slug: keep-calm-and-hodl-coq
+      Active: null
+      Sales: 0, Views: 0
+
+   138. Pepe Crypto (thx6hlruikdq9vqy01tzfagb)
+      Slug: pepe-crypto-medium-weight-t-shirt
+      Active: null
+      Sales: 0, Views: 0
+
+   139. KET Call (twxewd3olt1ac73fh5ig2fco)
+      Slug: ket-call
+      Active: null
+      Sales: 0, Views: 0
+
+   140. TEST (u4ptw4pesr5pma95itogfmkr)
+      Slug: test-art-canvas-24x24
+      Active: null
+      Sales: 0, Views: 0
+
+   141. Nicolas Cage Artifacts (u5daf9tcddjhc4rpofg8j3wy)
+      Slug: nicolas-cage-artifacts
+      Active: null
+      Sales: 0, Views: 0
+
+   142. ITZBOLT x WAYFINDERS (u60jvlf4vc4k3uukayz8urcf)
+      Slug: itzbolt-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   143. iHodlLife | Black, Full Logo Smart Hoodie (ur5y88ekesaexgij5xwx6dr8)
+      Slug: ihodllife-or-black-full-logo-smart-hoodie
+      Active: null
+      Sales: 0, Views: 0
+
+   144. Max Extract - LIBRA Curved Brim Hat (urpvx3ez2dqd82qr8pcptsto)
+      Slug: max-extract-libra-curved-brim-hat
+      Active: null
+      Sales: 0, Views: 0
+
+   145. MASH x WAYFINDERS (urqvi25b34vi46h79bntz2hn)
+      Slug: mash-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   146. Vintage Tape 59 (uwmputxjjole6ar709oku3p8)
+      Slug: vintage-tape-59-nftreasure-nft-cards-2
+      Active: null
+      Sales: 0, Views: 0
+
+   147. SPIKE x WAYFINDER (Hoodie) (v5bmwr08we40mymlqaycp699)
+      Slug: spike-x-wayfinder-hoodie
+      Active: null
+      Sales: 0, Views: 0
+
+   148. Red, IHodlLife Smart Hoodie (v8bgqv5udvywsmij3qtz4lmh)
+      Slug: red-ihodllife-smart-hoodie
+      Active: null
+      Sales: 0, Views: 0
+
+   149. Tezza Poker Hat (vbit8dy822d9h6xev2l0z1jj)
+      Slug: tezza-poker-hat
+      Active: null
+      Sales: 0, Views: 0
+
+   150. THREADGUY x WAYFINDERS (visem9o6d8ipuxwgbifls6l0)
+      Slug: threadguy-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   151. OATMWEK x WAYFINDERS (w0qqx6la69rifyt95gowdhgr)
+      Slug: oatmwek-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   152. We'll Coq This City (wblh1a3ags06q2b16zx61aan)
+      Slug: well-coq-this-city
+      Active: null
+      Sales: 0, Views: 0
+
+   153. Lil (wlw0ck5y9k60axkxbp7a52rp)
+      Slug: lil-nftreasure-nft-cards
+      Active: null
+      Sales: 0, Views: 0
+
+   154. Black, IHodlLife Smart Hoodie (wojaawfwkqkcjbur92gqnpmw)
+      Slug: black-ihodllife-smart-hoodie
+      Active: null
+      Sales: 0, Views: 0
+
+   155. Stake Crypto (wrg5n87r8dk3oo5xjgzrurwf)
+      Slug: stake-crypto
+      Active: null
+      Sales: 0, Views: 0
+
+   156. Outlaw (wuot1k250tw2z3mkqxgn1jwt)
+      Slug: outlaw
+      Active: null
+      Sales: 0, Views: 0
+
+   157. Train Hard, Live Swol (embroidered blue) (wvxmtbt1bdbz7ttgtbr1eyth)
+      Slug: train-hard-live-swol-embroidered-blue
+      Active: null
+      Sales: 0, Views: 0
+
+   158. Dear Crypto Gods - Meet My Quant (x2otadgbsz8betocj5v6g8k7)
+      Slug: dear-crypto-gods-meet-my-quant
+      Active: null
+      Sales: 0, Views: 0
+
+   159. SS Legend (x5uz4x0tpvltsoqkbev6rd0t)
+      Slug: ss-legen
+      Active: null
+      Sales: 0, Views: 0
+
+   160. Red, Coin Curved Brim Smart Hat (xdqq0lzpg4889z3ld93jxhcf)
+      Slug: red-coin-curved-brim-smart-hat
+      Active: null
+      Sales: 0, Views: 0
+
+   161. Black, Full Logo Smart Hoodie (xevffdt8jjdyo90bv87kvabf)
+      Slug: black-full-logo-smart-hoodie
+      Active: null
+      Sales: 0, Views: 0
+
+   162. Memelord (xn5lsqk82d40qt164izp1byj)
+      Slug: memelord-medium-weight-t-shirt
+      Active: null
+      Sales: 0, Views: 0
+
+   163. SOLTEK x WAYFINDERS (xzvozg2v4da1u9kc13yn77kc)
+      Slug: soltek-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   164. Elon Musk Tech Support T-Shirt (y60m94xa51yqvj99we1b5yab)
+      Slug: elon-musk-tech-support-t-shirt
+      Active: null
+      Sales: 0, Views: 0
+
+   165. Train Hard, Live Swol (embroidered pink) (ym6dt9w7vu3azj5de9fbdloc)
+      Slug: train-hard-live-swol-embroidered-pink
+      Active: null
+      Sales: 0, Views: 0
+
+   166. MIKADONTLOUZ x WAYFINDERS (yss89wt009mmyhl5aapbz5j4)
+      Slug: mikadontlouz-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   167. STEFFANINA x WAYFINDERS (yyvualcnjecl8z0s5va5epso)
+      Slug: steffanina-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   168. Max Extract - LIBRA Tee (z25j20h3n8yz80be41y933su)
+      Slug: max-extract-libra-tee
+      Active: null
+      Sales: 0, Views: 0
+
+   169. ABBY x WAYFINDERS (z2y9jwuwom6jihyioeuwjqy2)
+      Slug: abby-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+   170. Coq Fury - Flat Brim Hat (zchmfqsrjtr03v6e0kho76em)
+      Slug: coq-fury-flat-brim-hat
+      Active: null
+      Sales: 0, Views: 0
+
+   171. v2 Hoodie (zm1r51c4mbnco2g8i39guysq)
+      Slug: v2-Hoodie-10
+      Active: null
+      Sales: 0, Views: 0
+
+   172. P Hat (znm7qhyc1y3bw51te6in1vo4)
+      Slug: p-hat
+      Active: null
+      Sales: 0, Views: 0
+
+   173. Grey, Coin Curved Brim Smart Hat (zogu8fqeuoth5ol897nqj9lz)
+      Slug: grey-coin-curved-brim-smart-hat
+      Active: null
+      Sales: 0, Views: 0
+
+   174. Wayfinders Hat (zt1iogkodhes89tynobx71m4)
+      Slug: wayfinder-hat
+      Active: null
+      Sales: 0, Views: 0
+
+   175. ORANGIE x WAYFINDERS (zwiimied6tlebp0mjgwucaho)
+      Slug: orangie-x-wayfinders
+      Active: null
+      Sales: 0, Views: 0
+
+
+🔍 TEST 5: Raw person document check...
+✅ Raw person document:
+{
+  "_createdAt": "2025-01-19T18:18:54Z",
+  "_id": "k2r2aa8vmghuyr3he0p2eo5e",
+  "_rev": "1hj3tJP0IaKgRmKaWttNuf",
+  "_type": "person",
+  "_updatedAt": "2025-01-19T18:19:28Z",
+  "bio": "time traveler",
+  "image": {
+    "_type": "image",
+    "asset": {
+      "_ref": "image-1ece35b78d99adaacc7a7730ed6d2b0d581baff4-400x400-jpg",
+      "_type": "reference"
+    }
+  },
+  "name": "memelord",
+  "nftreasureId": "k2r2aa8vmghuyr3he0p2eo5e",
+  "slug": {
+    "_type": "slug",
+    "current": "timetraveler"
+  }
+}
+
+📋 TEST SUMMARY:
+============================================================
+Person exists: ✅
+Product count methods tested: 4
+Complete product fetched: ✅
+Total products listed: 175
+Raw person check: ✅
+
+🎯 SUCCESS: Complete product data structure captured!
+   You can use this structure to understand all available fields
+   and build proper queries for your application.
+
+✅ All tests completed
