@@ -195,6 +195,9 @@ app.use('/api/v2/users', usersV2Routes);
 // app.use('/api/v2/sanity', sanityImportV2Routes);
 // app.use('/api/v2/shopify', shopifyV2Routes);
 
+// Debug route for testing imports
+app.use('/api/debug', require('./routes/debug-import'));
+
 // API Routes - v1 (Legacy) - Maintain backward compatibility
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);

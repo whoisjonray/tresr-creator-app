@@ -151,6 +151,27 @@ router.get('/me', (req, res) => {
   });
 });
 
+// Test login for development/testing
+router.post('/test-login', (req, res) => {
+  if (process.env.NODE_ENV !== 'development') {
+    return res.status(403).json({ error: 'Test login only available in development' });
+  }
+  
+  req.session.creator = {
+    id: 'test-creator-id',
+    email: 'test@tresr.com',
+    name: 'Test Creator',
+    isCreator: true,
+    role: 'creator'
+  };
+  
+  res.json({
+    success: true,
+    creator: req.session.creator,
+    sessionId: req.sessionID
+  });
+});
+
 // Logout
 router.post('/logout', (req, res) => {
   req.session.destroy((err) => {
