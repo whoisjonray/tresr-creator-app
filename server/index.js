@@ -197,6 +197,7 @@ app.use('/api/v2/users', usersV2Routes);
 
 // Debug route for testing imports
 app.use('/api/debug', require('./routes/debug-import'));
+app.use('/api/fix', require('./routes/fix-production'));
 
 // API Routes - v1 (Legacy) - Maintain backward compatibility
 app.use('/api/auth', authRoutes);
