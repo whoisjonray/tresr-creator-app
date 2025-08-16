@@ -200,6 +200,9 @@ app.use('/api/debug', require('./routes/debug-import'));
 app.use('/api/fix', require('./routes/fix-production'));
 app.use('/api/schema', require('./routes/fix-production-schema'));
 
+// CRITICAL: Main import endpoint that frontend actually calls!
+app.use('/api/sanity/person', require('./routes/sanity-person-import'));
+
 // API Routes - v1 (Legacy) - Maintain backward compatibility
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);
