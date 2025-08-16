@@ -131,6 +131,7 @@ app.use('/api/setup', require('./routes/setup-mapping'));
 app.use('/api/test', require('./routes/test-import'));
 app.use('/api/direct', require('./routes/direct-import'));
 app.use('/api/simple', require('./routes/simple-test'));
+app.use('/api/debug', require('./routes/debug-database'));
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {

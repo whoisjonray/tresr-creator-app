@@ -324,6 +324,30 @@ function ProductManager() {
             <>
               <button 
                 onClick={async () => {
+                  try {
+                    // Debug: Check what's actually in database
+                    const response = await api.get('/api/debug/check-designs');
+                    console.log('🔍 DATABASE DEBUG:', response.data);
+                    alert(`Database has ${response.data.totalDesigns} total designs. Your designs: ${response.data.userDesigns.length}. Check console for details.`);
+                  } catch (error) {
+                    console.error('Debug failed:', error);
+                    alert('Debug failed - check console');
+                  }
+                }}
+                style={{
+                  marginRight: '10px',
+                  background: '#dc2626',
+                  color: 'white',
+                  padding: '8px 16px',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer'
+                }}
+              >
+                🔍 Debug DB
+              </button>
+              <button 
+                onClick={async () => {
                   setImporting(true);
                   setImportProgress('Testing import of ONE design...');
                   try {
