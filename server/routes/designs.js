@@ -8,8 +8,12 @@ const { v4: uuidv4 } = require('uuid');
 // Get all designs for the authenticated creator (with pagination)
 router.get('/', requireAuth, async (req, res) => {
   try {
-    // Check if database is available
-    if (!databaseService.isDatabaseAvailable()) {
+    // Try direct database query as fallback if service fails
+    const { Sequelize } = require('sequelize');
+    const dbUrl = process.env.MYSQL_URL || process.env.DATABASE_URL;
+    
+    if (!dbUrl) {
+      console.log('⚠️ No database URL configured');
       return res.json({
         success: true,
         designs: [],
@@ -28,21 +32,69 @@ router.get('/', requireAuth, async (req, res) => {
 
     console.log(`📋 Fetching designs for creator ${creatorId}, page ${page}`);
 
-    const result = await databaseService.getCreatorDesigns(creatorId, {
-      page: parseInt(page),
-      limit: parseInt(limit),
-      status
+    try {
+      // Try using the database service first
+      if (databaseService.isDatabaseAvailable()) {
+        const result = await databaseService.getCreatorDesigns(creatorId, {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          status
+        });
+
+        return res.json({
+          success: true,
+          ...result
+        });
+      }
+    } catch (serviceError) {
+      console.log('⚠️ Database service failed, trying direct query:', serviceError.message);
+    }
+
+    // Fallback to direct database query
+    const sequelize = new Sequelize(dbUrl, {
+      dialect: 'mysql',
+      logging: false
     });
+
+    const [designs] = await sequelize.query(
+      `SELECT * FROM designs WHERE creator_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?`,
+      {
+        replacements: [creatorId, parseInt(limit), (parseInt(page) - 1) * parseInt(limit)]
+      }
+    );
+
+    const [[countResult]] = await sequelize.query(
+      `SELECT COUNT(*) as total FROM designs WHERE creator_id = ?`,
+      {
+        replacements: [creatorId]
+      }
+    );
+
+    console.log(`✅ Direct query found ${designs.length} designs for creator ${creatorId}`);
 
     res.json({
       success: true,
-      ...result
+      designs: designs,
+      pagination: {
+        total: countResult.total,
+        page: parseInt(page),
+        limit: parseInt(limit),
+        hasMore: (parseInt(page) * parseInt(limit)) < countResult.total
+      }
     });
   } catch (error) {
     console.error('Error fetching designs:', error);
-    res.status(500).json({
+    // Don't return 500, return empty array so frontend can fallback
+    res.json({
       success: false,
-      error: 'Failed to fetch designs'
+      designs: [],
+      error: error.message,
+      pagination: {
+        total: 0,
+        page: 1,
+        limit: 20,
+        hasMore: false
+      }
     });
   }
 });
