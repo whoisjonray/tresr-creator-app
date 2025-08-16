@@ -47,11 +47,14 @@ function ProductManager() {
     try {
       console.log('📋 Loading products from database...');
       const designsResponse = await api.get('/api/designs');
-      if (designsResponse.data.designs) {
+      console.log('API /designs response:', designsResponse.data);
+      
+      if (designsResponse.data.designs && designsResponse.data.designs.length > 0) {
         console.log('✅ Loaded', designsResponse.data.designs.length, 'designs from database');
+        console.log('Design data:', designsResponse.data.designs);
         setProducts(designsResponse.data.designs);
-      } else {
-        console.log('📭 No designs in database, falling back to localStorage');
+      } else if (designsResponse.data.designs && designsResponse.data.designs.length === 0) {
+        console.log('📭 Database returned empty array, checking localStorage');
         // Fallback to localStorage
         const savedProducts = userStorage.getProducts();
         if (savedProducts && savedProducts.length > 0) {
@@ -397,6 +400,24 @@ function ProductManager() {
               </button>
               <button 
                 onClick={async () => {
+                  console.log('🔄 Force reloading from database...');
+                  await loadProductsFromDatabase();
+                  console.log('Current products state:', products);
+                }}
+                style={{
+                  marginRight: '10px',
+                  background: '#0891b2',
+                  color: 'white',
+                  padding: '8px 16px',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer'
+                }}
+              >
+                🔄 Reload DB
+              </button>
+              <button 
+                onClick={async () => {
                   setImporting(true);
                   setImportProgress('Testing import of ONE design...');
                   try {
@@ -531,29 +552,30 @@ function ProductManager() {
           {products.map(product => {
             // Debug logging for image preview issues
             console.log('=== PRODUCT DEBUG ===');
+            console.log('Product:', product);
             console.log('Product name:', product.name);
             console.log('Preview Image:', product.previewImage ? 'FOUND' : 'MISSING');
-            console.log('Original Design Image:', product.originalDesignImage ? 'FOUND' : 'MISSING');
-            console.log('Mockups count:', product.mockups?.length || 0);
-            if (product.previewImage) {
-              console.log('Preview Image length:', product.previewImage.length);
-              console.log('Preview Image starts with:', product.previewImage.substring(0, 50));
-            }
-            if (product.originalDesignImage) {
-              console.log('Original Design Image length:', product.originalDesignImage.length);
-              console.log('Original Design Image starts with:', product.originalDesignImage.substring(0, 50));
-            }
+            console.log('Thumbnail URL:', product.thumbnail_url ? 'FOUND' : 'MISSING');
+            console.log('Front Design URL:', product.front_design_url ? 'FOUND' : 'MISSING');
             console.log('==================');
+            
+            // Get the image URL from either format (localStorage or database)
+            const imageUrl = product.previewImage || 
+                           product.originalDesignImage || 
+                           product.thumbnail_url || 
+                           product.front_design_url ||
+                           product.thumbnailUrl ||
+                           product.frontDesignUrl;
             
             return (
             <div key={product.id} className="product-card">
               <div className="product-mockups">
-                {product.previewImage || product.originalDesignImage ? (
+                {imageUrl ? (
                   // Show the uploaded design image if available
                   <div 
                     className="mockup-preview mockup-0"
                     style={{ 
-                      backgroundImage: `url(${product.previewImage || product.originalDesignImage})`,
+                      backgroundImage: `url(${imageUrl})`,
                       backgroundSize: 'contain',
                       backgroundRepeat: 'no-repeat',
                       backgroundPosition: 'center',
@@ -620,10 +642,10 @@ function ProductManager() {
                 
                 <div className="product-stats">
                   <span className="stat">
-                    <strong>{product.mockups?.length || 0}</strong> Products
+                    <strong>{product.mockups?.length || product.products?.length || 0}</strong> Products
                   </span>
                   <span className="stat">
-                    <strong>{product.variants || 0}</strong> Variants
+                    <strong>{product.variants || product.status || 'draft'}</strong> {product.variants ? 'Variants' : ''}
                   </span>
                 </div>
                 
