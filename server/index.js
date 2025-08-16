@@ -198,6 +198,7 @@ app.use('/api/v2/users', usersV2Routes);
 // Debug route for testing imports
 app.use('/api/debug', require('./routes/debug-import'));
 app.use('/api/fix', require('./routes/fix-production'));
+app.use('/api/schema', require('./routes/fix-production-schema'));
 
 // API Routes - v1 (Legacy) - Maintain backward compatibility
 app.use('/api/auth', authRoutes);
@@ -221,6 +222,9 @@ try {
   console.log('⚠️ Sanity client not available, skipping person import routes');
 }
 app.use('/api/settings', require('./routes/settings-db'));
+
+// TEST ROUTES: Data flow debugging
+app.use('/api/test', require('./routes/test-data-flow'));
 app.use('/api/templates', require('./routes/productTemplates'));
 app.use('/api/env', require('./routes/env-check'));
 
