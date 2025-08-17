@@ -4,6 +4,7 @@ import './Products.css';
 import { userStorage } from '../utils/userStorage';
 import api from '../services/api';
 import { useAuth } from '../hooks/useAuth';
+import { autoFixAndVerify } from '../utils/fix-thumbnails-production';
 
 // Generate SVG placeholder function for fallback images
 const generatePlaceholder = (productName, color) => {
@@ -520,6 +521,52 @@ function ProductManager() {
                 }}
               >
                 {importing ? 'Importing...' : 'Import My Sanity Designs'}
+              </button>
+              <button 
+                onClick={async () => {
+                  setImporting(true);
+                  setImportProgress('🔧 Fixing thumbnails and updating all design data...');
+                  
+                  try {
+                    const result = await autoFixAndVerify();
+                    
+                    if (result.fix && result.fix.success) {
+                      setImportProgress(`✅ ${result.fix.message}. Refreshing...`);
+                      
+                      // Give visual feedback before refresh
+                      setTimeout(() => {
+                        window.location.reload();
+                      }, 2000);
+                    } else {
+                      setImportProgress(`❌ Fix failed: ${result.fix?.error || 'Unknown error'}`);
+                      setTimeout(() => {
+                        setImporting(false);
+                        setImportProgress('');
+                      }, 3000);
+                    }
+                  } catch (error) {
+                    console.error('Fix thumbnails error:', error);
+                    setImportProgress(`❌ Error: ${error.message}`);
+                    setTimeout(() => {
+                      setImporting(false);
+                      setImportProgress('');
+                    }, 3000);
+                  }
+                }}
+                className="btn-fix-thumbnails" 
+                disabled={importing}
+                style={{
+                  marginRight: '10px', 
+                  background: importing ? '#9ca3af' : '#f59e0b', 
+                  color: 'white', 
+                  padding: '8px 16px', 
+                  border: 'none', 
+                  borderRadius: '4px',
+                  cursor: importing ? 'not-allowed' : 'pointer',
+                  fontWeight: 'bold'
+                }}
+              >
+                {importing ? '🔧 Fixing...' : '🔧 FIX THUMBNAILS'}
               </button>
             </>
           )}
