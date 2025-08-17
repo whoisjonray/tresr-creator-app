@@ -5,8 +5,8 @@ export async function fixProductionThumbnails() {
   console.log('🔧 Starting production thumbnail fix...');
   
   try {
-    // Use the simple endpoint that doesn't require Sanity client
-    const response = await fetch('/api/fix/simple-thumbnail-fix', {
+    // Use the direct database endpoint that doesn't require models
+    const response = await fetch('/api/fix/direct-database-fix', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
