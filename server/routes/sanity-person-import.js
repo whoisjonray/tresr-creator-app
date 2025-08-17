@@ -59,7 +59,7 @@ router.post('/import-my-designs-no-auth', async (req, res) => {
       });
     }
     
-    // Fetch designs from Sanity
+    // Fetch designs from Sanity - FIXED to use correct fields!
     const query = `*[_type == "product" && (
       references("${mapping.sanityPersonId}") || 
       "${mapping.sanityPersonId}" in creators[]._ref ||
@@ -69,6 +69,30 @@ router.post('/import-my-designs-no-auth', async (req, res) => {
       title,
       "slug": slug.current,
       description,
+      details,
+      designId,
+      
+      // CRITICAL: Use mainImage and secondaryImages, not images[]!
+      mainImage {
+        _key,
+        _type,
+        format,
+        height,
+        width,
+        title,
+        uri
+      },
+      secondaryImages[] {
+        _key,
+        _type,
+        format,
+        height,
+        width,
+        title,
+        uri
+      },
+      
+      // Legacy fields kept for fallback
       "images": images[] {
         _key,
         asset-> {
@@ -76,6 +100,7 @@ router.post('/import-my-designs-no-auth', async (req, res) => {
           url
         }
       },
+      
       overlayTopLeft,
       overlayBottomRight,
       printAreaTopLeft,
@@ -83,8 +108,12 @@ router.post('/import-my-designs-no-auth', async (req, res) => {
       isActive,
       tags,
       productStyles,
+      productStyle,
       sales,
-      views
+      views,
+      allTimeViews,
+      visibility,
+      regularPrice
     }`;
     
     console.log('🔍 Fetching designs from Sanity...');
@@ -98,10 +127,43 @@ router.post('/import-my-designs-no-auth', async (req, res) => {
     
     for (const sanityDesign of sanityDesigns) {
       try {
-        // Log image availability for debugging
-        console.log(`📸 Design "${sanityDesign.title}" has ${sanityDesign.images?.length || 0} images`);
-        if (sanityDesign.images?.length > 0) {
-          console.log(`   Image URLs:`, sanityDesign.images.map(img => img?.asset?.url || 'no URL').slice(0, 2));
+        // Log image availability for debugging - FIXED to check correct fields
+        const hasMockupImages = sanityDesign.mainImage?.uri || sanityDesign.secondaryImages?.length > 0;
+        const hasLegacyImages = sanityDesign.images?.length > 0;
+        
+        console.log(`📸 Design "${sanityDesign.title}"`);
+        console.log(`   Design ID: ${sanityDesign.designId || 'none'}`);
+        console.log(`   Main Image: ${sanityDesign.mainImage?.uri ? '✅' : '❌'}`);
+        console.log(`   Secondary Images: ${sanityDesign.secondaryImages?.length || 0}`);
+        console.log(`   Legacy Images: ${sanityDesign.images?.length || 0}`);
+        
+        // Get the primary thumbnail URL from mainImage or secondaryImages
+        let thumbnailUrl = '';
+        let frontDesignUrl = '';
+        let backDesignUrl = '';
+        
+        if (sanityDesign.mainImage?.uri) {
+          thumbnailUrl = sanityDesign.mainImage.uri;
+          frontDesignUrl = sanityDesign.mainImage.uri;
+          console.log(`   ✅ Using mainImage: ${thumbnailUrl.substring(0, 80)}...`);
+        }
+        
+        if (sanityDesign.secondaryImages?.length > 0) {
+          if (!thumbnailUrl) thumbnailUrl = sanityDesign.secondaryImages[0].uri;
+          if (!frontDesignUrl) frontDesignUrl = sanityDesign.secondaryImages[0].uri;
+          if (sanityDesign.secondaryImages.length > 1) {
+            backDesignUrl = sanityDesign.secondaryImages[1].uri;
+          }
+        }
+        
+        // Fallback to legacy images field if no mockup images found
+        if (!thumbnailUrl && sanityDesign.images?.length > 0) {
+          console.log(`   ⚠️ Falling back to legacy images field`);
+          thumbnailUrl = sanityDesign.images[0]?.asset?.url || '';
+          frontDesignUrl = sanityDesign.images[0]?.asset?.url || '';
+          if (sanityDesign.images.length > 1) {
+            backDesignUrl = sanityDesign.images[1]?.asset?.url || '';
+          }
         }
         
         // Convert bounding box to center position if needed
@@ -121,10 +183,10 @@ router.post('/import-my-designs-no-auth', async (req, res) => {
           sanityId: sanityDesign._id,
           creatorId: user.id,
           name: sanityDesign.title || 'Untitled Design',
-          description: sanityDesign.description || '',
-          thumbnailUrl: sanityDesign.images?.[0]?.asset?.url || '',
-          frontDesignUrl: sanityDesign.images?.[0]?.asset?.url || '',
-          backDesignUrl: sanityDesign.images?.[1]?.asset?.url || '',
+          description: sanityDesign.description || sanityDesign.details || '',
+          thumbnailUrl: thumbnailUrl,
+          frontDesignUrl: frontDesignUrl,
+          backDesignUrl: backDesignUrl,
           tags: sanityDesign.tags || [],
           frontPosition: frontPosition,
           backPosition: { x: 150, y: 150, width: 150, height: 150 },
@@ -135,7 +197,7 @@ router.post('/import-my-designs-no-auth', async (req, res) => {
             elements: [
               {
                 type: 'image',
-                src: sanityDesign.images?.[0]?.asset?.url || '',
+                src: frontDesignUrl,
                 position: frontPosition,
                 size: { width: frontPosition.width, height: frontPosition.height },
                 rotation: 0,
@@ -144,11 +206,17 @@ router.post('/import-my-designs-no-auth', async (req, res) => {
               }
             ],
             backgroundColor: '#ffffff',
+            designId: sanityDesign.designId,
+            mainImage: sanityDesign.mainImage,
+            secondaryImages: sanityDesign.secondaryImages,
             productStyles: sanityDesign.productStyles,
+            productStyle: sanityDesign.productStyle,
             sales: sanityDesign.sales || 0,
-            views: sanityDesign.views || 0,
+            views: sanityDesign.views || sanityDesign.allTimeViews || 0,
             slug: sanityDesign.slug,
-            sanityId: sanityDesign._id
+            sanityId: sanityDesign._id,
+            visibility: sanityDesign.visibility,
+            regularPrice: sanityDesign.regularPrice
           }
         };
         
@@ -259,7 +327,7 @@ router.post('/import-my-designs', requireAuth, async (req, res) => {
       });
     }
     
-    // Fetch designs from Sanity
+    // Fetch designs from Sanity - FIXED to use correct fields!
     const query = `*[_type == "product" && (
       references("${mapping.sanityPersonId}") || 
       "${mapping.sanityPersonId}" in creators[]._ref ||
@@ -269,6 +337,30 @@ router.post('/import-my-designs', requireAuth, async (req, res) => {
       title,
       "slug": slug.current,
       description,
+      details,
+      designId,
+      
+      // CRITICAL: Use mainImage and secondaryImages, not images[]!
+      mainImage {
+        _key,
+        _type,
+        format,
+        height,
+        width,
+        title,
+        uri
+      },
+      secondaryImages[] {
+        _key,
+        _type,
+        format,
+        height,
+        width,
+        title,
+        uri
+      },
+      
+      // Legacy fields kept for fallback
       "images": images[] {
         _key,
         asset-> {
@@ -276,6 +368,7 @@ router.post('/import-my-designs', requireAuth, async (req, res) => {
           url
         }
       },
+      
       overlayTopLeft,
       overlayBottomRight,
       printAreaTopLeft,
@@ -283,8 +376,12 @@ router.post('/import-my-designs', requireAuth, async (req, res) => {
       isActive,
       tags,
       productStyles,
+      productStyle,
       sales,
-      views
+      views,
+      allTimeViews,
+      visibility,
+      regularPrice
     }`;
     
     console.log('🔍 Fetching designs from Sanity...');
@@ -298,10 +395,43 @@ router.post('/import-my-designs', requireAuth, async (req, res) => {
     
     for (const sanityDesign of sanityDesigns) {
       try {
-        // Log image availability for debugging
-        console.log(`📸 Design "${sanityDesign.title}" has ${sanityDesign.images?.length || 0} images`);
-        if (sanityDesign.images?.length > 0) {
-          console.log(`   Image URLs:`, sanityDesign.images.map(img => img?.asset?.url || 'no URL').slice(0, 2));
+        // Log image availability for debugging - FIXED to check correct fields
+        const hasMockupImages = sanityDesign.mainImage?.uri || sanityDesign.secondaryImages?.length > 0;
+        const hasLegacyImages = sanityDesign.images?.length > 0;
+        
+        console.log(`📸 Design "${sanityDesign.title}"`);
+        console.log(`   Design ID: ${sanityDesign.designId || 'none'}`);
+        console.log(`   Main Image: ${sanityDesign.mainImage?.uri ? '✅' : '❌'}`);
+        console.log(`   Secondary Images: ${sanityDesign.secondaryImages?.length || 0}`);
+        console.log(`   Legacy Images: ${sanityDesign.images?.length || 0}`);
+        
+        // Get the primary thumbnail URL from mainImage or secondaryImages
+        let thumbnailUrl = '';
+        let frontDesignUrl = '';
+        let backDesignUrl = '';
+        
+        if (sanityDesign.mainImage?.uri) {
+          thumbnailUrl = sanityDesign.mainImage.uri;
+          frontDesignUrl = sanityDesign.mainImage.uri;
+          console.log(`   ✅ Using mainImage: ${thumbnailUrl.substring(0, 80)}...`);
+        }
+        
+        if (sanityDesign.secondaryImages?.length > 0) {
+          if (!thumbnailUrl) thumbnailUrl = sanityDesign.secondaryImages[0].uri;
+          if (!frontDesignUrl) frontDesignUrl = sanityDesign.secondaryImages[0].uri;
+          if (sanityDesign.secondaryImages.length > 1) {
+            backDesignUrl = sanityDesign.secondaryImages[1].uri;
+          }
+        }
+        
+        // Fallback to legacy images field if no mockup images found
+        if (!thumbnailUrl && sanityDesign.images?.length > 0) {
+          console.log(`   ⚠️ Falling back to legacy images field`);
+          thumbnailUrl = sanityDesign.images[0]?.asset?.url || '';
+          frontDesignUrl = sanityDesign.images[0]?.asset?.url || '';
+          if (sanityDesign.images.length > 1) {
+            backDesignUrl = sanityDesign.images[1]?.asset?.url || '';
+          }
         }
         
         // Convert bounding box to center position if needed
@@ -321,10 +451,10 @@ router.post('/import-my-designs', requireAuth, async (req, res) => {
           sanityId: sanityDesign._id,
           creatorId: user.id,
           name: sanityDesign.title || 'Untitled Design',
-          description: sanityDesign.description || '',
-          thumbnailUrl: sanityDesign.images?.[0]?.asset?.url || '',
-          frontDesignUrl: sanityDesign.images?.[0]?.asset?.url || '',
-          backDesignUrl: sanityDesign.images?.[1]?.asset?.url || '',
+          description: sanityDesign.description || sanityDesign.details || '',
+          thumbnailUrl: thumbnailUrl,
+          frontDesignUrl: frontDesignUrl,
+          backDesignUrl: backDesignUrl,
           tags: sanityDesign.tags || [],
           frontPosition: frontPosition,
           backPosition: { x: 150, y: 150, width: 150, height: 150 },
@@ -335,7 +465,7 @@ router.post('/import-my-designs', requireAuth, async (req, res) => {
             elements: [
               {
                 type: 'image',
-                src: sanityDesign.images?.[0]?.asset?.url || '',
+                src: frontDesignUrl,
                 position: frontPosition,
                 size: { width: frontPosition.width, height: frontPosition.height },
                 rotation: 0,
@@ -344,11 +474,17 @@ router.post('/import-my-designs', requireAuth, async (req, res) => {
               }
             ],
             backgroundColor: '#ffffff',
+            designId: sanityDesign.designId,
+            mainImage: sanityDesign.mainImage,
+            secondaryImages: sanityDesign.secondaryImages,
             productStyles: sanityDesign.productStyles,
+            productStyle: sanityDesign.productStyle,
             sales: sanityDesign.sales || 0,
-            views: sanityDesign.views || 0,
+            views: sanityDesign.views || sanityDesign.allTimeViews || 0,
             slug: sanityDesign.slug,
-            sanityId: sanityDesign._id
+            sanityId: sanityDesign._id,
+            visibility: sanityDesign.visibility,
+            regularPrice: sanityDesign.regularPrice
           }
         };
         
