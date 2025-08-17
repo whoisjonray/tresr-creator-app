@@ -6,6 +6,7 @@ import api from '../services/api';
 import { useAuth } from '../hooks/useAuth';
 import { autoFixAndVerify } from '../utils/fix-thumbnails-production';
 import testEndpoints from '../utils/test-production-endpoints';
+import { autoFixEditPage } from '../utils/fix-edit-page-data';
 
 // Generate SVG placeholder function for fallback images
 const generatePlaceholder = (productName, color) => {
@@ -587,6 +588,51 @@ function ProductManager() {
                 }}
               >
                 {importing ? '🔧 Fixing...' : '🔧 FIX THUMBNAILS'}
+              </button>
+              <button 
+                onClick={async () => {
+                  setImporting(true);
+                  setImportProgress('🔧 Fixing edit page data...');
+                  
+                  try {
+                    const result = await autoFixEditPage();
+                    
+                    if (result.success) {
+                      setImportProgress(`✅ ${result.message}`);
+                      // Reload the designs after 2 seconds
+                      setTimeout(() => {
+                        window.location.reload();
+                      }, 2000);
+                    } else {
+                      setImportProgress(`❌ Fix failed: ${result.error || 'Unknown error'}`);
+                      setTimeout(() => {
+                        setImporting(false);
+                        setImportProgress('');
+                      }, 3000);
+                    }
+                  } catch (error) {
+                    console.error('Fix edit page error:', error);
+                    setImportProgress(`❌ Error: ${error.message}`);
+                    setTimeout(() => {
+                      setImporting(false);
+                      setImportProgress('');
+                    }, 3000);
+                  }
+                }}
+                className="btn-fix-edit" 
+                disabled={importing}
+                style={{
+                  marginRight: '10px', 
+                  background: importing ? '#9ca3af' : '#059669', 
+                  color: 'white', 
+                  padding: '8px 16px', 
+                  border: 'none', 
+                  borderRadius: '4px',
+                  cursor: importing ? 'not-allowed' : 'pointer',
+                  fontWeight: 'bold'
+                }}
+              >
+                {importing ? '🔧 Fixing...' : '🎨 FIX EDIT PAGE'}
               </button>
             </>
           )}
