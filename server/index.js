@@ -203,7 +203,8 @@ app.use('/api/schema', require('./routes/fix-production-schema'));
 
 // CRITICAL: Main import endpoint that frontend actually calls!
 app.use('/api/sanity/person', require('./routes/sanity-person-import'));
-app.use('/api/sanity/enhanced', require('./routes/enhanced-import-with-all-images'));
+// Temporarily disabled to fix Railway deployment
+// app.use('/api/sanity/enhanced', require('./routes/enhanced-import-with-all-images'));
 
 // API Routes - v1 (Legacy) - Maintain backward compatibility
 app.use('/api/auth', authRoutes);
