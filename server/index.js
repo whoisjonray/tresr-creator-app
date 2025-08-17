@@ -199,6 +199,7 @@ app.use('/api/v2/users', usersV2Routes);
 app.use('/api/debug', require('./routes/debug-import'));
 app.use('/api/fix', require('./routes/fix-production'));
 app.use('/api/fix', require('./routes/fix-missing-thumbnails'));
+app.use('/api/fix', require('./routes/fix-all-thumbnails-production'));
 app.use('/api/schema', require('./routes/fix-production-schema'));
 
 // CRITICAL: Main import endpoint that frontend actually calls!
