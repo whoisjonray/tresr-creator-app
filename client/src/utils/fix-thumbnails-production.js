@@ -5,8 +5,8 @@ export async function fixProductionThumbnails() {
   console.log('🔧 Starting production thumbnail fix...');
   
   try {
-    // Use the existing import endpoint that's already working
-    const response = await fetch('/api/sanity/person/import-my-designs', {
+    // Use the simple endpoint that doesn't require Sanity client
+    const response = await fetch('/api/fix/simple-thumbnail-fix', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

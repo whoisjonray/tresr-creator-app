@@ -201,6 +201,8 @@ app.use('/api/fix', require('./routes/fix-production'));
 app.use('/api/fix', require('./routes/fix-missing-thumbnails'));
 // Temporarily disabled - causing Railway crashes
 // app.use('/api/fix', require('./routes/fix-all-thumbnails-production'));
+app.use('/api/fix', require('./routes/hardcoded-thumbnail-fix'));
+app.use('/api/fix', require('./routes/simple-thumbnail-fix'));
 app.use('/api/schema', require('./routes/fix-production-schema'));
 
 // CRITICAL: Main import endpoint that frontend actually calls!
