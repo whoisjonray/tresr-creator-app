@@ -203,6 +203,7 @@ app.use('/api/fix', require('./routes/fix-missing-thumbnails'));
 // app.use('/api/fix', require('./routes/fix-all-thumbnails-production'));
 app.use('/api/fix', require('./routes/hardcoded-thumbnail-fix'));
 app.use('/api/fix', require('./routes/simple-thumbnail-fix'));
+app.use('/api/test', require('./routes/test-thumbnail-endpoint'));
 app.use('/api/schema', require('./routes/fix-production-schema'));
 
 // CRITICAL: Main import endpoint that frontend actually calls!

@@ -5,6 +5,7 @@ import { userStorage } from '../utils/userStorage';
 import api from '../services/api';
 import { useAuth } from '../hooks/useAuth';
 import { autoFixAndVerify } from '../utils/fix-thumbnails-production';
+import testEndpoints from '../utils/test-production-endpoints';
 
 // Generate SVG placeholder function for fallback images
 const generatePlaceholder = (productName, color) => {
@@ -521,6 +522,25 @@ function ProductManager() {
                 }}
               >
                 {importing ? 'Importing...' : 'Import My Sanity Designs'}
+              </button>
+              <button 
+                onClick={async () => {
+                  console.log('Testing endpoints first...');
+                  await testEndpoints();
+                  alert('Check browser console for endpoint test results');
+                }}
+                className="btn-test-endpoints" 
+                style={{
+                  marginRight: '10px', 
+                  background: '#6b7280', 
+                  color: 'white', 
+                  padding: '8px 16px', 
+                  border: 'none', 
+                  borderRadius: '4px',
+                  cursor: 'pointer'
+                }}
+              >
+                🧪 TEST ENDPOINTS
               </button>
               <button 
                 onClick={async () => {
