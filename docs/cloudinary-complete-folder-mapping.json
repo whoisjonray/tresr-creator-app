@@ -1,0 +1,2212 @@
+{
+  "discoveredAt": "2025-08-17T20:56:34.397Z",
+  "totalFolders": 20,
+  "garmentFoldersFound": 5,
+  "folderStructure": {
+    "clipart": {
+      "path": "clipart",
+      "subfolders": [
+        {
+          "name": "nftreasure",
+          "path": "clipart/nftreasure"
+        }
+      ],
+      "imageCount": 5,
+      "sampleImages": [
+        {
+          "public_id": "clipart/NFTREASURE/afjkgezgb9pb09uwpzuj",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1742159551/clipart/NFTREASURE/afjkgezgb9pb09uwpzuj.svg",
+          "format": "svg",
+          "created": "2025-03-16T21:12:31Z"
+        },
+        {
+          "public_id": "clipart/NFTREASURE/aryvn6j49vnwqqzmf908",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1742159574/clipart/NFTREASURE/aryvn6j49vnwqqzmf908.svg",
+          "format": "svg",
+          "created": "2025-03-16T21:12:54Z"
+        },
+        {
+          "public_id": "clipart/NFTREASURE/azh1eold6winowyw1mbs",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1742159553/clipart/NFTREASURE/azh1eold6winowyw1mbs.svg",
+          "format": "svg",
+          "created": "2025-03-16T21:12:33Z"
+        },
+        {
+          "public_id": "clipart/NFTREASURE/bdisxzgtm94hzlaivtqv",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1742159476/clipart/NFTREASURE/bdisxzgtm94hzlaivtqv.svg",
+          "format": "svg",
+          "created": "2025-03-16T21:11:16Z"
+        },
+        {
+          "public_id": "clipart/NFTREASURE/blhqp0dmy9tpskcdhtcn",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1742159536/clipart/NFTREASURE/blhqp0dmy9tpskcdhtcn.svg",
+          "format": "svg",
+          "created": "2025-03-16T21:12:16Z"
+        }
+      ]
+    },
+    "designs": {
+      "path": "designs",
+      "subfolders": [
+        {
+          "name": "0x2Ec4904997c7193f8f3eC803682224e97598ce07",
+          "path": "designs/0x2Ec4904997c7193f8f3eC803682224e97598ce07"
+        },
+        {
+          "name": "5ec9f758-cd94-45ab-9bdb-d72a3df73bee",
+          "path": "designs/5ec9f758-cd94-45ab-9bdb-d72a3df73bee"
+        },
+        {
+          "name": "a64olip5cixq063zwmb4hkq1",
+          "path": "designs/a64olip5cixq063zwmb4hkq1"
+        },
+        {
+          "name": "aor9qpb1ff71cbn2r2pvxn0d",
+          "path": "designs/aor9qpb1ff71cbn2r2pvxn0d"
+        },
+        {
+          "name": "as97bpioap118py676044khd",
+          "path": "designs/as97bpioap118py676044khd"
+        },
+        {
+          "name": "asvjchcgah00ux0cbdnxb2vi",
+          "path": "designs/asvjchcgah00ux0cbdnxb2vi"
+        },
+        {
+          "name": "ay93trf9ipygnrd566z9qmg1",
+          "path": "designs/ay93trf9ipygnrd566z9qmg1"
+        },
+        {
+          "name": "b3c54jny29nva0hqy0z5unip",
+          "path": "designs/b3c54jny29nva0hqy0z5unip"
+        },
+        {
+          "name": "b4g7x0zdo6fe6u6t68xlx6e3",
+          "path": "designs/b4g7x0zdo6fe6u6t68xlx6e3"
+        },
+        {
+          "name": "bcibi4u6wts0058lvnhzz1n8",
+          "path": "designs/bcibi4u6wts0058lvnhzz1n8"
+        },
+        {
+          "name": "be44dgwy5j60ykaegoq669qo",
+          "path": "designs/be44dgwy5j60ykaegoq669qo"
+        },
+        {
+          "name": "bko3hdtzzmxjgggy7zklgamt",
+          "path": "designs/bko3hdtzzmxjgggy7zklgamt"
+        },
+        {
+          "name": "bwtsc5h3a56n6l29cs2wwkbc",
+          "path": "designs/bwtsc5h3a56n6l29cs2wwkbc"
+        },
+        {
+          "name": "c9c08thhpw9si0gbxo6twxn9",
+          "path": "designs/c9c08thhpw9si0gbxo6twxn9"
+        },
+        {
+          "name": "cb1fba07x5vtb03fla2slxjn",
+          "path": "designs/cb1fba07x5vtb03fla2slxjn"
+        },
+        {
+          "name": "ctrpgzbti3npovzqnl7iecpy",
+          "path": "designs/ctrpgzbti3npovzqnl7iecpy"
+        },
+        {
+          "name": "cwh85zjssizvn2119r7oeu5l",
+          "path": "designs/cwh85zjssizvn2119r7oeu5l"
+        },
+        {
+          "name": "cxda153h7v9vcyj82t2ltudm",
+          "path": "designs/cxda153h7v9vcyj82t2ltudm"
+        },
+        {
+          "name": "cxz9biri5e8bpydhymfs214r",
+          "path": "designs/cxz9biri5e8bpydhymfs214r"
+        },
+        {
+          "name": "d65h6b4t6z5zt2vgffn1fuok",
+          "path": "designs/d65h6b4t6z5zt2vgffn1fuok"
+        },
+        {
+          "name": "dbsec7b04kg34j9p99evg6fe",
+          "path": "designs/dbsec7b04kg34j9p99evg6fe"
+        },
+        {
+          "name": "djdo0rxdqjae28bmmis6zvss",
+          "path": "designs/djdo0rxdqjae28bmmis6zvss"
+        },
+        {
+          "name": "dkojvsz5si7jakpq4954ud2s",
+          "path": "designs/dkojvsz5si7jakpq4954ud2s"
+        },
+        {
+          "name": "dm6png1bxknytm0fb2wa0zn9",
+          "path": "designs/dm6png1bxknytm0fb2wa0zn9"
+        },
+        {
+          "name": "emprhgri9ek0zdsx1ajp6kle",
+          "path": "designs/emprhgri9ek0zdsx1ajp6kle"
+        },
+        {
+          "name": "ezevlad5vu8nb5dcwir0gaot",
+          "path": "designs/ezevlad5vu8nb5dcwir0gaot"
+        },
+        {
+          "name": "f2h9pqw2a3n5ppfxuqekq9sc",
+          "path": "designs/f2h9pqw2a3n5ppfxuqekq9sc"
+        },
+        {
+          "name": "f775ooleudy5x510qza5encf",
+          "path": "designs/f775ooleudy5x510qza5encf"
+        },
+        {
+          "name": "fcj78tqcvne4zyndimmk1vav",
+          "path": "designs/fcj78tqcvne4zyndimmk1vav"
+        },
+        {
+          "name": "ffub4empv8dz26h3iatqc8r9",
+          "path": "designs/ffub4empv8dz26h3iatqc8r9"
+        },
+        {
+          "name": "fkzjmdowgugqvalcmm813qt7",
+          "path": "designs/fkzjmdowgugqvalcmm813qt7"
+        },
+        {
+          "name": "fu626l6v15qk8pdatbeii1nw",
+          "path": "designs/fu626l6v15qk8pdatbeii1nw"
+        },
+        {
+          "name": "gfjzj4609l3dvu1341cyaehj",
+          "path": "designs/gfjzj4609l3dvu1341cyaehj"
+        },
+        {
+          "name": "gi7im86rg0yzqfistemtlzjo",
+          "path": "designs/gi7im86rg0yzqfistemtlzjo"
+        },
+        {
+          "name": "gir6k8vqq21fsgme0sr63eb5",
+          "path": "designs/gir6k8vqq21fsgme0sr63eb5"
+        },
+        {
+          "name": "gpelj6xjppg0xogy90rj5htl",
+          "path": "designs/gpelj6xjppg0xogy90rj5htl"
+        },
+        {
+          "name": "gungz0bjo2f5mmqdgh104s2t",
+          "path": "designs/gungz0bjo2f5mmqdgh104s2t"
+        },
+        {
+          "name": "guomic88z7xmw6v0l2vfxvxw",
+          "path": "designs/guomic88z7xmw6v0l2vfxvxw"
+        },
+        {
+          "name": "h0doamfyz8ptgrhr4zy2146i",
+          "path": "designs/h0doamfyz8ptgrhr4zy2146i"
+        },
+        {
+          "name": "hd6gyq25w8njp25rt9rn2fam",
+          "path": "designs/hd6gyq25w8njp25rt9rn2fam"
+        },
+        {
+          "name": "hl05run8e879cs56fthi7qkg",
+          "path": "designs/hl05run8e879cs56fthi7qkg"
+        },
+        {
+          "name": "htygdcxrb861la91g30emz2p",
+          "path": "designs/htygdcxrb861la91g30emz2p"
+        },
+        {
+          "name": "hzfzig17z9o9rx0yctnyrflo",
+          "path": "designs/hzfzig17z9o9rx0yctnyrflo"
+        },
+        {
+          "name": "i05xuqgdgl4rrnwqkv2zhbr9",
+          "path": "designs/i05xuqgdgl4rrnwqkv2zhbr9"
+        },
+        {
+          "name": "i8c76sf5qomup81rc6bv9783",
+          "path": "designs/i8c76sf5qomup81rc6bv9783"
+        },
+        {
+          "name": "igfqedzb1l2wi7z9xyijfzmp",
+          "path": "designs/igfqedzb1l2wi7z9xyijfzmp"
+        },
+        {
+          "name": "ilcnnfjghzztvcoc14x6a3nz",
+          "path": "designs/ilcnnfjghzztvcoc14x6a3nz"
+        },
+        {
+          "name": "import",
+          "path": "designs/import"
+        },
+        {
+          "name": "itfqql5vkt2t15ok9w9ieo8v",
+          "path": "designs/itfqql5vkt2t15ok9w9ieo8v"
+        },
+        {
+          "name": "j3nx648x53lgy0qz7lf8ks7p",
+          "path": "designs/j3nx648x53lgy0qz7lf8ks7p"
+        },
+        {
+          "name": "jfionamdl69yxeqxqzr1stl7",
+          "path": "designs/jfionamdl69yxeqxqzr1stl7"
+        },
+        {
+          "name": "jip5iwfpb18rehro6tc7y32c",
+          "path": "designs/jip5iwfpb18rehro6tc7y32c"
+        },
+        {
+          "name": "jlgmiml6ouxq7k60qn6x56w2",
+          "path": "designs/jlgmiml6ouxq7k60qn6x56w2"
+        },
+        {
+          "name": "jn5ozu8i85bc1dg23sgzaekr",
+          "path": "designs/jn5ozu8i85bc1dg23sgzaekr"
+        },
+        {
+          "name": "jsl7qqpju5o1mw4y4s8nk377",
+          "path": "designs/jsl7qqpju5o1mw4y4s8nk377"
+        },
+        {
+          "name": "jxkxgjkhohv00ep9vgmkckbz",
+          "path": "designs/jxkxgjkhohv00ep9vgmkckbz"
+        },
+        {
+          "name": "k0hcrnd1c4esjnibvymf2nb9",
+          "path": "designs/k0hcrnd1c4esjnibvymf2nb9"
+        },
+        {
+          "name": "k2r2aa8vmghuyr3he0p2eo5e",
+          "path": "designs/k2r2aa8vmghuyr3he0p2eo5e"
+        },
+        {
+          "name": "k8c68vmzhss19u10mpgbkuj8",
+          "path": "designs/k8c68vmzhss19u10mpgbkuj8"
+        },
+        {
+          "name": "kj6qrz94qalvu7ba3j14cjrp",
+          "path": "designs/kj6qrz94qalvu7ba3j14cjrp"
+        },
+        {
+          "name": "km7h6p6cicmz712qu2hecens",
+          "path": "designs/km7h6p6cicmz712qu2hecens"
+        },
+        {
+          "name": "l7t90u3scdk1jevxy69flfz2",
+          "path": "designs/l7t90u3scdk1jevxy69flfz2"
+        },
+        {
+          "name": "las78qhgacp58l1gjjgj073s",
+          "path": "designs/las78qhgacp58l1gjjgj073s"
+        },
+        {
+          "name": "lfzca2t7zj4fw5zcdxstl7rd",
+          "path": "designs/lfzca2t7zj4fw5zcdxstl7rd"
+        },
+        {
+          "name": "llq9do7y6ot6hs4i4si2u509",
+          "path": "designs/llq9do7y6ot6hs4i4si2u509"
+        },
+        {
+          "name": "lrc0pf43gfj2rbpd7hzw6rel",
+          "path": "designs/lrc0pf43gfj2rbpd7hzw6rel"
+        },
+        {
+          "name": "ltn1x6euirmgepl80nxre5ip",
+          "path": "designs/ltn1x6euirmgepl80nxre5ip"
+        },
+        {
+          "name": "luon52iuzjf8eskosn4mupkf",
+          "path": "designs/luon52iuzjf8eskosn4mupkf"
+        },
+        {
+          "name": "lzo7i0sl2s0i49oej91dcsqk",
+          "path": "designs/lzo7i0sl2s0i49oej91dcsqk"
+        },
+        {
+          "name": "m3yc3jasrqaoqmsbrdsofkl5",
+          "path": "designs/m3yc3jasrqaoqmsbrdsofkl5"
+        },
+        {
+          "name": "m5jhy08i546dlqkl14i5p8vm",
+          "path": "designs/m5jhy08i546dlqkl14i5p8vm"
+        },
+        {
+          "name": "md3ijthczvkgpsp550at4lo0",
+          "path": "designs/md3ijthczvkgpsp550at4lo0"
+        },
+        {
+          "name": "mg3cwdf72kuv2ulnplukldj7",
+          "path": "designs/mg3cwdf72kuv2ulnplukldj7"
+        },
+        {
+          "name": "mifhkgjags6drfmih5fg2g0h",
+          "path": "designs/mifhkgjags6drfmih5fg2g0h"
+        },
+        {
+          "name": "mlb9498we2pdem2uhqspmsym",
+          "path": "designs/mlb9498we2pdem2uhqspmsym"
+        },
+        {
+          "name": "n3a0yyzbjiammssd68zi1uyu",
+          "path": "designs/n3a0yyzbjiammssd68zi1uyu"
+        },
+        {
+          "name": "ncrxqr9vltpr3lhfulqwxzgj",
+          "path": "designs/ncrxqr9vltpr3lhfulqwxzgj"
+        },
+        {
+          "name": "ndc6urujmtd81ysbc3z0cksw",
+          "path": "designs/ndc6urujmtd81ysbc3z0cksw"
+        },
+        {
+          "name": "ndftnd33fl86zk60ep95kswd",
+          "path": "designs/ndftnd33fl86zk60ep95kswd"
+        },
+        {
+          "name": "nr20d8yhy6qj6f8ukgs6eify",
+          "path": "designs/nr20d8yhy6qj6f8ukgs6eify"
+        },
+        {
+          "name": "nty7ay7huhz2mq0zyv47xcjp",
+          "path": "designs/nty7ay7huhz2mq0zyv47xcjp"
+        },
+        {
+          "name": "o3qouwh1lp2r15n1z57wq29y",
+          "path": "designs/o3qouwh1lp2r15n1z57wq29y"
+        },
+        {
+          "name": "ohojgsi4l9geseannu5mqdjs",
+          "path": "designs/ohojgsi4l9geseannu5mqdjs"
+        },
+        {
+          "name": "pk94mvl4xufazscwa1pjza8i",
+          "path": "designs/pk94mvl4xufazscwa1pjza8i"
+        },
+        {
+          "name": "pm5i3uc5iiuzbdn37srzkw0a",
+          "path": "designs/pm5i3uc5iiuzbdn37srzkw0a"
+        },
+        {
+          "name": "pqggcsya7o3rgffgs8gky6xr",
+          "path": "designs/pqggcsya7o3rgffgs8gky6xr"
+        },
+        {
+          "name": "pre140gxzg2lftxhoidkzvht",
+          "path": "designs/pre140gxzg2lftxhoidkzvht"
+        },
+        {
+          "name": "pu3jyd8b16vufplofu01ybwj",
+          "path": "designs/pu3jyd8b16vufplofu01ybwj"
+        },
+        {
+          "name": "q8hvquv74mr9opdph7mlpvyc",
+          "path": "designs/q8hvquv74mr9opdph7mlpvyc"
+        },
+        {
+          "name": "qcdtnt11kfhj75y4dzg9xcul",
+          "path": "designs/qcdtnt11kfhj75y4dzg9xcul"
+        },
+        {
+          "name": "qdksznxchfkn9fup1flgzay7",
+          "path": "designs/qdksznxchfkn9fup1flgzay7"
+        },
+        {
+          "name": "qdm1hcofd2ng7k7c0q88o1nz",
+          "path": "designs/qdm1hcofd2ng7k7c0q88o1nz"
+        },
+        {
+          "name": "qfjynhd6u55j1wgbimz5vrbj",
+          "path": "designs/qfjynhd6u55j1wgbimz5vrbj"
+        },
+        {
+          "name": "qknjhu9uzit6epfb9z6c6e3z",
+          "path": "designs/qknjhu9uzit6epfb9z6c6e3z"
+        },
+        {
+          "name": "qqvk5l73fblkuegh32f7z388",
+          "path": "designs/qqvk5l73fblkuegh32f7z388"
+        },
+        {
+          "name": "qyu0ys52z11g22gljr0oq5v0",
+          "path": "designs/qyu0ys52z11g22gljr0oq5v0"
+        },
+        {
+          "name": "r1jg18gzvpi2q7xdfpldgw3l",
+          "path": "designs/r1jg18gzvpi2q7xdfpldgw3l"
+        },
+        {
+          "name": "r29bywe84ieuwjbw8n3mgvje",
+          "path": "designs/r29bywe84ieuwjbw8n3mgvje"
+        },
+        {
+          "name": "rg0k3cllu6grqz5vejx016vo",
+          "path": "designs/rg0k3cllu6grqz5vejx016vo"
+        },
+        {
+          "name": "rjzv4a6x5cfzfbi9bujl4t2s",
+          "path": "designs/rjzv4a6x5cfzfbi9bujl4t2s"
+        },
+        {
+          "name": "rws74vv6hq1419jpt6sk0mb5",
+          "path": "designs/rws74vv6hq1419jpt6sk0mb5"
+        },
+        {
+          "name": "s1dq7n90qieg4myxjakcxf56",
+          "path": "designs/s1dq7n90qieg4myxjakcxf56"
+        },
+        {
+          "name": "s53cvlfls6mlezj3fr3yzpky",
+          "path": "designs/s53cvlfls6mlezj3fr3yzpky"
+        },
+        {
+          "name": "sfz3ijl25edsdhd8efoosjlo",
+          "path": "designs/sfz3ijl25edsdhd8efoosjlo"
+        },
+        {
+          "name": "sq68fkp0zufjsc5kvn3h9zz2",
+          "path": "designs/sq68fkp0zufjsc5kvn3h9zz2"
+        },
+        {
+          "name": "sr2emd33kqq8z7mhhhreg4nn",
+          "path": "designs/sr2emd33kqq8z7mhhhreg4nn"
+        },
+        {
+          "name": "sz6qzrybv94mpb0q5yvzny6n",
+          "path": "designs/sz6qzrybv94mpb0q5yvzny6n"
+        },
+        {
+          "name": "szta6y1j66y6a8igz4dtkzaz",
+          "path": "designs/szta6y1j66y6a8igz4dtkzaz"
+        },
+        {
+          "name": "t14hbd0zbn0gc8v70gzfcy0y",
+          "path": "designs/t14hbd0zbn0gc8v70gzfcy0y"
+        },
+        {
+          "name": "t37i8yjlgx95p51ktrubqvzy",
+          "path": "designs/t37i8yjlgx95p51ktrubqvzy"
+        },
+        {
+          "name": "t47hqu3krzxgjsrq93yfp99k",
+          "path": "designs/t47hqu3krzxgjsrq93yfp99k"
+        },
+        {
+          "name": "t8y1ojf6aynzx1zdwwfhghzk",
+          "path": "designs/t8y1ojf6aynzx1zdwwfhghzk"
+        },
+        {
+          "name": "tayam2qievbs0x1cueacjf1b",
+          "path": "designs/tayam2qievbs0x1cueacjf1b"
+        },
+        {
+          "name": "temp",
+          "path": "designs/temp"
+        },
+        {
+          "name": "tfbqqt2yo7nmaclb462seiwy",
+          "path": "designs/tfbqqt2yo7nmaclb462seiwy"
+        },
+        {
+          "name": "tgyza2cjmawwxh64knh7l0dz",
+          "path": "designs/tgyza2cjmawwxh64knh7l0dz"
+        },
+        {
+          "name": "toe1274ctg3r3f3bbwharhy7",
+          "path": "designs/toe1274ctg3r3f3bbwharhy7"
+        },
+        {
+          "name": "tx61pgtgr2rau4cv6vjnnjp3",
+          "path": "designs/tx61pgtgr2rau4cv6vjnnjp3"
+        },
+        {
+          "name": "tycidxjwzzvdwcujrwf996wt",
+          "path": "designs/tycidxjwzzvdwcujrwf996wt"
+        },
+        {
+          "name": "tzravnte0qv01gn0tqwyc947",
+          "path": "designs/tzravnte0qv01gn0tqwyc947"
+        },
+        {
+          "name": "u18fqijjdl5t4ctw3tc6qqie",
+          "path": "designs/u18fqijjdl5t4ctw3tc6qqie"
+        },
+        {
+          "name": "umon1dxsry5ojitv2jse2lvm",
+          "path": "designs/umon1dxsry5ojitv2jse2lvm"
+        },
+        {
+          "name": "uqbppnvb9727aeh4004mn7hk",
+          "path": "designs/uqbppnvb9727aeh4004mn7hk"
+        },
+        {
+          "name": "uqd9sqh8a4fnuvumaylzvmfg",
+          "path": "designs/uqd9sqh8a4fnuvumaylzvmfg"
+        },
+        {
+          "name": "v3gh5c8gmor91bkqzxhrkvbi",
+          "path": "designs/v3gh5c8gmor91bkqzxhrkvbi"
+        },
+        {
+          "name": "v3io661kzg9wqkgwm7aagr6d",
+          "path": "designs/v3io661kzg9wqkgwm7aagr6d"
+        },
+        {
+          "name": "v96l0fa3xqyj184alj5ro38e",
+          "path": "designs/v96l0fa3xqyj184alj5ro38e"
+        },
+        {
+          "name": "v9hdmcb3322zih4k7s2qnpd1",
+          "path": "designs/v9hdmcb3322zih4k7s2qnpd1"
+        },
+        {
+          "name": "vbzoy6d11qdf2jamyu0xszzv",
+          "path": "designs/vbzoy6d11qdf2jamyu0xszzv"
+        },
+        {
+          "name": "vdq0n87vfommfa88infspgia",
+          "path": "designs/vdq0n87vfommfa88infspgia"
+        },
+        {
+          "name": "vh4urauftsojnmw8vysiu8jb",
+          "path": "designs/vh4urauftsojnmw8vysiu8jb"
+        },
+        {
+          "name": "vl2ekgnrx73u5aeeigj2uwmf",
+          "path": "designs/vl2ekgnrx73u5aeeigj2uwmf"
+        },
+        {
+          "name": "vsxjf870d51h5xyteygwsuz4",
+          "path": "designs/vsxjf870d51h5xyteygwsuz4"
+        },
+        {
+          "name": "w5bgve70qpgm024vw4qcvkac",
+          "path": "designs/w5bgve70qpgm024vw4qcvkac"
+        },
+        {
+          "name": "wj4j6rh4w6kg8pr2b22g7nyv",
+          "path": "designs/wj4j6rh4w6kg8pr2b22g7nyv"
+        },
+        {
+          "name": "wjvlyul8hq80c1hnud8tm5gq",
+          "path": "designs/wjvlyul8hq80c1hnud8tm5gq"
+        },
+        {
+          "name": "wmindjllnv62wtnrl92faaf0",
+          "path": "designs/wmindjllnv62wtnrl92faaf0"
+        },
+        {
+          "name": "wocrz9st639ih6mjkmi50yxh",
+          "path": "designs/wocrz9st639ih6mjkmi50yxh"
+        },
+        {
+          "name": "wrnpgr6wam0mlufpw6uk580u",
+          "path": "designs/wrnpgr6wam0mlufpw6uk580u"
+        },
+        {
+          "name": "x8g1hx2382p78j98d5bewrb1",
+          "path": "designs/x8g1hx2382p78j98d5bewrb1"
+        },
+        {
+          "name": "xkq7emwc0i1otue32b0awbeb",
+          "path": "designs/xkq7emwc0i1otue32b0awbeb"
+        },
+        {
+          "name": "xx19r35wxzqmc3hoh9e6h6r9",
+          "path": "designs/xx19r35wxzqmc3hoh9e6h6r9"
+        },
+        {
+          "name": "y85feolk1dz42s5f9ajyfl33",
+          "path": "designs/y85feolk1dz42s5f9ajyfl33"
+        },
+        {
+          "name": "ybo9ged0t1kxjhw8d5s49f2x",
+          "path": "designs/ybo9ged0t1kxjhw8d5s49f2x"
+        },
+        {
+          "name": "yf22bw7gpypvfuz6z847lupt",
+          "path": "designs/yf22bw7gpypvfuz6z847lupt"
+        },
+        {
+          "name": "yg3vl6pmm3qbbsueyxtkoqht",
+          "path": "designs/yg3vl6pmm3qbbsueyxtkoqht"
+        },
+        {
+          "name": "yiuvkxkscmcbddniqy3t29og",
+          "path": "designs/yiuvkxkscmcbddniqy3t29og"
+        },
+        {
+          "name": "yvyxf9bk6owl192uk9922hfz",
+          "path": "designs/yvyxf9bk6owl192uk9922hfz"
+        },
+        {
+          "name": "yyq1mv6vu4u3azb3f4ycp5bq",
+          "path": "designs/yyq1mv6vu4u3azb3f4ycp5bq"
+        },
+        {
+          "name": "z8t5mo6g0v5qp4851mf7hcew",
+          "path": "designs/z8t5mo6g0v5qp4851mf7hcew"
+        },
+        {
+          "name": "zapo325r6ivuk5ehjh7oswh1",
+          "path": "designs/zapo325r6ivuk5ehjh7oswh1"
+        },
+        {
+          "name": "zbizc0fy1rnanujx7eomijye",
+          "path": "designs/zbizc0fy1rnanujx7eomijye"
+        },
+        {
+          "name": "zd4zyao3mgeqcarl640n3bpn",
+          "path": "designs/zd4zyao3mgeqcarl640n3bpn"
+        },
+        {
+          "name": "zixfc0zh4whv1du4ztyw765g",
+          "path": "designs/zixfc0zh4whv1du4ztyw765g"
+        },
+        {
+          "name": "zj4seeuctfr518xwv7t5f6kv",
+          "path": "designs/zj4seeuctfr518xwv7t5f6kv"
+        },
+        {
+          "name": "zwc8922fr59nakybrbduerhu",
+          "path": "designs/zwc8922fr59nakybrbduerhu"
+        },
+        {
+          "name": "zwvq24stwwsoxqh2ljlg6olj",
+          "path": "designs/zwvq24stwwsoxqh2ljlg6olj"
+        }
+      ],
+      "imageCount": 5,
+      "sampleImages": [
+        {
+          "public_id": "designs/0x2Ec4904997c7193f8f3eC803682224e97598ce07/mvmuwxfqxjk2lj6xpae5",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1716470820/designs/0x2Ec4904997c7193f8f3eC803682224e97598ce07/mvmuwxfqxjk2lj6xpae5.png",
+          "format": "png",
+          "created": "2024-05-23T13:27:00Z"
+        },
+        {
+          "public_id": "designs/0x2Ec4904997c7193f8f3eC803682224e97598ce07/pc9gsajteevekfvjb7xp",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1716463300/designs/0x2Ec4904997c7193f8f3eC803682224e97598ce07/pc9gsajteevekfvjb7xp.png",
+          "format": "png",
+          "created": "2024-05-23T11:21:40Z"
+        },
+        {
+          "public_id": "designs/0x2Ec4904997c7193f8f3eC803682224e97598ce07/qy2s1lkq4urbwli4lrh5",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1707806125/designs/0x2Ec4904997c7193f8f3eC803682224e97598ce07/qy2s1lkq4urbwli4lrh5.png",
+          "format": "png",
+          "created": "2024-02-13T06:35:25Z"
+        },
+        {
+          "public_id": "designs/0x2Ec4904997c7193f8f3eC803682224e97598ce07/vihgljeainsbijgqk1yh",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1707868165/designs/0x2Ec4904997c7193f8f3eC803682224e97598ce07/vihgljeainsbijgqk1yh.png",
+          "format": "png",
+          "created": "2024-02-13T23:49:25Z"
+        },
+        {
+          "public_id": "designs/5ec9f758-cd94-45ab-9bdb-d72a3df73bee/a3wvx6nve19bsfyow88v",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1739567808/designs/5ec9f758-cd94-45ab-9bdb-d72a3df73bee/a3wvx6nve19bsfyow88v.png",
+          "format": "png",
+          "created": "2025-02-14T21:16:48Z"
+        }
+      ]
+    },
+    "garments": {
+      "path": "garments",
+      "subfolders": [
+        {
+          "name": "art-lg",
+          "path": "garments/art-lg"
+        },
+        {
+          "name": "art-sqm",
+          "path": "garments/art-sqm"
+        },
+        {
+          "name": "art-sqsm",
+          "path": "garments/art-sqsm"
+        },
+        {
+          "name": "boxy",
+          "path": "garments/boxy"
+        },
+        {
+          "name": "med-hood",
+          "path": "garments/med-hood"
+        },
+        {
+          "name": "mediu",
+          "path": "garments/mediu"
+        },
+        {
+          "name": "next-crop",
+          "path": "garments/next-crop"
+        },
+        {
+          "name": "nft",
+          "path": "garments/nft"
+        },
+        {
+          "name": "patch-c",
+          "path": "garments/patch-c"
+        },
+        {
+          "name": "patch-flat",
+          "path": "garments/patch-flat"
+        },
+        {
+          "name": "polo",
+          "path": "garments/polo"
+        },
+        {
+          "name": "sweat",
+          "path": "garments/sweat"
+        },
+        {
+          "name": "tee",
+          "path": "garments/tee"
+        },
+        {
+          "name": "wmn-hoodie",
+          "path": "garments/wmn-hoodie"
+        }
+      ],
+      "imageCount": 5,
+      "sampleImages": [
+        {
+          "public_id": "garments/art-lg/display/image-0",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270793/garments/art-lg/display/image-0.png",
+          "format": "png",
+          "created": "2025-07-11T21:53:13Z"
+        },
+        {
+          "public_id": "garments/art-lg/front/main",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270792/garments/art-lg/front/main.png",
+          "format": "png",
+          "created": "2025-07-11T21:53:12Z"
+        },
+        {
+          "public_id": "garments/art-lg/front/white",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270792/garments/art-lg/front/white.png",
+          "format": "png",
+          "created": "2025-07-11T21:53:12Z"
+        },
+        {
+          "public_id": "garments/art-sqm/display/image-0",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270761/garments/art-sqm/display/image-0.png",
+          "format": "png",
+          "created": "2025-07-11T21:52:41Z"
+        },
+        {
+          "public_id": "garments/art-sqm/front/main",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270759/garments/art-sqm/front/main.png",
+          "format": "png",
+          "created": "2025-07-11T21:52:39Z"
+        }
+      ]
+    },
+    "images": {
+      "path": "images",
+      "subfolders": [
+        {
+          "name": "bg-removal",
+          "path": "images/bg-removal"
+        },
+        {
+          "name": "NFTREASURE",
+          "path": "images/NFTREASURE"
+        },
+        {
+          "name": "reviews",
+          "path": "images/reviews"
+        },
+        {
+          "name": "user-uploads",
+          "path": "images/user-uploads"
+        }
+      ],
+      "imageCount": 5,
+      "sampleImages": [
+        {
+          "public_id": "images/bg-removal/aizprudw50715hxqvrk6",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1726662663/images/bg-removal/aizprudw50715hxqvrk6.png",
+          "format": "png",
+          "created": "2024-09-18T12:31:03Z"
+        },
+        {
+          "public_id": "images/bg-removal/bflezf7u5jm3p0okv0mq",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1726661990/images/bg-removal/bflezf7u5jm3p0okv0mq.png",
+          "format": "png",
+          "created": "2024-09-18T12:19:50Z"
+        },
+        {
+          "public_id": "images/bg-removal/g30jjxj9s7isywhoiw1y",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1726662490/images/bg-removal/g30jjxj9s7isywhoiw1y.png",
+          "format": "png",
+          "created": "2024-09-18T12:28:10Z"
+        },
+        {
+          "public_id": "images/bg-removal/h2yyqntgxjef1uzzcc6q",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1726662563/images/bg-removal/h2yyqntgxjef1uzzcc6q.png",
+          "format": "png",
+          "created": "2024-09-18T12:29:23Z"
+        },
+        {
+          "public_id": "images/bg-removal/hjhqn29yovg2buxnkqs4",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1726661740/images/bg-removal/hjhqn29yovg2buxnkqs4.png",
+          "format": "png",
+          "created": "2024-09-18T12:15:40Z"
+        }
+      ]
+    },
+    "mockups": {
+      "path": "mockups",
+      "subfolders": [
+        {
+          "name": "editor",
+          "path": "mockups/editor"
+        }
+      ],
+      "imageCount": 1,
+      "sampleImages": [
+        {
+          "public_id": "mockups/editor/vsi2ovkzhlz8nuckoxmb",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1708368801/mockups/editor/vsi2ovkzhlz8nuckoxmb.webp",
+          "format": "webp",
+          "created": "2024-02-19T18:53:21Z"
+        }
+      ]
+    },
+    "nft": {
+      "path": "nft",
+      "subfolders": [
+        {
+          "name": "0x0C266223C8dB48cA1238103f5bD8772146F860a3",
+          "path": "nft/0x0C266223C8dB48cA1238103f5bD8772146F860a3"
+        },
+        {
+          "name": "0x0f0553a18b671FcD0190252e86e2d64a97fcB40c",
+          "path": "nft/0x0f0553a18b671FcD0190252e86e2d64a97fcB40c"
+        },
+        {
+          "name": "0x18f7AE252DB4190577173CE416a64812519Ee31E",
+          "path": "nft/0x18f7AE252DB4190577173CE416a64812519Ee31E"
+        },
+        {
+          "name": "0x25c7160789D8D16212Bbd092B65133624ca826d9",
+          "path": "nft/0x25c7160789D8D16212Bbd092B65133624ca826d9"
+        },
+        {
+          "name": "0x288BC76c38606fBC87f74c02F9AeE73fD9d09B17",
+          "path": "nft/0x288BC76c38606fBC87f74c02F9AeE73fD9d09B17"
+        },
+        {
+          "name": "0x2Ec4904997c7193f8f3eC803682224e97598ce07",
+          "path": "nft/0x2Ec4904997c7193f8f3eC803682224e97598ce07"
+        },
+        {
+          "name": "0x2f356E82877cBA104C09c4f3cA2fd564352F74EB",
+          "path": "nft/0x2f356E82877cBA104C09c4f3cA2fd564352F74EB"
+        },
+        {
+          "name": "0x33B1c55c97351d20792C63Fa17ffA16f8B051D1F",
+          "path": "nft/0x33B1c55c97351d20792C63Fa17ffA16f8B051D1F"
+        },
+        {
+          "name": "0x4cc3DA2190BeCe1Aa7ae6f24081B0D9604b43143",
+          "path": "nft/0x4cc3DA2190BeCe1Aa7ae6f24081B0D9604b43143"
+        },
+        {
+          "name": "0x4D01d3633A085C9ca9b87ef6E864A7725F1C0813",
+          "path": "nft/0x4D01d3633A085C9ca9b87ef6E864A7725F1C0813"
+        },
+        {
+          "name": "0x533d95Fa7D5CEd8f09e38aa359E406A3809Bc0e0",
+          "path": "nft/0x533d95Fa7D5CEd8f09e38aa359E406A3809Bc0e0"
+        },
+        {
+          "name": "0x58e5Fa2C3D190729f0e7E5e4E6D6CfB3173E483F",
+          "path": "nft/0x58e5Fa2C3D190729f0e7E5e4E6D6CfB3173E483F"
+        },
+        {
+          "name": "0x6568d2A73B36ac21e5F94B7f4371E77468625261",
+          "path": "nft/0x6568d2A73B36ac21e5F94B7f4371E77468625261"
+        },
+        {
+          "name": "0x656A41EeBec46A6f3709783c8C93c2E522d2AfEB",
+          "path": "nft/0x656A41EeBec46A6f3709783c8C93c2E522d2AfEB"
+        },
+        {
+          "name": "0x6aCc8739CA22C1C1280dC3C09FF20FB44283Ac31",
+          "path": "nft/0x6aCc8739CA22C1C1280dC3C09FF20FB44283Ac31"
+        },
+        {
+          "name": "0x77DE64F47Ab35C1DA6848c328373073EeAaa7666",
+          "path": "nft/0x77DE64F47Ab35C1DA6848c328373073EeAaa7666"
+        },
+        {
+          "name": "0x7abDEF5Eb43d74227f4B5CA253e1b202332ad044",
+          "path": "nft/0x7abDEF5Eb43d74227f4B5CA253e1b202332ad044"
+        },
+        {
+          "name": "0x81c35e3f94c8C8FeA5b33Ef215268Ec78076c63E",
+          "path": "nft/0x81c35e3f94c8C8FeA5b33Ef215268Ec78076c63E"
+        },
+        {
+          "name": "0x81EA32e6ADb875bf376e9D758c410e15b1225F50",
+          "path": "nft/0x81EA32e6ADb875bf376e9D758c410e15b1225F50"
+        },
+        {
+          "name": "0x8b5be5269605b6221b495f95bf3a2f8d1907791c",
+          "path": "nft/0x8b5be5269605b6221b495f95bf3a2f8d1907791c"
+        },
+        {
+          "name": "0x90177122779D1b60220dB9df8834F9B976022dd0",
+          "path": "nft/0x90177122779D1b60220dB9df8834F9B976022dd0"
+        },
+        {
+          "name": "0xa68e7D28a6c6E31Dc51334943AD91920f973656b",
+          "path": "nft/0xa68e7D28a6c6E31Dc51334943AD91920f973656b"
+        },
+        {
+          "name": "0xACe77f897baa164d0395394bF67B7020491F1e1e",
+          "path": "nft/0xACe77f897baa164d0395394bF67B7020491F1e1e"
+        },
+        {
+          "name": "0xb1dE399D2d096b9Dd0a9fC5Be7fE219c57871974",
+          "path": "nft/0xb1dE399D2d096b9Dd0a9fC5Be7fE219c57871974"
+        },
+        {
+          "name": "0xB32Cb3a8f6Deb8Cf15A5427a4b31b1B7b79d3e87",
+          "path": "nft/0xB32Cb3a8f6Deb8Cf15A5427a4b31b1B7b79d3e87"
+        },
+        {
+          "name": "0xB4441EEf9929c70C1FE6894Cc8e896D2d2aFe5D1",
+          "path": "nft/0xB4441EEf9929c70C1FE6894Cc8e896D2d2aFe5D1"
+        },
+        {
+          "name": "0xBD66cEd3147C7E173251555B7db5ee2DB3d5f42e",
+          "path": "nft/0xBD66cEd3147C7E173251555B7db5ee2DB3d5f42e"
+        },
+        {
+          "name": "0xbDe951E26aae4F39e20628724f58293A4E6457D4",
+          "path": "nft/0xbDe951E26aae4F39e20628724f58293A4E6457D4"
+        },
+        {
+          "name": "0xbF1c9c1635C6f21FEb97320fd912E9bbE924e929",
+          "path": "nft/0xbF1c9c1635C6f21FEb97320fd912E9bbE924e929"
+        },
+        {
+          "name": "0xC42bacA229E01d162a14161eCC0737f88a4FEd1e",
+          "path": "nft/0xC42bacA229E01d162a14161eCC0737f88a4FEd1e"
+        },
+        {
+          "name": "0xC4cF8025D2DcE199026F2F0BCa3FaAaCF2C6B30e",
+          "path": "nft/0xC4cF8025D2DcE199026F2F0BCa3FaAaCF2C6B30e"
+        },
+        {
+          "name": "0xC9483dc485CB9b389137a0f522D7F97D6b38dCD3",
+          "path": "nft/0xC9483dc485CB9b389137a0f522D7F97D6b38dCD3"
+        },
+        {
+          "name": "0xd188946Ac1dab888BA798e1De4FBf166998815f5",
+          "path": "nft/0xd188946Ac1dab888BA798e1De4FBf166998815f5"
+        },
+        {
+          "name": "0xD326A45c8EFD78e100437dE91e340A969BBd421C",
+          "path": "nft/0xD326A45c8EFD78e100437dE91e340A969BBd421C"
+        },
+        {
+          "name": "0xdDd97Cf863939f3644C6261C8822906645Bd1d16",
+          "path": "nft/0xdDd97Cf863939f3644C6261C8822906645Bd1d16"
+        },
+        {
+          "name": "0xE566e9B75c9737477731a1acF125515b9ae35014",
+          "path": "nft/0xE566e9B75c9737477731a1acF125515b9ae35014"
+        },
+        {
+          "name": "0xE6f20b9906455451A5082bDCe5E20b760ab40ae2",
+          "path": "nft/0xE6f20b9906455451A5082bDCe5E20b760ab40ae2"
+        },
+        {
+          "name": "0xEDac94a7B0B00e047D49FbDd9562289170156f35",
+          "path": "nft/0xEDac94a7B0B00e047D49FbDd9562289170156f35"
+        },
+        {
+          "name": "0xEDDf76EBd4A3038383dB0eD9206052B4813Df51f",
+          "path": "nft/0xEDDf76EBd4A3038383dB0eD9206052B4813Df51f"
+        },
+        {
+          "name": "0xF3ec739f4a0e65A76827e4Ac355bc9B361237903",
+          "path": "nft/0xF3ec739f4a0e65A76827e4Ac355bc9B361237903"
+        },
+        {
+          "name": "0xf57f9eaA9c80714D079b095B5cB31A8e016b1b3a",
+          "path": "nft/0xf57f9eaA9c80714D079b095B5cB31A8e016b1b3a"
+        },
+        {
+          "name": "0xf8216a86f4eFc7e40Ff9c8d5d7682086bFe9AD45",
+          "path": "nft/0xf8216a86f4eFc7e40Ff9c8d5d7682086bFe9AD45"
+        },
+        {
+          "name": "0xF92Db1Ae15506324F66717defA0f84De8Fac5b0e",
+          "path": "nft/0xF92Db1Ae15506324F66717defA0f84De8Fac5b0e"
+        }
+      ],
+      "imageCount": 5,
+      "sampleImages": [
+        {
+          "public_id": "nft/0x0C266223C8dB48cA1238103f5bD8772146F860a3/xmbinaer2yupobqdpcho",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1740893084/nft/0x0C266223C8dB48cA1238103f5bD8772146F860a3/xmbinaer2yupobqdpcho.png",
+          "format": "png",
+          "created": "2025-03-02T05:24:44Z"
+        },
+        {
+          "public_id": "nft/0x0f0553a18b671FcD0190252e86e2d64a97fcB40c/accf4gadsln2gaogfvfj",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1736743318/nft/0x0f0553a18b671FcD0190252e86e2d64a97fcB40c/accf4gadsln2gaogfvfj.png",
+          "format": "png",
+          "created": "2025-01-13T04:41:58Z"
+        },
+        {
+          "public_id": "nft/0x0f0553a18b671FcD0190252e86e2d64a97fcB40c/altfrabxlpn7nml8qvlu",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1739308494/nft/0x0f0553a18b671FcD0190252e86e2d64a97fcB40c/altfrabxlpn7nml8qvlu.png",
+          "format": "png",
+          "created": "2025-02-11T21:14:54Z"
+        },
+        {
+          "public_id": "nft/0x0f0553a18b671FcD0190252e86e2d64a97fcB40c/anfa1ecmwoz4nq7d8l0o",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1733627022/nft/0x0f0553a18b671FcD0190252e86e2d64a97fcB40c/anfa1ecmwoz4nq7d8l0o.png",
+          "format": "png",
+          "created": "2024-12-08T03:03:42Z"
+        },
+        {
+          "public_id": "nft/0x0f0553a18b671FcD0190252e86e2d64a97fcB40c/atj2ekak9j8njkmq2wem",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1736966229/nft/0x0f0553a18b671FcD0190252e86e2d64a97fcB40c/atj2ekak9j8njkmq2wem.png",
+          "format": "png",
+          "created": "2025-01-15T18:37:09Z"
+        }
+      ]
+    },
+    "png": {
+      "path": "png",
+      "subfolders": [
+        {
+          "name": "emailEvents",
+          "path": "png/emailEvents"
+        }
+      ],
+      "imageCount": 5,
+      "sampleImages": [
+        {
+          "public_id": "png/emailEvents/a8aj4rabokovawnwefy6",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1740017791/png/emailEvents/a8aj4rabokovawnwefy6.png",
+          "format": "png",
+          "created": "2025-02-20T02:16:31Z"
+        },
+        {
+          "public_id": "png/emailEvents/a8zg43oqsqfvjphtifl1",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1738164453/png/emailEvents/a8zg43oqsqfvjphtifl1.png",
+          "format": "png",
+          "created": "2025-01-29T15:27:33Z"
+        },
+        {
+          "public_id": "png/emailEvents/a9ybsckatv7qzwufnn7r",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1738325696/png/emailEvents/a9ybsckatv7qzwufnn7r.png",
+          "format": "png",
+          "created": "2025-01-31T12:14:56Z"
+        },
+        {
+          "public_id": "png/emailEvents/aba5heel6nlnpgygtnwv",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1738282611/png/emailEvents/aba5heel6nlnpgygtnwv.png",
+          "format": "png",
+          "created": "2025-01-31T00:16:51Z"
+        },
+        {
+          "public_id": "png/emailEvents/acnz22an2wanhugkakyx",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1738278846/png/emailEvents/acnz22an2wanhugkakyx.png",
+          "format": "png",
+          "created": "2025-01-30T23:14:06Z"
+        }
+      ]
+    },
+    "product_images": {
+      "path": "product_images",
+      "subfolders": [],
+      "imageCount": 5,
+      "sampleImages": [
+        {
+          "public_id": "product_images/aaczjyirs3oddhnzqfbo",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728829951/product_images/aaczjyirs3oddhnzqfbo.png",
+          "format": "png",
+          "created": "2024-10-13T14:32:31Z"
+        },
+        {
+          "public_id": "product_images/ab0xi8gwdgweaqkjvyww",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728868460/product_images/ab0xi8gwdgweaqkjvyww.png",
+          "format": "png",
+          "created": "2024-10-14T01:14:20Z"
+        },
+        {
+          "public_id": "product_images/ab3hycwm9qvsug9aya0b",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728883138/product_images/ab3hycwm9qvsug9aya0b.png",
+          "format": "png",
+          "created": "2024-10-14T05:18:58Z"
+        },
+        {
+          "public_id": "product_images/acenh7igxbqpvlmdn71k",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728885177/product_images/acenh7igxbqpvlmdn71k.png",
+          "format": "png",
+          "created": "2024-10-14T05:52:57Z"
+        },
+        {
+          "public_id": "product_images/acuw7jvcqvgot3zvbg3j",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728883193/product_images/acuw7jvcqvgot3zvbg3j.png",
+          "format": "png",
+          "created": "2024-10-14T05:19:53Z"
+        }
+      ]
+    },
+    "productImages": {
+      "path": "productImages",
+      "subfolders": [
+        {
+          "name": "a6za32t6fxk42xdv9c1ksw5i",
+          "path": "productImages/a6za32t6fxk42xdv9c1ksw5i"
+        },
+        {
+          "name": "an2uaf5nzw6t7cscl7xi6vms",
+          "path": "productImages/an2uaf5nzw6t7cscl7xi6vms"
+        },
+        {
+          "name": "avaxcards",
+          "path": "productImages/avaxcards"
+        },
+        {
+          "name": "j8rwtunm1lr3hstxqo4u7atx",
+          "path": "productImages/j8rwtunm1lr3hstxqo4u7atx"
+        },
+        {
+          "name": "oynovc8bbyb9l1bptoqus2rt",
+          "path": "productImages/oynovc8bbyb9l1bptoqus2rt"
+        },
+        {
+          "name": "rcrojjrbqn57yi5el0osd7p3",
+          "path": "productImages/rcrojjrbqn57yi5el0osd7p3"
+        },
+        {
+          "name": "temp_OK GO",
+          "path": "productImages/temp_OK GO"
+        },
+        {
+          "name": "y5x642op7oqjr0jhalwp0swx",
+          "path": "productImages/y5x642op7oqjr0jhalwp0swx"
+        }
+      ],
+      "imageCount": 5,
+      "sampleImages": [
+        {
+          "public_id": "productImages/a6za32t6fxk42xdv9c1ksw5i/ahegw7k9gtwqe7kgeuw8",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1724192879/productImages/a6za32t6fxk42xdv9c1ksw5i/ahegw7k9gtwqe7kgeuw8.png",
+          "format": "png",
+          "created": "2024-08-20T22:27:59Z"
+        },
+        {
+          "public_id": "productImages/a6za32t6fxk42xdv9c1ksw5i/cudvmdutlxy57n2hgspy",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1724192879/productImages/a6za32t6fxk42xdv9c1ksw5i/cudvmdutlxy57n2hgspy.png",
+          "format": "png",
+          "created": "2024-08-20T22:27:59Z"
+        },
+        {
+          "public_id": "productImages/a6za32t6fxk42xdv9c1ksw5i/frpai4lheijeau5nwz6o",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1724192879/productImages/a6za32t6fxk42xdv9c1ksw5i/frpai4lheijeau5nwz6o.png",
+          "format": "png",
+          "created": "2024-08-20T22:27:59Z"
+        },
+        {
+          "public_id": "productImages/a6za32t6fxk42xdv9c1ksw5i/gbd8mik76bto1yhv3gtm",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1724192879/productImages/a6za32t6fxk42xdv9c1ksw5i/gbd8mik76bto1yhv3gtm.png",
+          "format": "png",
+          "created": "2024-08-20T22:27:59Z"
+        },
+        {
+          "public_id": "productImages/a6za32t6fxk42xdv9c1ksw5i/kbxd5uzxwr4imhd8ibid",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1724192871/productImages/a6za32t6fxk42xdv9c1ksw5i/kbxd5uzxwr4imhd8ibid.png",
+          "format": "png",
+          "created": "2024-08-20T22:27:51Z"
+        }
+      ]
+    },
+    "products": {
+      "path": "products",
+      "subfolders": [
+        {
+          "name": "a64olip5cixq063zwmb4hkq1",
+          "path": "products/a64olip5cixq063zwmb4hkq1"
+        },
+        {
+          "name": "as97bpioap118py676044khd",
+          "path": "products/as97bpioap118py676044khd"
+        },
+        {
+          "name": "asvjchcgah00ux0cbdnxb2vi",
+          "path": "products/asvjchcgah00ux0cbdnxb2vi"
+        },
+        {
+          "name": "ay93trf9ipygnrd566z9qmg1",
+          "path": "products/ay93trf9ipygnrd566z9qmg1"
+        },
+        {
+          "name": "b3c54jny29nva0hqy0z5unip",
+          "path": "products/b3c54jny29nva0hqy0z5unip"
+        },
+        {
+          "name": "b4g7x0zdo6fe6u6t68xlx6e3",
+          "path": "products/b4g7x0zdo6fe6u6t68xlx6e3"
+        },
+        {
+          "name": "bcibi4u6wts0058lvnhzz1n8",
+          "path": "products/bcibi4u6wts0058lvnhzz1n8"
+        },
+        {
+          "name": "bwtsc5h3a56n6l29cs2wwkbc",
+          "path": "products/bwtsc5h3a56n6l29cs2wwkbc"
+        },
+        {
+          "name": "cb1fba07x5vtb03fla2slxjn",
+          "path": "products/cb1fba07x5vtb03fla2slxjn"
+        },
+        {
+          "name": "ctrpgzbti3npovzqnl7iecpy",
+          "path": "products/ctrpgzbti3npovzqnl7iecpy"
+        },
+        {
+          "name": "cwh85zjssizvn2119r7oeu5l",
+          "path": "products/cwh85zjssizvn2119r7oeu5l"
+        },
+        {
+          "name": "cxz9biri5e8bpydhymfs214r",
+          "path": "products/cxz9biri5e8bpydhymfs214r"
+        },
+        {
+          "name": "d65h6b4t6z5zt2vgffn1fuok",
+          "path": "products/d65h6b4t6z5zt2vgffn1fuok"
+        },
+        {
+          "name": "dbsec7b04kg34j9p99evg6fe",
+          "path": "products/dbsec7b04kg34j9p99evg6fe"
+        },
+        {
+          "name": "djdo0rxdqjae28bmmis6zvss",
+          "path": "products/djdo0rxdqjae28bmmis6zvss"
+        },
+        {
+          "name": "dkojvsz5si7jakpq4954ud2s",
+          "path": "products/dkojvsz5si7jakpq4954ud2s"
+        },
+        {
+          "name": "dm6png1bxknytm0fb2wa0zn9",
+          "path": "products/dm6png1bxknytm0fb2wa0zn9"
+        },
+        {
+          "name": "emprhgri9ek0zdsx1ajp6kle",
+          "path": "products/emprhgri9ek0zdsx1ajp6kle"
+        },
+        {
+          "name": "ezevlad5vu8nb5dcwir0gaot",
+          "path": "products/ezevlad5vu8nb5dcwir0gaot"
+        },
+        {
+          "name": "f2h9pqw2a3n5ppfxuqekq9sc",
+          "path": "products/f2h9pqw2a3n5ppfxuqekq9sc"
+        },
+        {
+          "name": "f775ooleudy5x510qza5encf",
+          "path": "products/f775ooleudy5x510qza5encf"
+        },
+        {
+          "name": "fcj78tqcvne4zyndimmk1vav",
+          "path": "products/fcj78tqcvne4zyndimmk1vav"
+        },
+        {
+          "name": "ffub4empv8dz26h3iatqc8r9",
+          "path": "products/ffub4empv8dz26h3iatqc8r9"
+        },
+        {
+          "name": "fkzjmdowgugqvalcmm813qt7",
+          "path": "products/fkzjmdowgugqvalcmm813qt7"
+        },
+        {
+          "name": "gfjzj4609l3dvu1341cyaehj",
+          "path": "products/gfjzj4609l3dvu1341cyaehj"
+        },
+        {
+          "name": "gi7im86rg0yzqfistemtlzjo",
+          "path": "products/gi7im86rg0yzqfistemtlzjo"
+        },
+        {
+          "name": "gir6k8vqq21fsgme0sr63eb5",
+          "path": "products/gir6k8vqq21fsgme0sr63eb5"
+        },
+        {
+          "name": "gpelj6xjppg0xogy90rj5htl",
+          "path": "products/gpelj6xjppg0xogy90rj5htl"
+        },
+        {
+          "name": "h0doamfyz8ptgrhr4zy2146i",
+          "path": "products/h0doamfyz8ptgrhr4zy2146i"
+        },
+        {
+          "name": "hl05run8e879cs56fthi7qkg",
+          "path": "products/hl05run8e879cs56fthi7qkg"
+        },
+        {
+          "name": "htygdcxrb861la91g30emz2p",
+          "path": "products/htygdcxrb861la91g30emz2p"
+        },
+        {
+          "name": "igfqedzb1l2wi7z9xyijfzmp",
+          "path": "products/igfqedzb1l2wi7z9xyijfzmp"
+        },
+        {
+          "name": "ilcnnfjghzztvcoc14x6a3nz",
+          "path": "products/ilcnnfjghzztvcoc14x6a3nz"
+        },
+        {
+          "name": "itfqql5vkt2t15ok9w9ieo8v",
+          "path": "products/itfqql5vkt2t15ok9w9ieo8v"
+        },
+        {
+          "name": "j3nx648x53lgy0qz7lf8ks7p",
+          "path": "products/j3nx648x53lgy0qz7lf8ks7p"
+        },
+        {
+          "name": "jfionamdl69yxeqxqzr1stl7",
+          "path": "products/jfionamdl69yxeqxqzr1stl7"
+        },
+        {
+          "name": "jip5iwfpb18rehro6tc7y32c",
+          "path": "products/jip5iwfpb18rehro6tc7y32c"
+        },
+        {
+          "name": "jlgmiml6ouxq7k60qn6x56w2",
+          "path": "products/jlgmiml6ouxq7k60qn6x56w2"
+        },
+        {
+          "name": "jxkxgjkhohv00ep9vgmkckbz",
+          "path": "products/jxkxgjkhohv00ep9vgmkckbz"
+        },
+        {
+          "name": "k2r2aa8vmghuyr3he0p2eo5e",
+          "path": "products/k2r2aa8vmghuyr3he0p2eo5e"
+        },
+        {
+          "name": "k8c68vmzhss19u10mpgbkuj8",
+          "path": "products/k8c68vmzhss19u10mpgbkuj8"
+        },
+        {
+          "name": "kj6qrz94qalvu7ba3j14cjrp",
+          "path": "products/kj6qrz94qalvu7ba3j14cjrp"
+        },
+        {
+          "name": "km7h6p6cicmz712qu2hecens",
+          "path": "products/km7h6p6cicmz712qu2hecens"
+        },
+        {
+          "name": "l7t90u3scdk1jevxy69flfz2",
+          "path": "products/l7t90u3scdk1jevxy69flfz2"
+        },
+        {
+          "name": "lfzca2t7zj4fw5zcdxstl7rd",
+          "path": "products/lfzca2t7zj4fw5zcdxstl7rd"
+        },
+        {
+          "name": "llq9do7y6ot6hs4i4si2u509",
+          "path": "products/llq9do7y6ot6hs4i4si2u509"
+        },
+        {
+          "name": "lrc0pf43gfj2rbpd7hzw6rel",
+          "path": "products/lrc0pf43gfj2rbpd7hzw6rel"
+        },
+        {
+          "name": "ltn1x6euirmgepl80nxre5ip",
+          "path": "products/ltn1x6euirmgepl80nxre5ip"
+        },
+        {
+          "name": "luon52iuzjf8eskosn4mupkf",
+          "path": "products/luon52iuzjf8eskosn4mupkf"
+        },
+        {
+          "name": "lzo7i0sl2s0i49oej91dcsqk",
+          "path": "products/lzo7i0sl2s0i49oej91dcsqk"
+        },
+        {
+          "name": "md3ijthczvkgpsp550at4lo0",
+          "path": "products/md3ijthczvkgpsp550at4lo0"
+        },
+        {
+          "name": "mg3cwdf72kuv2ulnplukldj7",
+          "path": "products/mg3cwdf72kuv2ulnplukldj7"
+        },
+        {
+          "name": "mlb9498we2pdem2uhqspmsym",
+          "path": "products/mlb9498we2pdem2uhqspmsym"
+        },
+        {
+          "name": "n3a0yyzbjiammssd68zi1uyu",
+          "path": "products/n3a0yyzbjiammssd68zi1uyu"
+        },
+        {
+          "name": "ncrxqr9vltpr3lhfulqwxzgj",
+          "path": "products/ncrxqr9vltpr3lhfulqwxzgj"
+        },
+        {
+          "name": "ndc6urujmtd81ysbc3z0cksw",
+          "path": "products/ndc6urujmtd81ysbc3z0cksw"
+        },
+        {
+          "name": "ndftnd33fl86zk60ep95kswd",
+          "path": "products/ndftnd33fl86zk60ep95kswd"
+        },
+        {
+          "name": "nty7ay7huhz2mq0zyv47xcjp",
+          "path": "products/nty7ay7huhz2mq0zyv47xcjp"
+        },
+        {
+          "name": "o3qouwh1lp2r15n1z57wq29y",
+          "path": "products/o3qouwh1lp2r15n1z57wq29y"
+        },
+        {
+          "name": "old",
+          "path": "products/old"
+        },
+        {
+          "name": "pk94mvl4xufazscwa1pjza8i",
+          "path": "products/pk94mvl4xufazscwa1pjza8i"
+        },
+        {
+          "name": "pm5i3uc5iiuzbdn37srzkw0a",
+          "path": "products/pm5i3uc5iiuzbdn37srzkw0a"
+        },
+        {
+          "name": "pre140gxzg2lftxhoidkzvht",
+          "path": "products/pre140gxzg2lftxhoidkzvht"
+        },
+        {
+          "name": "pu3jyd8b16vufplofu01ybwj",
+          "path": "products/pu3jyd8b16vufplofu01ybwj"
+        },
+        {
+          "name": "q8hvquv74mr9opdph7mlpvyc",
+          "path": "products/q8hvquv74mr9opdph7mlpvyc"
+        },
+        {
+          "name": "qcdtnt11kfhj75y4dzg9xcul",
+          "path": "products/qcdtnt11kfhj75y4dzg9xcul"
+        },
+        {
+          "name": "qdksznxchfkn9fup1flgzay7",
+          "path": "products/qdksznxchfkn9fup1flgzay7"
+        },
+        {
+          "name": "qknjhu9uzit6epfb9z6c6e3z",
+          "path": "products/qknjhu9uzit6epfb9z6c6e3z"
+        },
+        {
+          "name": "qqvk5l73fblkuegh32f7z388",
+          "path": "products/qqvk5l73fblkuegh32f7z388"
+        },
+        {
+          "name": "qw54002ejfbdwyxd9q0xi32s",
+          "path": "products/qw54002ejfbdwyxd9q0xi32s"
+        },
+        {
+          "name": "qyu0ys52z11g22gljr0oq5v0",
+          "path": "products/qyu0ys52z11g22gljr0oq5v0"
+        },
+        {
+          "name": "r1jg18gzvpi2q7xdfpldgw3l",
+          "path": "products/r1jg18gzvpi2q7xdfpldgw3l"
+        },
+        {
+          "name": "r29bywe84ieuwjbw8n3mgvje",
+          "path": "products/r29bywe84ieuwjbw8n3mgvje"
+        },
+        {
+          "name": "s1dq7n90qieg4myxjakcxf56",
+          "path": "products/s1dq7n90qieg4myxjakcxf56"
+        },
+        {
+          "name": "s53cvlfls6mlezj3fr3yzpky",
+          "path": "products/s53cvlfls6mlezj3fr3yzpky"
+        },
+        {
+          "name": "script",
+          "path": "products/script"
+        },
+        {
+          "name": "sfz3ijl25edsdhd8efoosjlo",
+          "path": "products/sfz3ijl25edsdhd8efoosjlo"
+        },
+        {
+          "name": "sq68fkp0zufjsc5kvn3h9zz2",
+          "path": "products/sq68fkp0zufjsc5kvn3h9zz2"
+        },
+        {
+          "name": "sr2emd33kqq8z7mhhhreg4nn",
+          "path": "products/sr2emd33kqq8z7mhhhreg4nn"
+        },
+        {
+          "name": "sz6qzrybv94mpb0q5yvzny6n",
+          "path": "products/sz6qzrybv94mpb0q5yvzny6n"
+        },
+        {
+          "name": "szta6y1j66y6a8igz4dtkzaz",
+          "path": "products/szta6y1j66y6a8igz4dtkzaz"
+        },
+        {
+          "name": "t37i8yjlgx95p51ktrubqvzy",
+          "path": "products/t37i8yjlgx95p51ktrubqvzy"
+        },
+        {
+          "name": "t47hqu3krzxgjsrq93yfp99k",
+          "path": "products/t47hqu3krzxgjsrq93yfp99k"
+        },
+        {
+          "name": "temp",
+          "path": "products/temp"
+        },
+        {
+          "name": "tfbqqt2yo7nmaclb462seiwy",
+          "path": "products/tfbqqt2yo7nmaclb462seiwy"
+        },
+        {
+          "name": "tgyza2cjmawwxh64knh7l0dz",
+          "path": "products/tgyza2cjmawwxh64knh7l0dz"
+        },
+        {
+          "name": "toe1274ctg3r3f3bbwharhy7",
+          "path": "products/toe1274ctg3r3f3bbwharhy7"
+        },
+        {
+          "name": "tx61pgtgr2rau4cv6vjnnjp3",
+          "path": "products/tx61pgtgr2rau4cv6vjnnjp3"
+        },
+        {
+          "name": "tycidxjwzzvdwcujrwf996wt",
+          "path": "products/tycidxjwzzvdwcujrwf996wt"
+        },
+        {
+          "name": "u18fqijjdl5t4ctw3tc6qqie",
+          "path": "products/u18fqijjdl5t4ctw3tc6qqie"
+        },
+        {
+          "name": "umon1dxsry5ojitv2jse2lvm",
+          "path": "products/umon1dxsry5ojitv2jse2lvm"
+        },
+        {
+          "name": "uqbppnvb9727aeh4004mn7hk",
+          "path": "products/uqbppnvb9727aeh4004mn7hk"
+        },
+        {
+          "name": "uqd9sqh8a4fnuvumaylzvmfg",
+          "path": "products/uqd9sqh8a4fnuvumaylzvmfg"
+        },
+        {
+          "name": "v3gh5c8gmor91bkqzxhrkvbi",
+          "path": "products/v3gh5c8gmor91bkqzxhrkvbi"
+        },
+        {
+          "name": "v96l0fa3xqyj184alj5ro38e",
+          "path": "products/v96l0fa3xqyj184alj5ro38e"
+        },
+        {
+          "name": "vbzoy6d11qdf2jamyu0xszzv",
+          "path": "products/vbzoy6d11qdf2jamyu0xszzv"
+        },
+        {
+          "name": "vh4urauftsojnmw8vysiu8jb",
+          "path": "products/vh4urauftsojnmw8vysiu8jb"
+        },
+        {
+          "name": "vl2ekgnrx73u5aeeigj2uwmf",
+          "path": "products/vl2ekgnrx73u5aeeigj2uwmf"
+        },
+        {
+          "name": "vsxjf870d51h5xyteygwsuz4",
+          "path": "products/vsxjf870d51h5xyteygwsuz4"
+        },
+        {
+          "name": "w5bgve70qpgm024vw4qcvkac",
+          "path": "products/w5bgve70qpgm024vw4qcvkac"
+        },
+        {
+          "name": "wj4j6rh4w6kg8pr2b22g7nyv",
+          "path": "products/wj4j6rh4w6kg8pr2b22g7nyv"
+        },
+        {
+          "name": "wjvlyul8hq80c1hnud8tm5gq",
+          "path": "products/wjvlyul8hq80c1hnud8tm5gq"
+        },
+        {
+          "name": "wmindjllnv62wtnrl92faaf0",
+          "path": "products/wmindjllnv62wtnrl92faaf0"
+        },
+        {
+          "name": "wrnpgr6wam0mlufpw6uk580u",
+          "path": "products/wrnpgr6wam0mlufpw6uk580u"
+        },
+        {
+          "name": "xkq7emwc0i1otue32b0awbeb",
+          "path": "products/xkq7emwc0i1otue32b0awbeb"
+        },
+        {
+          "name": "xx19r35wxzqmc3hoh9e6h6r9",
+          "path": "products/xx19r35wxzqmc3hoh9e6h6r9"
+        },
+        {
+          "name": "y85feolk1dz42s5f9ajyfl33",
+          "path": "products/y85feolk1dz42s5f9ajyfl33"
+        },
+        {
+          "name": "ybo9ged0t1kxjhw8d5s49f2x",
+          "path": "products/ybo9ged0t1kxjhw8d5s49f2x"
+        },
+        {
+          "name": "yf22bw7gpypvfuz6z847lupt",
+          "path": "products/yf22bw7gpypvfuz6z847lupt"
+        },
+        {
+          "name": "yg3vl6pmm3qbbsueyxtkoqht",
+          "path": "products/yg3vl6pmm3qbbsueyxtkoqht"
+        },
+        {
+          "name": "yiuvkxkscmcbddniqy3t29og",
+          "path": "products/yiuvkxkscmcbddniqy3t29og"
+        },
+        {
+          "name": "yvyxf9bk6owl192uk9922hfz",
+          "path": "products/yvyxf9bk6owl192uk9922hfz"
+        },
+        {
+          "name": "yyq1mv6vu4u3azb3f4ycp5bq",
+          "path": "products/yyq1mv6vu4u3azb3f4ycp5bq"
+        },
+        {
+          "name": "z8t5mo6g0v5qp4851mf7hcew",
+          "path": "products/z8t5mo6g0v5qp4851mf7hcew"
+        },
+        {
+          "name": "zapo325r6ivuk5ehjh7oswh1",
+          "path": "products/zapo325r6ivuk5ehjh7oswh1"
+        },
+        {
+          "name": "zbizc0fy1rnanujx7eomijye",
+          "path": "products/zbizc0fy1rnanujx7eomijye"
+        },
+        {
+          "name": "zixfc0zh4whv1du4ztyw765g",
+          "path": "products/zixfc0zh4whv1du4ztyw765g"
+        },
+        {
+          "name": "zwc8922fr59nakybrbduerhu",
+          "path": "products/zwc8922fr59nakybrbduerhu"
+        },
+        {
+          "name": "zwvq24stwwsoxqh2ljlg6olj",
+          "path": "products/zwvq24stwwsoxqh2ljlg6olj"
+        }
+      ],
+      "imageCount": 5,
+      "sampleImages": [
+        {
+          "public_id": "products/1000xp-segmit_vpsf4m",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1739205816/products/1000xp-segmit_vpsf4m.png",
+          "format": "png",
+          "created": "2025-02-10T16:43:36Z"
+        },
+        {
+          "public_id": "products/a64olip5cixq063zwmb4hkq1/adelaqgqre9voyjge36z",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1738193403/products/a64olip5cixq063zwmb4hkq1/adelaqgqre9voyjge36z.png",
+          "format": "png",
+          "created": "2025-01-29T23:30:03Z"
+        },
+        {
+          "public_id": "products/a64olip5cixq063zwmb4hkq1/adjmw0ynu9ftxdtgclns",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1738191781/products/a64olip5cixq063zwmb4hkq1/adjmw0ynu9ftxdtgclns.png",
+          "format": "png",
+          "created": "2025-01-29T23:03:01Z"
+        },
+        {
+          "public_id": "products/a64olip5cixq063zwmb4hkq1/cjlq6bt5oru3oe1alt1n",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1738191781/products/a64olip5cixq063zwmb4hkq1/cjlq6bt5oru3oe1alt1n.png",
+          "format": "png",
+          "created": "2025-01-29T23:03:01Z"
+        },
+        {
+          "public_id": "products/a64olip5cixq063zwmb4hkq1/cuu4vfhpunnxjfsv1ypd",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1738192648/products/a64olip5cixq063zwmb4hkq1/cuu4vfhpunnxjfsv1ypd.png",
+          "format": "png",
+          "created": "2025-01-29T23:17:28Z"
+        }
+      ]
+    },
+    "profile": {
+      "path": "profile",
+      "subfolders": [
+        {
+          "name": "user-uploads",
+          "path": "profile/user-uploads"
+        }
+      ],
+      "imageCount": 5,
+      "sampleImages": [
+        {
+          "public_id": "profile/user-uploads/af9ed0vs1fcxivineub2",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1741246409/profile/user-uploads/af9ed0vs1fcxivineub2.png",
+          "format": "png",
+          "created": "2025-03-06T07:33:29Z"
+        },
+        {
+          "public_id": "profile/user-uploads/biskvgmn1iygv6ianoox",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1743536083/profile/user-uploads/biskvgmn1iygv6ianoox.png",
+          "format": "png",
+          "created": "2025-04-01T19:34:43Z"
+        },
+        {
+          "public_id": "profile/user-uploads/c0cjwhojbalccxm4pgox",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1732129875/profile/user-uploads/c0cjwhojbalccxm4pgox.png",
+          "format": "png",
+          "created": "2024-11-20T19:11:15Z"
+        },
+        {
+          "public_id": "profile/user-uploads/cnnta4jdpbk4xitcoz5u",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1739510247/profile/user-uploads/cnnta4jdpbk4xitcoz5u.png",
+          "format": "png",
+          "created": "2025-02-14T05:17:27Z"
+        },
+        {
+          "public_id": "profile/user-uploads/diffm5xgx6zj4tflsukn",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1725398298/profile/user-uploads/diffm5xgx6zj4tflsukn.png",
+          "format": "png",
+          "created": "2024-09-03T21:18:18Z"
+        }
+      ]
+    },
+    "samples": {
+      "path": "samples",
+      "subfolders": [
+        {
+          "name": "animals",
+          "path": "samples/animals"
+        },
+        {
+          "name": "ecommerce",
+          "path": "samples/ecommerce"
+        },
+        {
+          "name": "food",
+          "path": "samples/food"
+        },
+        {
+          "name": "landscapes",
+          "path": "samples/landscapes"
+        },
+        {
+          "name": "people",
+          "path": "samples/people"
+        }
+      ],
+      "imageCount": 5,
+      "sampleImages": [
+        {
+          "public_id": "samples/chair",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1707792322/samples/chair.png",
+          "format": "png",
+          "created": "2024-02-13T02:45:22Z"
+        },
+        {
+          "public_id": "samples/logo",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1707792322/samples/logo.png",
+          "format": "png",
+          "created": "2024-02-13T02:45:22Z"
+        },
+        {
+          "public_id": "samples/man-on-a-street",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1707792321/samples/man-on-a-street.jpg",
+          "format": "jpg",
+          "created": "2024-02-13T02:45:21Z"
+        },
+        {
+          "public_id": "samples/man-portrait",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1707792322/samples/man-portrait.jpg",
+          "format": "jpg",
+          "created": "2024-02-13T02:45:22Z"
+        },
+        {
+          "public_id": "samples/outdoor-woman",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1707792321/samples/outdoor-woman.jpg",
+          "format": "jpg",
+          "created": "2024-02-13T02:45:21Z"
+        }
+      ]
+    },
+    "sanity_a9vtdosx_images_production": {
+      "path": "sanity_a9vtdosx_images_production",
+      "subfolders": [],
+      "imageCount": 5,
+      "sampleImages": [
+        {
+          "public_id": "sanity_a9vtdosx_images_production/a0b2vvbomygdmt0i2y6q",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728894851/sanity_a9vtdosx_images_production/a0b2vvbomygdmt0i2y6q.jpg",
+          "format": "jpg",
+          "created": "2024-10-14T08:34:11Z"
+        },
+        {
+          "public_id": "sanity_a9vtdosx_images_production/a0dalgxmy44y6pklwyrn",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728891540/sanity_a9vtdosx_images_production/a0dalgxmy44y6pklwyrn.jpg",
+          "format": "jpg",
+          "created": "2024-10-14T07:39:00Z"
+        },
+        {
+          "public_id": "sanity_a9vtdosx_images_production/a0gb01bmioge6dgsjkmg",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728897650/sanity_a9vtdosx_images_production/a0gb01bmioge6dgsjkmg.jpg",
+          "format": "jpg",
+          "created": "2024-10-14T09:20:50Z"
+        },
+        {
+          "public_id": "sanity_a9vtdosx_images_production/a1edtwpiarrnnkkqazx5",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728911801/sanity_a9vtdosx_images_production/a1edtwpiarrnnkkqazx5.png",
+          "format": "png",
+          "created": "2024-10-14T13:16:41Z"
+        },
+        {
+          "public_id": "sanity_a9vtdosx_images_production/a1enlrkuqhppclvjfglj",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728887722/sanity_a9vtdosx_images_production/a1enlrkuqhppclvjfglj.png",
+          "format": "png",
+          "created": "2024-10-14T06:35:22Z"
+        }
+      ]
+    },
+    "store": {
+      "path": "store",
+      "subfolders": [
+        {
+          "name": "about-pages",
+          "path": "store/about-pages"
+        },
+        {
+          "name": "background",
+          "path": "store/background"
+        },
+        {
+          "name": "checkout",
+          "path": "store/checkout"
+        },
+        {
+          "name": "creator",
+          "path": "store/creator"
+        },
+        {
+          "name": "footer",
+          "path": "store/footer"
+        },
+        {
+          "name": "header",
+          "path": "store/header"
+        },
+        {
+          "name": "home",
+          "path": "store/home"
+        },
+        {
+          "name": "prize",
+          "path": "store/prize"
+        },
+        {
+          "name": "social",
+          "path": "store/social"
+        },
+        {
+          "name": "ugc",
+          "path": "store/ugc"
+        }
+      ],
+      "imageCount": 5,
+      "sampleImages": [
+        {
+          "public_id": "store/about-pages/blue-dude",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728967815/store/about-pages/blue-dude.png",
+          "format": "png",
+          "created": "2024-10-15T04:50:15Z"
+        },
+        {
+          "public_id": "store/about-pages/chest",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728967818/store/about-pages/chest.jpg",
+          "format": "jpg",
+          "created": "2024-10-15T04:50:18Z"
+        },
+        {
+          "public_id": "store/about-pages/computer",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728967814/store/about-pages/computer.jpg",
+          "format": "jpg",
+          "created": "2024-10-15T04:50:14Z"
+        },
+        {
+          "public_id": "store/about-pages/computer-2",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728967814/store/about-pages/computer-2.jpg",
+          "format": "jpg",
+          "created": "2024-10-15T04:50:14Z"
+        },
+        {
+          "public_id": "store/about-pages/creator-demo",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728967814/store/about-pages/creator-demo.png",
+          "format": "png",
+          "created": "2024-10-15T04:50:14Z"
+        }
+      ]
+    },
+    "test": {
+      "path": "test",
+      "subfolders": [
+        {
+          "name": "test",
+          "path": "test/test"
+        }
+      ],
+      "imageCount": 0,
+      "sampleImages": []
+    },
+    "tresr-garments": {
+      "path": "tresr-garments",
+      "subfolders": [],
+      "imageCount": 5,
+      "sampleImages": [
+        {
+          "public_id": "tresr-garments/baby-tee_black_back",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1754401666/tresr-garments/baby-tee_black_back.webp",
+          "format": "webp",
+          "created": "2025-08-05T13:47:46Z"
+        },
+        {
+          "public_id": "tresr-garments/baby-tee_black_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1754401665/tresr-garments/baby-tee_black_front.webp",
+          "format": "webp",
+          "created": "2025-08-05T13:47:45Z"
+        },
+        {
+          "public_id": "tresr-garments/baby-tee_white_back",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1754401670/tresr-garments/baby-tee_white_back.webp",
+          "format": "webp",
+          "created": "2025-08-05T13:47:50Z"
+        },
+        {
+          "public_id": "tresr-garments/baby-tee_white_front",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1754401668/tresr-garments/baby-tee_white_front.webp",
+          "format": "webp",
+          "created": "2025-08-05T13:47:48Z"
+        },
+        {
+          "public_id": "tresr-garments/boxy_black_back",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752444599/tresr-garments/boxy_black_back.jpg",
+          "format": "jpg",
+          "created": "2025-07-13T22:09:59Z"
+        }
+      ]
+    },
+    "tresr-logos": {
+      "path": "tresr-logos",
+      "subfolders": [
+        {
+          "name": "diamond",
+          "path": "tresr-logos/diamond"
+        },
+        {
+          "name": "horizontal",
+          "path": "tresr-logos/horizontal"
+        },
+        {
+          "name": "patch",
+          "path": "tresr-logos/patch"
+        },
+        {
+          "name": "text",
+          "path": "tresr-logos/text"
+        },
+        {
+          "name": "vertical",
+          "path": "tresr-logos/vertical"
+        }
+      ],
+      "imageCount": 5,
+      "sampleImages": [
+        {
+          "public_id": "tresr-logos/diamond/diamond-black.png",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752432386/tresr-logos/diamond/diamond-black.png.png",
+          "format": "png",
+          "created": "2025-07-13T18:46:26Z"
+        },
+        {
+          "public_id": "tresr-logos/diamond/diamond-gold.png",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752432389/tresr-logos/diamond/diamond-gold.png.png",
+          "format": "png",
+          "created": "2025-07-13T18:46:29Z"
+        },
+        {
+          "public_id": "tresr-logos/diamond/diamond-white.png",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752432391/tresr-logos/diamond/diamond-white.png.png",
+          "format": "png",
+          "created": "2025-07-13T18:46:31Z"
+        },
+        {
+          "public_id": "tresr-logos/horizontal/horizontal-black.png",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752432394/tresr-logos/horizontal/horizontal-black.png.png",
+          "format": "png",
+          "created": "2025-07-13T18:46:34Z"
+        },
+        {
+          "public_id": "tresr-logos/horizontal/horizontal-white-gold.png",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752432399/tresr-logos/horizontal/horizontal-white-gold.png.png",
+          "format": "png",
+          "created": "2025-07-13T18:46:39Z"
+        }
+      ]
+    },
+    "tresr-templates": {
+      "path": "tresr-templates",
+      "subfolders": [
+        {
+          "name": "tresr-templates",
+          "path": "tresr-templates/tresr-templates"
+        }
+      ],
+      "imageCount": 5,
+      "sampleImages": [
+        {
+          "public_id": "tresr-templates/tresr-templates/baby-tee/back-black",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1754608317/tresr-templates/tresr-templates/baby-tee/back-black.png",
+          "format": "png",
+          "created": "2025-08-07T23:10:32Z"
+        },
+        {
+          "public_id": "tresr-templates/tresr-templates/baby-tee/back-white",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1754608335/tresr-templates/tresr-templates/baby-tee/back-white.png",
+          "format": "png",
+          "created": "2025-08-07T23:10:49Z"
+        },
+        {
+          "public_id": "tresr-templates/tresr-templates/baby-tee/front-black",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1754608310/tresr-templates/tresr-templates/baby-tee/front-black.png",
+          "format": "png",
+          "created": "2025-08-07T23:10:26Z"
+        },
+        {
+          "public_id": "tresr-templates/tresr-templates/baby-tee/front-white",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1754608329/tresr-templates/tresr-templates/baby-tee/front-white.png",
+          "format": "png",
+          "created": "2025-08-07T23:10:44Z"
+        },
+        {
+          "public_id": "tresr-templates/tresr-templates/baby-tee/thumbnail-black",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1754608323/tresr-templates/tresr-templates/baby-tee/thumbnail-black.png",
+          "format": "png",
+          "created": "2025-08-07T23:10:37Z"
+        }
+      ]
+    },
+    "ugc": {
+      "path": "ugc",
+      "subfolders": [],
+      "imageCount": 1,
+      "sampleImages": [
+        {
+          "public_id": "ugc/GGOLJ9-WYAAu9Bz_ohqvhv",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1738854964/ugc/GGOLJ9-WYAAu9Bz_ohqvhv.jpg",
+          "format": "jpg",
+          "created": "2025-02-06T15:16:04Z"
+        }
+      ]
+    },
+    "website": {
+      "path": "website",
+      "subfolders": [
+        {
+          "name": "about-pages",
+          "path": "website/about-pages"
+        },
+        {
+          "name": "background",
+          "path": "website/background"
+        },
+        {
+          "name": "footer",
+          "path": "website/footer"
+        },
+        {
+          "name": "header",
+          "path": "website/header"
+        },
+        {
+          "name": "home",
+          "path": "website/home"
+        },
+        {
+          "name": "prize",
+          "path": "website/prize"
+        },
+        {
+          "name": "social",
+          "path": "website/social"
+        },
+        {
+          "name": "ugc",
+          "path": "website/ugc"
+        }
+      ],
+      "imageCount": 5,
+      "sampleImages": [
+        {
+          "public_id": "website/about-pages/a8j6buwryjpbffnmygdf",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728541212/website/about-pages/a8j6buwryjpbffnmygdf.jpg",
+          "format": "jpg",
+          "created": "2024-10-10T06:20:12Z"
+        },
+        {
+          "public_id": "website/about-pages/bb3tnsotvkntaprcxzyw",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728541213/website/about-pages/bb3tnsotvkntaprcxzyw.jpg",
+          "format": "jpg",
+          "created": "2024-10-10T06:20:13Z"
+        },
+        {
+          "public_id": "website/about-pages/bikye4byqabsxcvmkbcd",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728541212/website/about-pages/bikye4byqabsxcvmkbcd.jpg",
+          "format": "jpg",
+          "created": "2024-10-10T06:20:12Z"
+        },
+        {
+          "public_id": "website/about-pages/g6tchf8eayqsbselediq",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728541212/website/about-pages/g6tchf8eayqsbselediq.jpg",
+          "format": "jpg",
+          "created": "2024-10-10T06:20:12Z"
+        },
+        {
+          "public_id": "website/about-pages/kbszsyigxb8mm8osfdmw",
+          "url": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728541212/website/about-pages/kbszsyigxb8mm8osfdmw.png",
+          "format": "png",
+          "created": "2024-10-10T06:20:12Z"
+        }
+      ]
+    }
+  },
+  "patterns": {
+    "designs": "designs/{creatorId}/{designId}.{format}",
+    "products": "products/{creatorId}/{garment}_{side}_{color}.{format}",
+    "garments": "{garmentType}/{side}/{color}.png"
+  },
+  "mappingStrategy": {
+    "step1": "User uploads design -> Store in designs/{creatorId}/",
+    "step2": "Generate mockups using garment templates",
+    "step3": "Composite design onto garment at defined coordinates",
+    "step4": "Save mockup to products/{creatorId}/",
+    "step5": "Store metadata and URLs in Sanity"
+  }
+}

@@ -229,6 +229,7 @@ app.use('/api/settings', require('./routes/settings-db'));
 
 // TEST ROUTES: Data flow debugging
 app.use('/api/test', require('./routes/test-data-flow'));
+app.use('/api/test/thumbnails', require('./routes/test-thumbnail-display'));
 
 // DEBUG ROUTES: Authentication flow debugging (temporary)
 app.use('/api/debug-auth', require('./debug-auth-test'));
