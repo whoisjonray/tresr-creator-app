@@ -1,17 +1,23 @@
 const express = require('express');
 const router = express.Router();
-const { createClient } = require('@sanity/client');
 const { Design, CreatorMapping } = require('../models');
 const { authenticate } = require('../middleware/auth');
 
-// Sanity client configuration
-const sanityClient = createClient({
-  projectId: process.env.SANITY_PROJECT_ID || 'a9vtdosx',
-  dataset: process.env.SANITY_DATASET || 'production',
-  apiVersion: '2024-01-01',
-  useCdn: false,
-  token: process.env.SANITY_API_TOKEN
-});
+// Try to load Sanity client - handle if not available
+let sanityClient = null;
+try {
+  const { createClient } = require('@sanity/client');
+  // Sanity client configuration
+  sanityClient = createClient({
+    projectId: process.env.SANITY_PROJECT_ID || 'a9vtdosx',
+    dataset: process.env.SANITY_DATASET || 'production',
+    apiVersion: '2024-01-01',
+    useCdn: false,
+    token: process.env.SANITY_API_TOKEN
+  });
+} catch (error) {
+  console.warn('⚠️ Sanity client not available in enhanced import:', error.message);
+}
 
 // Garment configuration for template mapping
 const GARMENT_CONFIG = {
@@ -149,6 +155,14 @@ router.post('/import-with-all-images/:sanityPersonId', authenticate, async (req,
     console.log('🎨 ENHANCED IMPORT - Starting with complete image mapping');
     console.log(`   User: ${user.email}`);
     console.log(`   Sanity Person ID: ${sanityPersonId}`);
+    
+    // Check if Sanity client is available
+    if (!sanityClient) {
+      return res.status(503).json({
+        error: 'Sanity client not available',
+        message: 'The import service is temporarily unavailable'
+      });
+    }
     
     // Verify creator mapping
     const mapping = await CreatorMapping.findOne({
