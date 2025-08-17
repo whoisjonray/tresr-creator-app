@@ -1,0 +1,305 @@
+{
+  "overview": {
+    "totalProducts": 10,
+    "foldersUsed": [
+      "garments/ - Blank garment templates",
+      "designs/ - Raw user-uploaded designs",
+      "products/ - Generated product mockups",
+      "clipart/ - Additional design elements",
+      "nft/ - NFT-related images"
+    ],
+    "workflow": [
+      "1. User uploads design → Store in designs/{creatorId}/{designId}",
+      "2. Select garment type (tee, boxy, etc.) from garments/ folder",
+      "3. Apply design to garment at specified coordinates",
+      "4. Generate mockup for each color variant",
+      "5. Store mockups in products/{creatorId}/",
+      "6. Save URLs in Sanity mainImage and secondaryImages"
+    ]
+  },
+  "garmentTypes": {
+    "tee": {
+      "folder": "garments/tee",
+      "sides": [
+        "display",
+        "back"
+      ],
+      "colors": [
+        "black",
+        "white",
+        "heather-grey",
+        "red",
+        "navy"
+      ],
+      "displayName": "Classic Tee"
+    },
+    "boxy": {
+      "folder": "garments/boxy",
+      "sides": [
+        "display",
+        "back"
+      ],
+      "colors": [
+        "black",
+        "white",
+        "sand",
+        "mint"
+      ],
+      "displayName": "Boxy Tee"
+    },
+    "polo": {
+      "folder": "garments/polo",
+      "sides": [
+        "display",
+        "back"
+      ],
+      "colors": [
+        "black",
+        "white",
+        "navy"
+      ],
+      "displayName": "Polo Shirt"
+    },
+    "mediu": {
+      "folder": "garments/mediu",
+      "sides": [
+        "display",
+        "back"
+      ],
+      "colors": [
+        "black",
+        "white",
+        "grey"
+      ],
+      "displayName": "Medium Weight Tee"
+    },
+    "med-hood": {
+      "folder": "garments/med-hood",
+      "sides": [
+        "display",
+        "back"
+      ],
+      "colors": [
+        "black",
+        "white",
+        "grey"
+      ],
+      "displayName": "Medium Hoodie"
+    },
+    "next-crop": {
+      "folder": "garments/next-crop",
+      "sides": [
+        "display",
+        "back"
+      ],
+      "colors": [
+        "black",
+        "white",
+        "pink"
+      ],
+      "displayName": "Crop Top"
+    },
+    "wmn-hoodie": {
+      "folder": "garments/wmn-hoodie",
+      "sides": [
+        "display",
+        "back"
+      ],
+      "colors": [
+        "black",
+        "white",
+        "pink"
+      ],
+      "displayName": "Women's Hoodie"
+    },
+    "patch-c": {
+      "folder": "garments/patch-c",
+      "sides": [
+        "display"
+      ],
+      "colors": [
+        "default"
+      ],
+      "displayName": "Patch Circle"
+    },
+    "patch-flat": {
+      "folder": "garments/patch-flat",
+      "sides": [
+        "display"
+      ],
+      "colors": [
+        "default"
+      ],
+      "displayName": "Patch Flat"
+    }
+  },
+  "imageMappings": [
+    {
+      "productId": "00298a31-a3d7-4575-b89f-1222b3ee2e80",
+      "name": null,
+      "slug": "hodl-unicorn-t-tshirt",
+      "designId": "jrgdoz7l23l5k3ulnnpzx9dg",
+      "images": {
+        "mainMockup": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728896518/sanity_a9vtdosx_images_production/ngv2eetml1wtgj91szdk.jpg",
+        "rawDesigns": {},
+        "garmentTemplates": {},
+        "generatedMockups": [
+          "https://res.cloudinary.com/dqslerzk9/image/upload/v1728896519/sanity_a9vtdosx_images_production/cqis15uev39jlqba8s2b.jpg",
+          "https://res.cloudinary.com/dqslerzk9/image/upload/v1728896521/sanity_a9vtdosx_images_production/gdvhxmzdfozqddcl6z0n.jpg",
+          "https://res.cloudinary.com/dqslerzk9/image/upload/v1728896521/sanity_a9vtdosx_images_production/jqy0ljuhg6rxzuexrkhm.jpg"
+        ],
+        "thumbnails": []
+      }
+    },
+    {
+      "productId": "003ee1c6-77ea-4573-a9d9-35e9977bd383",
+      "name": null,
+      "slug": "plan-b-hoodie_1",
+      "designId": "g0mj98tppr7tn0inpo4zwon6",
+      "images": {
+        "mainMockup": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728911152/sanity_a9vtdosx_images_production/hfrtihzxgmjrldsx63t8.png",
+        "rawDesigns": {},
+        "garmentTemplates": {},
+        "generatedMockups": [
+          "https://res.cloudinary.com/dqslerzk9/image/upload/v1728911154/sanity_a9vtdosx_images_production/qjbfxtwbq08obn1jhyfk.png",
+          "https://res.cloudinary.com/dqslerzk9/image/upload/v1728911155/sanity_a9vtdosx_images_production/ybymm9ueqqup2xixi7ny.png",
+          "https://res.cloudinary.com/dqslerzk9/image/upload/v1728911155/sanity_a9vtdosx_images_production/yuczczkuiwlxyygjpnl9.png",
+          "https://res.cloudinary.com/dqslerzk9/image/upload/v1728911155/sanity_a9vtdosx_images_production/b5ra17y5e3ktzaxp4kij.png",
+          "https://res.cloudinary.com/dqslerzk9/image/upload/v1728911155/sanity_a9vtdosx_images_production/cztikxzys9boabvrcvfb.png",
+          "https://res.cloudinary.com/dqslerzk9/image/upload/v1728911156/sanity_a9vtdosx_images_production/xcfuvi15wyx0satqwmvc.png"
+        ],
+        "thumbnails": []
+      }
+    },
+    {
+      "productId": "00d9234f-c37c-43bf-b55f-23626952f657",
+      "name": null,
+      "slug": "just-hodl-hoodie",
+      "designId": null,
+      "images": {
+        "mainMockup": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728887873/sanity_a9vtdosx_images_production/xm1zgxbtk2dezojebhdk.png",
+        "rawDesigns": {},
+        "garmentTemplates": {},
+        "generatedMockups": [
+          "https://res.cloudinary.com/dqslerzk9/image/upload/v1728887875/sanity_a9vtdosx_images_production/jh9rfzlgwfxnyhjcxhao.png"
+        ],
+        "thumbnails": []
+      }
+    },
+    {
+      "productId": "0128e314-cc19-47ea-9e4a-a4c86fc77b8e",
+      "name": null,
+      "slug": "keep-coffee-t-tshirt_1",
+      "designId": "o7byq592g481nk3zr1t7c6cw",
+      "images": {
+        "mainMockup": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728901517/sanity_a9vtdosx_images_production/hea5bsvf0uabowrbtj4x.jpg",
+        "rawDesigns": {},
+        "garmentTemplates": {},
+        "generatedMockups": [
+          "https://res.cloudinary.com/dqslerzk9/image/upload/v1728901518/sanity_a9vtdosx_images_production/lsz8u1vmxcannimwtrkm.jpg",
+          "https://res.cloudinary.com/dqslerzk9/image/upload/v1728901520/sanity_a9vtdosx_images_production/fzm7u4avrdifsdvuq957.jpg",
+          "https://res.cloudinary.com/dqslerzk9/image/upload/v1728901520/sanity_a9vtdosx_images_production/q8fjxpsvxejgrrqd3tob.jpg"
+        ],
+        "thumbnails": []
+      }
+    },
+    {
+      "productId": "0131ed09-37f4-4dd4-95fd-ae7ee62c44ea",
+      "name": null,
+      "slug": "behemoth-tshirt",
+      "designId": "ywnhyxdgko4wbsopnrg587nb",
+      "images": {
+        "mainMockup": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728890416/sanity_a9vtdosx_images_production/h1lq4yiyb0lml0psxzfj.jpg",
+        "rawDesigns": {},
+        "garmentTemplates": {},
+        "generatedMockups": [
+          "https://res.cloudinary.com/dqslerzk9/image/upload/v1728890418/sanity_a9vtdosx_images_production/jr4tncxwndvhnqdvshm6.jpg"
+        ],
+        "thumbnails": []
+      }
+    },
+    {
+      "productId": "0142772f-72a7-471f-bc43-2c3d18e9dfa6",
+      "name": null,
+      "slug": "briteling-tshirt",
+      "designId": "hm4k3k0yon0ayjbeo0kb77zn",
+      "images": {
+        "mainMockup": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728891409/sanity_a9vtdosx_images_production/tlas8ehxkxbspv19i7gx.jpg",
+        "rawDesigns": {},
+        "garmentTemplates": {},
+        "generatedMockups": [
+          "https://res.cloudinary.com/dqslerzk9/image/upload/v1728891411/sanity_a9vtdosx_images_production/xixau6u67opptpc0vded.jpg"
+        ],
+        "thumbnails": []
+      }
+    },
+    {
+      "productId": "018ce435-bb50-4805-a778-6cf097d8cba5",
+      "name": null,
+      "slug": "tronk-tshirt",
+      "designId": "tbzzwtmq02eu0t7yt0s7v7ci",
+      "images": {
+        "mainMockup": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728890567/sanity_a9vtdosx_images_production/p8abzjyf0vy3kux9fb2p.jpg",
+        "rawDesigns": {},
+        "garmentTemplates": {},
+        "generatedMockups": [
+          "https://res.cloudinary.com/dqslerzk9/image/upload/v1728890568/sanity_a9vtdosx_images_production/xzxaet7zycjubynpmanj.jpg"
+        ],
+        "thumbnails": []
+      }
+    },
+    {
+      "productId": "02065636-f98d-4823-8b48-0f65c1a176d0",
+      "name": null,
+      "slug": "gas-tshirt",
+      "designId": "ahnj2lvx9n5gl58a88p07e45",
+      "images": {
+        "mainMockup": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728892706/sanity_a9vtdosx_images_production/kjwt5ff4bl4rtuyjzwke.jpg",
+        "rawDesigns": {},
+        "garmentTemplates": {},
+        "generatedMockups": [
+          "https://res.cloudinary.com/dqslerzk9/image/upload/v1728891550/sanity_a9vtdosx_images_production/zv4enwhi4qxrktkqb2mw.png"
+        ],
+        "thumbnails": []
+      }
+    },
+    {
+      "productId": "0226c04f-18da-49f2-9873-bb56578bf663",
+      "name": null,
+      "slug": "olivine-merch-tshirt",
+      "designId": null,
+      "images": {
+        "mainMockup": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728892081/sanity_a9vtdosx_images_production/tcuduy4agpqn1trlinbg.jpg",
+        "rawDesigns": {},
+        "garmentTemplates": {},
+        "generatedMockups": [
+          "https://res.cloudinary.com/dqslerzk9/image/upload/v1728890740/sanity_a9vtdosx_images_production/knjgw0z2f8nhlvfbv4cy.png"
+        ],
+        "thumbnails": []
+      }
+    },
+    {
+      "productId": "02360bb4-9c39-4b99-9459-8a434b856f6e",
+      "name": null,
+      "slug": "coq-inu-logo-tshirt_1",
+      "designId": "uugu6lwre5xnthaks2dcdzfw",
+      "images": {
+        "mainMockup": "https://res.cloudinary.com/dqslerzk9/image/upload/v1728892432/sanity_a9vtdosx_images_production/pzi8k3fttqga2vrjdfmt.jpg",
+        "rawDesigns": {},
+        "garmentTemplates": {},
+        "generatedMockups": [
+          "https://res.cloudinary.com/dqslerzk9/image/upload/v1728892434/sanity_a9vtdosx_images_production/birruujmwoizj2tzq60f.jpg",
+          "https://res.cloudinary.com/dqslerzk9/image/upload/v1728892435/sanity_a9vtdosx_images_production/y4sc49t3lknubsxxyn8f.jpg",
+          "https://res.cloudinary.com/dqslerzk9/image/upload/v1728892435/sanity_a9vtdosx_images_production/qhe8qr5hefzbpnctydsy.jpg",
+          "https://res.cloudinary.com/dqslerzk9/image/upload/v1728892435/sanity_a9vtdosx_images_production/t2laxlspdj1byqehcqmq.jpg"
+        ],
+        "thumbnails": []
+      }
+    }
+  ],
+  "implementationGuide": {
+    "importProcess": "\n// When importing a design from Sanity:\n1. Extract mainImage.uri for thumbnail\n2. Parse designId to find raw designs in designs/{creatorId}/{designId}\n3. Identify garment type from productParts\n4. Load garment templates from garments/{type}/\n5. Store all URLs in design_data JSON field\n        ",
+    "editingProcess": "\n// When editing a design:\n1. Load raw design from design_data.rawDesigns\n2. Load garment template from design_data.garmentTemplates\n3. Use Canvas API to composite design on garment\n4. Apply placement coordinates from productParts\n5. Generate new mockup and upload to Cloudinary\n6. Update Sanity with new mockup URLs\n        ",
+    "dataStructure": "\ndesign_data: {\n  rawDesigns: {\n    front: \"cloudinary_url\",\n    back: \"cloudinary_url\",\n    sleeve: \"cloudinary_url\"\n  },\n  garmentTemplates: {\n    tee: {\n      display: { black: \"url\", white: \"url\", ... },\n      back: { black: \"url\", white: \"url\", ... }\n    }\n  },\n  mockups: {\n    main: \"cloudinary_url\",\n    variants: [...]\n  },\n  placement: {\n    front: { x: 100, y: 100, width: 200, height: 200 },\n    back: { x: 100, y: 100, width: 200, height: 200 }\n  }\n}\n        "
+  }
+}
