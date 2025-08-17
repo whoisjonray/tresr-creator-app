@@ -228,6 +228,9 @@ app.use('/api/settings', require('./routes/settings-db'));
 
 // TEST ROUTES: Data flow debugging
 app.use('/api/test', require('./routes/test-data-flow'));
+
+// DEBUG ROUTES: Authentication flow debugging (temporary)
+app.use('/api/debug-auth', require('./debug-auth-test'));
 app.use('/api/templates', require('./routes/productTemplates'));
 app.use('/api/env', require('./routes/env-check'));
 

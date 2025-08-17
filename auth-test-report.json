@@ -1,0 +1,545 @@
+{
+  "timestamp": "2025-08-16T23:08:12.116Z",
+  "testResults": [
+    {
+      "timestamp": "2025-08-16T23:08:11.752Z",
+      "message": "\n🚀 === STARTING FULL AUTHENTICATION TEST SUITE ===",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.752Z",
+      "message": "🏥 Testing server health...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.772Z",
+      "message": "✅ Server is healthy",
+      "data": {
+        "status": "ok",
+        "timestamp": "2025-08-16T23:08:11.769Z",
+        "environment": "development",
+        "version": "2.0",
+        "routes": {
+          "v1": [
+            "auth",
+            "products",
+            "mockups",
+            "creators",
+            "admin",
+            "designs",
+            "scans",
+            "sanity",
+            "shopify"
+          ],
+          "v2": [
+            "auth",
+            "users",
+            "sanity",
+            "shopify"
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.772Z",
+      "message": "🔍 Testing session debug endpoint...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.773Z",
+      "message": "Session debug response",
+      "data": {
+        "status": 404,
+        "data": {
+          "error": true,
+          "message": "Route not found"
+        }
+      }
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.774Z",
+      "message": "🚫 Testing invalid token handling...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.776Z",
+      "message": "Invalid token response",
+      "data": {
+        "status": 401,
+        "success": false,
+        "error": "TOKEN_VERIFICATION_FAILED"
+      }
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.776Z",
+      "message": "✅ Invalid token correctly rejected",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.776Z",
+      "message": "🔐 Testing Dynamic.xyz login with jwt token...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.778Z",
+      "message": "Generated token",
+      "data": {
+        "type": "jwt",
+        "length": 467,
+        "preview": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkeW5fdGVzdF9jYjhlZm0yY2UiLCJlbWFpbCI6InRlc3RAdHJlc3I..."
+      }
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.969Z",
+      "message": "Session cookies updated",
+      "data": "tresr.session=s%3Ai3m-G7WW5wBlOHwPc-W26uyuDvAUR1qy.r14IgSpG1NUvbJBfiZqQ2%2BN5P2N5llYPug3D%2FFHB%2Bak; Path=/; Expires=Sat, 23 Aug 2025 23:08:11 GMT; HttpOnly; SameSite=Lax"
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.969Z",
+      "message": "Login response",
+      "data": {
+        "status": 200,
+        "success": true,
+        "user": {
+          "id": "dyn_test_cb8efm2ce",
+          "email": "test@tresr.com",
+          "name": "test",
+          "role": "creator",
+          "isAdmin": false,
+          "isAuthenticated": true,
+          "authenticatedAt": "2025-08-16T23:08:11.968Z"
+        }
+      }
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.969Z",
+      "message": "✅ Login successful",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.969Z",
+      "message": "🔄 Testing session persistence...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.972Z",
+      "message": "Session persistence check",
+      "data": {
+        "status": 200,
+        "success": true,
+        "user": {
+          "id": "dyn_test_cb8efm2ce",
+          "email": "test@tresr.com",
+          "name": "test",
+          "role": "creator",
+          "isAdmin": false,
+          "isAuthenticated": true,
+          "authenticatedAt": "2025-08-16T23:08:11.968Z",
+          "isActive": true,
+          "designCount": 0
+        },
+        "session": {
+          "id": "i3m-G7WW5wBlOHwPc-W26uyuDvAUR1qy",
+          "valid": true,
+          "expiresAt": "2025-08-17T23:08:11.971Z"
+        }
+      }
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.972Z",
+      "message": "✅ Session persisted successfully",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.972Z",
+      "message": "🛡️ Testing protected route access...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.974Z",
+      "message": "Protected route response",
+      "data": {
+        "status": 404,
+        "error": true
+      }
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.974Z",
+      "message": "❌ Protected route access failed",
+      "data": {
+        "error": true,
+        "message": "Route not found"
+      }
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.974Z",
+      "message": "🔄 Testing session refresh...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.975Z",
+      "message": "Session cookies updated",
+      "data": "tresr.session=s%3Ai3m-G7WW5wBlOHwPc-W26uyuDvAUR1qy.r14IgSpG1NUvbJBfiZqQ2%2BN5P2N5llYPug3D%2FFHB%2Bak; Path=/; Expires=Sat, 23 Aug 2025 23:08:11 GMT; HttpOnly; SameSite=Lax"
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.975Z",
+      "message": "Session refresh response",
+      "data": {
+        "status": 200,
+        "success": true,
+        "user": {
+          "id": "dyn_test_cb8efm2ce",
+          "email": "test@tresr.com",
+          "name": "test",
+          "isAuthenticated": true,
+          "authenticatedAt": "2025-08-16T23:08:11.974Z"
+        },
+        "session": {
+          "id": "i3m-G7WW5wBlOHwPc-W26uyuDvAUR1qy",
+          "refreshedAt": "2025-08-16T23:08:11.975Z",
+          "expiresAt": "2025-08-17T23:08:11.975Z"
+        }
+      }
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.976Z",
+      "message": "✅ Session refresh successful",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.976Z",
+      "message": "🚪 Testing logout...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.977Z",
+      "message": "Logout response",
+      "data": {
+        "status": 200,
+        "success": true,
+        "message": "Successfully logged out"
+      }
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.977Z",
+      "message": "✅ Logout successful",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.977Z",
+      "message": "🔒 Testing post-logout access...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.978Z",
+      "message": "Post-logout access response",
+      "data": {
+        "status": 401,
+        "success": false,
+        "error": "SESSION_INVALID"
+      }
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.978Z",
+      "message": "✅ Post-logout access correctly denied",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.978Z",
+      "message": "🔐 Testing Dynamic.xyz login with json token...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.978Z",
+      "message": "Generated token",
+      "data": {
+        "type": "json",
+        "length": 130,
+        "preview": "{\"sub\":\"dyn_test_8f1rgwwhv\",\"email\":\"test@tresr.com\",\"name\":\"Test Creator\",\"sessionId\":\"sess_qaghkwd..."
+      }
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.113Z",
+      "message": "Session cookies updated",
+      "data": "tresr.session=s%3Ap-p62ZXjFHBW2PHu-zr7QIEXD_MOzjFI.gzlY1kLg6QdnHsN2ngLaKWIQQ95CV7tBbDJp8t3cK2k; Path=/; Expires=Sat, 23 Aug 2025 23:08:12 GMT; HttpOnly; SameSite=Lax"
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.113Z",
+      "message": "Login response",
+      "data": {
+        "status": 200,
+        "success": true,
+        "user": {
+          "id": "dyn_test_8f1rgwwhv",
+          "email": "test@tresr.com",
+          "name": "test",
+          "role": "creator",
+          "isAdmin": false,
+          "isAuthenticated": true,
+          "authenticatedAt": "2025-08-16T23:08:12.111Z"
+        }
+      }
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.113Z",
+      "message": "✅ Login successful",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.113Z",
+      "message": "🚪 Testing logout...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.114Z",
+      "message": "Logout response",
+      "data": {
+        "status": 200,
+        "success": true,
+        "message": "Successfully logged out"
+      }
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.114Z",
+      "message": "✅ Logout successful",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.115Z",
+      "message": "🌐 Testing CORS headers...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.115Z",
+      "message": "CORS test for origin: http://localhost:3003",
+      "data": {
+        "status": 204,
+        "allowOrigin": "http://localhost:3003",
+        "allowCredentials": "true"
+      }
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.116Z",
+      "message": "CORS test for origin: https://creators.tresr.com",
+      "data": {
+        "status": 204,
+        "allowOrigin": "https://creators.tresr.com",
+        "allowCredentials": "true"
+      }
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.116Z",
+      "message": "✅ CORS tests completed",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.116Z",
+      "message": "\n📊 === TEST SUITE SUMMARY ===",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.116Z",
+      "message": "Tests passed: 9/11",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.116Z",
+      "message": "✅ serverHealth",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.116Z",
+      "message": "❌ sessionDebug",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.116Z",
+      "message": "✅ jwtLogin",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.116Z",
+      "message": "✅ jsonLogin",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.116Z",
+      "message": "✅ sessionPersistence",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.116Z",
+      "message": "❌ protectedRoute",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.116Z",
+      "message": "✅ sessionRefresh",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.116Z",
+      "message": "✅ logout",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.116Z",
+      "message": "✅ postLogoutAccess",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.116Z",
+      "message": "✅ invalidToken",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.116Z",
+      "message": "✅ corsHeaders",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.116Z",
+      "message": "⚠️ Some tests failed. Check the logs above for details.",
+      "data": null
+    }
+  ],
+  "summary": [
+    {
+      "timestamp": "2025-08-16T23:08:11.772Z",
+      "message": "✅ Server is healthy",
+      "data": {
+        "status": "ok",
+        "timestamp": "2025-08-16T23:08:11.769Z",
+        "environment": "development",
+        "version": "2.0",
+        "routes": {
+          "v1": [
+            "auth",
+            "products",
+            "mockups",
+            "creators",
+            "admin",
+            "designs",
+            "scans",
+            "sanity",
+            "shopify"
+          ],
+          "v2": [
+            "auth",
+            "users",
+            "sanity",
+            "shopify"
+          ]
+        }
+      }
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.776Z",
+      "message": "✅ Invalid token correctly rejected",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.969Z",
+      "message": "✅ Login successful",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.972Z",
+      "message": "✅ Session persisted successfully",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.974Z",
+      "message": "❌ Protected route access failed",
+      "data": {
+        "error": true,
+        "message": "Route not found"
+      }
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.976Z",
+      "message": "✅ Session refresh successful",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.977Z",
+      "message": "✅ Logout successful",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:11.978Z",
+      "message": "✅ Post-logout access correctly denied",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.113Z",
+      "message": "✅ Login successful",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.114Z",
+      "message": "✅ Logout successful",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.116Z",
+      "message": "✅ CORS tests completed",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.116Z",
+      "message": "✅ serverHealth",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.116Z",
+      "message": "❌ sessionDebug",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.116Z",
+      "message": "✅ jwtLogin",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.116Z",
+      "message": "✅ jsonLogin",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.116Z",
+      "message": "✅ sessionPersistence",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.116Z",
+      "message": "❌ protectedRoute",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.116Z",
+      "message": "✅ sessionRefresh",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.116Z",
+      "message": "✅ logout",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.116Z",
+      "message": "✅ postLogoutAccess",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.116Z",
+      "message": "✅ invalidToken",
+      "data": null
+    },
+    {
+      "timestamp": "2025-08-16T23:08:12.116Z",
+      "message": "✅ corsHeaders",
+      "data": null
+    }
+  ]
+}

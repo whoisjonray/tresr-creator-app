@@ -32,9 +32,9 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuth = async () => {
     try {
-      const response = await api.get('/api/auth/me');
+      const response = await api.get('/api/v2/auth/me');
       if (response.data.success) {
-        setCreator(response.data.creator);
+        setCreator(response.data.user); // v2 endpoint returns 'user', not 'creator'
       }
     } catch (error) {
       console.error('Auth check failed:', error);
@@ -47,9 +47,9 @@ export const AuthProvider = ({ children }) => {
     try {
       console.log('Sending auth request with token length:', token?.length);
       console.log('Token preview:', token?.substring(0, 100) + '...');
-      const response = await api.post('/api/auth/verify', { token });
+      const response = await api.post('/api/v2/auth/login', { token });
       if (response.data.success) {
-        setCreator(response.data.creator);
+        setCreator(response.data.user); // v2 endpoint returns 'user', not 'creator'
         return { success: true };
       }
     } catch (error) {
@@ -57,14 +57,14 @@ export const AuthProvider = ({ children }) => {
       console.error('Response data:', error.response?.data);
       return { 
         success: false, 
-        error: error.response?.data?.error || 'Login failed' 
+        error: error.response?.data?.error || error.response?.data?.message || 'Login failed' 
       };
     }
   };
 
   const logout = async () => {
     try {
-      await api.post('/api/auth/logout');
+      await api.post('/api/v2/auth/logout');
       setCreator(null);
     } catch (error) {
       console.error('Logout failed:', error);

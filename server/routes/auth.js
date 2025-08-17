@@ -82,7 +82,7 @@ router.post('/verify', async (req, res) => {
       }
       
       // Create session with unique user data and role
-      req.session.creator = {
+      const sessionUser = {
         id: userData.id,
         email: userData.email,
         walletAddress: userData.verifiedCredentials?.[0]?.address,
@@ -92,12 +92,17 @@ router.post('/verify', async (req, res) => {
         isAdmin: userRole.role === 'admin'
       };
       
+      // Set both session formats for backward compatibility
+      req.session.creator = sessionUser;
+      req.session.user = sessionUser;  // For compatibility with old import code
+      
       // SECURITY: Log session creation for audit trail
       console.log('🔐 === NEW SESSION CREATED ===');
-      console.log(`User ID: ${req.session.creator.id}`);
-      console.log(`Email: ${req.session.creator.email}`);
-      console.log(`Name: ${req.session.creator.name}`);
-      console.log(`Role: ${req.session.creator.role}`);
+      console.log(`User ID: ${sessionUser.id}`);
+      console.log(`Email: ${sessionUser.email}`);
+      console.log(`Name: ${sessionUser.name}`);
+      console.log(`Role: ${sessionUser.role}`);
+      console.log(`Session formats: creator ✓, user ✓ (backward compat)`);
       console.log(`Session ID: ${req.sessionID}`);
       console.log(`Timestamp: ${new Date().toISOString()}`);
       console.log('🔐 ==========================');
@@ -126,28 +131,38 @@ router.get('/me', (req, res) => {
   console.log('Auth /me called');
   console.log('Session ID:', req.sessionID);
   console.log('Session creator:', req.session.creator);
+  console.log('Session user:', req.session.user);
   console.log('NODE_ENV:', process.env.NODE_ENV);
   
+  // Check both session formats
+  const sessionUser = req.session.creator || req.session.user;
+  
   // In development, create a session if none exists
-  if (process.env.NODE_ENV === 'development' && !req.session.creator) {
+  if (process.env.NODE_ENV === 'development' && !sessionUser) {
     console.log('Creating dev session');
-    req.session.creator = {
+    const devUser = {
       id: 'dev-creator',
       email: 'dev@tresr.com',
       name: 'Dev Creator',
       isCreator: true
     };
+    req.session.creator = devUser;
+    req.session.user = devUser;
   }
 
-  if (!req.session.creator) {
-    console.log('No creator session found, returning 401');
+  if (!sessionUser) {
+    console.log('No session found (checked both .creator and .user), returning 401');
     return res.status(401).json({ error: 'Not authenticated' });
   }
 
-  console.log('Returning creator session');
+  // Ensure both formats are set for consistency
+  if (!req.session.creator) req.session.creator = sessionUser;
+  if (!req.session.user) req.session.user = sessionUser;
+
+  console.log('Returning session for user:', sessionUser.email);
   res.json({
     success: true,
-    creator: req.session.creator
+    creator: sessionUser
   });
 });
 
