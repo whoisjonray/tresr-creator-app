@@ -98,6 +98,12 @@ router.post('/import-my-designs-no-auth', async (req, res) => {
     
     for (const sanityDesign of sanityDesigns) {
       try {
+        // Log image availability for debugging
+        console.log(`📸 Design "${sanityDesign.title}" has ${sanityDesign.images?.length || 0} images`);
+        if (sanityDesign.images?.length > 0) {
+          console.log(`   Image URLs:`, sanityDesign.images.map(img => img?.asset?.url || 'no URL').slice(0, 2));
+        }
+        
         // Convert bounding box to center position if needed
         let frontPosition = { x: 150, y: 150, width: 150, height: 150 };
         if (sanityDesign.overlayTopLeft && sanityDesign.overlayBottomRight) {
@@ -126,10 +132,23 @@ router.post('/import-my-designs-no-auth', async (req, res) => {
           backScale: 1,
           status: sanityDesign.isActive ? 'published' : 'draft',
           designData: {
+            elements: [
+              {
+                type: 'image',
+                src: sanityDesign.images?.[0]?.asset?.url || '',
+                position: frontPosition,
+                size: { width: frontPosition.width, height: frontPosition.height },
+                rotation: 0,
+                opacity: 1,
+                side: 'front'
+              }
+            ],
+            backgroundColor: '#ffffff',
             productStyles: sanityDesign.productStyles,
             sales: sanityDesign.sales || 0,
             views: sanityDesign.views || 0,
-            slug: sanityDesign.slug
+            slug: sanityDesign.slug,
+            sanityId: sanityDesign._id
           }
         };
         
@@ -279,6 +298,12 @@ router.post('/import-my-designs', requireAuth, async (req, res) => {
     
     for (const sanityDesign of sanityDesigns) {
       try {
+        // Log image availability for debugging
+        console.log(`📸 Design "${sanityDesign.title}" has ${sanityDesign.images?.length || 0} images`);
+        if (sanityDesign.images?.length > 0) {
+          console.log(`   Image URLs:`, sanityDesign.images.map(img => img?.asset?.url || 'no URL').slice(0, 2));
+        }
+        
         // Convert bounding box to center position if needed
         let frontPosition = { x: 150, y: 150, width: 150, height: 150 };
         if (sanityDesign.overlayTopLeft && sanityDesign.overlayBottomRight) {
@@ -307,10 +332,23 @@ router.post('/import-my-designs', requireAuth, async (req, res) => {
           backScale: 1,
           status: sanityDesign.isActive ? 'published' : 'draft',
           designData: {
+            elements: [
+              {
+                type: 'image',
+                src: sanityDesign.images?.[0]?.asset?.url || '',
+                position: frontPosition,
+                size: { width: frontPosition.width, height: frontPosition.height },
+                rotation: 0,
+                opacity: 1,
+                side: 'front'
+              }
+            ],
+            backgroundColor: '#ffffff',
             productStyles: sanityDesign.productStyles,
             sales: sanityDesign.sales || 0,
             views: sanityDesign.views || 0,
-            slug: sanityDesign.slug
+            slug: sanityDesign.slug,
+            sanityId: sanityDesign._id
           }
         };
         

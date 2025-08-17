@@ -57,7 +57,17 @@ router.get('/', requireAuth, async (req, res) => {
     });
 
     const [designs] = await sequelize.query(
-      `SELECT * FROM designs WHERE creator_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?`,
+      `SELECT id, creator_id, name, description, status, 
+              thumbnail_url as thumbnailUrl, 
+              front_design_url as frontDesignUrl,
+              back_design_url as backDesignUrl,
+              front_position, back_position, front_scale, back_scale,
+              tags, print_method, nfc_experience, published_at,
+              created_at, updated_at, sanity_id, design_data
+       FROM designs 
+       WHERE creator_id = ? 
+       ORDER BY created_at DESC 
+       LIMIT ? OFFSET ?`,
       {
         replacements: [creatorId, parseInt(limit), (parseInt(page) - 1) * parseInt(limit)]
       }
@@ -99,7 +109,99 @@ router.get('/', requireAuth, async (req, res) => {
   }
 });
 
-// Get a specific design
+// Get a specific design (public access for published designs)
+router.get('/:designId/public', async (req, res) => {
+  try {
+    const { designId } = req.params;
+
+    // First try to get design without creator restriction for public access
+    const sqlite3 = require('sqlite3').verbose();
+    const path = require('path');
+    const dbPath = path.join(__dirname, '../data/tresr-creator.db');
+    
+    const design = await new Promise((resolve, reject) => {
+      const db = new sqlite3.Database(dbPath, (err) => {
+        if (err) {
+          console.error('SQLite connection error:', err);
+          reject(err);
+          return;
+        }
+      });
+
+      const query = `
+        SELECT 
+          id, sanity_design_id as sanityId, creator_id as creatorId, 
+          title as name, description,
+          front_design_url as frontDesignUrl, back_design_url as backDesignUrl,
+          front_design_public_id as frontDesignPublicId, back_design_public_id as backDesignPublicId,
+          front_position as frontPosition, back_position as backPosition,
+          front_scale as frontScale, back_scale as backScale,
+          design_data as designData, thumbnail_url as thumbnailUrl,
+          tags, print_method as printMethod, nfc_experience as nfcExperience,
+          status, published_at as publishedAt, created_at as createdAt, updated_at as updatedAt
+        FROM designs 
+        WHERE (id = ? OR sanity_design_id = ?) AND (status = 'published' OR status IS NULL)
+      `;
+
+      db.get(query, [designId, designId], (err, row) => {
+        db.close();
+        
+        if (err) {
+          console.error('Error fetching design:', err);
+          reject(err);
+          return;
+        }
+
+        if (!row) {
+          resolve(null);
+          return;
+        }
+
+        // Parse JSON fields
+        try {
+          if (row.frontPosition) row.frontPosition = JSON.parse(row.frontPosition);
+          if (row.backPosition) row.backPosition = JSON.parse(row.backPosition);
+          if (row.designData) row.designData = JSON.parse(row.designData);
+          if (row.tags) row.tags = JSON.parse(row.tags);
+        } catch (parseError) {
+          console.warn('JSON parsing error:', parseError);
+        }
+
+        resolve(row);
+      });
+    });
+
+    if (!design) {
+      return res.status(404).json({
+        success: false,
+        error: 'Design not found or not published'
+      });
+    }
+
+    // Track view event without creator requirement
+    try {
+      await databaseService.trackDesignEvent(designId, 'view', {
+        timestamp: new Date(),
+        public: true
+      });
+    } catch (trackError) {
+      console.warn('Failed to track design view:', trackError);
+    }
+
+    res.json({
+      success: true,
+      design
+    });
+  } catch (error) {
+    console.error('Error fetching public design:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch design'
+    });
+  }
+});
+
+// Get a specific design (authenticated)
 router.get('/:designId', requireAuth, async (req, res) => {
   try {
     const creatorId = req.session.creator.id;

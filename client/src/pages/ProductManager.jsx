@@ -46,7 +46,9 @@ function ProductManager() {
   const loadProductsFromDatabase = async () => {
     try {
       console.log('📋 Loading products from database...');
-      const designsResponse = await api.get('/api/designs');
+      const designsResponse = await api.get('/api/designs', {
+        params: { limit: 1000 } // Get all designs, not just default 20
+      });
       console.log('API /designs response:', designsResponse.data);
       
       if (designsResponse.data.designs && designsResponse.data.designs.length > 0) {

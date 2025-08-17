@@ -125,21 +125,89 @@ class DatabaseService {
 
   async getDesignById(designId, creatorId) {
     try {
-      const design = await Design.findOne({
-        where: { id: designId, creatorId },
-        include: [
-          {
-            model: DesignProduct,
-            as: 'products',
-            include: [{
-              model: DesignVariant,
-              as: 'variants'
-            }]
-          }
-        ]
-      });
+      // First try Sequelize model if database is available
+      if (this.isDatabaseAvailable() && Design) {
+        const design = await Design.findOne({
+          where: { id: designId, creatorId },
+          include: [
+            {
+              model: DesignProduct,
+              as: 'products',
+              include: [{
+                model: DesignVariant,
+                as: 'variants'
+              }]
+            }
+          ]
+        });
 
-      return design;
+        return design;
+      }
+
+      // Fallback to raw query for SQLite
+      const { Sequelize } = require('sequelize');
+      const dbUrl = process.env.MYSQL_URL || process.env.DATABASE_URL;
+      
+      if (!dbUrl) {
+        // Use SQLite directly
+        const sqlite3 = require('sqlite3').verbose();
+        const path = require('path');
+        const dbPath = path.join(__dirname, '../data/tresr-creator.db');
+        
+        return new Promise((resolve, reject) => {
+          const db = new sqlite3.Database(dbPath, (err) => {
+            if (err) {
+              console.error('SQLite connection error:', err);
+              reject(err);
+              return;
+            }
+          });
+
+          const query = `
+            SELECT 
+              id, sanity_design_id as sanityId, creator_id as creatorId, 
+              title as name, description,
+              front_design_url as frontDesignUrl, back_design_url as backDesignUrl,
+              front_design_public_id as frontDesignPublicId, back_design_public_id as backDesignPublicId,
+              front_position as frontPosition, back_position as backPosition,
+              front_scale as frontScale, back_scale as backScale,
+              design_data as designData, thumbnail_url as thumbnailUrl,
+              tags, print_method as printMethod, nfc_experience as nfcExperience,
+              status, published_at as publishedAt, created_at as createdAt, updated_at as updatedAt
+            FROM designs 
+            WHERE (id = ? OR sanity_design_id = ?) AND creator_id = ?
+          `;
+
+          db.get(query, [designId, designId, creatorId], (err, row) => {
+            db.close();
+            
+            if (err) {
+              console.error('Error fetching design:', err);
+              reject(err);
+              return;
+            }
+
+            if (!row) {
+              resolve(null);
+              return;
+            }
+
+            // Parse JSON fields
+            try {
+              if (row.frontPosition) row.frontPosition = JSON.parse(row.frontPosition);
+              if (row.backPosition) row.backPosition = JSON.parse(row.backPosition);
+              if (row.designData) row.designData = JSON.parse(row.designData);
+              if (row.tags) row.tags = JSON.parse(row.tags);
+            } catch (parseError) {
+              console.warn('JSON parsing error:', parseError);
+            }
+
+            resolve(row);
+          });
+        });
+      }
+
+      return null;
     } catch (error) {
       console.error('Error fetching design:', error);
       throw error;

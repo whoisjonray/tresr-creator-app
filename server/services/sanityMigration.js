@@ -286,12 +286,24 @@ class SanityMigrationService {
       backDesignUrl: migratedImages.back || migratedImages.front, // Use front as fallback
       additionalImages: migratedImages.additional,
       designData: {
+        // Coordinate data for design editor
+        coordinates: {
+          front: frontPosition,
+          back: frontPosition // Use same as front for now
+        },
+        layers: [],
+        // Sanity metadata
         sanitySlug: sanityDesign.slug,
         tags: sanityDesign.tags || [],
         productStyles: sanityDesign.productStyles || [],
         originalCreators: sanityDesign.creators || [],
         salesCount: sanityDesign.salesCount || 0,
-        viewCount: sanityDesign.viewCount || 0
+        viewCount: sanityDesign.viewCount || 0,
+        // Original Sanity bounding box for reference
+        originalBoundingBox: {
+          topLeft: sanityDesign.overlayTopLeft,
+          bottomRight: sanityDesign.overlayBottomRight
+        }
       },
       frontPosition: frontPosition,
       backPosition: frontPosition, // Same as front by default
