@@ -1,17 +1,23 @@
 const express = require('express');
 const router = express.Router();
-const { createClient } = require('@sanity/client');
 const { Design } = require('../models');
 const { authenticate } = require('../middleware/auth');
 
-// Sanity client configuration
-const sanityClient = createClient({
-  projectId: process.env.SANITY_PROJECT_ID || 'a9vtdosx',
-  dataset: process.env.SANITY_DATASET || 'production',
-  apiVersion: '2024-01-01',
-  useCdn: false,
-  token: process.env.SANITY_API_TOKEN
-});
+// Try to load Sanity client
+let sanityClient = null;
+try {
+  const { createClient } = require('@sanity/client');
+  // Sanity client configuration
+  sanityClient = createClient({
+    projectId: process.env.SANITY_PROJECT_ID || 'a9vtdosx',
+    dataset: process.env.SANITY_DATASET || 'production',
+    apiVersion: '2024-01-01',
+    useCdn: false,
+    token: process.env.SANITY_API_TOKEN
+  });
+} catch (error) {
+  console.warn('⚠️ Sanity client not available in fix route:', error.message);
+}
 
 // Fix all thumbnails for memelord designs
 router.post('/fix-all-memelord-thumbnails', authenticate, async (req, res) => {
@@ -27,6 +33,14 @@ router.post('/fix-all-memelord-thumbnails', authenticate, async (req, res) => {
     
     console.log('🔧 FIXING ALL MEMELORD THUMBNAILS');
     console.log('='.repeat(60));
+    
+    // Check if Sanity client is available
+    if (!sanityClient) {
+      return res.status(503).json({
+        error: 'Sanity client not available',
+        message: 'The fix service is temporarily unavailable. Please try again later.'
+      });
+    }
     
     // Get all designs for memelord from database
     const existingDesigns = await Design.findAll({
