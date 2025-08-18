@@ -10,8 +10,7 @@ import './DesignEditor.css'; // v2 - square swatches with 14 colors
 import { userStorage } from '../utils/userStorage';
 import { usePrintAreas } from '../contexts/PrintAreasContext';
 import { autoDebugAndFix } from '../utils/debug-current-design';
-import { immediateCanvasFix } from '../utils/immediate-canvas-fix';
-import { emergencyEditorFix } from '../utils/emergency-editor-fix';
+import { completeCanvasFix } from '../utils/complete-canvas-fix';
 
 // Get API base URL from environment
 const getApiBaseURL = () => {
@@ -827,17 +826,10 @@ function DesignEditor() {
                 console.log('   Auto-scaling large image to:', scale + '%');
               }
               
-              // FIX: Force canvas to render after image loads
+              // FIX: Use complete canvas fix
               setTimeout(() => {
-                console.log('🔧 Running canvas fix after image load...');
-                immediateCanvasFix();
-                emergencyEditorFix();
-              }, 100);
-              
-              // Run again after a longer delay to ensure it works
-              setTimeout(() => {
-                console.log('🚨 Running emergency editor fix...');
-                emergencyEditorFix();
+                console.log('🎯 Running complete canvas fix...');
+                completeCanvasFix();
               }, 500);
               
               // Force canvas redraw after image loads
@@ -1983,6 +1975,24 @@ function DesignEditor() {
                 <div className="tools-section">
                   <div className="tools-header">
                     <h3>Tools</h3>
+                    <button 
+                      onClick={() => {
+                        console.log('Manual canvas fix triggered');
+                        completeCanvasFix();
+                      }}
+                      style={{
+                        marginLeft: 'auto',
+                        padding: '6px 12px',
+                        background: '#dc2626',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        fontSize: '12px',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Fix Canvas
+                    </button>
                     <div className="tools-grid">
                       <button 
                         className={`tool-btn ${showBoundingBox ? 'active' : ''}`}
