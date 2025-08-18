@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scale Slider Fix - Before vs After Demo</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 600;
+        }
+        
+        .subtitle {
+            margin-top: 10px;
+            opacity: 0.9;
+            font-size: 1.2em;
+        }
+        
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+        
+        .panel {
+            padding: 30px;
+            position: relative;
+        }
+        
+        .before {
+            background: #fff5f5;
+            border-right: 3px solid #feb2b2;
+        }
+        
+        .after {
+            background: #f0fff4;
+        }
+        
+        .panel h2 {
+            margin: 0 0 20px 0;
+            font-size: 1.8em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .before h2 {
+            color: #c53030;
+        }
+        
+        .after h2 {
+            color: #38a169;
+        }
+        
+        .icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .before .icon {
+            background: #e53e3e;
+        }
+        
+        .after .icon {
+            background: #48bb78;
+        }
+        
+        .demo-canvas {
+            width: 300px;
+            height: 300px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            margin: 20px 0;
+            position: relative;
+            background: #f8f9fa;
+            overflow: hidden;
+        }
+        
+        .design-preview {
+            position: absolute;
+            background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjNDI5OWU5Ii8+Cjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SkdJVDwvdGV4dD4KPC9zdmc+');
+            background-size: cover;
+            border: 2px solid #4299e9;
+            border-radius: 4px;
+        }
+        
+        .broken-design {
+            /* Simulates the broken behavior - way too large */
+            width: 450px;
+            height: 560px;
+            top: -100px;
+            left: -75px;
+        }
+        
+        .fixed-design {
+            /* Proper initial scale */
+            width: 60px;
+            height: 75px;
+            top: 112px;
+            left: 120px;
+        }
+        
+        .print-area {
+            position: absolute;
+            border: 2px dashed #cbd5e0;
+            background: rgba(66, 153, 233, 0.1);
+            top: 50px;
+            left: 50px;
+            width: 200px;
+            height: 200px;
+            border-radius: 4px;
+        }
+        
+        .controls {
+            margin: 20px 0;
+        }
+        
+        .slider-container {
+            margin: 15px 0;
+        }
+        
+        .slider-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+        
+        .slider {
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            outline: none;
+            appearance: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #4299e9;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #4299e9;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .broken .slider {
+            background: #fed7d7;
+        }
+        
+        .broken .slider::-webkit-slider-thumb {
+            background: #e53e3e;
+        }
+        
+        .broken .slider::-moz-range-thumb {
+            background: #e53e3e;
+        }
+        
+        .scale-display {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #2d3748;
+            margin-top: 10px;
+        }
+        
+        .problem-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+        
+        .problem-list li {
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        
+        .problem {
+            background: #fed7d7;
+            color: #c53030;
+        }
+        
+        .solution {
+            background: #c6f6d5;
+            color: #38a169;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 14px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        
+        .highlight {
+            background: #4a5568;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        
+        .stats {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: 700;
+            color: #2d3748;
+        }
+        
+        .stat-label {
+            color: #718096;
+            font-weight: 500;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 Scale Slider Critical Fix</h1>
+            <div class="subtitle">Fixing the Inverted Scale Logic in TRESR Design Editor</div>
+        </div>
+        
+        <div class="comparison">
+            <div class="panel before">
+                <h2>
+                    <span class="icon">✗</span>
+                    BEFORE (Broken)
+                </h2>
+                
+                <div class="demo-canvas">
+                    <div class="print-area"></div>
+                    <div class="design-preview broken-design"></div>
+                </div>
+                
+                <div class="controls broken">
+                    <div class="slider-container">
+                        <label class="slider-label">Scale Slider (Broken Logic)</label>
+                        <input type="range" min="50" max="200" value="100" class="slider" id="brokenSlider">
+                        <div class="scale-display" id="brokenDisplay">Scale: 100% (but image is HUGE!)</div>
+                    </div>
+                </div>
+                
+                <ul class="problem-list">
+                    <li class="problem">❌ Image loads at massive size</li>
+                    <li class="problem">❌ 200% makes image smaller</li>
+                    <li class="problem">❌ Auto-scale math is inverted</li>
+                    <li class="problem">❌ Scale doesn't match rendering</li>
+                    <li class="problem">❌ Unusable editor experience</li>
+                </ul>
+                
+                <div class="code-block">
+<span class="highlight">// BROKEN AUTO-SCALE LOGIC</span>
+const autoScale = Math.min(
+  maxWidth / imageWidth,
+  maxHeight / imageHeight
+) * 100;
+
+// For 1890x2362 image:
+// autoScale = Math.min(400/1890, 500/2362) * 100
+// autoScale = 0.21 * 100 = 21%
+// Image appears TINY but slider shows 21%!
+                </div>
+            </div>
+            
+            <div class="panel after">
+                <h2>
+                    <span class="icon">✓</span>
+                    AFTER (Fixed)
+                </h2>
+                
+                <div class="demo-canvas">
+                    <div class="print-area"></div>
+                    <div class="design-preview fixed-design"></div>
+                </div>
+                
+                <div class="controls">
+                    <div class="slider-container">
+                        <label class="slider-label">Scale Slider (Fixed Logic)</label>
+                        <input type="range" min="10" max="500" value="40" class="slider" id="fixedSlider">
+                        <div class="scale-display" id="fixedDisplay">Scale: 40% (fits perfectly!)</div>
+                    </div>
+                </div>
+                
+                <ul class="problem-list">
+                    <li class="solution">✅ Image auto-scales to fit (~40%)</li>
+                    <li class="solution">✅ 100% = actual image size</li>
+                    <li class="solution">✅ 200% = double size</li>
+                    <li class="solution">✅ Scale matches visual result</li>
+                    <li class="solution">✅ Intuitive user experience</li>
+                </ul>
+                
+                <div class="code-block">
+<span class="highlight">// FIXED AUTO-SCALE LOGIC</span>
+const scaleX = (canvasWidth * 0.8) / imageWidth;
+const scaleY = (canvasHeight * 0.8) / imageHeight;
+const fitScale = Math.min(scaleX, scaleY) * 100;
+
+// For 1890x2362 image:
+// scaleX = (400 * 0.8) / 1890 = 0.169
+// scaleY = (400 * 0.8) / 2362 = 0.135  
+// fitScale = 0.135 * 100 = 13.5%
+// Image fits perfectly at 13.5%!
+                </div>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value">100%</div>
+                <div class="stat-label">Actual Image Size</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">10-500%</div>
+                <div class="stat-label">Scale Range</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">~35%</div>
+                <div class="stat-label">Auto-Scale for Large Images</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">Fixed</div>
+                <div class="stat-label">Editor Usability</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulate the broken vs fixed behavior
+        const brokenSlider = document.getElementById('brokenSlider');
+        const brokenDisplay = document.getElementById('brokenDisplay');
+        const fixedSlider = document.getElementById('fixedSlider');
+        const fixedDisplay = document.getElementById('fixedDisplay');
+        
+        brokenSlider.addEventListener('input', (e) => {
+            const value = e.target.value;
+            // Simulate broken behavior - slider value doesn't match visual
+            brokenDisplay.textContent = `Scale: ${value}% (but doesn't work!)`;
+        });
+        
+        fixedSlider.addEventListener('input', (e) => {
+            const value = e.target.value;
+            fixedDisplay.textContent = `Scale: ${value}% (works correctly!)`;
+            
+            // Update the visual demo
+            const design = document.querySelector('.fixed-design');
+            const baseSize = 30; // Base size for 20% scale
+            const newSize = baseSize * (value / 20); // Scale relative to base
+            design.style.width = newSize + 'px';
+            design.style.height = (newSize * 1.25) + 'px';
+            
+            // Keep centered
+            design.style.left = (150 - newSize/2) + 'px';
+            design.style.top = (150 - (newSize * 1.25)/2) + 'px';
+        });
+        
+        // Initialize
+        brokenSlider.dispatchEvent(new Event('input'));
+        fixedSlider.dispatchEvent(new Event('input'));
+    </script>
+</body>
+</html>
