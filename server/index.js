@@ -209,7 +209,14 @@ app.use('/api/fix', require('./routes/emergency-fix-edit-page')); // 🚨 PRODUC
 app.use('/api/test', require('./routes/test-thumbnail-endpoint'));
 app.use('/api/debug', require('./routes/debug-design-data'));
 app.use('/api/fix', require('./routes/final-comprehensive-fix'));
-app.use('/api/fix', require('./routes/fix-design-images-from-sanity'));
+// Sanity image fix - won't crash if @sanity/client not available
+try {
+  app.use('/api/fix', require('./routes/fix-design-images-from-sanity'));
+} catch (err) {
+  console.warn('⚠️ Sanity image fix route not loaded (package not available)');
+}
+// Cloudinary mapping fix - no external dependencies, always safe
+app.use('/api/fix', require('./routes/fix-with-cloudinary-mappings'));
 app.use('/api/schema', require('./routes/fix-production-schema'));
 
 // CRITICAL: Main import endpoint that frontend actually calls!

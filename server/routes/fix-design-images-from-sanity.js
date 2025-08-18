@@ -1,19 +1,31 @@
 const express = require('express');
 const router = express.Router();
 const { Sequelize } = require('sequelize');
-const sanityClient = require('@sanity/client');
 
-// Initialize Sanity client
-const client = sanityClient({
+// Try to load Sanity client, but don't crash if it's not available
+let client = null;
+try {
+  const sanityClient = require('@sanity/client');
+  // Initialize Sanity client
+  client = sanityClient({
   projectId: process.env.SANITY_PROJECT_ID || 'mdzw81ys',
   dataset: process.env.SANITY_DATASET || 'production',
   apiVersion: '2023-01-01',
   token: process.env.SANITY_API_TOKEN,
   useCdn: false
-});
+  });
+} catch (error) {
+  console.warn('⚠️ @sanity/client not available, Sanity features disabled');
+  console.warn('   This is expected in production if package not installed');
+}
 
 // Map Sanity design to get the correct raw design image URLs
 async function getDesignImagesFromSanity(sanityDesignId) {
+  if (!client) {
+    console.error('❌ Sanity client not available');
+    return null;
+  }
+  
   try {
     // Fetch the design from Sanity with all image data
     const query = `*[_type == "product" && _id == $designId][0] {
@@ -117,6 +129,14 @@ async function getDesignImagesFromSanity(sanityDesignId) {
 // Fix all designs with correct Sanity images
 router.post('/fix-with-sanity-images', async (req, res) => {
   console.log('🚀 Starting Sanity image fix...');
+  
+  if (!client) {
+    return res.status(503).json({
+      success: false,
+      message: '@sanity/client not available in production',
+      hint: 'This feature requires the Sanity client package which is not installed in production'
+    });
+  }
   
   try {
     const user = req.session.creator || req.session.user;
@@ -295,6 +315,19 @@ router.post('/fix-with-sanity-images', async (req, res) => {
 
 // Test endpoint to check Sanity connection and fetch a sample design
 router.get('/test-sanity-connection', async (req, res) => {
+  if (!client) {
+    return res.status(503).json({
+      success: false,
+      message: 'Sanity client not available',
+      configured: {
+        hasClient: false,
+        hasToken: !!process.env.SANITY_API_TOKEN,
+        projectId: process.env.SANITY_PROJECT_ID || 'mdzw81ys',
+        dataset: process.env.SANITY_DATASET || 'production'
+      }
+    });
+  }
+  
   try {
     // Test with a known design ID
     const testId = 'k2r2aa8vmghuyr3he0p2eo5e';
