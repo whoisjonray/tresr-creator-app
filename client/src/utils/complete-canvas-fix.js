@@ -95,27 +95,82 @@ export class CanvasManager {
   
   // Get garment image URL
   getGarmentUrl(productId, color) {
-    // Map to actual Cloudinary URLs
-    const colorMap = {
-      'Black': 'black',
-      'White': 'white',
-      'Navy': 'navy',
-      'Natural': 'natural'
+    // Import the actual working URLs from garmentImagesCloudinary
+    const GARMENT_URLS = {
+      'tee': {
+        'Black': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270681/garments/tee/front/black.png',
+        'White': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270687/garments/tee/front/white.png',
+        'Navy': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270682/garments/tee/front/navy.png',
+        'Natural': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270685/garments/tee/front/natural.png',
+        'Dark Grey': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270684/garments/tee/front/heather-grey.png',
+        'Cardinal Red': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270681/garments/tee/front/black.png' // Use black as fallback
+      },
+      'boxy': {
+        'Black': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270733/garments/boxy/front/black.png',
+        'Natural': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270732/garments/boxy/front/bone.png'
+      },
+      'next-crop': {
+        'Black': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270729/garments/next-crop/front/black.png',
+        'White': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270736/garments/next-crop/front/white.png',
+        'Gold': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270731/garments/next-crop/front/gold.png',
+        'Pink': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270733/garments/next-crop/front/desert-pink.png',
+        'Navy': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270732/garments/next-crop/front/midnight-navy.png'
+      },
+      'baby-tee': {
+        'Black': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270738/garments/baby-tee/front/black.png',
+        'White': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270740/garments/baby-tee/front/white.png'
+      },
+      'wmn-hoodie': {
+        'Black': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270708/garments/wmn-hoodie/front/black.png',
+        'Black Camo': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270710/garments/wmn-hoodie/front/black-camo.png',
+        'Pink': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270711/garments/wmn-hoodie/front/pink.png',
+        'Natural': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270712/garments/wmn-hoodie/front/bone.png',
+        'Cotton Candy': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270713/garments/wmn-hoodie/front/cotton-candy.png',
+        'White': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270726/garments/wmn-hoodie/back/white.jpg',
+        'Light Grey': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270724/garments/wmn-hoodie/back/gray-heather.jpg',
+        'Mint': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270725/garments/wmn-hoodie/back/sage.jpg'
+      },
+      'med-hood': {
+        'Black': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270742/garments/med-hood/front/black.png',
+        'White': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270749/garments/med-hood/front/white.png',
+        'Gold': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270745/garments/med-hood/front/antique-gold.png',
+        'Light Grey': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270746/garments/med-hood/front/gray-heather.png',
+        'Cardinal Red': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270744/garments/med-hood/front/cardinal-red.png',
+        'Alpine Green': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270747/garments/med-hood/front/sage.png',
+        'Navy': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270742/garments/med-hood/front/black.png', // Use black as fallback
+        'Mint': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270747/garments/med-hood/front/sage.png'
+      },
+      'mediu': {
+        'Black': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270754/garments/mediu/front/black.png',
+        'White': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270761/garments/mediu/front/white.png',
+        'Navy': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270760/garments/mediu/front/classic-navy.png',
+        'Light Grey': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270756/garments/mediu/front/gray.png'
+      },
+      'sweat': {
+        'Black': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270762/garments/sweat/front/black.png'
+      },
+      'patch-c': {
+        'Black': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270703/garments/patch-c/front/black.png',
+        'Navy': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270705/garments/patch-c/front/gray.png'
+      },
+      'patch-flat': {
+        'Black': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270703/garments/patch-c/front/black.png',
+        'Navy': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270705/garments/patch-c/front/gray.png'
+      },
+      'polo': {
+        'Black': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270764/garments/polo/front/black.png',
+        'White': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270765/garments/polo/front/white.png',
+        'Navy': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270764/garments/polo/front/black.png',
+        'Light Grey': 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270765/garments/polo/front/white.png'
+      }
     };
     
-    const mappedColor = colorMap[color] || 'black';
-    const baseUrl = 'https://res.cloudinary.com/dqslerzk9/image/upload/v1735351972/tresr-garments';
+    // Get URL for product and color, with fallbacks
+    const productUrls = GARMENT_URLS[productId] || GARMENT_URLS['tee'];
+    const url = productUrls[color] || productUrls['Black'] || productUrls[Object.keys(productUrls)[0]];
     
-    // Build URL based on product
-    const productMap = {
-      'tee': `unisex_tee_${mappedColor}`,
-      'hoodie': `unisex_hoodie_${mappedColor}`,
-      'baby-tee': `baby_tee_${mappedColor}`,
-      'boxy': `boxy_tee_${mappedColor}`
-    };
-    
-    const filename = productMap[productId] || productMap['tee'];
-    return `${baseUrl}/${filename}.png`;
+    // If still no URL, use a default tee black
+    return url || 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270681/garments/tee/front/black.png';
   }
   
   // Main render function
