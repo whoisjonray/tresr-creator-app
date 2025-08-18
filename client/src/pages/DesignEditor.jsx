@@ -9,6 +9,7 @@ import { getGarmentImage as getCloudinaryImage } from '../config/garmentImagesCl
 import './DesignEditor.css'; // v2 - square swatches with 14 colors
 import { userStorage } from '../utils/userStorage';
 import { usePrintAreas } from '../contexts/PrintAreasContext';
+import { autoDebugAndFix } from '../utils/debug-current-design';
 
 // Get API base URL from environment
 const getApiBaseURL = () => {
@@ -647,6 +648,10 @@ function DesignEditor() {
     // If we have an ID but no productData in state, fetch from database
     if (params.id && !location.state?.productData) {
       console.log('Loading design from database:', params.id);
+      
+      // Auto-debug and fix if needed
+      console.log('🔍 Running auto debug and fix for design...');
+      autoDebugAndFix();
       
       // Fetch design from API
       api.get(`/api/designs/${params.id}`)
