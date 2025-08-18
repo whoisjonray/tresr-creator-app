@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import './ProductManager.css';
 import { userStorage } from '../utils/userStorage';
 import api from '../services/api';
 import { useAuth } from '../hooks/useAuth';
