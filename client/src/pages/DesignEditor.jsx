@@ -11,6 +11,7 @@ import { userStorage } from '../utils/userStorage';
 import { usePrintAreas } from '../contexts/PrintAreasContext';
 import { autoDebugAndFix } from '../utils/debug-current-design';
 import { immediateCanvasFix } from '../utils/immediate-canvas-fix';
+import { emergencyEditorFix } from '../utils/emergency-editor-fix';
 
 // Get API base URL from environment
 const getApiBaseURL = () => {
@@ -830,7 +831,14 @@ function DesignEditor() {
               setTimeout(() => {
                 console.log('🔧 Running canvas fix after image load...');
                 immediateCanvasFix();
+                emergencyEditorFix();
               }, 100);
+              
+              // Run again after a longer delay to ensure it works
+              setTimeout(() => {
+                console.log('🚨 Running emergency editor fix...');
+                emergencyEditorFix();
+              }, 500);
               
               // Force canvas redraw after image loads
               setTimeout(() => {
