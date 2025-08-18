@@ -10,6 +10,7 @@ import './DesignEditor.css'; // v2 - square swatches with 14 colors
 import { userStorage } from '../utils/userStorage';
 import { usePrintAreas } from '../contexts/PrintAreasContext';
 import { autoDebugAndFix } from '../utils/debug-current-design';
+import { immediateCanvasFix } from '../utils/immediate-canvas-fix';
 
 // Get API base URL from environment
 const getApiBaseURL = () => {
@@ -824,6 +825,12 @@ function DesignEditor() {
                 setDesignScale(scale);
                 console.log('   Auto-scaling large image to:', scale + '%');
               }
+              
+              // FIX: Force canvas to render after image loads
+              setTimeout(() => {
+                console.log('🔧 Running canvas fix after image load...');
+                immediateCanvasFix();
+              }, 100);
               
               // Force canvas redraw after image loads
               setTimeout(() => {

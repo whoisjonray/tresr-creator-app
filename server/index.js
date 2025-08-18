@@ -222,6 +222,7 @@ app.use('/api/fix', require('./routes/fix-with-cloudinary-mappings'));
 app.use('/api/fix', require('./routes/fix-just-grok-it'));
 app.use('/api/schema', require('./routes/fix-production-schema'));
 app.use('/api/fix', require('./routes/fix-publish-validation'));
+app.use('/api/fix', require('./routes/fix-update-existing-product'));
 
 // CRITICAL: Main import endpoint that frontend actually calls!
 app.use('/api/sanity/person', require('./routes/sanity-person-import'));
