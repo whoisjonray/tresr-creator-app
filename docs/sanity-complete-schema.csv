@@ -1,0 +1,138 @@
+Field_Path,Field_Type,Description,Example_Value,Is_Required,Is_Array,Related_To
+_id,string,Sanity document unique identifier,"asjpjqvsg84wtk59nl9ywlga",yes,no,N/A
+_type,string,Document type in Sanity CMS,"product",yes,no,N/A
+_rev,string,Document revision ID for conflict resolution,"WyJhc2pwanF2c2c4NHd0azU5bmw5eXdsZ2EiLCJyVzJjSU5jVUhzUk5aSUdGNDg3USJd",no,no,N/A
+_createdAt,string,ISO timestamp when document was created,"2024-01-15T10:30:00Z",no,no,N/A
+_updatedAt,string,ISO timestamp when document was last updated,"2024-01-15T10:30:00Z",no,no,N/A
+title,string,Product name/title,"JUST Grok IT - Banner Tee",yes,no,N/A
+slug.current,string,URL-friendly slug for the product,"just-grok-it-banner-t",yes,no,N/A
+description,string,Long description of the product,"This is a detailed description...",no,no,N/A
+details,string,Short description or tagline,"Grok banner tee.",no,no,N/A
+designId,string,Cloudinary design identifier,"v3f3qtskkwi3ieo5iyrfuhpo",yes,no,N/A
+sku,string,Product SKU identifier,"TEE-TEE-JUST_GROK_IT_BANNER_T",no,no,N/A
+mainImage,object,Primary product image with Cloudinary data,"{""_key"": ""v3f3qtskkwi3ieo5iyrfuhpo_Front_main"", ""_type"": ""cloudinaryImage"", ""uri"": ""https://res.cloudinary.com/...""}",yes,no,cloudinaryImage
+mainImage._key,string,Unique key for the image object,"v3f3qtskkwi3ieo5iyrfuhpo_Front_main",yes,no,N/A
+mainImage._type,string,Type of image object,"cloudinaryImage",yes,no,N/A
+mainImage.format,string,Image file format,"png",yes,no,N/A
+mainImage.height,number,Image height in pixels,2000,yes,no,N/A
+mainImage.width,number,Image width in pixels,2000,yes,no,N/A
+mainImage.title,string,Image title or description,"v3f3qtskkwi3ieo5iyrfuhpo_Front_main",no,no,N/A
+mainImage.uri,string,Direct Cloudinary URL to the image,"https://res.cloudinary.com/dqslerzk9/image/upload/v1740958396/products/k2r2aa8vmghuyr3he0p2eo5e/j4oapq7bcs2y75v9nrmn.png",yes,no,N/A
+secondaryImages,array,Array of additional product images,"[{""_key"": ""..."", ""_type"": ""cloudinaryImage"", ""uri"": ""...""}]",no,yes,cloudinaryImage
+secondaryImages[]._key,string,Unique key for each secondary image,"v3f3qtskkwi3ieo5iyrfuhpo_Back_main",yes,no,N/A
+secondaryImages[]._type,string,Type of each secondary image object,"cloudinaryImage",yes,no,N/A
+secondaryImages[].format,string,Format of each secondary image,"png",yes,no,N/A
+secondaryImages[].height,number,Height of each secondary image in pixels,2000,yes,no,N/A
+secondaryImages[].width,number,Width of each secondary image in pixels,2000,yes,no,N/A
+secondaryImages[].title,string,Title of each secondary image,"v3f3qtskkwi3ieo5iyrfuhpo_Back_main",no,no,N/A
+secondaryImages[].uri,string,Direct Cloudinary URL for each secondary image,"https://res.cloudinary.com/dqslerzk9/image/upload/v1740958397/products/k2r2aa8vmghuyr3he0p2eo5e/m4rnx8vbcs2y75v9nrmn.png",yes,no,N/A
+images,array,Legacy image field - usually empty,"[]",no,yes,sanity.imageAsset
+images[]._key,string,Key for legacy image objects,"image1",no,no,N/A
+images[].asset,reference,Reference to Sanity asset document,"{""_ref"": ""image-abc123-2000x2000-png"", ""_type"": ""reference""}",no,no,sanity.imageAsset
+images[].asset._ref,string,Reference ID to Sanity asset,"image-abc123-2000x2000-png",no,no,N/A
+images[].asset._type,string,Reference type,"reference",no,no,N/A
+images[].asset.url,string,URL from dereferenced asset,"https://cdn.sanity.io/images/a9vtdosx/production/abc123-2000x2000.png",no,no,N/A
+owner,reference,Owner of the product (person reference),"{""_ref"": ""k2r2aa8vmghuyr3he0p2eo5e"", ""_type"": ""reference""}",yes,no,person
+owner._ref,string,Reference ID to person document,"k2r2aa8vmghuyr3he0p2eo5e",yes,no,N/A
+owner._type,string,Reference type,"reference",yes,no,N/A
+creators,array,Array of creator references,"[{""_key"": ""k2r2aa8vmghuyr3he0p2eo5e"", ""_ref"": ""k2r2aa8vmghuyr3he0p2eo5e"", ""_type"": ""reference""}]",no,yes,person
+creators[]._key,string,Unique key for each creator reference,"k2r2aa8vmghuyr3he0p2eo5e",yes,no,N/A
+creators[]._ref,string,Reference ID to person document,"k2r2aa8vmghuyr3he0p2eo5e",yes,no,N/A
+creators[]._type,string,Reference type,"reference",yes,no,N/A
+creator,reference,Legacy single creator reference,"{""_ref"": ""k2r2aa8vmghuyr3he0p2eo5e"", ""_type"": ""reference""}",no,no,person
+creator._ref,string,Reference ID to person document,"k2r2aa8vmghuyr3he0p2eo5e",no,no,N/A
+creator._type,string,Reference type,"reference",no,no,N/A
+productStyle,reference,Reference to product style document,"{""_ref"": ""productStyle123"", ""_type"": ""reference""}",no,no,productStyle
+productStyle._ref,string,Reference ID to product style,"productStyle123",no,no,N/A
+productStyle._type,string,Reference type,"reference",no,no,N/A
+productStyles,array,Array of product style references,"[{""_ref"": ""style1"", ""_type"": ""reference""}, {""_ref"": ""style2"", ""_type"": ""reference""}]",no,yes,productStyle
+productStyles[]._ref,string,Reference ID to each product style,"style1",yes,no,N/A
+productStyles[]._type,string,Reference type for each style,"reference",yes,no,N/A
+tags,array,Array of product tags,"[""elon-musk"", ""grok"", ""ai""]",no,yes,N/A
+tags[],string,Individual tag values,"elon-musk",no,no,N/A
+visibility,string,Product visibility setting,"public",no,no,N/A
+isActive,boolean,Whether the product is active/published,true,no,no,N/A
+isFeatured,boolean,Whether product is featured,false,no,no,N/A
+isPublic,boolean,Whether product is publicly visible,true,no,no,N/A
+publishedAt,string,ISO timestamp when product was published,"2024-01-15T10:30:00Z",no,no,N/A
+regularPrice,number,Base price of the product,42,no,no,N/A
+price,number,Current selling price,39.99,no,no,N/A
+currency,string,Currency code,"USD",no,no,N/A
+commission,number,Commission percentage for creators,15,no,no,N/A
+royalty,number,Royalty percentage,5,no,no,N/A
+sales,number,Total number of sales,127,no,no,N/A
+salesCount,number,Legacy sales count field,127,no,no,N/A
+views,number,Recent view count,1523,no,no,N/A
+viewCount,number,Legacy view count field,1523,no,no,N/A
+allTimeViews,number,Total lifetime views,15789,no,no,N/A
+likeCount,number,Number of likes,45,no,no,N/A
+overlayTopLeft,object,Top-left coordinates for design placement,"{""x"": 150, ""y"": 100}",no,no,N/A
+overlayTopLeft.x,number,X coordinate for top-left corner,150,yes,no,N/A
+overlayTopLeft.y,number,Y coordinate for top-left corner,100,yes,no,N/A
+overlayBottomRight,object,Bottom-right coordinates for design placement,"{""x"": 350, ""y"": 300}",no,no,N/A
+overlayBottomRight.x,number,X coordinate for bottom-right corner,350,yes,no,N/A
+overlayBottomRight.y,number,Y coordinate for bottom-right corner,300,yes,no,N/A
+printAreaTopLeft,object,Top-left print area coordinates,"{""x"": 140, ""y"": 90}",no,no,N/A
+printAreaTopLeft.x,number,X coordinate for print area top-left,140,yes,no,N/A
+printAreaTopLeft.y,number,Y coordinate for print area top-left,90,yes,no,N/A
+printAreaBottomRight,object,Bottom-right print area coordinates,"{""x"": 360, ""y"": 310}",no,no,N/A
+printAreaBottomRight.x,number,X coordinate for print area bottom-right,360,yes,no,N/A
+printAreaBottomRight.y,number,Y coordinate for print area bottom-right,310,yes,no,N/A
+overlayPosition,object,Legacy overlay position data,"{""x"": 200, ""y"": 200}",no,no,N/A
+printArea,object,Legacy print area data,"{""width"": 200, ""height"": 200}",no,no,N/A
+category,reference,Product category reference,"{""_ref"": ""category123"", ""_type"": ""reference""}",no,no,category
+category._ref,string,Reference ID to category document,"category123",no,no,N/A
+category._type,string,Reference type,"reference",no,no,N/A
+variants,array,Product variants array,"[{""_key"": ""variant1"", ""title"": ""Black - M"", ""sku"": ""TEE-BLACK-M""}]",no,yes,variant
+variants[]._key,string,Unique key for each variant,"variant1",yes,no,N/A
+variants[].title,string,Variant display name,"Black - M",yes,no,N/A
+variants[].sku,string,SKU for each variant,"TEE-BLACK-M",yes,no,N/A
+variants[].price,number,Price for each variant,42,no,no,N/A
+variants[].images,array,Images specific to each variant,"[{""_type"": ""cloudinaryImage"", ""uri"": ""...""}]",no,yes,cloudinaryImage
+createdAt,string,Custom creation timestamp,"2024-01-15T10:30:00Z",no,no,N/A
+updatedAt,string,Custom update timestamp,"2024-01-15T10:30:00Z",no,no,N/A
+nftData,object,NFT-related metadata,"{""tokenId"": ""123"", ""contractAddress"": ""0x...""}",no,no,N/A
+nftData.tokenId,string,NFT token ID,"123",no,no,N/A
+nftData.contractAddress,string,Smart contract address,"0x1234567890abcdef1234567890abcdef12345678",no,no,N/A
+blockchain,string,Blockchain network,"ethereum",no,no,N/A
+mintedAt,string,NFT minting timestamp,"2024-01-15T10:30:00Z",no,no,N/A
+tokenId,string,Direct token ID field,"456",no,no,N/A
+contractAddress,string,Direct contract address field,"0x9876543210fedcba9876543210fedcba98765432",no,no,N/A
+cloudinaryId,string,Legacy Cloudinary identifier,"abc123def456",no,no,N/A
+cloudinaryUrls,array,Legacy Cloudinary URL array,"[""url1"", ""url2""]",no,yes,N/A
+cloudinaryData,object,Legacy Cloudinary metadata object,"{""publicId"": ""abc123"", ""version"": ""v123456""}",no,no,N/A
+thumbnail,object,Legacy thumbnail image object,"{""_type"": ""cloudinaryImage"", ""uri"": ""...""}",no,no,cloudinaryImage
+featuredImage,object,Legacy featured image object,"{""_type"": ""cloudinaryImage"", ""uri"": ""...""}",no,no,cloudinaryImage
+productImages,array,Legacy product images array,"[{""_type"": ""cloudinaryImage"", ""uri"": ""...""}]",no,yes,cloudinaryImage
+mockupImages,array,Legacy mockup images array,"[{""_type"": ""cloudinaryImage"", ""uri"": ""...""}]",no,yes,cloudinaryImage
+rawArtwork,array,Legacy raw artwork field,"[{""_key"": ""art1"", ""asset"": {""_ref"": ""image-xyz"", ""_type"": ""reference""}}]",no,yes,sanity.imageAsset
+rawArtwork[]._key,string,Key for each raw artwork item,"art1",yes,no,N/A
+rawArtwork[].asset,reference,Reference to artwork asset,"{""_ref"": ""image-xyz789"", ""_type"": ""reference""}",yes,no,sanity.imageAsset
+rawArtwork[].asset._ref,string,Reference ID to artwork asset,"image-xyz789",yes,no,N/A
+rawArtwork[].asset._type,string,Reference type,"reference",yes,no,N/A
+rawArtwork[].asset.url,string,URL from dereferenced artwork asset,"https://cdn.sanity.io/images/a9vtdosx/production/xyz789-1000x1000.png",no,no,N/A
+rawArtwork[].canvasData,object,Canvas positioning data for artwork,"{""topLeft"": {""x"": 100, ""y"": 100}, ""bottomRight"": {""x"": 300, ""y"": 300}}",no,no,N/A
+rawArtwork[].cloudinaryId,string,Cloudinary ID for raw artwork,"design_abc123",no,no,N/A
+rawArtwork[].cloudinaryUrl,string,Direct Cloudinary URL for raw artwork,"https://res.cloudinary.com/account/image/upload/v123456/designs/abc123.png",no,no,N/A
+productType,string,Type of product,"apparel",no,no,N/A
+sizes,array,Available sizes,"[""S"", ""M"", ""L"", ""XL""]",no,yes,N/A
+sizes[],string,Individual size values,"M",no,no,N/A
+colors,array,Available colors,"[""black"", ""white"", ""heather-grey""]",no,yes,N/A
+colors[],string,Individual color values,"black",no,no,N/A
+materials,array,Product materials,"[""100% Cotton"", ""Pre-shrunk""]",no,yes,N/A
+materials[],string,Individual material descriptions,"100% Cotton",no,no,N/A
+careInstructions,array,Care instruction steps,"[""Machine wash cold"", ""Tumble dry low""]",no,yes,N/A
+careInstructions[],string,Individual care instruction,"Machine wash cold",no,no,N/A
+metadata,object,Additional metadata object,"{""source"": ""import"", ""batch"": ""2024-01""}",no,no,N/A
+metadata.source,string,Source of the product data,"import",no,no,N/A
+metadata.batch,string,Import batch identifier,"2024-01",no,no,N/A
+metadata.importDate,string,Date of import,"2024-01-15T10:30:00Z",no,no,N/A
+seo,object,SEO metadata object,"{""title"": ""Custom SEO Title"", ""description"": ""Custom meta description""}",no,no,N/A
+seo.title,string,SEO page title,"Custom SEO Title for JUST Grok IT",no,no,N/A
+seo.description,string,SEO meta description,"Custom meta description for better search results",no,no,N/A
+seo.keywords,array,SEO keywords,"[""ai"", ""grok"", ""tshirt"", ""tech""]",no,yes,N/A
+seo.keywords[],string,Individual SEO keywords,"ai",no,no,N/A
+analytics,object,Analytics data object,"{""impressions"": 1000, ""clicks"": 50}",no,no,N/A
+analytics.impressions,number,Number of impressions,1000,no,no,N/A
+analytics.clicks,number,Number of clicks,50,no,no,N/A
+analytics.conversionRate,number,Conversion rate percentage,5.2,no,no,N/A

@@ -1,0 +1,159 @@
+Table_Name,Field_Name,Field_Type,Max_Length,Is_Nullable,Default_Value,Description,Maps_To_Sanity
+creators,id,VARCHAR,36,no,UUIDV4,Primary key - Dynamic.xyz user ID,N/A (from Dynamic.xyz)
+creators,email,VARCHAR,255,no,,User email address from Dynamic.xyz,N/A (from Dynamic.xyz)
+creators,name,VARCHAR,255,yes,,User display name,N/A (from Dynamic.xyz)
+creators,wallet_address,VARCHAR,42,yes,,Primary wallet address,N/A (from Dynamic.xyz)
+creators,avatar_url,VARCHAR,500,yes,,User avatar image URL,N/A (from Dynamic.xyz)
+creators,is_active,BOOLEAN,,no,TRUE,Whether creator account is active,N/A
+creators,created_at,TIMESTAMP,,no,CURRENT_TIMESTAMP,Record creation timestamp,N/A
+creators,updated_at,TIMESTAMP,,no,CURRENT_TIMESTAMP ON UPDATE,Record update timestamp,N/A
+designs,id,VARCHAR,36,no,UUIDV4,Primary key - design unique identifier,design._id
+designs,creator_id,VARCHAR,36,no,,Foreign key to creators table,design.person._ref
+designs,name,VARCHAR,255,no,,Design title/name,design.title
+designs,description,TEXT,,yes,,Design description,design.description
+designs,status,ENUM,,no,draft,"Status: draft, published, archived",design.status (needs mapping)
+designs,front_design_url,VARCHAR,500,yes,,Cloudinary URL for front design image,design.frontImage.asset._ref (converted to URL)
+designs,front_design_public_id,VARCHAR,255,yes,,Cloudinary public ID for front design,design.frontImage.asset._ref
+designs,back_design_url,VARCHAR,500,yes,,Cloudinary URL for back design image,design.backImage.asset._ref (converted to URL)
+designs,back_design_public_id,VARCHAR,255,yes,,Cloudinary public ID for back design,design.backImage.asset._ref
+designs,front_position,JSON,,yes,"{""x"": 200, ""y"": 150}",Position coordinates for front design,design.frontPosition (if exists)
+designs,back_position,JSON,,yes,"{""x"": 200, ""y"": 150}",Position coordinates for back design,design.backPosition (if exists)
+designs,front_scale,DECIMAL(3,2),,yes,1.0,Scale factor for front design,design.frontScale (if exists)
+designs,back_scale,DECIMAL(3,2),,yes,1.0,Scale factor for back design,design.backScale (if exists)
+designs,tags,JSON,,yes,[],Array of design tags,design.tags (array)
+designs,print_method,VARCHAR,50,yes,DTG,Printing method used,design.printMethod
+designs,nfc_experience,VARCHAR,50,yes,,NFC experience type,design.nfcExperience
+designs,sanity_id,VARCHAR,255,yes,,Sanity document ID for sync,design._id
+designs,thumbnail_url,VARCHAR,500,yes,,Thumbnail image URL,design.thumbnail.asset._ref (converted to URL) **MISSING IN SANITY**
+designs,design_data,JSON,,yes,{},Additional design metadata,design.metadata or custom fields **MISSING IN SANITY**
+designs,published_at,TIMESTAMP,,yes,,When design was published,design.publishedAt **MISSING IN SANITY**
+designs,created_at,TIMESTAMP,,no,CURRENT_TIMESTAMP,Record creation timestamp,design._createdAt
+designs,updated_at,TIMESTAMP,,no,CURRENT_TIMESTAMP ON UPDATE,Record update timestamp,design._updatedAt
+design_products,id,INT,,no,AUTO_INCREMENT,Primary key,N/A (junction table)
+design_products,design_id,VARCHAR,36,no,,Foreign key to designs table,N/A
+design_products,product_template_id,VARCHAR,50,no,,Product type identifier (tee hoodie etc),design.productTypes (if exists) **MISSING IN SANITY**
+design_products,is_enabled,BOOLEAN,,no,TRUE,Whether product is enabled for this design,**MISSING IN SANITY**
+design_products,selected_colors,JSON,,yes,[],Array of selected color names,**MISSING IN SANITY**
+design_products,price_override,DECIMAL(10,2),,yes,,Custom price override,**MISSING IN SANITY**
+design_products,print_location,ENUM,,no,front,"Print location: front, back, both",**MISSING IN SANITY**
+design_products,shopify_product_id,BIGINT,,yes,,Shopify product ID when published,**MISSING IN SANITY**
+design_products,shopify_handle,VARCHAR,255,yes,,Shopify product handle,**MISSING IN SANITY**
+design_products,created_at,TIMESTAMP,,no,CURRENT_TIMESTAMP,Record creation timestamp,N/A
+design_products,updated_at,TIMESTAMP,,no,CURRENT_TIMESTAMP ON UPDATE,Record update timestamp,N/A
+design_variants,id,INT,,no,AUTO_INCREMENT,Primary key,N/A
+design_variants,design_product_id,INT,,no,,Foreign key to design_products table,N/A
+design_variants,color,VARCHAR,50,no,,Garment color name,**MISSING IN SANITY**
+design_variants,side,ENUM,,no,front,"Side: front, back",**MISSING IN SANITY**
+design_variants,mockup_url,VARCHAR,500,no,,Generated mockup image URL,**MISSING IN SANITY**
+design_variants,mockup_public_id,VARCHAR,255,yes,,Cloudinary public ID for mockup,**MISSING IN SANITY**
+design_variants,mockup_width,INT,,yes,2000,Mockup image width in pixels,**MISSING IN SANITY**
+design_variants,mockup_height,INT,,yes,2000,Mockup image height in pixels,**MISSING IN SANITY**
+design_variants,file_size_kb,INT,,yes,,File size in kilobytes,**MISSING IN SANITY**
+design_variants,generated_at,TIMESTAMP,,no,CURRENT_TIMESTAMP,When mockup was generated,**MISSING IN SANITY**
+design_analytics,id,INT,,no,AUTO_INCREMENT,Primary key,N/A
+design_analytics,design_id,VARCHAR,36,no,,Foreign key to designs table,N/A
+design_analytics,event_type,ENUM,,no,,"Event type: view, share, purchase",**MISSING IN SANITY**
+design_analytics,event_data,JSON,,yes,,Additional event data,**MISSING IN SANITY**
+design_analytics,created_at,TIMESTAMP,,no,CURRENT_TIMESTAMP,Event timestamp,**MISSING IN SANITY**
+product_templates,id,VARCHAR,,no,,Primary key - product template identifier,N/A (system templates)
+product_templates,name,VARCHAR,,no,,Product template name,N/A
+product_templates,templateId,VARCHAR,,no,,Template identifier,N/A
+product_templates,price,DECIMAL(10,2),,no,,Base price for product,N/A
+product_templates,colors,JSON,,yes,[],Available colors for product,N/A
+product_templates,canvasWidth,INT,,yes,600,Canvas width for design,N/A
+product_templates,canvasHeight,INT,,yes,600,Canvas height for design,N/A
+product_templates,frontImage,TEXT,,yes,,Front view image URL,N/A
+product_templates,backImage,TEXT,,yes,,Back view image URL,N/A
+product_templates,thumbnailImage,TEXT,,yes,,Thumbnail image URL,N/A
+product_templates,defaultThumbnail,VARCHAR,,yes,default,Default thumbnail identifier,N/A
+product_templates,colorImages,JSON,,yes,{},Color-specific images,N/A
+product_templates,printAreas,JSON,,yes,"{""front"": {""width"": 200, ""height"": 250, ""x"": 200, ""y"": 200}, ""back"": null}",Print area definitions,N/A
+product_templates,hasBackPrint,BOOLEAN,,yes,TRUE,Whether back printing is available,N/A
+product_templates,category,VARCHAR,,yes,apparel,Product category,N/A
+product_templates,active,BOOLEAN,,yes,TRUE,Whether template is active,N/A
+product_templates,isCustom,BOOLEAN,,yes,TRUE,Whether template is custom,N/A
+product_templates,createdBy,VARCHAR,,yes,,Creator of template,N/A
+product_templates,updatedBy,VARCHAR,,yes,,Last updater of template,N/A
+product_templates,createdAt,TIMESTAMP,,no,CURRENT_TIMESTAMP,Record creation timestamp,N/A
+product_templates,updatedAt,TIMESTAMP,,no,CURRENT_TIMESTAMP ON UPDATE,Record update timestamp,N/A
+user_roles,id,INT,,no,AUTO_INCREMENT,Primary key,N/A
+user_roles,dynamic_id,VARCHAR,,no,,Dynamic.xyz user ID,N/A
+user_roles,email,VARCHAR,,no,,User email address,N/A
+user_roles,role,ENUM,,no,creator,"User role: admin, creator",N/A
+user_roles,name,VARCHAR,,yes,,User display name,N/A
+user_roles,last_impersonated_at,TIMESTAMP,,yes,,Last impersonation timestamp,N/A
+user_roles,last_impersonated_by,VARCHAR,,yes,,Who last impersonated this user,N/A
+user_roles,created_at,TIMESTAMP,,no,CURRENT_TIMESTAMP,Record creation timestamp,N/A
+user_roles,updated_at,TIMESTAMP,,no,CURRENT_TIMESTAMP ON UPDATE,Record update timestamp,N/A
+creator_mappings,id,INT,,no,AUTO_INCREMENT,Primary key,N/A
+creator_mappings,sanity_person_id,VARCHAR,,no,,Sanity person._id,person._id
+creator_mappings,dynamic_id,VARCHAR,,no,,Dynamic.xyz user ID,N/A (linking table)
+creator_mappings,email,VARCHAR,,no,,User email address,person.email
+creator_mappings,sanity_name,VARCHAR,,yes,,Name in Sanity,person.name
+creator_mappings,sanity_username,VARCHAR,,yes,,Username in Sanity,person.username
+creator_mappings,sanity_wallet_address,VARCHAR,,yes,,Primary wallet from Sanity,person.walletAddress
+creator_mappings,sanity_wallets,JSON,,yes,[],All wallets from Sanity person,person.wallets
+creator_mappings,is_verified,BOOLEAN,,no,FALSE,Whether mapping has been verified,N/A
+creator_mappings,last_synced_at,TIMESTAMP,,yes,,Last time designs were synced,N/A
+creator_mappings,metadata,JSON,,yes,{},Additional metadata from Sanity,person.metadata
+creator_mappings,created_at,TIMESTAMP,,no,CURRENT_TIMESTAMP,Record creation timestamp,N/A
+creator_mappings,updated_at,TIMESTAMP,,no,CURRENT_TIMESTAMP ON UPDATE,Record update timestamp,N/A
+sessions,session_id,VARCHAR,128,no,,Primary key - session identifier,N/A
+sessions,expires,INT,,no,,Session expiration timestamp,N/A
+sessions,data,MEDIUMTEXT,,yes,,Session data,N/A
+shopify_products,id,INT,,no,AUTO_INCREMENT,Primary key,N/A
+shopify_products,shopify_id,BIGINT,,no,,Shopify product ID,N/A
+shopify_products,creator_id,VARCHAR,36,no,,Foreign key to creators table,N/A
+shopify_products,design_id,VARCHAR,36,yes,,Associated design ID if applicable,N/A
+shopify_products,title,VARCHAR,255,no,,Product title,N/A
+shopify_products,handle,VARCHAR,255,no,,Product handle,N/A
+shopify_products,status,ENUM,,no,draft,"Status: draft, active, archived, deleted",N/A
+shopify_products,commission_rate,DECIMAL(5,2),,yes,40.00,Commission percentage,N/A
+shopify_products,is_superproduct,BOOLEAN,,no,FALSE,Whether this is a superproduct,N/A
+shopify_products,variant_count,INT,,yes,0,Number of variants,N/A
+shopify_products,total_sales,DECIMAL(10,2),,yes,0.00,Total sales amount,N/A
+shopify_products,total_commissions,DECIMAL(10,2),,yes,0.00,Total commissions earned,N/A
+shopify_products,created_at,TIMESTAMP,,no,CURRENT_TIMESTAMP,Record creation timestamp,N/A
+shopify_products,updated_at,TIMESTAMP,,no,CURRENT_TIMESTAMP ON UPDATE,Record update timestamp,N/A
+shopify_products,deleted_at,TIMESTAMP,,yes,,Soft delete timestamp,N/A
+creator_commissions,id,INT,,no,AUTO_INCREMENT,Primary key,N/A
+creator_commissions,creator_id,VARCHAR,36,no,,Foreign key to creators table,N/A
+creator_commissions,order_id,BIGINT,,no,,Shopify order ID,N/A
+creator_commissions,product_id,BIGINT,,no,,Shopify product ID,N/A
+creator_commissions,variant_id,BIGINT,,no,,Shopify variant ID,N/A
+creator_commissions,line_item_id,BIGINT,,no,,Shopify line item ID,N/A
+creator_commissions,sale_amount,DECIMAL(10,2),,no,,Total sale amount for this item,N/A
+creator_commissions,commission_rate,DECIMAL(5,2),,no,,Commission percentage at time of sale,N/A
+creator_commissions,commission_amount,DECIMAL(10,2),,no,,Calculated commission amount,N/A
+creator_commissions,quantity,INT,,no,1,Quantity sold,N/A
+creator_commissions,order_date,TIMESTAMP,,no,,Date of the original order,N/A
+creator_commissions,status,ENUM,,no,pending,"Status: pending, approved, paid, disputed, cancelled",N/A
+creator_commissions,payment_date,TIMESTAMP,,yes,,When commission was paid,N/A
+creator_commissions,payment_reference,VARCHAR,255,yes,,Payment transaction reference,N/A
+creator_commissions,notes,TEXT,,yes,,Additional notes,N/A
+creator_commissions,created_at,TIMESTAMP,,no,CURRENT_TIMESTAMP,Record creation timestamp,N/A
+creator_commissions,updated_at,TIMESTAMP,,no,CURRENT_TIMESTAMP ON UPDATE,Record update timestamp,N/A
+shopify_webhooks,id,INT,,no,AUTO_INCREMENT,Primary key,N/A
+shopify_webhooks,webhook_id,VARCHAR,255,no,,Shopify webhook ID,N/A
+shopify_webhooks,event_type,VARCHAR,100,no,,Webhook event type,N/A
+shopify_webhooks,shopify_order_id,BIGINT,,yes,,Shopify order ID,N/A
+shopify_webhooks,shopify_product_id,BIGINT,,yes,,Shopify product ID,N/A
+shopify_webhooks,payload,JSON,,no,,Full webhook payload,N/A
+shopify_webhooks,processed,BOOLEAN,,no,FALSE,Whether webhook was processed,N/A
+shopify_webhooks,processing_attempts,INT,,yes,0,Number of processing attempts,N/A
+shopify_webhooks,error_message,TEXT,,yes,,Error message if processing failed,N/A
+shopify_webhooks,created_at,TIMESTAMP,,no,CURRENT_TIMESTAMP,Record creation timestamp,N/A
+shopify_webhooks,processed_at,TIMESTAMP,,yes,,When webhook was processed,N/A
+commission_payments,id,INT,,no,AUTO_INCREMENT,Primary key,N/A
+commission_payments,creator_id,VARCHAR,36,no,,Foreign key to creators table,N/A
+commission_payments,payment_period_start,DATE,,no,,Start of payment period,N/A
+commission_payments,payment_period_end,DATE,,no,,End of payment period,N/A
+commission_payments,total_commission_amount,DECIMAL(10,2),,no,,Total commission amount,N/A
+commission_payments,commission_count,INT,,no,,Number of commissions included,N/A
+commission_payments,payment_method,ENUM,,no,,"Payment method: bank_transfer, paypal, crypto, check",N/A
+commission_payments,payment_reference,VARCHAR,255,no,,Payment transaction reference,N/A
+commission_payments,payment_status,ENUM,,no,pending,"Payment status: pending, processing, completed, failed, cancelled",N/A
+commission_payments,payment_date,TIMESTAMP,,yes,,When payment was made,N/A
+commission_payments,notes,TEXT,,yes,,Additional notes,N/A
+commission_payments,created_at,TIMESTAMP,,no,CURRENT_TIMESTAMP,Record creation timestamp,N/A
+commission_payments,updated_at,TIMESTAMP,,no,CURRENT_TIMESTAMP ON UPDATE,Record update timestamp,N/A

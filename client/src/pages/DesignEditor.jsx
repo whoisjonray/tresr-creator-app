@@ -1254,10 +1254,19 @@ function DesignEditor() {
   };
 
   const handleSaveForLater = async () => {
-    // In edit mode, we don't need a new file upload
-    const isEditMode = params.id && location.state?.productData;
-    if ((!designFile && !isEditMode) || !designTitle) {
-      alert('Please upload a design and add a title');
+    // Check if we're in edit mode - either from location.state or just have a params.id
+    const isEditMode = params.id || (params.id && location.state?.productData);
+    
+    // Check for images from multiple sources
+    const hasFrontImage = frontDesignImageSrc || frontDesignUrl || frontDesignFile || designFile;
+    
+    if (!isEditMode && !designFile && !hasFrontImage) {
+      alert('Please upload a design');
+      return;
+    }
+    
+    if (!designTitle) {
+      alert('Please add a title for your design');
       return;
     }
     
@@ -1363,14 +1372,27 @@ function DesignEditor() {
   };
 
   const handleGenerateProducts = async () => {
-    // In edit mode, we don't need a new file upload
-    const isEditMode = params.id && location.state?.productData;
-    const hasFrontImage = frontDesignImageSrc || frontDesignUrl || (isEditMode && location.state?.productData?.originalDesignImage);
-    const hasBackImage = backDesignImageSrc || backDesignUrl;
+    // Check if we're in edit mode - either from location.state or just have a params.id
+    const isEditMode = params.id || (params.id && location.state?.productData);
+    
+    // Check for images from multiple sources
+    const hasFrontImage = frontDesignImageSrc || frontDesignUrl || frontDesignFile || (isEditMode && location.state?.productData?.originalDesignImage);
+    const hasBackImage = backDesignImageSrc || backDesignUrl || backDesignFile;
     const hasAnyImage = hasFrontImage || hasBackImage;
     
-    if ((!frontDesignFile && !isEditMode) || !designTitle || !hasAnyImage) {
-      alert('Please upload at least a front design and add a title');
+    // More lenient validation for edit mode - if we have an ID, we're editing an existing design
+    if (!isEditMode && !frontDesignFile) {
+      alert('Please upload at least a front design');
+      return;
+    }
+    
+    if (!designTitle) {
+      alert('Please add a title for your design');
+      return;
+    }
+    
+    if (!hasAnyImage) {
+      alert('No design image found. Please upload or ensure the design has an image.');
       return;
     }
 
