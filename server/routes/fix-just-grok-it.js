@@ -84,21 +84,70 @@ router.post('/fix-just-grok-it', async (req, res) => {
       }
     };
 
-    // Update the Just Grok It design with EVERYTHING needed
+    // First check if columns exist and add them if they don't
+    try {
+      const [columns] = await sequelize.query(
+        "SHOW COLUMNS FROM designs LIKE 'frontPosition'"
+      );
+      
+      if (columns.length === 0) {
+        console.log('Adding missing columns to designs table...');
+        
+        // Add missing columns with safe defaults
+        const alterQueries = [
+          "ALTER TABLE designs ADD COLUMN IF NOT EXISTS frontPosition JSON NULL",
+          "ALTER TABLE designs ADD COLUMN IF NOT EXISTS backPosition JSON NULL",
+          "ALTER TABLE designs ADD COLUMN IF NOT EXISTS frontScale VARCHAR(10) DEFAULT '1.0'",
+          "ALTER TABLE designs ADD COLUMN IF NOT EXISTS backScale VARCHAR(10) DEFAULT '1.0'"
+        ];
+        
+        for (const query of alterQueries) {
+          try {
+            await sequelize.query(query);
+          } catch (alterErr) {
+            console.log(`Column may already exist: ${alterErr.message}`);
+          }
+        }
+      }
+    } catch (checkErr) {
+      console.log('Could not check columns, proceeding with safe update...');
+    }
+
+    // Build update query dynamically based on available columns
+    const safeUpdateParts = [
+      "name = :name",
+      "thumbnail_url = :mockupUrl",
+      "front_design_url = :frontRawUrl",
+      "back_design_url = :backRawUrl",
+      "design_data = :designData",
+      "product_config = :productConfig",
+      "updated_at = NOW()"
+    ];
+
+    // Try to include position columns if they exist
+    try {
+      const [cols] = await sequelize.query("SHOW COLUMNS FROM designs");
+      const columnNames = cols.map(c => c.Field);
+      
+      if (columnNames.includes('frontPosition')) {
+        safeUpdateParts.push("frontPosition = :frontPosition");
+      }
+      if (columnNames.includes('backPosition')) {
+        safeUpdateParts.push("backPosition = :backPosition");
+      }
+      if (columnNames.includes('frontScale')) {
+        safeUpdateParts.push("frontScale = '1.0'");
+      }
+      if (columnNames.includes('backScale')) {
+        safeUpdateParts.push("backScale = '1.0'");
+      }
+    } catch (err) {
+      console.log('Could not check for position columns, using basic update');
+    }
+
     const updateQuery = `
       UPDATE designs 
-      SET 
-        name = :name,
-        thumbnail_url = :mockupUrl,
-        front_design_url = :frontRawUrl,
-        back_design_url = :backRawUrl,
-        design_data = :designData,
-        product_config = :productConfig,
-        frontPosition = :frontPosition,
-        backPosition = :backPosition,
-        frontScale = '1.0',
-        backScale = '1.0',
-        updated_at = NOW()
+      SET ${safeUpdateParts.join(', ')}
       WHERE (
         id = :designId 
         OR name LIKE '%Grok%' 
