@@ -4,7 +4,7 @@ export async function fixEditPageData() {
   console.log('🔧 Starting edit page data fix...');
   
   try {
-    const response = await fetch('/api/fix/fix-edit-page-data', {
+    const response = await fetch('/api/fix/emergency-fix-edit-page', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

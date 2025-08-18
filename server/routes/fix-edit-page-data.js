@@ -92,11 +92,42 @@ router.post('/fix-edit-page-data', async (req, res) => {
     await sequelize.authenticate();
     console.log('✅ Database connected');
 
-    // First, get all designs for this user
+    // Check if columns exist before querying
+    const columnExists = async (tableName, columnName) => {
+      try {
+        const [results] = await sequelize.query(
+          `SHOW COLUMNS FROM \`${tableName}\` LIKE '${columnName}'`
+        );
+        return results.length > 0;
+      } catch (error) {
+        console.error(`Error checking column ${columnName}:`, error);
+        return false;
+      }
+    };
+
+    // Build safe SELECT query based on existing columns
+    const safeColumns = ['id', 'name', 'creator_id'];
+    const optionalColumns = {
+      'thumbnail_url': await columnExists('designs', 'thumbnail_url'),
+      'front_design_url': await columnExists('designs', 'front_design_url'),
+      'back_design_url': await columnExists('designs', 'back_design_url'),
+      'design_data': await columnExists('designs', 'design_data'),
+      'product_config': await columnExists('designs', 'product_config')
+    };
+
+    // Add existing columns to SELECT
+    for (const [column, exists] of Object.entries(optionalColumns)) {
+      if (exists) {
+        safeColumns.push(column);
+      } else {
+        safeColumns.push(`NULL as ${column}`);
+      }
+    }
+
+    console.log('📋 Available columns:', Object.entries(optionalColumns).filter(([k, v]) => v).map(([k]) => k));
+
     const [designs] = await sequelize.query(
-      `SELECT id, name, thumbnail_url, front_design_url, back_design_url, design_data, product_config
-       FROM designs 
-       WHERE creator_id = :creatorId`,
+      `SELECT ${safeColumns.join(', ')} FROM designs WHERE creator_id = :creatorId`,
       {
         replacements: { creatorId: user.id }
       }
@@ -121,30 +152,56 @@ router.post('/fix-edit-page-data', async (req, res) => {
         productConfig = DEFAULT_PRODUCT_CONFIG;
       }
       
-      // Update the design with complete data
+      // Build update query with only existing columns (use correct column names)
+      const updateClauses = [];
+      const replacements = { designId: design.id };
+
+      if (optionalColumns.design_data) {
+        updateClauses.push('design_data = :designData');
+        replacements.designData = JSON.stringify(designData);
+      }
+      if (optionalColumns.product_config) {
+        updateClauses.push('product_config = :productConfig');
+        replacements.productConfig = JSON.stringify(productConfig);
+      }
+      if (optionalColumns.front_design_url) {
+        updateClauses.push('front_design_url = :imageUrl');
+        replacements.imageUrl = imageUrl;
+      }
+      if (optionalColumns.back_design_url) {
+        updateClauses.push('back_design_url = :imageUrl');
+      }
+      if (await columnExists('designs', 'front_position')) {
+        updateClauses.push('front_position = :frontPosition');
+        replacements.frontPosition = JSON.stringify({ x: 150, y: 100 });
+      }
+      if (await columnExists('designs', 'back_position')) {
+        updateClauses.push('back_position = :backPosition');
+        replacements.backPosition = JSON.stringify({ x: 150, y: 100 });
+      }
+      if (await columnExists('designs', 'front_scale')) {
+        updateClauses.push('front_scale = :scale');
+        replacements.scale = '1.0';
+      }
+      if (await columnExists('designs', 'back_scale')) {
+        updateClauses.push('back_scale = :scale');
+      }
+      if (await columnExists('designs', 'thumbnail_url')) {
+        updateClauses.push('thumbnail_url = :imageUrl');
+      }
+      if (await columnExists('designs', 'updated_at')) {
+        updateClauses.push('updated_at = NOW()');
+      }
+
+      if (updateClauses.length === 0) {
+        console.log(`⚠️ No updatable columns for design: ${design.name}`);
+        continue;
+      }
+
+      // Update the design with available columns only
       const [updateResult] = await sequelize.query(
-        `UPDATE designs 
-         SET design_data = :designData,
-             product_config = :productConfig,
-             front_design_url = :imageUrl,
-             back_design_url = :imageUrl,
-             frontPosition = :frontPosition,
-             backPosition = :backPosition,
-             frontScale = :scale,
-             backScale = :scale,
-             updated_at = NOW()
-         WHERE id = :designId`,
-        {
-          replacements: {
-            designId: design.id,
-            designData: JSON.stringify(designData),
-            productConfig: JSON.stringify(productConfig),
-            imageUrl: imageUrl,
-            frontPosition: JSON.stringify({ x: 150, y: 100 }),
-            backPosition: JSON.stringify({ x: 150, y: 100 }),
-            scale: '1.0'
-          }
-        }
+        `UPDATE designs SET ${updateClauses.join(', ')} WHERE id = :designId`,
+        { replacements }
       );
       
       if (updateResult > 0) {

@@ -205,6 +205,7 @@ app.use('/api/fix', require('./routes/hardcoded-thumbnail-fix'));
 app.use('/api/fix', require('./routes/simple-thumbnail-fix'));
 app.use('/api/fix', require('./routes/direct-database-fix'));
 app.use('/api/fix', require('./routes/fix-edit-page-data'));
+app.use('/api/fix', require('./routes/emergency-fix-edit-page')); // 🚨 PRODUCTION EMERGENCY FIX
 app.use('/api/test', require('./routes/test-thumbnail-endpoint'));
 app.use('/api/schema', require('./routes/fix-production-schema'));
 
