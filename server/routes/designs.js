@@ -5,6 +5,111 @@ const databaseService = require('../services/database');
 const cloudinaryService = require('../services/cloudinary');
 const { v4: uuidv4 } = require('uuid');
 
+// Get my designs (same as / but more explicit path)
+router.get('/my-designs', requireAuth, async (req, res) => {
+  try {
+    // Try direct database query as fallback if service fails
+    const { Sequelize } = require('sequelize');
+    const dbUrl = process.env.MYSQL_URL || process.env.DATABASE_URL;
+    
+    if (!dbUrl) {
+      console.log('⚠️ No database URL configured');
+      return res.json({
+        success: true,
+        designs: [],
+        pagination: {
+          total: 0,
+          page: 1,
+          limit: 20,
+          hasMore: false
+        },
+        message: 'Database not configured. Using localStorage on client side.'
+      });
+    }
+
+    const creatorId = req.session.creator.id;
+    const { page = 1, limit = 20, status } = req.query;
+
+    console.log(`📋 Fetching designs for creator ${creatorId}, page ${page}`);
+
+    try {
+      // Try using the database service first
+      if (databaseService.isDatabaseAvailable()) {
+        const result = await databaseService.getCreatorDesigns(creatorId, {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          status
+        });
+
+        return res.json({
+          success: true,
+          ...result
+        });
+      }
+    } catch (serviceError) {
+      console.log('⚠️ Database service failed, trying direct query:', serviceError.message);
+    }
+
+    // Fallback to direct database query
+    const sequelize = new Sequelize(dbUrl, {
+      dialect: 'mysql',
+      logging: false
+    });
+
+    const [designs] = await sequelize.query(
+      `SELECT id, creator_id, name, description, status, 
+              thumbnail_url, front_design_url, back_design_url,
+              thumbnail_url as thumbnailUrl, 
+              front_design_url as frontDesignUrl,
+              back_design_url as backDesignUrl,
+              front_position, back_position, front_scale, back_scale,
+              tags, print_method, nfc_experience, published_at,
+              created_at, updated_at, sanity_id, design_data
+       FROM designs 
+       WHERE creator_id = ? 
+       ORDER BY created_at DESC 
+       LIMIT ? OFFSET ?`,
+      {
+        replacements: [creatorId, parseInt(limit), (parseInt(page) - 1) * parseInt(limit)]
+      }
+    );
+
+    const [[countResult]] = await sequelize.query(
+      `SELECT COUNT(*) as total FROM designs WHERE creator_id = ?`,
+      {
+        replacements: [creatorId]
+      }
+    );
+
+    console.log(`✅ Direct query found ${designs.length} designs for creator ${creatorId}`);
+
+    res.json({
+      success: true,
+      designs: designs,
+      pagination: {
+        total: countResult.total,
+        page: parseInt(page),
+        limit: parseInt(limit),
+        hasMore: (parseInt(page) * parseInt(limit)) < countResult.total
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching designs:', error);
+    // Don't return 500, return empty array so frontend can fallback
+    res.json({
+      success: false,
+      designs: [],
+      error: error.message,
+      pagination: {
+        total: 0,
+        page: 1,
+        limit: 20,
+        hasMore: false
+      }
+    });
+  }
+});
+
 // Get all designs for the authenticated creator (with pagination)
 router.get('/', requireAuth, async (req, res) => {
   try {

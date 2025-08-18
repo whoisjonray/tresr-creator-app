@@ -7,6 +7,7 @@ import { useAuth } from '../hooks/useAuth';
 import { autoFixAndVerify } from '../utils/fix-thumbnails-production';
 import testEndpoints from '../utils/test-production-endpoints';
 import { autoFixEditPage } from '../utils/fix-edit-page-data';
+import fixJustGrokItSimple from '../utils/fix-just-grok-it-simple';
 
 // Generate SVG placeholder function for fallback images
 const generatePlaceholder = (productName, color) => {
@@ -654,6 +655,49 @@ function ProductManager() {
               {importing ? 'Importing...' : 'Import JUST Grok IT'}
             </button>
           )}
+          <button 
+            onClick={async () => {
+              setImporting(true);
+              setImportProgress('🎯 Fixing "Just Grok It" design for complete workflow...');
+              
+              try {
+                const result = await fixJustGrokItSimple();
+                
+                if (result.success) {
+                  setImportProgress(`✅ ${result.message}`);
+                  console.log('Fix complete:', result);
+                } else {
+                  setImportProgress(`❌ Error: ${result.error}`);
+                  setTimeout(() => {
+                    setImporting(false);
+                    setImportProgress('');
+                  }, 3000);
+                }
+              } catch (error) {
+                console.error('Fix Just Grok It error:', error);
+                setImportProgress(`❌ Error: ${error.message}`);
+                setTimeout(() => {
+                  setImporting(false);
+                  setImportProgress('');
+                }, 3000);
+              }
+            }}
+            className="btn-fix-just-grok-it" 
+            disabled={importing}
+            style={{
+              marginRight: '10px', 
+              background: importing ? '#9ca3af' : '#dc2626', 
+              color: 'white', 
+              padding: '12px 24px', 
+              border: '2px solid #991b1b', 
+              borderRadius: '4px',
+              cursor: importing ? 'not-allowed' : 'pointer',
+              fontWeight: 'bold',
+              fontSize: '16px'
+            }}
+          >
+            {importing ? '🔧 Fixing...' : '🎯 FIX JUST GROK IT'}
+          </button>
           <button 
             onClick={async () => {
               setImporting(true);
