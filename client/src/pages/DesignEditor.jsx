@@ -109,6 +109,100 @@ const PRODUCT_ICONS = {
 // Print areas are now loaded from context/database
 // No more hardcoded defaults!
 
+// Helper function to determine the correct image URL based on context
+const getDesignImageUrl = (designData, parsedDesignData, context = 'edit') => {
+  console.log('🔍 getDesignImageUrl called with:', {
+    context,
+    hasDesignData: !!designData,
+    hasParsedDesignData: !!parsedDesignData,
+    fields: Object.keys(designData || {})
+  });
+  
+  // For edit canvas, we need the RAW design PNG, not the mockup
+  if (context === 'edit') {
+    // Priority 1: frontDesignUrl (camelCase) - should be raw design
+    if (designData.frontDesignUrl && !isProductMockupUrl(designData.frontDesignUrl)) {
+      console.log('✅ Using frontDesignUrl:', designData.frontDesignUrl);
+      return designData.frontDesignUrl;
+    }
+    
+    // Priority 2: front_design_url (snake_case) - should be raw design
+    if (designData.front_design_url && !isProductMockupUrl(designData.front_design_url)) {
+      console.log('✅ Using front_design_url:', designData.front_design_url);
+      return designData.front_design_url;
+    }
+    
+    // Priority 3: First element in design_data (from Sanity imports)
+    if (parsedDesignData?.elements?.[0]?.src) {
+      const elementSrc = parsedDesignData.elements[0].src;
+      if (!isProductMockupUrl(elementSrc)) {
+        console.log('✅ Using design_data element src:', elementSrc);
+        return elementSrc;
+      }
+    }
+    
+    // Priority 4: Use any Cloudinary design URL even if detected as mockup
+    const candidateUrls = [
+      designData.frontDesignUrl,
+      designData.front_design_url,
+      designData.thumbnail_url,
+      designData.design_url
+    ].filter(Boolean);
+    
+    for (const url of candidateUrls) {
+      if (url && url.includes('cloudinary.com') && (url.includes('/designs/') || url.includes('/products/'))) {
+        console.log('✅ Using fallback Cloudinary URL:', url);
+        return url;
+      }
+    }
+    
+    // Priority 5: Use thumbnail_url as last resort even if it looks like mockup
+    if (designData.thumbnail_url) {
+      console.log('⚠️ Using thumbnail_url as fallback:', designData.thumbnail_url);
+      return designData.thumbnail_url;
+    }
+  }
+  
+  // For thumbnails, we want mockup images that show the design on products
+  if (context === 'thumbnail') {
+    // Priority 1: thumbnail_url (should be mockup)
+    if (designData.thumbnail_url && isProductMockupUrl(designData.thumbnail_url)) {
+      return designData.thumbnail_url;
+    }
+    
+    // Priority 2: Generate thumbnail from raw design if needed
+    const rawUrl = getDesignImageUrl(designData, parsedDesignData, 'edit');
+    if (rawUrl) {
+      // Return raw for now, but this could be enhanced to generate mockup
+      return rawUrl;
+    }
+  }
+  
+  console.log('❌ No suitable image URL found');
+  return null;
+};
+
+// Helper function to detect if URL is a product mockup vs raw design
+const isProductMockupUrl = (url) => {
+  if (!url) return false;
+  
+  // Mockup URLs typically contain 'products/' path and are applied to garment templates
+  const isMockupUrl = url.includes('/products/') && !url.includes('/designs/');
+  
+  // Raw design URLs typically contain 'designs/' path
+  const isRawDesignUrl = url.includes('/designs/');
+  
+  return isMockupUrl && !isRawDesignUrl;
+};
+
+// Helper function to identify the type of image URL
+const getImageUrlType = (url) => {
+  if (!url) return 'none';
+  if (isProductMockupUrl(url)) return 'mockup';
+  if (url.includes('/designs/')) return 'raw_design';
+  return 'unknown';
+};
+
 function DesignEditor() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -696,29 +790,18 @@ function DesignEditor() {
             console.log('Set design scale to:', scale);
           }
           
-          // Try multiple sources for the design image
-          let imageUrl = null;
+          // Get the correct image URL for the edit canvas (RAW design, not mockup)
+          const imageUrl = getDesignImageUrl(designData, parsedDesignData, 'edit');
           
-          // Priority 1: frontDesignUrl from database (camelCase)
-          if (designData.frontDesignUrl) {
-            imageUrl = designData.frontDesignUrl;
-            console.log('Using frontDesignUrl:', imageUrl);
-          }
-          // Priority 2: front_design_url (snake_case)
-          else if (designData.front_design_url) {
-            imageUrl = designData.front_design_url;
-            console.log('Using front_design_url:', imageUrl);
-          }
-          // Priority 3: thumbnail_url
-          else if (designData.thumbnail_url) {
-            imageUrl = designData.thumbnail_url;
-            console.log('Using thumbnail_url:', imageUrl);
-          }
-          // Priority 4: First element in design_data
-          else if (parsedDesignData?.elements?.[0]?.src) {
-            imageUrl = parsedDesignData.elements[0].src;
-            console.log('Using first element src:', imageUrl);
-          }
+          console.log('🎨 Design Image URL Resolution:', {
+            designId: designData.id,
+            hasFrontDesignUrl: !!designData.frontDesignUrl,
+            hasFront_design_url: !!designData.front_design_url,
+            hasThumbnailUrl: !!designData.thumbnail_url,
+            hasDesignDataElements: !!(parsedDesignData?.elements?.length),
+            selectedUrl: imageUrl,
+            urlType: imageUrl ? getImageUrlType(imageUrl) : 'none'
+          });
           
           // Load the image if we found one
           if (imageUrl) {
@@ -741,6 +824,12 @@ function DesignEditor() {
                 setDesignScale(scale);
                 console.log('   Auto-scaling large image to:', scale + '%');
               }
+              
+              // Force canvas redraw after image loads
+              setTimeout(() => {
+                console.log('🎨 Triggering canvas redraw after image load...');
+                drawCanvas();
+              }, 100);
               
               // Load back design if available
               if (designData.backDesignUrl) {

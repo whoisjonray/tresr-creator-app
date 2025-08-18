@@ -58,6 +58,7 @@ router.get('/', requireAuth, async (req, res) => {
 
     const [designs] = await sequelize.query(
       `SELECT id, creator_id, name, description, status, 
+              thumbnail_url, front_design_url, back_design_url,
               thumbnail_url as thumbnailUrl, 
               front_design_url as frontDesignUrl,
               back_design_url as backDesignUrl,
@@ -132,6 +133,7 @@ router.get('/:designId/public', async (req, res) => {
         SELECT 
           id, sanity_design_id as sanityId, creator_id as creatorId, 
           title as name, description,
+          thumbnail_url, front_design_url, back_design_url,
           front_design_url as frontDesignUrl, back_design_url as backDesignUrl,
           front_design_public_id as frontDesignPublicId, back_design_public_id as backDesignPublicId,
           front_position as frontPosition, back_position as backPosition,

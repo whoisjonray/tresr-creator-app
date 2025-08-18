@@ -208,6 +208,7 @@ app.use('/api/fix', require('./routes/fix-edit-page-data'));
 app.use('/api/fix', require('./routes/emergency-fix-edit-page')); // 🚨 PRODUCTION EMERGENCY FIX
 app.use('/api/test', require('./routes/test-thumbnail-endpoint'));
 app.use('/api/debug', require('./routes/debug-design-data'));
+app.use('/api/fix-design-editor', require('./routes/fix-design-editor-data'));
 app.use('/api/fix', require('./routes/final-comprehensive-fix'));
 // Sanity image fix - won't crash if @sanity/client not available
 try {
@@ -217,6 +218,8 @@ try {
 }
 // Cloudinary mapping fix - no external dependencies, always safe
 app.use('/api/fix', require('./routes/fix-with-cloudinary-mappings'));
+// Just Grok It focused fix
+app.use('/api/fix', require('./routes/fix-just-grok-it'));
 app.use('/api/schema', require('./routes/fix-production-schema'));
 
 // CRITICAL: Main import endpoint that frontend actually calls!
