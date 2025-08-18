@@ -11,6 +11,7 @@ import { userStorage } from '../utils/userStorage';
 import { usePrintAreas } from '../contexts/PrintAreasContext';
 import { autoDebugAndFix } from '../utils/debug-current-design';
 import { completeCanvasFix } from '../utils/complete-canvas-fix';
+import { forceCanvasRender } from '../utils/force-canvas-render';
 
 // Get API base URL from environment
 const getApiBaseURL = () => {
@@ -817,6 +818,12 @@ function DesignEditor() {
               setFrontDesignImageSrc(imageUrl);
               setFrontDesignUrl(imageUrl);
               
+              // Auto-fix canvas rendering after image loads
+              setTimeout(() => {
+                console.log('🎯 Auto-triggering forceCanvasRender after image load');
+                forceCanvasRender();
+              }, 500);
+              
               // For large raw images (like 1890x2362), set appropriate scale
               if (img.width > 1000 || img.height > 1000) {
                 // Calculate scale to fit in a reasonable design area (about 400px)
@@ -1142,9 +1149,17 @@ function DesignEditor() {
     const scale = parseInt(e.target.value);
     setDesignScale(scale);
     
+    // Use forceCanvasRender's slider functionality if available
+    const slider = document.querySelector('input[type="range"]');
+    if (slider && slider.oninput) {
+      slider.value = scale;
+      slider.oninput(); // This will trigger forceCanvasRender's scaling logic
+      return;
+    }
+    
     if (!designImage) return;
     
-    // Calculate new dimensions maintaining aspect ratio
+    // Fallback: Calculate new dimensions maintaining aspect ratio
     const aspectRatio = designImage.width / designImage.height;
     const printArea = getPrintArea(activeProduct, viewSide);
     const baseSize = Math.min(printArea.width, printArea.height) * 0.5;
@@ -1978,7 +1993,7 @@ function DesignEditor() {
                     <button 
                       onClick={() => {
                         console.log('Manual canvas fix triggered');
-                        completeCanvasFix();
+                        forceCanvasRender();
                       }}
                       style={{
                         marginLeft: 'auto',
@@ -2085,16 +2100,16 @@ function DesignEditor() {
                     <label>Scale</label>
                     <input
                       type="range"
-                      min="50"
-                      max="200"
+                      min="10"
+                      max="500"
                       value={designScale}
                       onChange={handleScaleChange}
                       className="scale-slider"
                     />
                     <input
                       type="number"
-                      min="50"
-                      max="200"
+                      min="10"
+                      max="500"
                       value={designScale}
                       onChange={(e) => {
                         const value = parseInt(e.target.value) || 100;
