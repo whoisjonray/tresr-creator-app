@@ -649,10 +649,6 @@ function DesignEditor() {
     if (params.id && !location.state?.productData) {
       console.log('Loading design from database:', params.id);
       
-      // Auto-debug and fix if needed
-      console.log('🔍 Running auto debug and fix for design...');
-      autoDebugAndFix();
-      
       // Fetch design from API
       api.get(`/api/designs/${params.id}`)
         .then(response => {
