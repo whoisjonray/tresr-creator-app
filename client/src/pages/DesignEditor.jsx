@@ -12,6 +12,7 @@ import { usePrintAreas } from '../contexts/PrintAreasContext';
 import { autoDebugAndFix } from '../utils/debug-current-design';
 import { completeCanvasFix } from '../utils/complete-canvas-fix';
 import { forceCanvasRender } from '../utils/force-canvas-render';
+import { fixCanvasProductSwitching, fixAlignmentButtons, watchProductChanges } from '../utils/fix-canvas-product-switching';
 
 // Get API base URL from environment
 const getApiBaseURL = () => {
@@ -739,6 +740,15 @@ function DesignEditor() {
     }
   }, [activeProduct, productConfigs[activeProduct]?.selectedColor, productConfigs[activeProduct]?.printLocation, viewSide]);
 
+  // Fix canvas when product changes
+  useEffect(() => {
+    if (activeProduct) {
+      setTimeout(() => {
+        fixCanvasProductSwitching();
+      }, 100);
+    }
+  }, [activeProduct]);
+
   // Load existing product data when editing
   useEffect(() => {
     // If we have an ID but no productData in state, fetch from database
@@ -822,6 +832,8 @@ function DesignEditor() {
               setTimeout(() => {
                 console.log('🎯 Auto-triggering forceCanvasRender after image load');
                 forceCanvasRender();
+                watchProductChanges(); // Watch for product switches
+                fixAlignmentButtons(); // Fix alignment button handlers
               }, 500);
               
               // For large raw images (like 1890x2362), set appropriate scale
@@ -1994,6 +2006,7 @@ function DesignEditor() {
                       onClick={() => {
                         console.log('Manual canvas fix triggered');
                         forceCanvasRender();
+                        fixCanvasProductSwitching();
                       }}
                       style={{
                         marginLeft: 'auto',
