@@ -31,7 +31,20 @@ export const GARMENT_IMAGES = {
       "main": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270689/garments/tee/back/main.png"
     },
     "red": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270688/garments/tee/front/red.png",
       "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270699/garments/tee/back/red.png"
+    },
+    "cardinal-red": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270688/garments/tee/front/red.png",
+      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270699/garments/tee/back/red.png"
+    },
+    "gray": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270684/garments/tee/front/heather-grey.png",
+      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270695/garments/tee/back/heather-grey.png"
+    },
+    "dark-grey": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270684/garments/tee/front/heather-grey.png",
+      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270695/garments/tee/back/heather-grey.png"
     }
   },
   "art-sqsm": {
@@ -121,13 +134,36 @@ export const GARMENT_IMAGES = {
       "main": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270741/garments/next-crop/back/main.jpg"
     },
     "pink": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270736/garments/next-crop/front/pink.png",
       "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270742/garments/next-crop/back/pink.jpg"
     },
     "gray-heather": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270737/garments/next-crop/front/gray-heather.png",
+      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270746/garments/next-crop/back/gray-heather.jpg"
+    },
+    "light-grey": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270737/garments/next-crop/front/gray-heather.png",
       "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270746/garments/next-crop/back/gray-heather.jpg"
     },
     "navy": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270738/garments/next-crop/front/navy.png",
       "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270747/garments/next-crop/back/navy.jpg"
+    },
+    "cardinal-red": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270739/garments/next-crop/front/red.png",
+      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270749/garments/next-crop/back/red.jpg"
+    },
+    "red": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270739/garments/next-crop/front/red.png",
+      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270749/garments/next-crop/back/red.jpg"
+    },
+    "royal-heather": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270733/garments/next-crop/front/blue.png",
+      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270744/garments/next-crop/back/blue.jpg"
+    },
+    "dark-grey": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270734/garments/next-crop/front/dark-heather-gray.png",
+      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270745/garments/next-crop/back/dark-heather-gray.jpg"
     },
     "red": {
       "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270748/garments/next-crop/back/red.jpg"
@@ -302,15 +338,44 @@ export const GARMENT_IMAGES = {
   }
 };
 
+// Color name mapping for variations
+const COLOR_MAPPINGS = {
+  'cardinal red': 'cardinal-red',
+  'dark grey': 'dark-grey',
+  'light grey': 'light-grey',
+  'gray': 'gray',
+  'grey': 'gray',
+  'heather grey': 'heather-grey',
+  'gray heather': 'gray-heather',
+  'royal heather': 'royal-heather',
+  'black camo': 'black-camo',
+  'cotton candy': 'cotton-candy',
+  'alpine green': 'alpine-green',
+  'mint': 'mint',
+  'sage': 'sage',
+  'army heather': 'army-heather'
+};
+
 // Helper function to get garment image
 export const getGarmentImage = (garmentType, color, side = 'front') => {
   const garment = GARMENT_IMAGES[garmentType];
   if (!garment) return null;
   
-  // Try exact color match
-  const colorSlug = color.toLowerCase().replace(/\s+/g, '-');
-  if (garment[colorSlug] && garment[colorSlug][side]) {
-    return garment[colorSlug][side];
+  // Normalize color name
+  const normalizedColor = color.toLowerCase().trim();
+  
+  // Try color mapping first
+  const mappedColor = COLOR_MAPPINGS[normalizedColor] || normalizedColor.replace(/\s+/g, '-');
+  
+  // Try exact match with mapped color
+  if (garment[mappedColor] && garment[mappedColor][side]) {
+    return garment[mappedColor][side];
+  }
+  
+  // Try without dashes
+  const noDashColor = mappedColor.replace(/-/g, '');
+  if (garment[noDashColor] && garment[noDashColor][side]) {
+    return garment[noDashColor][side];
   }
   
   // Fall back to default/main image

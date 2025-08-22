@@ -218,6 +218,7 @@ function DesignEditor() {
   const [hoveredColor, setHoveredColor] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [toolsExpanded, setToolsExpanded] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   // Get print areas from context
   const { getPrintArea, loading: printAreasLoading, error: printAreasError } = usePrintAreas();
@@ -1690,6 +1691,48 @@ function DesignEditor() {
 
   return (
     <div className="design-editor-page">
+      {/* Mobile Navigation Menu */}
+      {isMobile && (
+        <>
+          <button 
+            className={`mobile-menu-button ${mobileMenuOpen ? 'open' : ''}`}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+          
+          <div className={`mobile-nav-overlay ${mobileMenuOpen ? 'visible' : ''}`} 
+               onClick={() => setMobileMenuOpen(false)} />
+          
+          <div className={`mobile-nav-menu ${mobileMenuOpen ? 'open' : ''}`}>
+            <div className="mobile-nav-header">
+              <h3>TRESR Creator</h3>
+            </div>
+            <div className="mobile-nav-items">
+              <div className="mobile-nav-item" onClick={() => {
+                navigate('/dashboard');
+                setMobileMenuOpen(false);
+              }}>Dashboard</div>
+              <div className="mobile-nav-item active">Design Editor</div>
+              <div className="mobile-nav-item" onClick={() => {
+                navigate('/products');
+                setMobileMenuOpen(false);
+              }}>My Products</div>
+              <div className="mobile-nav-item" onClick={() => {
+                navigate('/analytics');
+                setMobileMenuOpen(false);
+              }}>Analytics</div>
+              <div className="mobile-nav-item" onClick={() => {
+                navigate('/settings');
+                setMobileMenuOpen(false);
+              }}>Settings</div>
+            </div>
+          </div>
+        </>
+      )}
+      
       <div className="design-editor-header">
         <h1>TRESR Design Editor</h1>
         <p>Exact TeePublic-style product positioning system</p>

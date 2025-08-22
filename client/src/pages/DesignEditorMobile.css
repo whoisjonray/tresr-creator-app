@@ -1,5 +1,20 @@
 /* Mobile-First Design Editor - TeePublic Style */
 @media (max-width: 768px) {
+  /* Override desktop canvas sizing */
+  .product-canvas {
+    width: 100% !important;
+    max-width: 350px !important;
+    height: auto !important;
+    aspect-ratio: 1 !important;
+    display: block !important;
+    margin: 0 auto !important;
+  }
+  
+  .canvas-container {
+    padding: 20px 10px !important;
+    background: #f5f5f5;
+    margin: 0 !important;
+  }
   .design-editor-container {
     padding: 0;
     min-height: 100vh;
@@ -7,8 +22,107 @@
     flex-direction: column;
   }
 
+  /* Fixed Navigation Menu */
+  .mobile-nav-menu {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 280px;
+    height: 100vh;
+    background: white;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    transition: left 0.3s ease;
+    z-index: 1000;
+    overflow-y: auto;
+  }
+  
+  .mobile-nav-menu.open {
+    left: 0;
+  }
+  
+  .mobile-nav-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    z-index: 999;
+  }
+  
+  .mobile-nav-overlay.visible {
+    display: block;
+  }
+  
+  .mobile-nav-header {
+    padding: 20px;
+    border-bottom: 1px solid #e5e5e5;
+  }
+  
+  .mobile-nav-items {
+    padding: 0;
+  }
+  
+  .mobile-nav-item {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .mobile-nav-item:hover {
+    background: #f8f9fa;
+  }
+  
+  .mobile-nav-item.active {
+    background: #e8f4ff;
+    color: #007AFF;
+    font-weight: 500;
+  }
+  
+  /* Hamburger Menu Button */
+  .mobile-menu-button {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    width: 40px;
+    height: 40px;
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    z-index: 101;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .mobile-menu-button span {
+    width: 20px;
+    height: 2px;
+    background: #333;
+    transition: all 0.3s;
+  }
+  
+  .mobile-menu-button.open span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+  
+  .mobile-menu-button.open span:nth-child(2) {
+    opacity: 0;
+  }
+  
+  .mobile-menu-button.open span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+  }
+  
   /* Fixed Header */
-  .mobile-header {
+  .mobile-header,
+  .design-editor-header {
     position: fixed;
     top: 0;
     left: 0;
