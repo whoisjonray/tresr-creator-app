@@ -7,9 +7,11 @@ import mockupService from '../services/mockupService';
 import canvasImageGenerator from '../services/canvasImageGenerator';
 import { getGarmentImage as getCloudinaryImage } from '../config/garmentImagesCloudinary';
 import './DesignEditor.css'; // v2 - square swatches with 14 colors
+import './DesignEditorMobile.css'; // Mobile-first responsive styles
 import { userStorage } from '../utils/userStorage';
 import { usePrintAreas } from '../contexts/PrintAreasContext';
 import { useImagePreloader } from '../hooks/useImagePreloader';
+import { useTouchGestures } from '../hooks/useTouchGestures';
 import { autoDebugAndFix } from '../utils/debug-current-design';
 import { completeCanvasFix } from '../utils/complete-canvas-fix';
 import { forceCanvasRender } from '../utils/force-canvas-render';
@@ -214,6 +216,8 @@ function DesignEditor() {
   const canvasRef = useRef(null);
   const garmentImage = useRef(new Image());
   const [hoveredColor, setHoveredColor] = useState(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [toolsExpanded, setToolsExpanded] = useState(false);
   
   // Get print areas from context
   const { getPrintArea, loading: printAreasLoading, error: printAreasError } = usePrintAreas();
@@ -292,9 +296,37 @@ function DesignEditor() {
   // Preload all color variations for instant switching
   const { getCachedImage, isPreloading } = useImagePreloader(activeProduct, availableColors);
   
+  // Touch gestures for mobile
+  const { reset: resetGestures } = useTouchGestures(canvasRef, {
+    onPinch: ({ scale }) => {
+      setDesignScale(prev => Math.max(10, Math.min(500, prev * scale)));
+    },
+    onDrag: ({ deltaX, deltaY }) => {
+      if (designImage) {
+        const currentPos = getCurrentPosition();
+        updateCurrentPosition(activeProduct, {
+          ...currentPos,
+          x: currentPos.x + deltaX * 1.5, // Scale factor for canvas coordinates
+          y: currentPos.y + deltaY * 1.5
+        });
+      }
+    },
+    onDoubleTap: () => {
+      setDesignScale(100); // Reset scale on double tap
+    }
+  });
+  
   // Load product templates from API on mount
   useEffect(() => {
     loadProductTemplates();
+    
+    // Handle window resize
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
   
   // Initialize product configs once print areas are loaded

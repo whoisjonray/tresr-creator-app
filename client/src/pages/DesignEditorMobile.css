@@ -1,0 +1,394 @@
+/* Mobile-First Design Editor - TeePublic Style */
+@media (max-width: 768px) {
+  .design-editor-container {
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Fixed Header */
+  .mobile-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    background: white;
+    border-bottom: 1px solid #e5e5e5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    z-index: 100;
+  }
+
+  .mobile-header h1 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .mobile-header .actions {
+    display: flex;
+    gap: 16px;
+  }
+
+  /* Canvas Section - Full Width */
+  .mobile-canvas-section {
+    margin-top: 56px; /* Account for fixed header */
+    background: #f5f5f5;
+    padding: 16px;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .product-canvas-container {
+    width: 100%;
+    max-width: 400px;
+    aspect-ratio: 1;
+    position: relative;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .product-canvas {
+    width: 100%;
+    height: 100%;
+    touch-action: none; /* Prevent scrolling when dragging */
+  }
+
+  /* Product Switcher - Horizontal Scroll */
+  .mobile-product-switcher {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px 0;
+    margin-top: 16px;
+  }
+
+  .mobile-product-switcher::-webkit-scrollbar {
+    display: none;
+  }
+
+  .product-thumbnails {
+    display: flex;
+    gap: 12px;
+    padding: 0 16px;
+  }
+
+  .product-thumb {
+    flex: 0 0 80px;
+    width: 80px;
+    height: 80px;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .product-thumb.active {
+    border-color: #007AFF;
+  }
+
+  .product-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  /* Tools Section - Collapsible */
+  .mobile-tools-section {
+    background: white;
+    border-top: 1px solid #e5e5e5;
+  }
+
+  .tools-toggle {
+    width: 100%;
+    padding: 16px;
+    background: white;
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .tools-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  .tools-content.expanded {
+    max-height: 600px;
+  }
+
+  /* Scale Slider - Large Touch Target */
+  .mobile-scale-control {
+    padding: 16px;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  .scale-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #666;
+  }
+
+  .scale-slider {
+    width: 100%;
+    height: 44px;
+    -webkit-appearance: none;
+    background: transparent;
+  }
+
+  .scale-slider::-webkit-slider-track {
+    width: 100%;
+    height: 4px;
+    background: #e5e5e5;
+    border-radius: 2px;
+  }
+
+  .scale-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 28px;
+    height: 28px;
+    background: #007AFF;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-top: -12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+
+  /* Color Swatches - Grid Layout */
+  .mobile-color-section {
+    padding: 16px;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  .color-section-title {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 12px;
+    color: #333;
+  }
+
+  .mobile-color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+    gap: 8px;
+  }
+
+  .mobile-color-swatch {
+    aspect-ratio: 1;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s;
+  }
+
+  .mobile-color-swatch.selected {
+    border-color: #007AFF;
+  }
+
+  .mobile-color-swatch.selected::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  }
+
+  /* Upload Section - Prominent */
+  .mobile-upload-section {
+    padding: 16px;
+    background: #f8f9fa;
+  }
+
+  .mobile-upload-zone {
+    border: 2px dashed #007AFF;
+    border-radius: 12px;
+    padding: 32px 16px;
+    text-align: center;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .mobile-upload-zone.has-design {
+    border-style: solid;
+    background: #f0f8ff;
+  }
+
+  .upload-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+    color: #007AFF;
+  }
+
+  .upload-text {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 8px;
+  }
+
+  .upload-hint {
+    font-size: 14px;
+    color: #666;
+  }
+
+  /* Bottom Action Bar - Fixed */
+  .mobile-action-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 1px solid #e5e5e5;
+    padding: 12px 16px;
+    display: flex;
+    gap: 12px;
+    z-index: 100;
+  }
+
+  .mobile-action-bar button {
+    flex: 1;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .mobile-action-bar .primary {
+    background: #007AFF;
+    color: white;
+  }
+
+  .mobile-action-bar .secondary {
+    background: #f0f0f0;
+    color: #333;
+  }
+
+  /* Touch Interactions */
+  .design-draggable {
+    cursor: move;
+    touch-action: none;
+  }
+
+  /* Pinch to Zoom Support */
+  .pinch-zoom-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  /* Rotation Handle */
+  .rotation-handle {
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32px;
+    height: 32px;
+    background: #007AFF;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+    touch-action: none;
+  }
+
+  .rotation-handle::after {
+    content: '↻';
+    color: white;
+    font-size: 18px;
+  }
+
+  /* Loading State */
+  .mobile-loading {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 200;
+  }
+
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f0f0f0;
+    border-top-color: #007AFF;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Success Animation */
+  .success-toast {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #4CAF50;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 200;
+    animation: slideDown 0.3s ease;
+  }
+
+  @keyframes slideDown {
+    from {
+      transform: translateX(-50%) translateY(-20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+  }
+
+  /* Responsive Typography */
+  h1 { font-size: 24px; }
+  h2 { font-size: 20px; }
+  h3 { font-size: 18px; }
+  
+  /* Hide desktop-only elements */
+  .desktop-only {
+    display: none !important;
+  }
+
+  /* Show mobile-only elements */
+  .mobile-only {
+    display: block;
+  }
+}
