@@ -14,20 +14,20 @@ const INITIAL_PRINT_AREAS = {
     back: { width: 300, height: 350, x: 150, y: 125 }
   },
   'next-crop': { 
-    front: { width: 250, height: 250, x: 175, y: 175 },  // Center at 300,300 -> top-left at 175,175
-    back: { width: 250, height: 250, x: 175, y: 175 }
+    front: { width: 200, height: 200, x: 200, y: 150 },  // Smaller, higher placement for crop top
+    back: { width: 200, height: 200, x: 200, y: 150 }
   },
   'wmn-hoodie': { 
-    front: { width: 280, height: 340, x: 160, y: 80 },  // Positioned higher on chest
-    back: { width: 280, height: 340, x: 160, y: 80 }
+    front: { width: 240, height: 320, x: 180, y: 140 },  // Adjusted for women's fit
+    back: { width: 240, height: 320, x: 180, y: 140 }
   },
   'med-hood': { 
-    front: { width: 280, height: 340, x: 160, y: 130 },  // Center at 300,300 -> top-left at 160,130
-    back: { width: 280, height: 340, x: 160, y: 130 }
+    front: { width: 260, height: 340, x: 170, y: 130 },  // Standard hoodie area
+    back: { width: 260, height: 340, x: 170, y: 130 }
   },
   'mediu': { 
-    front: { width: 280, height: 350, x: 160, y: 125 },  // Same as regular tee
-    back: { width: 280, height: 350, x: 160, y: 125 }
+    front: { width: 260, height: 330, x: 170, y: 135 },  // Sweatshirt area
+    back: { width: 260, height: 330, x: 170, y: 135 }
   },
   'polo': { 
     front: { width: 200, height: 250, x: 200, y: 100 },  // Smaller chest area

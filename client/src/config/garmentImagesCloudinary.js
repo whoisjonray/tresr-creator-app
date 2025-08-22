@@ -291,7 +291,15 @@ export const GARMENT_IMAGES = {
       "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752356231/garments/med-hood/back/white.png"
     }
   },
-  "stdmug": {}
+  "stdmug": {},
+  "mug": {
+    "front": {
+      "main": "https://res.cloudinary.com/dqslerzk9/image/upload/v1755878901/garments/mug/white-coffee-mug.jpg"
+    },
+    "white": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1755878901/garments/mug/white-coffee-mug.jpg"
+    }
+  }
 };
 
 // Helper function to get garment image

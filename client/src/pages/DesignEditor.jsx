@@ -1178,20 +1178,9 @@ function DesignEditor() {
     const newWidth = baseSize * (scale / 100);
     const newHeight = newWidth / aspectRatio;
     
-    // Ensure the scaled design fits within print area
-    const maxWidth = printArea.width * 0.95;
-    const maxHeight = printArea.height * 0.95;
+    // Allow scaling beyond print area (removed constraint)
     let finalWidth = newWidth;
     let finalHeight = newHeight;
-    
-    if (finalWidth > maxWidth) {
-      finalWidth = maxWidth;
-      finalHeight = finalWidth / aspectRatio;
-    }
-    if (finalHeight > maxHeight) {
-      finalHeight = maxHeight;
-      finalWidth = finalHeight * aspectRatio;
-    }
     
     // Update the position for the current view side
     const positionKey = viewSide === 'front' ? 'frontPosition' : 'backPosition';
@@ -2126,7 +2115,7 @@ function DesignEditor() {
                       value={designScale}
                       onChange={(e) => {
                         const value = parseInt(e.target.value) || 100;
-                        const clampedValue = Math.max(50, Math.min(200, value));
+                        const clampedValue = Math.max(10, Math.min(500, value));
                         handleScaleChange({ target: { value: clampedValue } });
                       }}
                       onKeyDown={(e) => {
@@ -2269,17 +2258,22 @@ function DesignEditor() {
                                 style={{ backgroundColor: colorHex }}
                                 title={color}
                                 onClick={() => {
-                                  // Only add/remove from selectedColors list - don't change canvas background
+                                  // Update canvas to show this color immediately
                                   setProductConfigs(prev => ({
                                     ...prev,
                                     [product.id]: {
                                       ...prev[product.id],
+                                      selectedColor: color, // Set this as the active color
                                       selectedColors: isSelected
                                         ? prev[product.id]?.selectedColors?.filter(c => c !== color) || []
                                         : [...(prev[product.id]?.selectedColors || []), color]
-                                      // Don't set selectedColor here - that's controlled by dropdown
                                     }
                                   }));
+                                  
+                                  // If this is the active product, redraw the canvas
+                                  if (product.id === activeProduct) {
+                                    setTimeout(() => drawCanvas(), 50);
+                                  }
                                 }}
                                 onMouseEnter={() => {
                                   // Temporarily show this color on the garment if it's the active product
