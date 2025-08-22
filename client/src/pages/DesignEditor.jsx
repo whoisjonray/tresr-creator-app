@@ -72,26 +72,26 @@ const PRODUCT_TEMPLATES = [
   { id: 'nft', name: 'NFTREASURE NFT Cards', templateId: 'trading_card', price: 5, colors: ['Default'] }
 ];
 
-// Consolidated color categories for all products
+// Consolidated color categories for all products - standardized hex codes
 const COLOR_PALETTE = [
   // Core neutrals
   { name: 'Black', hex: '#000000' },
-  { name: 'Black Camo', hex: '#1a1a1a' }, // Women's hoodie specific
-  { name: 'Dark Grey', hex: '#4A4A4A' },  // Covers: Charcoal, Dark Heather Gray, Heather-Grey
-  { name: 'Light Grey', hex: '#9CA3AF' }, // Covers: Gray, Gray Heather, Heather Grey
-  { name: 'Natural', hex: '#FEF3C7' },    // Covers: Natural, Bone, Beige tones
-  { name: 'White', hex: '#FAFAFA' },
+  { name: 'Black Camo', hex: '#2a2a2a' }, // Camo pattern on black base
+  { name: 'Dark Grey', hex: '#4A4A4A' },  // Charcoal, Dark Heather Gray
+  { name: 'Light Grey', hex: '#A8A8A8' }, // Gray Heather, Heather Grey
+  { name: 'Natural', hex: '#F5E6D3' },    // Natural, Bone, Beige tones
+  { name: 'White', hex: '#FFFFFF' },
   
-  // Colors
-  { name: 'Mint', hex: '#98FF98' },       // Covers: Mint, Sage
-  { name: 'Navy', hex: '#080F20' },       // Covers: Navy, Classic Navy, Midnight-Navy
-  { name: 'Cardinal Red', hex: '#EC5039' },// Covers: Red, Burgundy, Maroon, Cardinal-Red
-  { name: 'Gold', hex: '#F6CB46' },       // Covers: Gold, Antique-Gold
-  { name: 'Alpine Green', hex: '#165B33' },
+  // Colors - Standardized across all garments
+  { name: 'Mint', hex: '#A8E6CF' },       // Mint, Sage (light green)
+  { name: 'Navy', hex: '#1F2937' },       // Navy, Classic Navy
+  { name: 'Cardinal Red', hex: '#C41E3A' },// Cardinal Red, Red
+  { name: 'Gold', hex: '#FFD700' },       // Gold, Yellow gold
+  { name: 'Alpine Green', hex: '#2E5E3E' },// Forest/Alpine green
   { name: 'Army Heather', hex: '#6B7043' },// Military green heather
-  { name: 'Royal Heather', hex: '#4169E1' },// Royal blue heather, covers: Blue, Royal-Blue, True Royal
-  { name: 'Pink', hex: '#F82F57' },       // Covers: Pink, Desert-Pink
-  { name: 'Cotton Candy', hex: '#FFB6C1' }
+  { name: 'Royal Heather', hex: '#5B7FCC' },// Royal blue heather
+  { name: 'Pink', hex: '#FFB6C1' },       // Light pink
+  { name: 'Cotton Candy', hex: '#FFD4E5' }// Very light pink
 ];
 
 const PRODUCT_ICONS = {

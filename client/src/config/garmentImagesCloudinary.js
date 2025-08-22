@@ -96,13 +96,28 @@ export const GARMENT_IMAGES = {
       "main": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270719/garments/wmn-hoodie/back/main.jpg"
     },
     "gray-heather": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270714/garments/wmn-hoodie/front/gray-heather.png",
+      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270724/garments/wmn-hoodie/back/gray-heather.jpg"
+    },
+    "light-grey": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270714/garments/wmn-hoodie/front/gray-heather.png",
       "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270724/garments/wmn-hoodie/back/gray-heather.jpg"
     },
     "sage": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270715/garments/wmn-hoodie/front/sage.png",
+      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270725/garments/wmn-hoodie/back/sage.jpg"
+    },
+    "mint": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270715/garments/wmn-hoodie/front/sage.png",
       "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270725/garments/wmn-hoodie/back/sage.jpg"
     },
     "white": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270716/garments/wmn-hoodie/front/white.png",
       "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270726/garments/wmn-hoodie/back/white.jpg"
+    },
+    "natural": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270712/garments/wmn-hoodie/front/bone.png",
+      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270722/garments/wmn-hoodie/back/bone.jpg"
     }
   },
   "std": {},
@@ -295,65 +310,85 @@ export const GARMENT_IMAGES = {
       "main": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270797/garments/med-hood/front/main.png"
     },
     "gold": {
-      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270798/garments/med-hood/front/gold.png",
-      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752356225/garments/med-hood/back/gold.png"
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1755883298/garments/med-hood/front/gold.png",
+      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1755883289/garments/med-hood/back/gold.png"
     },
-    "gray-heather": {
-      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752271904/garments/med-hood/front/gray-heather.png",
-      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752356226/garments/med-hood/back/gray-heather.png"
+    "light-grey": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1755883299/garments/med-hood/front/light-grey.png",
+      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1755883290/garments/med-hood/back/light-grey.png"
     },
-    "red": {
-      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752271905/garments/med-hood/front/red.png",
-      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752356230/garments/med-hood/back/red.png"
+    "cardinal-red": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1755883301/garments/med-hood/front/cardinal-red.png",
+      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1755883293/garments/med-hood/back/cardinal-red.png"
     },
     "alpine-green": {
-      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752271907/garments/med-hood/front/alpine-green.png",
-      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752356221/garments/med-hood/back/alpine-green.png"
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1755883295/garments/med-hood/front/alpine-green.png",
+      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1755883286/garments/med-hood/back/alpine-green.png"
     },
     "black": {
-      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752271908/garments/med-hood/front/black.png",
-      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752356222/garments/med-hood/back/black.png"
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1755883296/garments/med-hood/front/black.png",
+      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1755883287/garments/med-hood/back/black.png"
+    },
+    "navy": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1755883297/garments/med-hood/front/navy.png",
+      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1755883288/garments/med-hood/back/navy.png"
+    },
+    "mint": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1755883300/garments/med-hood/front/mint.png",
+      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1755883292/garments/med-hood/back/mint.png"
+    },
+    "white": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1755883302/garments/med-hood/front/white.png",
+      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752356231/garments/med-hood/back/white.png"
     },
     "back": {
       "main": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752356219/garments/med-hood/back/main.png"
-    },
-    "classic-navy": {
-      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752356223/garments/med-hood/back/classic-navy.png"
-    },
-    "mint": {
-      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752356228/garments/med-hood/back/mint.png"
-    },
-    "white": {
-      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752356231/garments/med-hood/back/white.png"
     }
   },
   "stdmug": {},
   "mug": {
     "front": {
-      "main": "https://res.cloudinary.com/dqslerzk9/image/upload/v1755878901/garments/mug/white-coffee-mug.jpg"
+      "main": "https://res.cloudinary.com/dqslerzk9/image/upload/v1755883303/garments/mug/white-coffee-mug-correct.jpg"
     },
     "white": {
-      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1755878901/garments/mug/white-coffee-mug.jpg"
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1755883303/garments/mug/white-coffee-mug-correct.jpg"
     }
   }
 };
 
 // Color name mapping for variations
 const COLOR_MAPPINGS = {
+  // Reds
   'cardinal red': 'cardinal-red',
+  'red': 'cardinal-red',
+  
+  // Grays
   'dark grey': 'dark-grey',
   'light grey': 'light-grey',
   'gray': 'gray',
   'grey': 'gray',
   'heather grey': 'heather-grey',
   'gray heather': 'gray-heather',
+  'grey heather': 'gray-heather',
+  
+  // Blues
   'royal heather': 'royal-heather',
-  'black camo': 'black-camo',
-  'cotton candy': 'cotton-candy',
+  'navy': 'navy',
+  'classic navy': 'navy',
+  
+  // Greens
   'alpine green': 'alpine-green',
   'mint': 'mint',
   'sage': 'sage',
-  'army heather': 'army-heather'
+  
+  // Special patterns
+  'black camo': 'black-camo',
+  'cotton candy': 'cotton-candy',
+  'army heather': 'army-heather',
+  
+  // Natural tones
+  'natural': 'natural',
+  'bone': 'bone'
 };
 
 // Helper function to get garment image
