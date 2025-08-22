@@ -6,6 +6,7 @@ import api from '../services/api';
 import mockupService from '../services/mockupService';
 import canvasImageGenerator from '../services/canvasImageGenerator';
 import { getGarmentImage as getCloudinaryImage } from '../config/garmentImagesCloudinary';
+import mugConvexEffect from '../utils/mugConvexEffect';
 import './DesignEditor.css'; // v2 - square swatches with 14 colors
 import './DesignEditorMobile.css'; // Mobile-first responsive styles
 import { userStorage } from '../utils/userStorage';
@@ -673,8 +674,30 @@ function DesignEditor() {
       const { x, y, width, height } = currentPosition;
       
       try {
-        // Draw design at the specified position (x,y are top-left coordinates)
-        ctx.drawImage(designImage, x, y, width, height);
+        // Apply convex effect for coffee mug, regular drawing for other products
+        if (activeProduct === 'mug') {
+          // Create temporary canvas for the design
+          const tempCanvas = document.createElement('canvas');
+          tempCanvas.width = canvas.width;
+          tempCanvas.height = canvas.height;
+          const tempCtx = tempCanvas.getContext('2d');
+          
+          // Draw design on temporary canvas
+          tempCtx.drawImage(designImage, x, y, width, height);
+          
+          // Apply convex warp effect
+          const warpedCanvas = mugConvexEffect.applyConvexWarp(tempCanvas, {
+            curvature: 0.25, // Subtle curve for display
+            perspective: 0.9, // Minimal perspective
+            strips: 100 // Smooth curve
+          });
+          
+          // Draw warped version on main canvas
+          ctx.drawImage(warpedCanvas, 0, 0);
+        } else {
+          // Draw design normally for other products
+          ctx.drawImage(designImage, x, y, width, height);
+        }
       } catch (e) {
         console.error('Error drawing design:', e);
       }

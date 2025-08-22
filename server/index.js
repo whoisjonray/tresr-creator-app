@@ -271,6 +271,9 @@ app.use('/api/debug', require('./routes/debug-database'));
 app.use('/api/super-simple', require('./routes/super-simple-import'));
 app.use('/api/import-now', require('./routes/import-all-now'));
 
+// Fulfillment routes for print shop integration
+app.use('/api/fulfillment', require('./routes/fulfillment'));
+
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
   // Serve static files from the React app

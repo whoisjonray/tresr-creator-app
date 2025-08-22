@@ -250,7 +250,12 @@ export const GARMENT_IMAGES = {
       "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270781/garments/mediu/back/classic-navy.png"
     },
     "gray-heather": {
-      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270768/garments/mediu/front/gray-heather.png"
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270768/garments/mediu/front/gray-heather.png",
+      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270783/garments/mediu/back/gray-heather.png"
+    },
+    "light-grey": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270768/garments/mediu/front/gray-heather.png",
+      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270783/garments/mediu/back/gray-heather.png"
     },
     "white": {
       "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270769/garments/mediu/front/white.png",
@@ -260,13 +265,32 @@ export const GARMENT_IMAGES = {
       "main": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270775/garments/mediu/back/main.png"
     },
     "army-heather": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270770/garments/mediu/front/army-heather.png",
       "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270782/garments/mediu/back/army-heather.png"
     },
     "red": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270771/garments/mediu/front/red.png",
+      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270784/garments/mediu/back/red.png"
+    },
+    "cardinal-red": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270771/garments/mediu/front/red.png",
       "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270784/garments/mediu/back/red.png"
     },
     "royal-blue": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270772/garments/mediu/front/royal-blue.png",
       "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270785/garments/mediu/back/royal-blue.png"
+    },
+    "royal-heather": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270772/garments/mediu/front/royal-blue.png",
+      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270785/garments/mediu/back/royal-blue.png"
+    },
+    "navy": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270767/garments/mediu/front/classic-navy.png",
+      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270781/garments/mediu/back/classic-navy.png"
+    },
+    "dark-grey": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270766/garments/mediu/front/charcoal.png",
+      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270779/garments/mediu/back/charcoal.png"
     }
   },
   "patch-flat": {
