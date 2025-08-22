@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { getCloudinaryImage } from '../config/garmentImagesCloudinary';
+import { getGarmentImage } from '../config/garmentImagesCloudinary';
 
 // Cache for preloaded images
 const imageCache = new Map();
@@ -21,7 +21,7 @@ export function useImagePreloader(activeProduct, availableColors = []) {
 
       for (const color of availableColors) {
         // Preload front image
-        const frontUrl = getCloudinaryImage(activeProduct, color, 'front');
+        const frontUrl = getGarmentImage(activeProduct, color, 'front');
         if (frontUrl && !imageCache.has(frontUrl)) {
           const frontPromise = new Promise((resolve) => {
             const img = new Image();
@@ -46,7 +46,7 @@ export function useImagePreloader(activeProduct, availableColors = []) {
         }
 
         // Preload back image
-        const backUrl = getCloudinaryImage(activeProduct, color, 'back');
+        const backUrl = getGarmentImage(activeProduct, color, 'back');
         if (backUrl && !imageCache.has(backUrl)) {
           const backPromise = new Promise((resolve) => {
             const img = new Image();
