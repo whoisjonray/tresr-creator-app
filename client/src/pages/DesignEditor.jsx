@@ -9,6 +9,7 @@ import { getGarmentImage as getCloudinaryImage } from '../config/garmentImagesCl
 import './DesignEditor.css'; // v2 - square swatches with 14 colors
 import { userStorage } from '../utils/userStorage';
 import { usePrintAreas } from '../contexts/PrintAreasContext';
+import { useImagePreloader } from '../hooks/useImagePreloader';
 import { autoDebugAndFix } from '../utils/debug-current-design';
 import { completeCanvasFix } from '../utils/complete-canvas-fix';
 import { forceCanvasRender } from '../utils/force-canvas-render';
@@ -212,6 +213,7 @@ function DesignEditor() {
   const params = useParams();
   const canvasRef = useRef(null);
   const garmentImage = useRef(new Image());
+  const [hoveredColor, setHoveredColor] = useState(null);
   
   // Get print areas from context
   const { getPrintArea, loading: printAreasLoading, error: printAreasError } = usePrintAreas();
@@ -280,6 +282,15 @@ function DesignEditor() {
   const [showCenterLines, setShowCenterLines] = useState(true); // Toggle for center lines
   const [isZoomed, setIsZoomed] = useState(false); // Magnifying glass zoom state
   const [isProductPublished, setIsProductPublished] = useState(false);
+  
+  // Get available colors for current product
+  const availableColors = useMemo(() => {
+    const product = PRODUCT_TEMPLATES.find(p => p.id === activeProduct);
+    return product?.colors || [];
+  }, [activeProduct]);
+  
+  // Preload all color variations for instant switching
+  const { getCachedImage, isPreloading } = useImagePreloader(activeProduct, availableColors);
   
   // Load product templates from API on mount
   useEffect(() => {
@@ -738,7 +749,7 @@ function DesignEditor() {
       garmentImage.current = null;
       drawCanvas();
     }
-  }, [activeProduct, productConfigs[activeProduct]?.selectedColor, productConfigs[activeProduct]?.printLocation, viewSide]);
+  }, [activeProduct, productConfigs[activeProduct]?.selectedColor, productConfigs[activeProduct]?.printLocation, viewSide, hoveredColor, getCachedImage]);
 
   // Fix canvas when product changes
   useEffect(() => {
@@ -1137,16 +1148,13 @@ function DesignEditor() {
       const printArea = getPrintArea(activeProduct, viewSide);
       const currentPosition = getCurrentPosition();
       
-      // Calculate boundaries based on print area (using top-left coordinates)
-      const minX = printArea.x;
-      const maxX = printArea.x + printArea.width - currentPosition.width;
-      const minY = printArea.y;
-      const maxY = printArea.y + printArea.height - currentPosition.height;
-      
+      // Remove boundaries - allow free positioning
+      // Design can overflow outside the bounding box
+      // (only content inside bounding box will be rendered to mockup)
       const newPosition = {
         ...currentPosition,
-        x: Math.max(minX, Math.min(maxX, x - dragStart.x)),
-        y: Math.max(minY, Math.min(maxY, y - dragStart.y))
+        x: x - dragStart.x,
+        y: y - dragStart.y
       };
       
       updateCurrentPosition(activeProduct, newPosition);
@@ -2278,6 +2286,7 @@ function DesignEditor() {
                                 onMouseEnter={() => {
                                   // Temporarily show this color on the garment if it's the active product
                                   if (product.id === activeProduct) {
+                                    setHoveredColor(color);
                                     setProductConfigs(prev => ({
                                       ...prev,
                                       [product.id]: {
@@ -2290,6 +2299,7 @@ function DesignEditor() {
                                 onMouseLeave={() => {
                                   // Remove hover color when mouse leaves - returns to dropdown default color
                                   if (product.id === activeProduct) {
+                                    setHoveredColor(null);
                                     setProductConfigs(prev => ({
                                       ...prev,
                                       [product.id]: {
