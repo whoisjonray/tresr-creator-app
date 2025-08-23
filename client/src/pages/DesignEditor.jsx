@@ -718,8 +718,8 @@ function DesignEditor() {
       ctx.lineWidth = 2;
       ctx.setLineDash([5, 3]);
       // Scale the bounding box coordinates from 600x600 to 400x400 display
-      const scale = 400 / 600;
-      ctx.strokeRect(printAreaX * scale, printAreaY * scale, printAreaWidth * scale, printAreaHeight * scale);
+      const boxScale = 400 / 600;
+      ctx.strokeRect(printAreaX * boxScale, printAreaY * boxScale, printAreaWidth * boxScale, printAreaHeight * boxScale);
       ctx.setLineDash([]);
       
       // Draw corner handles
