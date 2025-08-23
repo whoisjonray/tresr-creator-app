@@ -1767,7 +1767,7 @@ function DesignEditor() {
       
       <div className="design-editor-header">
         <h1>TRESR Design Editor</h1>
-        <p>Exact TeePublic-style product positioning system</p>
+        <p>Advanced product positioning system</p>
       </div>
 
       <div className="container">

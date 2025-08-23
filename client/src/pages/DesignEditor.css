@@ -456,6 +456,11 @@
     font-weight: 600;
     color: #374151;
     cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0 5px;
+    max-width: 100%;
 }
 
 .product-name:hover {
@@ -957,6 +962,11 @@
     color: #374151;
     font-size: 0.9rem;
     font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0 5px;
+    max-width: 100%;
 }
 
 .product-card.active .product-name {

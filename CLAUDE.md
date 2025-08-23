@@ -12,14 +12,34 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Backend API**: https://vibes.tresr.com
 - **Authentication**: Dynamic.xyz (Environment: b17e8631-c1b7-45d5-95cf-151eb5246423)
 
-## Essential Commands
+## 🚀 Railway Deployment (CRITICAL - FOLLOW EXACTLY)
 
-### IMPORTANT: Always Deploy to Railway
-**DO NOT USE LOCALHOST** - Always push changes to Railway for testing
+### ✅ CORRECT Way to Deploy to Railway
 ```bash
-git add -A && git commit -m "description" && git push
-# Changes deploy automatically to https://creators.tresr.com (2-3 min)
+# 1. Make your changes
+# 2. Test locally if needed (optional)
+# 3. Commit and push to GitHub
+git add -A && git commit -m "fix: description of changes" && git push
+
+# Railway auto-deploys from GitHub (2-3 min)
+# Monitor at: https://railway.app/project/tresr-creator-app
 ```
+
+### ⚠️ NEVER Do This
+```bash
+# WRONG - Don't use railway CLI directly
+railway up  # NO! This bypasses GitHub integration
+
+# WRONG - Don't deploy from local
+railway deploy  # NO! Use GitHub integration
+```
+
+### Why GitHub Integration?
+1. **Automatic deployments** on push to main branch
+2. **Build logs** visible in Railway dashboard
+3. **Rollback capability** to any previous commit
+4. **Environment variables** managed in Railway UI
+5. **Zero-downtime deployments** with health checks
 
 ### Local Development (Reference Only - DO NOT USE)
 ```bash
@@ -236,6 +256,9 @@ template: {
 - [x] Fit-based style filtering with real Cloudinary images ✅ COMPLETE
 - [x] Dynamic price updates and variant switching ✅ COMPLETE
 - [x] Shopify product creation with metafields ✅ COMPLETE
+- [x] Bounding box sync between admin and design editor ✅ COMPLETE
+- [x] Mobile responsive design editor with touch support ✅ COMPLETE
+- [x] Canvas rendering on design/new page ✅ COMPLETE
 - [ ] Design upload and positioning functional
 - [ ] Canvas compositing for design overlay
 - [ ] Creator stats and dashboard data loading
@@ -257,6 +280,45 @@ template: {
 3. **Color Switching**: Real Cloudinary images load
 4. **Accessory Display**: Related products show below SuperProduct
 5. **Cart Integration**: Correct Shopify product IDs mapped
+
+## Recent Optimizations (January 2025)
+
+### 🎯 Bounding Box Synchronization
+**Problem**: Print areas were misaligned between admin BoundingBoxEditor and design/new canvas
+**Solution**: 
+- Standardized 600x600 canvas size across both editors
+- Created `sync-bounding-boxes.js` script to sync coordinates
+- Implemented PrintAreasContext for centralized print area management
+- All garments now use consistent coordinate system
+
+### 📱 Mobile Responsiveness (design/new)
+**Problem**: Canvas overflow and poor touch experience on mobile devices
+**Solution**:
+- Implemented mobile-first CSS with proper aspect ratios
+- Added touch gesture support (drag, pinch zoom, rotate)
+- Fixed canvas sizing to prevent horizontal scroll
+- Created collapsible tool panels for mobile UI
+- Added fixed action bar for save/preview actions
+
+### 🎨 Canvas Rendering Fix
+**Problem**: Canvas not rendering properly when switching products
+**Solution**:
+- Implemented `forceCanvasRender()` utility
+- Fixed product switching with `fixCanvasProductSwitching()`
+- Added proper canvas cleanup between product changes
+- Ensured design position/scale persist across products
+
+### 🧪 Playwright Visual Validation
+**Testing Setup**:
+```bash
+# Connect to existing Chrome session (preserves auth)
+open -a "Google Chrome" --args --remote-debugging-port=9222
+node scripts/playwright-upload-and-validate.js
+```
+- Tests mobile viewports (iPhone SE, 12, 13 Pro, 14 Pro Max)
+- Validates touch target sizes (44px minimum)
+- Checks for horizontal overflow
+- Generates visual reports with screenshots
 
 ## Key Authentication Solutions
 
