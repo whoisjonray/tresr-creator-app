@@ -674,7 +674,7 @@ function DesignEditor() {
       const { x, y, width, height } = currentPosition;
       
       // Scale design position from 600x600 coordinates to 400x400 display
-      const scale = 400 / 600;
+      // Using the same scale factor as defined above (line 663)
       const scaledX = x * scale;
       const scaledY = y * scale;
       const scaledWidth = width * scale;
