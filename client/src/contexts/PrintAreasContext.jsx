@@ -30,30 +30,98 @@ export const PrintAreasProvider = ({ children }) => {
       
       if (response.data.success && response.data.printAreas) {
         setPrintAreas(response.data.printAreas);
+        console.log('✅ Loaded print areas from database successfully');
       } else {
-        // If no print areas in database, initialize with emergency defaults
-        console.warn('No print areas in database, using emergency defaults');
-        setPrintAreas({
-          'tee': { front: EMERGENCY_DEFAULT, back: EMERGENCY_DEFAULT },
-          'boxy': { front: EMERGENCY_DEFAULT, back: EMERGENCY_DEFAULT },
-          'next-crop': { front: EMERGENCY_DEFAULT, back: EMERGENCY_DEFAULT },
-          'baby-tee': { front: EMERGENCY_DEFAULT, back: EMERGENCY_DEFAULT },
-          'wmn-hoodie': { front: EMERGENCY_DEFAULT, back: EMERGENCY_DEFAULT },
-          'med-hood': { front: EMERGENCY_DEFAULT, back: EMERGENCY_DEFAULT },
-          'mediu': { front: EMERGENCY_DEFAULT, back: EMERGENCY_DEFAULT },
-          'sweat': { front: EMERGENCY_DEFAULT, back: EMERGENCY_DEFAULT },
-          'patch-c': { front: { width: 120, height: 80, x: 240, y: 260 }, back: null },
-          'patch-flat': { front: { width: 140, height: 80, x: 230, y: 260 }, back: null },
-          'polo': { front: { width: 200, height: 250, x: 200, y: 100 }, back: { width: 200, height: 250, x: 200, y: 100 } }
-        });
+        // If no print areas in database, use the correct defaults
+        console.warn('No print areas in database, using correct defaults');
+        const correctDefaults = {
+          'tee': { 
+            front: { width: 280, height: 350, x: 160, y: 125 },
+            back: { width: 280, height: 350, x: 160, y: 125 }
+          },
+          'boxy': { 
+            front: { width: 300, height: 350, x: 150, y: 125 },
+            back: { width: 300, height: 350, x: 150, y: 125 }
+          },
+          'next-crop': { 
+            front: { width: 200, height: 200, x: 200, y: 150 },
+            back: { width: 200, height: 200, x: 200, y: 150 }
+          },
+          'wmn-hoodie': { 
+            front: { width: 240, height: 320, x: 180, y: 140 },
+            back: { width: 240, height: 320, x: 180, y: 140 }
+          },
+          'med-hood': { 
+            front: { width: 260, height: 340, x: 170, y: 130 },
+            back: { width: 260, height: 340, x: 170, y: 130 }
+          },
+          'mediu': { 
+            front: { width: 260, height: 330, x: 170, y: 135 },
+            back: { width: 260, height: 330, x: 170, y: 135 }
+          },
+          'polo': { 
+            front: { width: 200, height: 250, x: 200, y: 100 },
+            back: { width: 200, height: 250, x: 200, y: 100 }
+          },
+          'patch-c': { 
+            front: { width: 120, height: 80, x: 240, y: 260 },
+            back: null
+          },
+          'patch-flat': { 
+            front: { width: 140, height: 80, x: 230, y: 260 },
+            back: null
+          },
+          'mug': { 
+            front: { width: 200, height: 210, x: 200, y: 180 },
+            back: null
+          },
+          'baby-tee': { 
+            front: { width: 240, height: 300, x: 180, y: 100 },
+            back: { width: 240, height: 300, x: 180, y: 100 }
+          },
+          'sweat': { 
+            front: { width: 260, height: 330, x: 170, y: 135 },
+            back: { width: 260, height: 330, x: 170, y: 135 }
+          },
+          'art-sqsm': { 
+            front: { width: 560, height: 560, x: 20, y: 20 },
+            back: null
+          },
+          'art-sqm': { 
+            front: { width: 560, height: 560, x: 20, y: 20 },
+            back: null
+          },
+          'art-lg': { 
+            front: { width: 560, height: 560, x: 20, y: 20 },
+            back: null
+          },
+          'nft': { 
+            front: { width: 400, height: 560, x: 100, y: 20 },
+            back: null
+          }
+        };
+        setPrintAreas(correctDefaults);
       }
     } catch (err) {
       console.error('Failed to load print areas:', err);
       setError(err.message);
-      // Use emergency defaults on error
-      setPrintAreas({
+      // Use correct defaults on error
+      const correctDefaults = {
+        'tee': { 
+          front: { width: 280, height: 350, x: 160, y: 125 },
+          back: { width: 280, height: 350, x: 160, y: 125 }
+        },
+        'boxy': { 
+          front: { width: 300, height: 350, x: 150, y: 125 },
+          back: { width: 300, height: 350, x: 150, y: 125 }
+        },
+        'mug': { 
+          front: { width: 200, height: 210, x: 200, y: 180 },
+          back: null
+        },
         'default': { front: EMERGENCY_DEFAULT, back: EMERGENCY_DEFAULT }
-      });
+      };
+      setPrintAreas(correctDefaults);
     } finally {
       setLoading(false);
     }
