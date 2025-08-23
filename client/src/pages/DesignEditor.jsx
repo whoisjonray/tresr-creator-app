@@ -756,11 +756,10 @@ function DesignEditor() {
     // Draw selection border for design when hovering
     if (designImage && config && showBoundingBox) {
       const { x, y, width, height } = currentPosition;
-      // Scale design position from 600x600 to 400x400 display
-      const scale = 400 / 600;
+      // Draw at actual coordinates (canvas is 600x600)
       ctx.strokeStyle = '#3b82f6';
       ctx.lineWidth = 2;
-      ctx.strokeRect(x * scale, y * scale, width * scale, height * scale);  // Use scaled coordinates
+      ctx.strokeRect(x, y, width, height);  // Use actual coordinates
     }
     
     // Restore zoom transformation
