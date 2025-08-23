@@ -544,12 +544,12 @@ function DesignEditor() {
       // Convert canvas position to API format
       const apiPosition = mockupService.convertToApiPosition(
         { x: currentPos.x, y: currentPos.y },
-        { width: 600, height: 600 }
+        { width: 400, height: 400 }
       );
       
       const apiScale = mockupService.calculateApiScale(
         { width: currentPos.width, height: currentPos.height },
-        { width: 600, height: 600 },
+        { width: 400, height: 400 },
         designScale / 100
       );
       
@@ -659,25 +659,38 @@ function DesignEditor() {
     if (designImage && config) {
       ctx.save();
       
-      // No scaling needed - both canvases are 600x600 now
+      // Scale print area coordinates from 600x600 to our 400x400 display
+      const scale = 400 / 600; // Canvas is 600x600 but displayed at 400x400
+      const scaledPrintAreaX = printAreaX * scale;
+      const scaledPrintAreaY = printAreaY * scale;
+      const scaledPrintAreaWidth = printAreaWidth * scale;
+      const scaledPrintAreaHeight = printAreaHeight * scale;
+      
       // Clip to print area
       ctx.beginPath();
-      ctx.rect(printAreaX, printAreaY, printAreaWidth, printAreaHeight);
+      ctx.rect(scaledPrintAreaX, scaledPrintAreaY, scaledPrintAreaWidth, scaledPrintAreaHeight);
       ctx.clip();
       
       const { x, y, width, height } = currentPosition;
+      
+      // Scale design position from 600x600 coordinates to 400x400 display
+      const scale = 400 / 600;
+      const scaledX = x * scale;
+      const scaledY = y * scale;
+      const scaledWidth = width * scale;
+      const scaledHeight = height * scale;
       
       try {
         // Apply convex effect for coffee mug, regular drawing for other products
         if (activeProduct === 'mug') {
           // Create temporary canvas for just the design area
           const tempCanvas = document.createElement('canvas');
-          tempCanvas.width = width;
-          tempCanvas.height = height;
+          tempCanvas.width = scaledWidth;
+          tempCanvas.height = scaledHeight;
           const tempCtx = tempCanvas.getContext('2d');
           
           // Draw design on temporary canvas at origin
-          tempCtx.drawImage(designImage, 0, 0, width, height);
+          tempCtx.drawImage(designImage, 0, 0, scaledWidth, scaledHeight);
           
           // Apply convex warp effect to just the design
           const warpedCanvas = mugConvexEffect.applyConvexWarp(tempCanvas, {
@@ -687,10 +700,10 @@ function DesignEditor() {
           });
           
           // Draw warped version at the correct position
-          ctx.drawImage(warpedCanvas, x, y);
+          ctx.drawImage(warpedCanvas, scaledX, scaledY);
         } else {
           // Draw design normally for other products
-          ctx.drawImage(designImage, x, y, width, height);
+          ctx.drawImage(designImage, scaledX, scaledY, scaledWidth, scaledHeight);
         }
       } catch (e) {
         console.error('Error drawing design:', e);
@@ -704,8 +717,9 @@ function DesignEditor() {
       ctx.strokeStyle = 'rgba(59, 130, 246, 0.5)'; // Semi-transparent blue
       ctx.lineWidth = 2;
       ctx.setLineDash([5, 3]);
-      // No scaling needed - both canvases are 600x600 now
-      ctx.strokeRect(printAreaX, printAreaY, printAreaWidth, printAreaHeight);
+      // Scale the bounding box coordinates from 600x600 to 400x400 display
+      const scale = 400 / 600;
+      ctx.strokeRect(printAreaX * scale, printAreaY * scale, printAreaWidth * scale, printAreaHeight * scale);
       ctx.setLineDash([]);
       
       // Draw corner handles
@@ -745,9 +759,11 @@ function DesignEditor() {
     // Draw selection border for design when hovering
     if (designImage && config && showBoundingBox) {
       const { x, y, width, height } = currentPosition;
+      // Scale design position from 600x600 to 400x400 display
+      const scale = 400 / 600;
       ctx.strokeStyle = '#3b82f6';
       ctx.lineWidth = 2;
-      ctx.strokeRect(x, y, width, height);  // Use top-left coordinates
+      ctx.strokeRect(x * scale, y * scale, width * scale, height * scale);  // Use scaled coordinates
     }
     
     // Restore zoom transformation
