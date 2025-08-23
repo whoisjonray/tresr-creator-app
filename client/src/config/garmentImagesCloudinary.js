@@ -374,8 +374,16 @@ export const GARMENT_IMAGES = {
     "front": {
       "main": "https://res.cloudinary.com/dqslerzk9/image/upload/v1755883303/garments/mug/white-coffee-mug-correct.jpg"
     },
+    "back": {
+      "main": "https://res.cloudinary.com/dqslerzk9/image/upload/v1755883303/garments/mug/white-coffee-mug-correct.jpg"
+    },
     "white": {
-      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1755883303/garments/mug/white-coffee-mug-correct.jpg"
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1755883303/garments/mug/white-coffee-mug-correct.jpg",
+      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1755883303/garments/mug/white-coffee-mug-correct.jpg"
+    },
+    "White": {
+      "front": "https://res.cloudinary.com/dqslerzk9/image/upload/v1755883303/garments/mug/white-coffee-mug-correct.jpg",
+      "back": "https://res.cloudinary.com/dqslerzk9/image/upload/v1755883303/garments/mug/white-coffee-mug-correct.jpg"
     }
   }
 };

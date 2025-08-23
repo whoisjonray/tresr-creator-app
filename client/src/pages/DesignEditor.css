@@ -101,6 +101,23 @@
     margin-bottom: 20px;
 }
 
+/* Mobile Responsive Layout */
+@media (max-width: 768px) {
+    .editor-layout {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .canvas-section {
+        order: 1;
+    }
+    
+    .product-config {
+        order: 2;
+        max-height: none;
+    }
+}
+
 /* Canvas Section */
 .canvas-section {
     background: white;
