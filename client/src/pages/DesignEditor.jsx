@@ -633,9 +633,9 @@ function DesignEditor() {
     
     // Get print area dimensions for current product
     const printArea = getPrintArea(activeProduct, viewSide);
+    // Print areas are stored in 600x600 coordinates, no need to scale them
     const printAreaWidth = printArea.width;
     const printAreaHeight = printArea.height;
-    // Coordinates are already top-left from bounding box editor (scaled to 400x400)
     const printAreaX = printArea.x;
     const printAreaY = printArea.y;
     
@@ -659,12 +659,11 @@ function DesignEditor() {
     if (designImage && config) {
       ctx.save();
       
-      // Scale print area coordinates from 600x600 to our 400x400 display
-      const scale = 400 / 600; // Canvas is 600x600 but displayed at 400x400
-      const scaledPrintAreaX = printAreaX * scale;
-      const scaledPrintAreaY = printAreaY * scale;
-      const scaledPrintAreaWidth = printAreaWidth * scale;
-      const scaledPrintAreaHeight = printAreaHeight * scale;
+      // Don't scale - print areas are already in 600x600 coordinates matching the canvas
+      const scaledPrintAreaX = printAreaX;
+      const scaledPrintAreaY = printAreaY;
+      const scaledPrintAreaWidth = printAreaWidth;
+      const scaledPrintAreaHeight = printAreaHeight;
       
       // Clip to print area
       ctx.beginPath();
@@ -673,12 +672,11 @@ function DesignEditor() {
       
       const { x, y, width, height } = currentPosition;
       
-      // Scale design position from 600x600 coordinates to 400x400 display
-      // Using the same scale factor as defined above (line 663)
-      const scaledX = x * scale;
-      const scaledY = y * scale;
-      const scaledWidth = width * scale;
-      const scaledHeight = height * scale;
+      // Design position is already in 600x600 coordinates, use directly
+      const scaledX = x;
+      const scaledY = y;
+      const scaledWidth = width;
+      const scaledHeight = height;
       
       try {
         // Apply convex effect for coffee mug, regular drawing for other products
@@ -717,9 +715,8 @@ function DesignEditor() {
       ctx.strokeStyle = 'rgba(59, 130, 246, 0.5)'; // Semi-transparent blue
       ctx.lineWidth = 2;
       ctx.setLineDash([5, 3]);
-      // Scale the bounding box coordinates from 600x600 to 400x400 display
-      const boxScale = 400 / 600;
-      ctx.strokeRect(printAreaX * boxScale, printAreaY * boxScale, printAreaWidth * boxScale, printAreaHeight * boxScale);
+      // Draw bounding box at actual coordinates (canvas is 600x600)
+      ctx.strokeRect(printAreaX, printAreaY, printAreaWidth, printAreaHeight);
       ctx.setLineDash([]);
       
       // Draw corner handles
