@@ -544,12 +544,12 @@ function DesignEditor() {
       // Convert canvas position to API format
       const apiPosition = mockupService.convertToApiPosition(
         { x: currentPos.x, y: currentPos.y },
-        { width: 400, height: 400 }
+        { width: 600, height: 600 }
       );
       
       const apiScale = mockupService.calculateApiScale(
         { width: currentPos.width, height: currentPos.height },
-        { width: 400, height: 400 },
+        { width: 600, height: 600 },
         designScale / 100
       );
       
@@ -659,16 +659,10 @@ function DesignEditor() {
     if (designImage && config) {
       ctx.save();
       
-      // Scale print area coordinates from 600x600 to our 400x400 canvas
-      const scale = canvas.width / 600; // 400/600 = 0.667
-      const adjustedPrintAreaX = printAreaX * scale;
-      const adjustedPrintAreaY = printAreaY * scale;
-      const adjustedPrintAreaWidth = printAreaWidth * scale;
-      const adjustedPrintAreaHeight = printAreaHeight * scale;
-      
+      // No scaling needed - both canvases are 600x600 now
       // Clip to print area
       ctx.beginPath();
-      ctx.rect(adjustedPrintAreaX, adjustedPrintAreaY, adjustedPrintAreaWidth, adjustedPrintAreaHeight);
+      ctx.rect(printAreaX, printAreaY, printAreaWidth, printAreaHeight);
       ctx.clip();
       
       const { x, y, width, height } = currentPosition;
@@ -710,9 +704,8 @@ function DesignEditor() {
       ctx.strokeStyle = 'rgba(59, 130, 246, 0.5)'; // Semi-transparent blue
       ctx.lineWidth = 2;
       ctx.setLineDash([5, 3]);
-      // Scale the bounding box coordinates from 600x600 to 400x400 canvas
-      const scale = canvas.width / 600;
-      ctx.strokeRect(printAreaX * scale, printAreaY * scale, printAreaWidth * scale, printAreaHeight * scale);
+      // No scaling needed - both canvases are 600x600 now
+      ctx.strokeRect(printAreaX, printAreaY, printAreaWidth, printAreaHeight);
       ctx.setLineDash([]);
       
       // Draw corner handles
