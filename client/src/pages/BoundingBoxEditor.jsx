@@ -42,7 +42,7 @@ const INITIAL_PRINT_AREAS = {
     back: null // Hats typically don't have back print
   },
   'mug': { 
-    front: { width: 200, height: 200, x: 200, y: 200 },  // Centered
+    front: { width: 200, height: 210, x: 200, y: 180 },  // Lower position as shown in screenshot
     back: null // Mugs have one print area
   },
   'art-sqsm': { 

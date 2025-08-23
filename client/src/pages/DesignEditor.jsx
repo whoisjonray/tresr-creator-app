@@ -676,24 +676,24 @@ function DesignEditor() {
       try {
         // Apply convex effect for coffee mug, regular drawing for other products
         if (activeProduct === 'mug') {
-          // Create temporary canvas for the design
+          // Create temporary canvas for just the design area
           const tempCanvas = document.createElement('canvas');
-          tempCanvas.width = canvas.width;
-          tempCanvas.height = canvas.height;
+          tempCanvas.width = width;
+          tempCanvas.height = height;
           const tempCtx = tempCanvas.getContext('2d');
           
-          // Draw design on temporary canvas
-          tempCtx.drawImage(designImage, x, y, width, height);
+          // Draw design on temporary canvas at origin
+          tempCtx.drawImage(designImage, 0, 0, width, height);
           
-          // Apply convex warp effect
+          // Apply convex warp effect to just the design
           const warpedCanvas = mugConvexEffect.applyConvexWarp(tempCanvas, {
-            curvature: 0.25, // Subtle curve for display
-            perspective: 0.9, // Minimal perspective
-            strips: 100 // Smooth curve
+            curvature: 0.15, // Very subtle curve for realistic mug wrap
+            perspective: 0.95, // Minimal perspective distortion
+            strips: 150 // More strips for smoother curve
           });
           
-          // Draw warped version on main canvas
-          ctx.drawImage(warpedCanvas, 0, 0);
+          // Draw warped version at the correct position
+          ctx.drawImage(warpedCanvas, x, y);
         } else {
           // Draw design normally for other products
           ctx.drawImage(designImage, x, y, width, height);
