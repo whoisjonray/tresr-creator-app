@@ -17,6 +17,7 @@ import { autoDebugAndFix } from '../utils/debug-current-design';
 import { completeCanvasFix } from '../utils/complete-canvas-fix';
 import { forceCanvasRender } from '../utils/force-canvas-render';
 import { fixCanvasProductSwitching, fixAlignmentButtons, watchProductChanges } from '../utils/fix-canvas-product-switching';
+import { forceCanvasAspectRatio, setupCanvasResizeObserver } from '../utils/force-canvas-aspect-ratio';
 
 // Get API base URL from environment
 const getApiBaseURL = () => {
@@ -803,6 +804,14 @@ function DesignEditor() {
       
       // Force initial draw
       drawCanvas();
+      
+      // Force 1:1 aspect ratio on mobile
+      forceCanvasAspectRatio();
+      const observer = setupCanvasResizeObserver();
+      
+      return () => {
+        if (observer) observer.disconnect();
+      };
     } else {
       console.warn('⚠️ Canvas ref not yet available');
     }
