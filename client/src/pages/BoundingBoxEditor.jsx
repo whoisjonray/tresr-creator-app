@@ -696,6 +696,8 @@ const BoundingBoxEditor = () => {
   const currentGarment = garmentTypes.find(g => g.id === selectedGarment);
   const hasBackSide = printAreas[selectedGarment]?.back !== null;
 
+  console.log('BoundingBoxEditor render - canvas ref:', canvasRef.current);
+  
   return (
     <div className="bounding-box-editor">
       <h1>Garment Bounding Box Editor (Admin Only)</h1>
@@ -705,11 +707,37 @@ const BoundingBoxEditor = () => {
       </div>
       
       <div className="editor-container">
-        <div className="canvas-section">
+        <div className="canvas-section" style={{ position: 'relative' }}>
+          <div style={{ 
+            width: '600px', 
+            height: '600px', 
+            border: '3px solid blue',
+            background: 'yellow',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '24px',
+            fontWeight: 'bold',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            zIndex: 1
+          }}>
+            CANVAS PLACEHOLDER - If you see this, canvas is not rendering
+          </div>
           <canvas
             ref={canvasRef}
             width={CANVAS_WIDTH}
             height={CANVAS_HEIGHT}
+            style={{ 
+              display: 'block',
+              width: '600px',
+              height: '600px',
+              border: '2px solid red',
+              background: '#f0f0f0',
+              position: 'relative',
+              zIndex: 2
+            }}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
