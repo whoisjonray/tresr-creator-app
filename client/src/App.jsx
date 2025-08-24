@@ -11,6 +11,7 @@ import GarmentDetails from './pages/GarmentDetails';
 import DesignTools from './pages/DesignTools';
 import SuperProductTest from './pages/SuperProductTest';
 import BoundingBoxEditor from './pages/BoundingBoxEditor';
+import BoundingBoxEditorSimple from './pages/BoundingBoxEditorSimple';
 import ProductTemplateManager from './pages/ProductTemplateManager';
 import ScanMap from './pages/ScanMap';
 import Navigation from './components/Navigation';
@@ -61,7 +62,7 @@ function AppContent() {
                     <Route path="/admin" element={<AdminPanel />} />
                     <Route path="/admin/users" element={<UserManagement />} />
                     <Route path="/test/superproduct" element={<SuperProductTest />} />
-                    <Route path="/test/bounding-box" element={<BoundingBoxEditor />} />
+                    <Route path="/test/bounding-box" element={<BoundingBoxEditorSimple />} />
                     <Route path="/test/product-templates" element={<ProductTemplateManager />} />
                     <Route path="/scan-map" element={<ScanMap />} />
                     
