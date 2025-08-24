@@ -31,17 +31,34 @@
   /* Override desktop canvas sizing for mobile - maintain aspect ratio */
   .product-canvas {
     width: 100% !important;
-    max-width: 600px !important;
+    max-width: 400px !important;
     height: auto !important;
     aspect-ratio: 1 !important;
     display: block !important;
     margin: 0 auto !important;
+    /* Ensure proper touch interaction */
+    touch-action: manipulation;
+    /* Maintain image quality on mobile */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    /* Prevent unwanted zoom/scroll */
+    user-select: none;
+    -webkit-user-select: none;
   }
   
   .canvas-container {
-    padding: 20px 10px !important;
+    padding: 15px !important;
     background: #f5f5f5;
-    margin: 0 !important;
+    margin: 0 auto !important;
+    /* Ensure proper container sizing for mobile */
+    width: 100%;
+    max-width: 430px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 280px;
+    position: relative;
+    border-radius: 12px;
   }
   .design-editor-container {
     padding: 0;
@@ -254,10 +271,18 @@
   }
 
   /* Tools Section - Collapsible */
-  .mobile-tools-section {
-    background: white;
-    border-top: 1px solid #e5e5e5;
-    margin-bottom: 80px; /* Space for fixed action bar */
+  .mobile-tools-section,
+  .tools-section {
+    background: #1a202c !important;
+    color: white !important;
+    border-top: 1px solid #2d3748 !important;
+    margin-bottom: 80px;
+    /* Fix z-index issues */
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 15px;
   }
 
   .tools-toggle {
@@ -277,12 +302,38 @@
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease;
+    background: #1a202c;
+    color: white;
   }
 
   .tools-content.expanded {
     max-height: 800px;
     overflow-y: auto;
     padding-bottom: 20px;
+    background: #1a202c;
+  }
+  
+  /* Force tools to be horizontal on mobile */
+  .tools-content .tools-grid,
+  .mobile-tools-section .tools-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    padding: 10px 0 !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .tools-content .tool-btn,
+  .mobile-tools-section .tool-btn {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    background: #0f172a;
+    border: 2px solid #1e293b;
+    color: white;
   }
 
   /* Scale Slider - Large Touch Target */
@@ -547,6 +598,158 @@
   h2 { font-size: 20px; }
   h3 { font-size: 18px; }
   
+  /* View controls mobile - ADD MISSING STYLES */
+  .view-controls {
+    padding: 10px !important;
+    gap: 10px;
+    height: auto !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(5px);
+    position: relative !important;
+    z-index: 20 !important;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .view-toggle {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    flex-shrink: 0;
+    background: #f8f9fa !important;
+    border-radius: 8px !important;
+    padding: 4px !important;
+    gap: 4px !important;
+    display: flex !important;
+  }
+  
+  .view-btn {
+    padding: 8px 16px !important;
+    font-size: 0.9rem !important;
+    white-space: nowrap;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: #6b7280;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  
+  .view-btn.active {
+    background: #5b6cff !important;
+    color: white !important;
+  }
+  
+  .replace-image-btn,
+  .add-back-image-btn {
+    position: relative !important;
+    right: auto !important;
+    top: auto !important;
+    flex-shrink: 0;
+    font-size: 0.85rem;
+    padding: 8px 12px;
+    background: #5b6cff !important;
+    color: white !important;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+
+  /* Product Config Mobile - CRITICAL FIXES */
+  .product-config {
+    width: 100% !important;
+    order: 2 !important;
+    padding: 15px !important;
+    margin-bottom: 100px !important; /* Space for bottom actions */
+    background: white !important;
+    border-radius: 8px !important;
+    overflow: visible !important;
+  }
+  
+  .config-header,
+  .config-header-row {
+    background: #2d3748 !important;
+    color: white !important;
+    padding: 12px 15px !important;
+    border-radius: 8px 8px 0 0 !important;
+    margin: -15px -15px 0 -15px !important;
+    font-size: 0.9rem !important;
+    display: grid !important;
+    grid-template-columns: 2fr 80px 120px !important;
+    gap: 10px !important;
+    align-items: center !important;
+  }
+  
+  .product-item {
+    display: grid !important;
+    grid-template-columns: 2fr 80px 120px !important;
+    gap: 10px !important;
+    padding: 12px 15px !important;
+    align-items: center !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    font-size: 0.9rem !important;
+  }
+  
+  .product-name {
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    color: #374151 !important;
+  }
+  
+  .toggle-switch {
+    width: 40px !important;
+    height: 20px !important;
+    border-radius: 10px !important;
+    background: #d1d5db !important;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .toggle-switch.active {
+    background: #10b981 !important;
+  }
+  
+  .toggle-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px !important;
+    height: 16px !important;
+    background: white;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+  }
+  
+  .toggle-switch.active::after {
+    transform: translateX(20px) !important;
+  }
+  
+  .color-dropdown {
+    width: 100% !important;
+    padding: 6px 8px !important;
+    font-size: 0.8rem !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 4px !important;
+    background: white;
+    max-width: 100px;
+  }
+
   /* Hide desktop-only elements */
   .desktop-only {
     display: none !important;
