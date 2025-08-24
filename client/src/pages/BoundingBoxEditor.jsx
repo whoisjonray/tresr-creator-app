@@ -131,12 +131,30 @@ const BoundingBoxEditor = () => {
     loadSavedSettings();
     // Load product templates from API
     loadProductTemplates();
+    
+    // Force initial canvas draw after a short delay
+    setTimeout(() => {
+      console.log('Forcing initial canvas draw on mount');
+      if (canvasRef.current) {
+        // Ensure canvas is visible
+        canvasRef.current.style.display = 'block';
+        canvasRef.current.style.visibility = 'visible';
+        canvasRef.current.style.opacity = '1';
+        drawCanvas();
+      }
+    }, 250);
   }, []);
 
   // Force canvas draw on mount and when canvas ref becomes available
   useEffect(() => {
     if (canvasRef.current) {
       console.log('Canvas ref available, forcing initial draw');
+      // Force canvas to be visible
+      const canvas = canvasRef.current;
+      canvas.style.display = 'block';
+      canvas.style.visibility = 'visible';
+      canvas.style.opacity = '1';
+      
       // Small delay to ensure DOM is ready
       setTimeout(() => {
         drawCanvas();
@@ -330,6 +348,15 @@ const BoundingBoxEditor = () => {
     }
     
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    
+    // Always draw a background to ensure canvas is visible
+    ctx.fillStyle = '#f8f8f8';
+    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    
+    // Draw border to ensure canvas is visible
+    ctx.strokeStyle = '#ddd';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(1, 1, CANVAS_WIDTH - 2, CANVAS_HEIGHT - 2);
 
     // Draw garment image or placeholder
     if (garmentImage) {
