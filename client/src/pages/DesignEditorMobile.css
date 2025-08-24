@@ -32,12 +32,16 @@
     width: 100% !important;
     padding: 20px 15px !important;
   }
-  /* CRITICAL: Mobile canvas sizing with ENFORCED 1:1 aspect ratio */
+  /* CRITICAL: Mobile canvas sizing with ENFORCED 1:1 aspect ratio - NO OVERFLOW */
   .product-canvas {
-    /* Force exact square dimensions on mobile */
-    --canvas-size: min(400px, calc(100vw - 40px));
+    /* Force exact square dimensions on mobile - PREVENT OVERFLOW */
+    --canvas-size: min(350px, calc(100vw - 60px));
     width: var(--canvas-size) !important;
     height: var(--canvas-size) !important;
+    max-width: var(--canvas-size) !important;
+    max-height: var(--canvas-size) !important;
+    min-width: var(--canvas-size) !important;
+    min-height: var(--canvas-size) !important;
     /* No max-width/height that could break aspect ratio */
     aspect-ratio: 1 / 1 !important;
     display: block !important;
@@ -51,13 +55,15 @@
     user-select: none;
     -webkit-user-select: none;
     /* Force square shape */
-    object-fit: none !important;
+    object-fit: contain !important;
     box-sizing: border-box !important;
+    /* Prevent horizontal overflow */
+    overflow: hidden !important;
   }
   
   .canvas-container {
-    /* CRITICAL: Perfect square container for mobile */
-    --canvas-size: min(400px, calc(100vw - 40px));
+    /* CRITICAL: Perfect square container for mobile - PREVENT OVERFLOW */
+    --canvas-size: min(350px, calc(100vw - 60px));
     --container-size: calc(var(--canvas-size) + 30px);
     
     padding: 15px !important;
@@ -66,6 +72,8 @@
     /* Maintain perfect square proportions */
     width: var(--container-size) !important;
     height: var(--container-size) !important;
+    max-width: var(--container-size) !important;
+    max-height: var(--container-size) !important;
     aspect-ratio: 1 / 1 !important;
     display: flex !important;
     align-items: center !important;
@@ -73,6 +81,8 @@
     position: relative;
     border-radius: 12px;
     box-sizing: border-box;
+    /* Prevent overflow */
+    overflow: hidden !important;
   }
   .design-editor-container {
     padding: 0;

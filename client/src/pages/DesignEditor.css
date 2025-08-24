@@ -67,13 +67,21 @@
   }
 }
 
+/* Design Editor Page Container */
+.design-editor {
+    padding: 30px 20px 50px 20px; /* Top, horizontal, bottom padding */
+    min-height: 100vh;
+    background: #f8fafc;
+}
+
 /* Header */
 .design-editor-header {
     background: #4a5568;
     color: white;
     padding: 15px 0;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    border-radius: 8px;
 }
 
 .design-editor-header h1 {
@@ -253,7 +261,9 @@
 .product-canvas {
     width: 600px !important;
     height: 600px !important;
-    max-width: min(600px, 90vw);
+    /* Ensure desktop stays 600px, mobile gets responsive sizing */
+    max-width: 600px;
+    min-width: 600px;
     aspect-ratio: 1 !important;
     margin: 0 auto;
     position: relative;
@@ -273,6 +283,23 @@
     image-rendering: crisp-edges;
     /* Ensure proper scaling on all devices */
     object-fit: contain;
+}
+
+/* Desktop canvas - enforce 600x600 */
+@media (min-width: 1025px) {
+    .product-canvas {
+        width: 600px !important;
+        height: 600px !important;
+        max-width: 600px !important;
+        min-width: 600px !important;
+    }
+    
+    .canvas-container {
+        width: 640px !important;
+        max-width: 640px !important;
+        min-width: 640px !important;
+        min-height: 640px !important;
+    }
 }
 
 /* Tools Section */
@@ -806,6 +833,8 @@
 
 .replace-image-btn:hover, .add-back-image-btn:hover {
     background: #4338ca;
+    transform: none; /* Prevent any movement on hover */
+    position: relative; /* Ensure static positioning */
 }
 
 .replace-image-btn svg, .add-back-image-btn svg {
@@ -1539,7 +1568,25 @@
 /* Mobile phones - MOBILE-FIRST APPROACH */
 @media (max-width: 768px) {
   .design-editor {
-    padding: 10px;
+    padding: 15px 10px 20px 10px; /* Adequate padding for mobile */
+  }
+  
+  /* Ensure canvas container doesn't overflow */
+  .canvas-container {
+    padding: 10px !important;
+    width: calc(100vw - 40px) !important;
+    max-width: calc(100vw - 40px) !important;
+    box-sizing: border-box !important;
+  }
+  
+  /* Ensure product canvas fits properly */
+  .product-canvas {
+    width: calc(100vw - 80px) !important;
+    height: calc(100vw - 80px) !important;
+    max-width: calc(100vw - 80px) !important;
+    max-height: calc(100vw - 80px) !important;
+    min-width: unset !important;
+    min-height: unset !important;
   }
   
   /* CRITICAL: Prevent tools overlap with canvas */

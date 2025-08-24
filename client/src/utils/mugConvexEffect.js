@@ -51,8 +51,9 @@ class MugConvexEffect {
       // This creates the convex appearance
       const offsetY = this.calculateCylindricalOffset(normalizedX, curvature);
       
-      // Calculate perspective scaling (narrower at edges)
-      const scale = this.calculatePerspectiveScale(normalizedX, perspective);
+      // Calculate perspective scaling for both horizontal and vertical
+      const verticalScale = this.calculatePerspectiveScale(normalizedX, perspective);
+      const horizontalScale = this.calculateHorizontalPerspectiveScale(normalizedX, perspective);
       
       // Source rectangle (from flat design)
       const sx = i * stripWidth;
@@ -61,10 +62,14 @@ class MugConvexEffect {
       const sh = sourceCanvas.height;
       
       // Destination rectangle (warped position)
-      const dx = i * outputStripWidth;
+      // Center the strips while applying horizontal compression
+      const centerX = this.mugWidth / 2;
+      const stripCenterOffset = (i - strips / 2) * outputStripWidth;
+      
+      const dx = centerX + (stripCenterOffset * horizontalScale);
       const dy = offsetY;
-      const dw = outputStripWidth;
-      const dh = sh * scale;
+      const dw = outputStripWidth * horizontalScale;
+      const dh = sh * verticalScale;
       
       // Draw the strip
       warpedCtx.drawImage(
@@ -99,7 +104,7 @@ class MugConvexEffect {
   }
 
   /**
-   * Calculate perspective scaling for edges
+   * Calculate perspective scaling for edges (vertical scaling)
    * @param {Number} x - Normalized x position (0-1)
    * @param {Number} perspective - Perspective amount (0-1)
    * @returns {Number} Scale factor
@@ -113,6 +118,23 @@ class MugConvexEffect {
     const scale = 1 - (centeredX * (1 - minScale));
     
     return scale;
+  }
+
+  /**
+   * Calculate horizontal perspective scaling for edges
+   * @param {Number} x - Normalized x position (0-1)
+   * @param {Number} perspective - Perspective amount (0-1)
+   * @returns {Number} Scale factor for horizontal compression
+   */
+  calculateHorizontalPerspectiveScale(x, perspective) {
+    // Convert to centered coordinates (-0.5 to 0.5)
+    const centeredX = Math.abs(x - 0.5) * 2; // 0 at center, 1 at edges
+    
+    // Calculate horizontal compression (narrower at edges)
+    const minScale = 0.7; // More aggressive horizontal scaling than vertical
+    const scale = 1 - (centeredX * (1 - minScale));
+    
+    return Math.max(scale, 0.5); // Prevent over-compression
   }
 
   /**

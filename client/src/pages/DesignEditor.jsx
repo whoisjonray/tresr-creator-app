@@ -545,12 +545,12 @@ function DesignEditor() {
       // Convert canvas position to API format
       const apiPosition = mockupService.convertToApiPosition(
         { x: currentPos.x, y: currentPos.y },
-        { width: 400, height: 400 }
+        { width: 600, height: 600 }
       );
       
       const apiScale = mockupService.calculateApiScale(
         { width: currentPos.width, height: currentPos.height },
-        { width: 400, height: 400 },
+        { width: 600, height: 600 },
         designScale / 100
       );
       
@@ -961,7 +961,7 @@ function DesignEditor() {
               
               // For large raw images (like 1890x2362), set appropriate scale
               if (img.width > 1000 || img.height > 1000) {
-                // Calculate scale to fit in a reasonable design area (about 400px)
+                // Calculate scale to fit in a reasonable design area (about 400px within 600px canvas)
                 const targetWidth = 400;
                 const scale = (targetWidth / img.width) * 100;
                 setDesignScale(scale);
@@ -997,8 +997,8 @@ function DesignEditor() {
               const teeProduct = PRODUCT_TEMPLATES.find(p => p.id === 'tee');
               if (teeProduct) {
                 // Use centered position for better visibility
-                // The canvas is 400x400, so center is at 200,200
-                const defaultPosition = { x: 200, y: 200 };
+                // The canvas is 600x600, so center is at 300,300
+                const defaultPosition = { x: 300, y: 300 };
                 
                 const newConfig = {
                   enabled: true,
@@ -1218,8 +1218,8 @@ function DesignEditor() {
     if (!designImage) return;
     
     const rect = canvasRef.current.getBoundingClientRect();
-    // Scale mouse coordinates from display size (400px) to canvas size (600px)
-    const scale = 600 / 400;
+    // Canvas is displayed at 600x600 and coordinate system is 600x600, so no scaling needed
+    const scale = 1.0; // Both display size and canvas coordinates are 600x600
     const x = (e.clientX - rect.left) * scale;
     const y = (e.clientY - rect.top) * scale;
     const config = productConfigs[activeProduct];
@@ -1239,8 +1239,8 @@ function DesignEditor() {
     if (!designImage) return;
     
     const rect = canvasRef.current.getBoundingClientRect();
-    // Scale mouse coordinates from display size (400px) to canvas size (600px)
-    const scale = 600 / 400;
+    // Canvas is displayed at 600x600 and coordinate system is 600x600, so no scaling needed
+    const scale = 1.0; // Both display size and canvas coordinates are 600x600
     const x = (e.clientX - rect.left) * scale;
     const y = (e.clientY - rect.top) * scale;
     
@@ -2153,25 +2153,6 @@ function DesignEditor() {
                 <div className="tools-section">
                   <div className="tools-header">
                     <h3>Tools</h3>
-                    <button 
-                      onClick={() => {
-                        console.log('Manual canvas fix triggered');
-                        forceCanvasRender();
-                        fixCanvasProductSwitching();
-                      }}
-                      style={{
-                        marginLeft: 'auto',
-                        padding: '6px 12px',
-                        background: '#dc2626',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        fontSize: '12px',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      Fix Canvas
-                    </button>
                     <div className="tools-grid">
                       <button 
                         className={`tool-btn ${showBoundingBox ? 'active' : ''}`}
