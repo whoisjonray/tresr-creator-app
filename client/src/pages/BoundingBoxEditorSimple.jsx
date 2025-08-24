@@ -35,7 +35,7 @@ const BoundingBoxEditorSimple = () => {
 
   return (
     <div className="bounding-box-editor">
-      <h1>Simple Canvas Test</h1>
+      <h1>Simple Canvas Test - v2</h1>
       
       <div style={{ padding: '20px' }}>
         <div style={{ 
