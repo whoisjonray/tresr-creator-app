@@ -1598,14 +1598,19 @@
     border-top: 1px solid #2d3748;
   }
   
-  .scale-slider {
-    /* Minimum 44px height for touch */
+  .scale-slider,
+  input[type="range"].scale-slider {
+    /* FORCE 44px height for touch on mobile */
     height: 44px !important;
+    min-height: 44px !important;
     width: 100% !important;
     background: transparent !important;
     -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
     cursor: pointer;
     touch-action: manipulation;
+    display: block !important;
   }
   
   .scale-slider::-webkit-slider-track {
@@ -2112,14 +2117,17 @@ canvas[class*="product-canvas"] {
   border: 2px solid #e5e5e5 !important;
 }
 
-/* Mobile canvas visibility override */
+/* Mobile canvas visibility override - FORCE 1:1 RATIO */
 @media (max-width: 768px) {
   canvas.product-canvas,
   .product-canvas,
   canvas[class*="product-canvas"] {
-    width: 400px !important;
-    height: 400px !important;
-    max-width: min(400px, 85vw) !important;
+    --mobile-size: min(400px, calc(100vw - 40px));
+    width: var(--mobile-size) !important;
+    height: var(--mobile-size) !important;
+    max-width: var(--mobile-size) !important;
+    max-height: var(--mobile-size) !important;
+    aspect-ratio: 1 / 1 !important;
   }
 }
 
@@ -2127,9 +2135,12 @@ canvas[class*="product-canvas"] {
   canvas.product-canvas,
   .product-canvas,
   canvas[class*="product-canvas"] {
-    width: 350px !important;
-    height: 350px !important;
-    max-width: min(350px, 90vw) !important;
+    --mobile-size: min(350px, calc(100vw - 32px));
+    width: var(--mobile-size) !important;
+    height: var(--mobile-size) !important;
+    max-width: var(--mobile-size) !important;
+    max-height: var(--mobile-size) !important;
+    aspect-ratio: 1 / 1 !important;
   }
 }
 
