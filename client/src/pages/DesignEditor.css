@@ -189,8 +189,9 @@
     margin: 0 auto;
     position: relative;
     border-radius: 8px;
-    background: transparent;
-    border: none;
+    /* Force white background for visibility */
+    background: white !important;
+    border: 2px solid #e5e5e5 !important;
     user-select: none;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     /* CRITICAL: Force visibility */
@@ -1839,6 +1840,9 @@ canvas[class*="product-canvas"] {
   width: 600px !important;
   height: 600px !important;
   max-width: min(600px, 90vw) !important;
+  /* Force white background for debugging */
+  background-color: white !important;
+  border: 2px solid #e5e5e5 !important;
 }
 
 /* Mobile canvas visibility override */

@@ -602,12 +602,23 @@ function DesignEditor() {
   };
 
   const drawCanvas = () => {
-    if (!canvasRef.current) return;
+    if (!canvasRef.current) {
+      console.warn('Canvas ref not available');
+      return;
+    }
     
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     const config = productConfigs[activeProduct];
     const currentPosition = getCurrentPosition();
+    
+    console.log('🎨 Drawing canvas:', { 
+      canvas, 
+      width: canvas.width, 
+      height: canvas.height,
+      config, 
+      activeProduct 
+    });
     
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -627,9 +638,22 @@ function DesignEditor() {
       ctx.translate(-centerX, -centerY);
     }
     
-    // Fill background with light gray
+    // Fill background with light gray and add border for visibility
     ctx.fillStyle = '#f8f9fa';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw a border to ensure canvas is visible
+    ctx.strokeStyle = '#e5e5e5';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(1, 1, canvas.width - 2, canvas.height - 2);
+    
+    // Draw text to confirm canvas is rendering
+    if (!designImage && !garmentImage.current) {
+      ctx.fillStyle = '#666';
+      ctx.font = '16px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('Canvas Ready - Upload Design', canvas.width / 2, canvas.height / 2);
+    }
     
     // Get print area dimensions for current product
     const printArea = getPrintArea(activeProduct, viewSide);
@@ -766,6 +790,24 @@ function DesignEditor() {
     ctx.restore();
   };
 
+  // Effect to ensure canvas is properly initialized
+  React.useEffect(() => {
+    if (canvasRef.current) {
+      console.log('✅ Canvas mounted:', {
+        width: canvasRef.current.width,
+        height: canvasRef.current.height,
+        offsetWidth: canvasRef.current.offsetWidth,
+        offsetHeight: canvasRef.current.offsetHeight,
+        style: window.getComputedStyle(canvasRef.current)
+      });
+      
+      // Force initial draw
+      drawCanvas();
+    } else {
+      console.warn('⚠️ Canvas ref not yet available');
+    }
+  }, []); // Run once on mount
+  
   React.useEffect(() => {
     drawCanvas();
   }, [activeProduct, productConfigs, designImage, showBoundingBox, showCenterLines, isZoomed, isDragging, viewSide, frontDesignImage, backDesignImage]);
