@@ -68,8 +68,18 @@ const INITIAL_PRINT_AREAS = {
 };
 
 const BoundingBoxEditor = () => {
-  // Will be loaded from API
-  const [garmentTypes, setGarmentTypes] = useState([]);
+  console.log('BoundingBoxEditor component mounting/re-rendering');
+  
+  // Will be loaded from API, but start with basic fallback
+  const [garmentTypes, setGarmentTypes] = useState([
+    { id: 'tee', name: 'Medium Weight T-Shirt', templateId: 'tshirt_front' },
+    { id: 'boxy', name: 'Oversized Drop Shoulder', templateId: 'tshirt_boxy_front' },
+    { id: 'next-crop', name: 'Next Level Crop Top', templateId: 'croptop_front' },
+    { id: 'wmn-hoodie', name: "Women's Independent Hoodie", templateId: 'hoodie_front' },
+    { id: 'med-hood', name: 'Medium Weight Hoodie', templateId: 'hoodie_front' },
+    { id: 'mug', name: 'Coffee Mug', templateId: 'mug_front' },
+    { id: 'baby-tee', name: 'Ladies Baby Tee', templateId: 'baby_tee_front' }
+  ]);
   // Load saved print areas from localStorage or use defaults
   const loadSavedAreas = () => {
     const saved = localStorage.getItem('savedPrintAreas');
@@ -96,7 +106,7 @@ const BoundingBoxEditor = () => {
     return INITIAL_PRINT_AREAS;
   };
 
-  const [selectedGarment, setSelectedGarment] = useState(null);
+  const [selectedGarment, setSelectedGarment] = useState('tee'); // Default to 'tee'
   const [selectedSide, setSelectedSide] = useState('front');
   const [printAreas, setPrintAreas] = useState(loadSavedAreas());
   const [isDragging, setIsDragging] = useState(false);
@@ -116,23 +126,60 @@ const BoundingBoxEditor = () => {
   const CANVAS_HEIGHT = 600;
 
   useEffect(() => {
+    console.log('Component mounting - initial setup');
     // Load saved settings from database on mount
     loadSavedSettings();
     // Load product templates from API
     loadProductTemplates();
   }, []);
 
+  // Force canvas draw on mount and when canvas ref becomes available
+  useEffect(() => {
+    if (canvasRef.current) {
+      console.log('Canvas ref available, forcing initial draw');
+      // Small delay to ensure DOM is ready
+      setTimeout(() => {
+        drawCanvas();
+      }, 100);
+      // Also force another draw after a longer delay in case first one fails
+      setTimeout(() => {
+        console.log('Secondary canvas draw attempt');
+        drawCanvas();
+      }, 500);
+    }
+  }, [canvasRef.current]);
+
+  // Force redraw every time the component renders during development
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (canvasRef.current && selectedGarment) {
+        console.log('Forced canvas redraw with garment:', selectedGarment);
+        drawCanvas();
+      }
+    }, 200);
+    
+    return () => clearTimeout(timer);
+  });
+
   useEffect(() => {
     loadGarmentImage();
   }, [selectedGarment, selectedSide]);
 
   useEffect(() => {
+    console.log('Canvas draw effect triggered:', { 
+      selectedGarment, 
+      selectedSide, 
+      hasGarmentImage: !!garmentImage,
+      printAreas: printAreas[selectedGarment] 
+    });
     drawCanvas();
   }, [garmentImage, printAreas, selectedGarment, selectedSide]);
 
   const loadProductTemplates = async () => {
     try {
+      console.log('Loading product templates from API...');
       const response = await api.get('/api/settings/product-templates');
+      console.log('API response:', response.data);
       if (response.data.success && response.data.templates) {
         const templates = response.data.templates.map(t => ({
           id: t.id,
@@ -163,7 +210,8 @@ const BoundingBoxEditor = () => {
         console.log('Loaded product templates from API:', templates);
       }
     } catch (error) {
-      console.error('Error loading templates:', error);
+      console.error('Error loading templates:', error.message);
+      console.log('Using fallback templates due to API error');
       // Fall back to defaults if API fails
       const fallbackTemplates = [
         { id: 'tee', name: 'Medium Weight T-Shirt', templateId: 'tshirt_front' },
@@ -269,15 +317,26 @@ const BoundingBoxEditor = () => {
 
   const drawCanvas = () => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) {
+      console.error('Canvas ref is null - canvas element not mounted');
+      return;
+    }
     
+    console.log('Drawing canvas - canvas dimensions:', canvas.width, 'x', canvas.height);
     const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      console.error('Failed to get 2D context from canvas');
+      return;
+    }
+    
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
     // Draw garment image or placeholder
     if (garmentImage) {
+      console.log('Drawing garment image:', garmentImage.src);
       ctx.drawImage(garmentImage, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     } else {
+      console.log('Drawing placeholder - no garment image');
       // Draw placeholder with text
       ctx.fillStyle = '#f0f0f0';
       ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);

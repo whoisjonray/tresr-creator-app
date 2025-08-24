@@ -178,7 +178,7 @@
     margin-bottom: 20px;
 }
 
-/* Mobile Responsive Layout */
+/* Mobile Responsive Layout - FIXED */
 @media (max-width: 768px) {
     .editor-layout {
         display: flex !important;
@@ -198,23 +198,39 @@
         max-height: none;
     }
     
-    /* Fix canvas aspect ratio on mobile */
+    /* CRITICAL: Perfect mobile canvas sizing */
     .product-canvas {
-        width: 400px !important;
-        height: 400px !important;
-        max-width: min(400px, 85vw) !important;
+        --mobile-canvas-size: min(400px, calc(100vw - 60px));
+        width: var(--mobile-canvas-size) !important;
+        height: var(--mobile-canvas-size) !important;
+        max-width: var(--mobile-canvas-size) !important;
+        min-width: var(--mobile-canvas-size) !important;
         aspect-ratio: 1 !important;
         display: block !important;
         visibility: visible !important;
         opacity: 1 !important;
+        background: white !important;
+        border: 2px solid #e5e5e5 !important;
+        margin: 0 auto !important;
+        object-fit: contain !important;
+        box-sizing: border-box !important;
     }
     
     .canvas-container {
+        --mobile-container-size: calc(var(--mobile-canvas-size, min(400px, calc(100vw - 60px))) + 30px);
+        width: var(--mobile-container-size) !important;
+        height: var(--mobile-container-size) !important;
+        max-width: var(--mobile-container-size) !important;
+        min-height: var(--mobile-container-size) !important;
         padding: 15px !important;
-        min-height: 430px !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
+        background: #f5f5f5 !important;
+        border-radius: 12px !important;
+        margin: 0 auto !important;
+        box-sizing: border-box !important;
+        overflow: visible !important;
     }
 }
 
@@ -285,20 +301,33 @@
     object-fit: contain;
 }
 
-/* Desktop canvas - enforce 600x600 */
+/* Desktop canvas - enforce exact 600x600 */
 @media (min-width: 1025px) {
     .product-canvas {
         width: 600px !important;
         height: 600px !important;
         max-width: 600px !important;
         min-width: 600px !important;
+        aspect-ratio: 1 !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        background: white !important;
+        border: 2px solid #e5e5e5 !important;
     }
     
     .canvas-container {
         width: 640px !important;
+        height: 640px !important;
         max-width: 640px !important;
         min-width: 640px !important;
         min-height: 640px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 20px !important;
+        background: #f5f5f5 !important;
+        box-sizing: border-box !important;
     }
 }
 
@@ -468,6 +497,27 @@
     display: flex;
     align-items: center;
     gap: 15px;
+    position: relative;
+}
+
+/* Add tick marks visual effect */
+.scale-control::before {
+    content: '';
+    position: absolute;
+    left: 80px;
+    right: 80px;
+    height: 2px;
+    background: repeating-linear-gradient(
+        to right,
+        transparent,
+        transparent 19px,
+        #6b7280 19px,
+        #6b7280 21px
+    );
+    pointer-events: none;
+    z-index: 1;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .scale-control label {
@@ -479,28 +529,62 @@
 .scale-slider {
     flex: 1;
     /* Minimum 44px height for touch accessibility */
-    height: max(44px, 6px);
-    background: #4a5568;
-    border-radius: 3px;
+    height: max(44px, 8px);
+    background: transparent;
+    border-radius: 4px;
     outline: none;
     -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
     max-width: 300px;
     /* Ensure touch-friendly on mobile */
     touch-action: manipulation;
     cursor: pointer;
+    position: relative;
+}
+
+/* Enhanced track styling for WebKit browsers */
+.scale-slider::-webkit-slider-track {
+    height: 8px;
+    background: linear-gradient(to right, #374151 0%, #4a5568 50%, #6b7280 100%);
+    border-radius: 4px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+    border: 1px solid #2d3748;
+}
+
+/* Track styling for Firefox */
+.scale-slider::-moz-range-track {
+    height: 8px;
+    background: linear-gradient(to right, #374151 0%, #4a5568 50%, #6b7280 100%);
+    border-radius: 4px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+    border: 1px solid #2d3748;
 }
 
 .scale-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    /* Larger thumb for better touch interaction */
-    width: max(32px, 20px);
-    height: max(32px, 20px);
-    background: #3b82f6;
+    /* Enhanced thumb design */
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+    border: 3px solid #ffffff;
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    /* Better positioning for larger thumb */
-    margin-top: -13px;
+    box-shadow: 0 3px 8px rgba(59, 130, 246, 0.4), 0 1px 3px rgba(0, 0, 0, 0.2);
+    margin-top: -9px;
+    transition: all 0.2s ease;
+}
+
+.scale-slider::-webkit-slider-thumb:hover {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.6), 0 2px 6px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.scale-slider::-webkit-slider-thumb:active {
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    box-shadow: 0 2px 6px rgba(59, 130, 246, 0.8), 0 1px 3px rgba(0, 0, 0, 0.4);
+    transform: scale(0.95);
 }
 
 .scale-value {
@@ -1116,7 +1200,7 @@
     border-radius: 4px;
     font-size: 12px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
     opacity: 0;
 }
 
@@ -1126,6 +1210,7 @@
 
 .product-toggle-btn:hover {
     background: #2563eb;
+    transform: translateX(-50%); /* Maintain position on hover */
 }
 
 .product-card .product-icon {
@@ -1643,6 +1728,13 @@
     margin-top: 15px;
     padding: 15px 0;
     border-top: 1px solid #2d3748;
+    position: relative;
+  }
+
+  /* Mobile tick marks adjustment */
+  .scale-control::before {
+    left: 20px;
+    right: 20px;
   }
   
   /* Aggressive scale slider height enforcement */
@@ -1666,31 +1758,47 @@
   }
   
   .scale-slider::-webkit-slider-track {
-    height: 6px;
-    background: #4a5568;
-    border-radius: 3px;
+    height: 8px;
+    background: linear-gradient(to right, #374151 0%, #4a5568 50%, #6b7280 100%);
+    border-radius: 4px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+    border: 1px solid #2d3748;
   }
   
   .scale-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    /* Larger thumb for mobile */
-    width: 32px !important;
-    height: 32px !important;
-    background: #3b82f6;
+    /* Larger thumb for mobile but with enhanced styling */
+    width: 28px !important;
+    height: 28px !important;
+    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+    border: 3px solid #ffffff;
     border-radius: 50%;
-    margin-top: -13px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    margin-top: -11px;
+    box-shadow: 0 3px 8px rgba(59, 130, 246, 0.4), 0 1px 3px rgba(0, 0, 0, 0.2);
     cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .scale-slider::-webkit-slider-thumb:active {
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    transform: scale(0.95);
   }
   
   .scale-slider::-moz-range-thumb {
-    width: 32px;
-    height: 32px;
-    background: #3b82f6;
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+    border: 3px solid #ffffff;
     border-radius: 50%;
-    border: none;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    box-shadow: 0 3px 8px rgba(59, 130, 246, 0.4), 0 1px 3px rgba(0, 0, 0, 0.2);
     cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .scale-slider::-moz-range-thumb:hover {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.6), 0 2px 6px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
   }
   
   /* Color swatches mobile optimization */
@@ -2017,8 +2125,34 @@
   }
 }
 
-/* Small mobile phones */
+/* Small mobile phones - CANVAS PRIORITY */
 @media (max-width: 480px) {
+  /* CRITICAL: Smaller canvas for tiny screens */
+  .product-canvas {
+    --mobile-canvas-size: min(350px, calc(100vw - 40px)) !important;
+    width: var(--mobile-canvas-size) !important;
+    height: var(--mobile-canvas-size) !important;
+    max-width: var(--mobile-canvas-size) !important;
+    min-width: var(--mobile-canvas-size) !important;
+    aspect-ratio: 1 !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    background: white !important;
+    border: 2px solid #e5e5e5 !important;
+  }
+  
+  .canvas-container {
+    --mobile-container-size: calc(var(--mobile-canvas-size, min(350px, calc(100vw - 40px))) + 20px) !important;
+    width: var(--mobile-container-size) !important;
+    height: var(--mobile-container-size) !important;
+    max-width: var(--mobile-container-size) !important;
+    min-height: var(--mobile-container-size) !important;
+    padding: 10px !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+  }
+
   .design-editor {
     padding: 5px;
   }
@@ -2035,15 +2169,6 @@
     padding: 10px;
   }
   
-  .mockup-container {
-    max-width: 240px;
-  }
-  
-  .mockup-preview {
-    width: 240px;
-    height: 240px;
-  }
-  
   /* Extra small product config */
   .config-header-row {
     grid-template-columns: 1.5fr 60px 100px;
@@ -2052,7 +2177,7 @@
     font-size: 0.8rem;
   }
   
-  /* Color swatches mobile */
+  /* Color swatches mobile - maintain 44px minimum */
   .color-swatches-section {
     padding: 0 10px;
     margin-top: 10px;
@@ -2060,15 +2185,18 @@
   
   .color-grid {
     gap: 6px;
+    grid-template-columns: repeat(auto-fill, minmax(44px, 1fr)) !important;
   }
   
   .color-swatch {
-    width: 28px;
-    height: 28px;
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
   }
   
   .color-swatch .checkmark {
-    font-size: 14px;
+    font-size: 16px;
   }
   
   .product-item {
@@ -2150,7 +2278,7 @@
   }
 }
 
-/* EMERGENCY CANVAS VISIBILITY OVERRIDE */
+/* EMERGENCY CANVAS VISIBILITY OVERRIDE - DESKTOP PRIORITY */
 canvas.product-canvas,
 .product-canvas,
 canvas[class*="product-canvas"] {
@@ -2161,12 +2289,24 @@ canvas[class*="product-canvas"] {
   z-index: 1 !important;
   pointer-events: auto !important;
   transform: none !important;
-  width: 600px !important;
-  height: 600px !important;
-  max-width: min(600px, 90vw) !important;
-  /* Force white background for debugging */
+  /* Desktop gets exact 600px, mobile gets responsive */
+  aspect-ratio: 1 !important;
+  object-fit: contain !important;
   background-color: white !important;
   border: 2px solid #e5e5e5 !important;
+  box-sizing: border-box !important;
+}
+
+/* Desktop canvas - exact dimensions */
+@media (min-width: 1025px) {
+  canvas.product-canvas,
+  .product-canvas,
+  canvas[class*="product-canvas"] {
+    width: 600px !important;
+    height: 600px !important;
+    max-width: 600px !important;
+    min-width: 600px !important;
+  }
 }
 
 /* Mobile canvas visibility override - AGGRESSIVE 1:1 RATIO ENFORCEMENT */

@@ -39,7 +39,14 @@
   border: 2px solid #ddd;
   border-radius: 8px;
   background: white;
-  display: block;
+  display: block !important;
+  width: 600px !important;
+  height: 600px !important;
+  max-width: none;
+  visibility: visible;
+  opacity: 1;
+  position: relative;
+  z-index: 1;
 }
 
 .canvas-info {

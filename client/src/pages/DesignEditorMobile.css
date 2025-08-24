@@ -32,21 +32,26 @@
     width: 100% !important;
     padding: 20px 15px !important;
   }
-  /* CRITICAL: Mobile canvas sizing with ENFORCED 1:1 aspect ratio - NO OVERFLOW */
+  /* CRITICAL: Mobile canvas sizing with ENFORCED 1:1 aspect ratio - GARMENT ALWAYS VISIBLE */
   .product-canvas {
-    /* Force exact square dimensions on mobile - PREVENT OVERFLOW */
-    --canvas-size: min(350px, calc(100vw - 60px));
+    /* Responsive size that ensures garment visibility */
+    --canvas-size: min(380px, calc(100vw - 40px));
     width: var(--canvas-size) !important;
     height: var(--canvas-size) !important;
     max-width: var(--canvas-size) !important;
     max-height: var(--canvas-size) !important;
     min-width: var(--canvas-size) !important;
     min-height: var(--canvas-size) !important;
-    /* No max-width/height that could break aspect ratio */
+    /* Perfect 1:1 aspect ratio */
     aspect-ratio: 1 / 1 !important;
     display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
     margin: 0 auto !important;
-    /* Ensure proper touch interaction */
+    /* Ensure garment background always shows */
+    background: white !important;
+    border: 2px solid #e5e5e5 !important;
+    /* Proper touch interaction */
     touch-action: manipulation;
     /* Maintain image quality on mobile */
     image-rendering: -webkit-optimize-contrast;
@@ -54,22 +59,25 @@
     /* Prevent unwanted zoom/scroll */
     user-select: none;
     -webkit-user-select: none;
-    /* Force square shape */
+    /* Force proper sizing */
     object-fit: contain !important;
     box-sizing: border-box !important;
-    /* Prevent horizontal overflow */
-    overflow: hidden !important;
+    /* Prevent overflow but maintain visibility */
+    overflow: visible !important;
+    /* Ensure it's always above other elements */
+    z-index: 10 !important;
+    position: relative !important;
   }
   
   .canvas-container {
-    /* CRITICAL: Perfect square container for mobile - PREVENT OVERFLOW */
-    --canvas-size: min(350px, calc(100vw - 60px));
+    /* CRITICAL: Container that ensures garment visibility */
+    --canvas-size: min(380px, calc(100vw - 40px));
     --container-size: calc(var(--canvas-size) + 30px);
     
     padding: 15px !important;
-    background: #f5f5f5;
+    background: #f5f5f5 !important;
     margin: 0 auto !important;
-    /* Maintain perfect square proportions */
+    /* Perfect proportions with adequate space */
     width: var(--container-size) !important;
     height: var(--container-size) !important;
     max-width: var(--container-size) !important;
@@ -78,11 +86,13 @@
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    position: relative;
-    border-radius: 12px;
-    box-sizing: border-box;
-    /* Prevent overflow */
-    overflow: hidden !important;
+    position: relative !important;
+    border-radius: 12px !important;
+    box-sizing: border-box !important;
+    /* Allow visibility of garment elements */
+    overflow: visible !important;
+    /* Ensure proper stacking */
+    z-index: 5 !important;
   }
   .design-editor-container {
     padding: 0;
@@ -852,45 +862,88 @@
     display: block;
   }
 }
-/* CRITICAL: Breakpoint-specific canvas fixes for perfect 1:1 ratio */
+/* CRITICAL: Breakpoint-specific canvas fixes - GARMENT VISIBILITY PRIORITY */
 @media (max-width: 480px) {
   .product-canvas {
-    --canvas-size: min(350px, calc(100vw - 32px)) !important;
+    /* Slightly larger to ensure garment visibility */
+    --canvas-size: min(360px, calc(100vw - 30px)) !important;
     width: var(--canvas-size) !important;
     height: var(--canvas-size) !important;
+    max-width: var(--canvas-size) !important;
+    min-width: var(--canvas-size) !important;
+    background: white !important;
+    border: 2px solid #e5e5e5 !important;
   }
   .canvas-container {
-    --canvas-size: min(350px, calc(100vw - 32px)) !important;
+    --canvas-size: min(360px, calc(100vw - 30px)) !important;
     --container-size: calc(var(--canvas-size) + 20px) !important;
     width: var(--container-size) !important;
     height: var(--container-size) !important;
+    max-width: var(--container-size) !important;
+    padding: 10px !important;
   }
 }
 
 @media (max-width: 390px) {
   .product-canvas {
-    --canvas-size: min(340px, calc(100vw - 30px)) !important;
+    /* Maintain good size for iPhone 12 mini, etc */
+    --canvas-size: min(350px, calc(100vw - 28px)) !important;
     width: var(--canvas-size) !important;
     height: var(--canvas-size) !important;
+    max-width: var(--canvas-size) !important;
+    min-width: var(--canvas-size) !important;
+    background: white !important;
+    border: 2px solid #e5e5e5 !important;
   }
   .canvas-container {
-    --canvas-size: min(340px, calc(100vw - 30px)) !important;
-    --container-size: calc(var(--canvas-size) + 20px) !important;
+    --canvas-size: min(350px, calc(100vw - 28px)) !important;
+    --container-size: calc(var(--canvas-size) + 18px) !important;
     width: var(--container-size) !important;
     height: var(--container-size) !important;
+    max-width: var(--container-size) !important;
+    padding: 9px !important;
   }
 }
 
 @media (max-width: 375px) {
   .product-canvas {
-    --canvas-size: min(330px, calc(100vw - 30px)) !important;
+    /* iPhone SE sized - still ensure garment shows */
+    --canvas-size: min(340px, calc(100vw - 26px)) !important;
     width: var(--canvas-size) !important;
     height: var(--canvas-size) !important;
+    max-width: var(--canvas-size) !important;
+    min-width: var(--canvas-size) !important;
+    background: white !important;
+    border: 2px solid #e5e5e5 !important;
   }
   .canvas-container {
-    --canvas-size: min(330px, calc(100vw - 30px)) !important;
-    --container-size: calc(var(--canvas-size) + 20px) !important;
+    --canvas-size: min(340px, calc(100vw - 26px)) !important;
+    --container-size: calc(var(--canvas-size) + 16px) !important;
     width: var(--container-size) !important;
     height: var(--container-size) !important;
+    max-width: var(--container-size) !important;
+    padding: 8px !important;
+  }
+}
+
+/* Extra small screens - absolute minimum */
+@media (max-width: 320px) {
+  .product-canvas {
+    /* Absolute minimum while keeping garment visible */
+    --canvas-size: min(290px, calc(100vw - 20px)) !important;
+    width: var(--canvas-size) !important;
+    height: var(--canvas-size) !important;
+    max-width: var(--canvas-size) !important;
+    min-width: var(--canvas-size) !important;
+    background: white !important;
+    border: 1px solid #e5e5e5 !important;
+  }
+  .canvas-container {
+    --canvas-size: min(290px, calc(100vw - 20px)) !important;
+    --container-size: calc(var(--canvas-size) + 14px) !important;
+    width: var(--container-size) !important;
+    height: var(--container-size) !important;
+    max-width: var(--container-size) !important;
+    padding: 7px !important;
   }
 }
