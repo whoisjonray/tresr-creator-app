@@ -1,3 +1,72 @@
+/* =================================================
+   CSS CUSTOM PROPERTIES - CANVAS SIZING SYSTEM
+   ================================================= */
+:root {
+  /* Base canvas sizes for different breakpoints */
+  --canvas-size-desktop: min(600px, calc(100vw - 80px));
+  --canvas-size-tablet: min(500px, calc(100vw - 60px));
+  --canvas-size-mobile: min(350px, calc(100vw - 40px));
+  --canvas-size-mobile-small: min(320px, calc(100vw - 20px));
+  
+  /* Calculated inner canvas sizes (container minus padding) */
+  --canvas-inner-desktop: calc(var(--canvas-size-desktop) - 40px);
+  --canvas-inner-tablet: calc(var(--canvas-size-tablet) - 30px);
+  --canvas-inner-mobile: calc(var(--canvas-size-mobile) - 30px);
+  --canvas-inner-mobile-small: calc(var(--canvas-size-mobile-small) - 20px);
+}
+
+/* Container queries support for modern browsers */
+@supports (container-type: inline-size) {
+  .canvas-section {
+    container-type: inline-size;
+  }
+  
+  /* Container-based responsive canvas sizing */
+  @container (max-width: 480px) {
+    .canvas-container {
+      --canvas-size: var(--canvas-size-mobile-small);
+    }
+    
+    .product-canvas {
+      width: var(--canvas-inner-mobile-small);
+      height: var(--canvas-inner-mobile-small);
+    }
+  }
+  
+  @container (min-width: 481px) and (max-width: 768px) {
+    .canvas-container {
+      --canvas-size: var(--canvas-size-mobile);
+    }
+    
+    .product-canvas {
+      width: var(--canvas-inner-mobile);
+      height: var(--canvas-inner-mobile);
+    }
+  }
+  
+  @container (min-width: 769px) and (max-width: 1024px) {
+    .canvas-container {
+      --canvas-size: var(--canvas-size-tablet);
+    }
+    
+    .product-canvas {
+      width: var(--canvas-inner-tablet);
+      height: var(--canvas-inner-tablet);
+    }
+  }
+  
+  @container (min-width: 1025px) {
+    .canvas-container {
+      --canvas-size: var(--canvas-size-desktop);
+    }
+    
+    .product-canvas {
+      width: var(--canvas-inner-desktop);
+      height: var(--canvas-inner-desktop);
+    }
+  }
+}
+
 /* Header */
 .design-editor-header {
     background: #4a5568;
@@ -217,6 +286,9 @@
     z-index: 5;
     width: 100%;
     box-sizing: border-box;
+    /* Ensure tools don't overlap canvas on mobile */
+    margin-top: 0;
+    clear: both;
 }
 
 .tools-header {
@@ -260,8 +332,11 @@
 .tool-btn {
     background: #0f172a;
     border: 2px solid #1e293b;
-    width: 48px;
-    height: 48px;
+    /* Increase minimum touch target size to 44px */
+    width: max(48px, 44px);
+    height: max(48px, 44px);
+    min-width: 44px;
+    min-height: 44px;
     border-radius: 6px;
     color: white;
     cursor: pointer;
@@ -272,6 +347,9 @@
     flex-shrink: 0;
     position: relative;
     padding: 0;
+    /* Ensure visible on mobile (no hover-only states) */
+    opacity: 1;
+    visibility: visible;
 }
 
 .tool-btn:hover {
@@ -373,22 +451,29 @@
 
 .scale-slider {
     flex: 1;
-    height: 6px;
+    /* Minimum 44px height for touch accessibility */
+    height: max(44px, 6px);
     background: #4a5568;
     border-radius: 3px;
     outline: none;
     -webkit-appearance: none;
     max-width: 300px;
+    /* Ensure touch-friendly on mobile */
+    touch-action: manipulation;
+    cursor: pointer;
 }
 
 .scale-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
+    /* Larger thumb for better touch interaction */
+    width: max(32px, 20px);
+    height: max(32px, 20px);
     background: #3b82f6;
     border-radius: 50%;
     cursor: pointer;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    /* Better positioning for larger thumb */
+    margin-top: -13px;
 }
 
 .scale-value {
@@ -611,8 +696,11 @@
 }
 
 .design-editor-page .color-swatch {
-    width: 40px;
-    height: 40px;
+    /* Ensure minimum 44x44px touch target */
+    width: max(44px, 40px);
+    height: max(44px, 40px);
+    min-width: 44px;
+    min-height: 44px;
     border-radius: 0 !important; /* Square shape - override AdminPanel.css */
     cursor: pointer;
     position: relative;
@@ -621,6 +709,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    /* Better touch interaction */
+    touch-action: manipulation;
 }
 
 .design-editor-page .color-swatch:hover {
@@ -748,8 +838,11 @@
 }
 
 .color-swatch {
-    width: 32px;
-    height: 32px;
+    /* Ensure minimum 44x44px touch target */
+    width: max(44px, 32px);
+    height: max(44px, 32px);
+    min-width: 44px;
+    min-height: 44px;
     border-radius: 6px;
     border: 2px solid #e5e7eb;
     cursor: pointer;
@@ -758,6 +851,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    /* Better touch interaction */
+    touch-action: manipulation;
 }
 
 .color-swatch:hover {
@@ -1441,10 +1536,130 @@
   }
 }
 
-/* Mobile phones */
+/* Mobile phones - MOBILE-FIRST APPROACH */
 @media (max-width: 768px) {
   .design-editor {
     padding: 10px;
+  }
+  
+  /* CRITICAL: Prevent tools overlap with canvas */
+  .tools-section {
+    margin-top: 20px !important;
+    padding: 15px !important;
+    background: #1a202c !important;
+    color: white !important;
+    border-top: 1px solid #2d3748 !important;
+    /* Ensure tools section doesn't overlap */
+    position: relative !important;
+    z-index: 5 !important;
+    clear: both !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  
+  /* Force horizontal layout for tools */
+  .tools-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    padding: 8px 0 !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Ensure all tool buttons are visible (no hover-only states) */
+  .tool-btn {
+    /* Minimum 44x44px touch targets */
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    flex-shrink: 0 !important;
+    background: #0f172a !important;
+    border: 2px solid #1e293b !important;
+    color: white !important;
+    /* Always visible - no hover states on mobile */
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    touch-action: manipulation;
+  }
+  
+  /* Scale controls mobile optimization */
+  .scale-control {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+    padding: 15px 0;
+    border-top: 1px solid #2d3748;
+  }
+  
+  .scale-slider {
+    /* Minimum 44px height for touch */
+    height: 44px !important;
+    width: 100% !important;
+    background: transparent !important;
+    -webkit-appearance: none;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  
+  .scale-slider::-webkit-slider-track {
+    height: 6px;
+    background: #4a5568;
+    border-radius: 3px;
+  }
+  
+  .scale-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    /* Larger thumb for mobile */
+    width: 32px !important;
+    height: 32px !important;
+    background: #3b82f6;
+    border-radius: 50%;
+    margin-top: -13px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    cursor: pointer;
+  }
+  
+  .scale-slider::-moz-range-thumb {
+    width: 32px;
+    height: 32px;
+    background: #3b82f6;
+    border-radius: 50%;
+    border: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    cursor: pointer;
+  }
+  
+  /* Color swatches mobile optimization */
+  .color-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(44px, 1fr)) !important;
+    gap: 8px !important;
+    max-width: 100% !important;
+  }
+  
+  .color-swatch,
+  .design-editor-page .color-swatch {
+    /* Ensure 44x44px minimum touch targets */
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    border-radius: 6px !important;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+    border: 2px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: manipulation;
   }
   
   .editor-header {
@@ -1693,6 +1908,58 @@
   }
 }
 
+/* CRITICAL: Add additional mobile layout fixes */
+@media (max-width: 768px) {
+  /* Ensure canvas and tools never overlap */
+  .canvas-section {
+    position: relative !important;
+    z-index: 1 !important;
+    margin-bottom: 20px !important;
+    clear: both !important;
+  }
+  
+  .tools-section {
+    position: relative !important;
+    z-index: 5 !important;
+    margin-top: 20px !important;
+    clear: both !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  
+  /* Ensure proper stacking order */
+  .view-controls {
+    position: relative !important;
+    z-index: 10 !important;
+    margin: 15px 0 !important;
+    clear: both !important;
+  }
+  
+  /* Force proper layout flow */
+  .editor-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+  }
+  
+  .canvas-section {
+    order: 1;
+    width: 100% !important;
+  }
+  
+  .product-config {
+    order: 2;
+    width: 100% !important;
+    margin-top: 20px !important;
+  }
+  
+  .tools-section {
+    order: 3;
+    width: 100% !important;
+    margin-top: 20px !important;
+  }
+}
+
 /* Small mobile phones */
 @media (max-width: 480px) {
   .design-editor {
@@ -1879,6 +2146,90 @@ canvas[class*="product-canvas"] {
   }
 }
 
+/* =================================================
+   CANVAS ASPECT RATIO TEST BREAKPOINTS
+   ================================================= */
+
+/* Tablet breakpoint - 1024px */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .canvas-container {
+    --canvas-size: var(--canvas-size-tablet);
+  }
+  
+  .product-canvas {
+    width: var(--canvas-inner-tablet);
+    height: var(--canvas-inner-tablet);
+    aspect-ratio: 1 !important;
+  }
+}
+
+/* Mobile breakpoint - 768px */
+@media (max-width: 768px) and (min-width: 481px) {
+  .canvas-container {
+    --canvas-size: var(--canvas-size-mobile);
+  }
+  
+  .product-canvas {
+    width: var(--canvas-inner-mobile);
+    height: var(--canvas-inner-mobile);
+    aspect-ratio: 1 !important;
+  }
+}
+
+/* Small mobile breakpoint - 480px */
+@media (max-width: 480px) {
+  .canvas-container {
+    --canvas-size: var(--canvas-size-mobile-small);
+  }
+  
+  .product-canvas {
+    width: var(--canvas-inner-mobile-small);
+    height: var(--canvas-inner-mobile-small);
+    aspect-ratio: 1 !important;
+  }
+}
+
+/* =================================================
+   CANVAS DEBUGGING UTILITIES (REMOVE IN PRODUCTION)
+   ================================================= */
+
+/* Add visual debugging for canvas aspect ratio */
+.product-canvas[data-debug="true"] {
+  outline: 3px solid red !important;
+  position: relative;
+}
+
+.product-canvas[data-debug="true"]::after {
+  content: attr(width) 'x' attr(height);
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  background: rgba(255, 0, 0, 0.8);
+  color: white;
+  padding: 2px 6px;
+  font-size: 12px;
+  font-family: monospace;
+  pointer-events: none;
+}
+
+.canvas-container[data-debug="true"] {
+  outline: 2px dashed blue !important;
+  position: relative;
+}
+
+.canvas-container[data-debug="true"]::before {
+  content: 'Container: ' attr(data-width) 'x' attr(data-height);
+  position: absolute;
+  top: -25px;
+  left: 0;
+  background: rgba(0, 0, 255, 0.8);
+  color: white;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-family: monospace;
+  z-index: 1000;
+}
+
 /* CRITICAL: Universal Canvas 1:1 Aspect Ratio Fix */
 .product-canvas,
 canvas[class*="canvas"],
@@ -1938,17 +2289,23 @@ canvas[class*="canvas"],
 
 @media (max-width: 480px) {
   .product-canvas {
-    width: 350px !important;
-    height: 350px !important;
-    max-width: min(350px, 90vw) !important;
+    /* Use the responsive size variables */
+    width: var(--canvas-inner-size) !important;
+    height: var(--canvas-inner-size) !important;
+    aspect-ratio: 1 !important;
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
+    max-width: 100%;
+    max-height: 100%;
   }
   
   .canvas-container {
+    --canvas-size: min(320px, calc(100vw - 20px));
     padding: 10px !important;
-    min-height: 370px !important;
+    width: var(--canvas-size) !important;
+    height: var(--canvas-size) !important;
+    aspect-ratio: 1;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;

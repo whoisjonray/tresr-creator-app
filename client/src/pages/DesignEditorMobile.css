@@ -1,3 +1,7 @@
+/* =================================================
+   MOBILE-FIRST RESPONSIVE CANVAS SYSTEM
+   ================================================= */
+
 /* Mobile-First Design Editor - TRESR Style */
 @media (max-width: 768px) {
   /* Override desktop two-column layout */
@@ -28,12 +32,14 @@
     width: 100% !important;
     padding: 20px 15px !important;
   }
-  /* Override desktop canvas sizing for mobile - maintain aspect ratio */
+  /* CRITICAL: Mobile canvas sizing with ENFORCED 1:1 aspect ratio */
   .product-canvas {
-    width: 100% !important;
-    max-width: 400px !important;
-    height: auto !important;
-    aspect-ratio: 1 !important;
+    /* Force exact square dimensions on mobile */
+    --canvas-size: min(400px, calc(100vw - 40px));
+    width: var(--canvas-size) !important;
+    height: var(--canvas-size) !important;
+    /* No max-width/height that could break aspect ratio */
+    aspect-ratio: 1 / 1 !important;
     display: block !important;
     margin: 0 auto !important;
     /* Ensure proper touch interaction */
@@ -44,21 +50,29 @@
     /* Prevent unwanted zoom/scroll */
     user-select: none;
     -webkit-user-select: none;
+    /* Force square shape */
+    object-fit: none !important;
+    box-sizing: border-box !important;
   }
   
   .canvas-container {
+    /* CRITICAL: Perfect square container for mobile */
+    --canvas-size: min(400px, calc(100vw - 40px));
+    --container-size: calc(var(--canvas-size) + 30px);
+    
     padding: 15px !important;
     background: #f5f5f5;
     margin: 0 auto !important;
-    /* Ensure proper container sizing for mobile */
-    width: 100%;
-    max-width: 430px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 280px;
+    /* Maintain perfect square proportions */
+    width: var(--container-size) !important;
+    height: var(--container-size) !important;
+    aspect-ratio: 1 / 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     position: relative;
     border-radius: 12px;
+    box-sizing: border-box;
   }
   .design-editor-container {
     padding: 0;
@@ -214,8 +228,9 @@
   }
 
   .product-canvas-container {
-    width: 100%;
-    max-width: 400px;
+    /* Use the same sizing system as canvas-container */
+    width: var(--mobile-canvas-size, min(350px, calc(100vw - 60px)));
+    height: var(--mobile-canvas-size, min(350px, calc(100vw - 60px)));
     aspect-ratio: 1;
     position: relative;
     background: white;
@@ -227,7 +242,9 @@
   .product-canvas {
     width: 100%;
     height: 100%;
+    aspect-ratio: 1;
     touch-action: none; /* Prevent scrolling when dragging */
+    object-fit: contain;
   }
 
   /* Product Switcher - Horizontal Scroll */
@@ -270,19 +287,24 @@
     object-fit: contain;
   }
 
-  /* Tools Section - Collapsible */
+  /* Tools Section - CRITICAL MOBILE FIXES */
   .mobile-tools-section,
   .tools-section {
     background: #1a202c !important;
     color: white !important;
     border-top: 1px solid #2d3748 !important;
-    margin-bottom: 80px;
+    /* CRITICAL: Prevent overlap with canvas */
+    margin-top: 20px !important;
+    margin-bottom: 100px !important; /* Space for fixed bottom actions */
     /* Fix z-index issues */
-    position: relative;
-    z-index: 10;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 15px;
+    position: relative !important;
+    z-index: 5 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 15px !important;
+    /* Ensure tools don't float over canvas */
+    clear: both !important;
+    overflow: visible !important;
   }
 
   .tools-toggle {
@@ -313,9 +335,10 @@
     background: #1a202c;
   }
   
-  /* Force tools to be horizontal on mobile */
+  /* Force tools to be horizontal on mobile - ENHANCED */
   .tools-content .tools-grid,
-  .mobile-tools-section .tools-grid {
+  .mobile-tools-section .tools-grid,
+  .tools-section .tools-grid {
     display: flex !important;
     flex-direction: row !important;
     gap: 8px !important;
@@ -323,23 +346,49 @@
     overflow-x: auto !important;
     padding: 10px 0 !important;
     -webkit-overflow-scrolling: touch;
+    /* Hide scrollbar but keep functionality */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .tools-content .tools-grid::-webkit-scrollbar,
+  .mobile-tools-section .tools-grid::-webkit-scrollbar,
+  .tools-section .tools-grid::-webkit-scrollbar {
+    display: none;
   }
   
   .tools-content .tool-btn,
-  .mobile-tools-section .tool-btn {
+  .mobile-tools-section .tool-btn,
+  .tools-section .tool-btn {
     flex-shrink: 0;
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    background: #0f172a;
-    border: 2px solid #1e293b;
-    color: white;
+    /* WCAG compliant 44x44px minimum touch targets */
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    background: #0f172a !important;
+    border: 2px solid #1e293b !important;
+    color: white !important;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    /* Always visible - no hover-only states */
+    opacity: 1 !important;
+    visibility: visible !important;
+    touch-action: manipulation;
   }
 
-  /* Scale Slider - Large Touch Target */
-  .mobile-scale-control {
-    padding: 16px;
-    border-top: 1px solid #f0f0f0;
+  /* Scale Slider - ACCESSIBILITY ENHANCED */
+  .mobile-scale-control,
+  .scale-control {
+    padding: 16px !important;
+    border-top: 1px solid #2d3748 !important;
+    margin-top: 15px !important;
+    background: #1a202c !important;
+    color: white !important;
   }
 
   .scale-label {
@@ -351,11 +400,15 @@
   }
 
   .scale-slider {
-    width: 100%;
-    height: 44px;
+    width: 100% !important;
+    /* WCAG AA compliant 44px minimum height */
+    height: 44px !important;
     -webkit-appearance: none;
-    background: transparent;
+    background: transparent !important;
     cursor: pointer;
+    /* Better touch interaction */
+    touch-action: manipulation;
+    outline: none;
   }
 
   .scale-slider::-webkit-slider-track {
@@ -386,10 +439,14 @@
     box-shadow: 0 2px 6px rgba(0,0,0,0.3);
   }
 
-  /* Color Swatches - Grid Layout */
-  .mobile-color-section {
-    padding: 16px;
-    border-top: 1px solid #f0f0f0;
+  /* Color Swatches - ACCESSIBILITY ENHANCED */
+  .mobile-color-section,
+  .colors-section {
+    padding: 16px !important;
+    border-top: 1px solid #2d3748 !important;
+    background: #1a202c !important;
+    color: white !important;
+    margin-top: 15px !important;
   }
 
   .color-section-title {
@@ -399,19 +456,34 @@
     color: #333;
   }
 
-  .mobile-color-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
-    gap: 8px;
+  .mobile-color-grid,
+  .color-grid {
+    display: grid !important;
+    /* Ensure minimum 44px columns for accessibility */
+    grid-template-columns: repeat(auto-fill, minmax(44px, 1fr)) !important;
+    gap: 8px !important;
+    width: 100% !important;
+    max-width: 100% !important;
   }
 
-  .mobile-color-swatch {
-    aspect-ratio: 1;
-    border-radius: 8px;
-    border: 2px solid transparent;
+  .mobile-color-swatch,
+  .color-swatch,
+  .design-editor-page .color-swatch {
+    /* WCAG AA compliant 44x44px minimum touch targets */
+    aspect-ratio: 1 !important;
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    border-radius: 6px !important;
+    border: 2px solid transparent !important;
     cursor: pointer;
     position: relative;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: manipulation;
   }
 
   .mobile-color-swatch.selected {
@@ -598,23 +670,26 @@
   h2 { font-size: 20px; }
   h3 { font-size: 18px; }
   
-  /* View controls mobile - ADD MISSING STYLES */
+  /* View controls mobile - CRITICAL FIXES */
   .view-controls {
-    padding: 10px !important;
-    gap: 10px;
+    padding: 15px !important;
+    gap: 10px !important;
     height: auto !important;
     background: rgba(255, 255, 255, 0.95) !important;
     backdrop-filter: blur(5px);
+    /* CRITICAL: Ensure controls don't overlap canvas */
     position: relative !important;
     z-index: 20 !important;
-    margin-bottom: 15px;
+    margin: 15px 0 !important;
     border-radius: 8px;
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
-    flex-wrap: nowrap !important;
-    width: 100%;
-    box-sizing: border-box;
+    flex-wrap: wrap !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    /* Ensure controls are always above canvas */
+    clear: both !important;
   }
   
   .view-toggle {
@@ -653,8 +728,10 @@
     right: auto !important;
     top: auto !important;
     flex-shrink: 0;
-    font-size: 0.85rem;
-    padding: 8px 12px;
+    font-size: 0.9rem;
+    /* Ensure minimum 44px height for accessibility */
+    padding: 12px 16px !important;
+    min-height: 44px !important;
     background: #5b6cff !important;
     color: white !important;
     border: none;
@@ -662,8 +739,13 @@
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
+    gap: 8px;
     white-space: nowrap;
+    touch-action: manipulation;
+    /* Always visible - no hover-only states */
+    opacity: 1 !important;
+    visibility: visible !important;
   }
 
   /* Product Config Mobile - CRITICAL FIXES */
@@ -758,5 +840,47 @@
   /* Show mobile-only elements */
   .mobile-only {
     display: block;
+  }
+}
+/* CRITICAL: Breakpoint-specific canvas fixes for perfect 1:1 ratio */
+@media (max-width: 480px) {
+  .product-canvas {
+    --canvas-size: min(350px, calc(100vw - 32px)) !important;
+    width: var(--canvas-size) !important;
+    height: var(--canvas-size) !important;
+  }
+  .canvas-container {
+    --canvas-size: min(350px, calc(100vw - 32px)) !important;
+    --container-size: calc(var(--canvas-size) + 20px) !important;
+    width: var(--container-size) !important;
+    height: var(--container-size) !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .product-canvas {
+    --canvas-size: min(340px, calc(100vw - 30px)) !important;
+    width: var(--canvas-size) !important;
+    height: var(--canvas-size) !important;
+  }
+  .canvas-container {
+    --canvas-size: min(340px, calc(100vw - 30px)) !important;
+    --container-size: calc(var(--canvas-size) + 20px) !important;
+    width: var(--container-size) !important;
+    height: var(--container-size) !important;
+  }
+}
+
+@media (max-width: 375px) {
+  .product-canvas {
+    --canvas-size: min(330px, calc(100vw - 30px)) !important;
+    width: var(--canvas-size) !important;
+    height: var(--canvas-size) !important;
+  }
+  .canvas-container {
+    --canvas-size: min(330px, calc(100vw - 30px)) !important;
+    --container-size: calc(var(--canvas-size) + 20px) !important;
+    width: var(--container-size) !important;
+    height: var(--container-size) !important;
   }
 }
