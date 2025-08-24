@@ -123,15 +123,21 @@
     
     /* Fix canvas aspect ratio on mobile */
     .product-canvas {
-        width: 100% !important;
-        max-width: 400px !important;
+        width: 400px !important;
+        height: 400px !important;
+        max-width: min(400px, 85vw) !important;
         aspect-ratio: 1 !important;
-        height: auto !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
     
     .canvas-container {
         padding: 15px !important;
-        min-height: 280px;
+        min-height: 430px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
 }
 
@@ -154,9 +160,13 @@
     max-width: 640px;
     margin: 0 auto;
     /* Maintain aspect ratio container */
-    display: flex;
+    display: flex !important;
     align-items: center;
     justify-content: center;
+    /* CRITICAL: Force proper dimensions */
+    min-height: 640px;
+    box-sizing: border-box;
+    overflow: visible;
 }
 
 .print-area-label {
@@ -172,9 +182,10 @@
 }
 
 .product-canvas {
-    width: 100%;
-    max-width: 600px;
-    aspect-ratio: 1;
+    width: 600px !important;
+    height: 600px !important;
+    max-width: min(600px, 90vw);
+    aspect-ratio: 1 !important;
     margin: 0 auto;
     position: relative;
     border-radius: 8px;
@@ -182,12 +193,16 @@
     border: none;
     user-select: none;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    /* CRITICAL: Force visibility */
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 1;
     /* Canvas maintains 1:1 aspect ratio across all viewports */
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
     /* Ensure proper scaling on all devices */
     object-fit: contain;
-    display: block;
 }
 
 /* Tools Section */
@@ -1810,6 +1825,43 @@
   }
 }
 
+/* EMERGENCY CANVAS VISIBILITY OVERRIDE */
+canvas.product-canvas,
+.product-canvas,
+canvas[class*="product-canvas"] {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 1 !important;
+  pointer-events: auto !important;
+  transform: none !important;
+  width: 600px !important;
+  height: 600px !important;
+  max-width: min(600px, 90vw) !important;
+}
+
+/* Mobile canvas visibility override */
+@media (max-width: 768px) {
+  canvas.product-canvas,
+  .product-canvas,
+  canvas[class*="product-canvas"] {
+    width: 400px !important;
+    height: 400px !important;
+    max-width: min(400px, 85vw) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  canvas.product-canvas,
+  .product-canvas,
+  canvas[class*="product-canvas"] {
+    width: 350px !important;
+    height: 350px !important;
+    max-width: min(350px, 90vw) !important;
+  }
+}
+
 /* High DPI displays */
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .mockup-preview {
@@ -1828,11 +1880,13 @@
 canvas[class*="canvas"],
 .canvas-element {
   aspect-ratio: 1 !important;
-  width: 100% !important;
-  height: auto !important;
+  width: 600px !important;
+  height: 600px !important;
   max-width: min(600px, 90vw) !important;
   object-fit: contain;
-  display: block;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
   margin: 0 auto;
 }
 
@@ -1880,12 +1934,20 @@ canvas[class*="canvas"],
 
 @media (max-width: 480px) {
   .product-canvas {
+    width: 350px !important;
+    height: 350px !important;
     max-width: min(350px, 90vw) !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
   
   .canvas-container {
     padding: 10px !important;
-    min-height: 250px;
+    min-height: 370px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
   
   .view-controls {
