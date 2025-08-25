@@ -105,8 +105,11 @@
 .canvas-section {
     background: white;
     border-radius: 8px;
-    overflow: hidden;
+    overflow: visible;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
 }
 
 .canvas-container {
@@ -115,6 +118,10 @@
     padding: 40px 20px;
     background: #f5f5f5;
     border-radius: 12px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .print-area-label {
@@ -1407,6 +1414,10 @@
   /* Canvas section mobile */
   .canvas-section {
     padding: 15px;
+    max-width: 100%;
+    width: 100%;
+    min-height: 400px;
+    display: block;
   }
   
   .mockup-container {
@@ -1631,15 +1642,26 @@
   }
   
   .upload-section,
-  .canvas-section,
   .controls-section,
   .product-config,
   .ready-section {
     padding: 10px;
   }
   
+  .canvas-section {
+    padding: 10px;
+    max-width: 100%;
+    width: 100%;
+    min-height: 380px;
+    display: block;
+  }
+  
   .canvas-container {
     padding: 15px 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 360px;
   }
   
   .product-canvas {
@@ -1737,6 +1759,8 @@
   .canvas-section {
     flex: 1;
     order: 1;
+    max-width: 50%;
+    min-height: 400px;
   }
   
   .controls-section {
