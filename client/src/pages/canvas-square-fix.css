@@ -1,0 +1,111 @@
+/* =================================================
+   CRITICAL FIX: FORCE CANVAS TO BE SQUARE
+   ================================================= */
+
+/* Override ALL canvas rules to enforce square */
+canvas.product-canvas,
+.product-canvas {
+  /* Force exact square dimensions */
+  width: 600px !important;
+  height: 600px !important;
+  min-width: 600px !important;
+  min-height: 600px !important;
+  max-width: 600px !important;
+  max-height: 600px !important;
+  
+  /* Ensure 1:1 aspect ratio */
+  aspect-ratio: 1 / 1 !important;
+  
+  /* Prevent any distortion */
+  object-fit: contain !important;
+  
+  /* Ensure visibility */
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  
+  /* Center alignment */
+  margin: 0 auto !important;
+  
+  /* Visual styling */
+  background: white !important;
+  border: 2px solid #e5e5e5 !important;
+  border-radius: 8px !important;
+  box-sizing: border-box !important;
+  
+  /* Prevent stretching */
+  image-rendering: -webkit-optimize-contrast !important;
+  image-rendering: crisp-edges !important;
+}
+
+/* Mobile responsiveness - maintain square */
+@media (max-width: 768px) {
+  canvas.product-canvas,
+  .product-canvas {
+    --size: min(450px, calc(100vw - 40px)) !important;
+    width: var(--size) !important;
+    height: var(--size) !important;
+    min-width: var(--size) !important;
+    min-height: var(--size) !important;
+    max-width: var(--size) !important;
+    max-height: var(--size) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  canvas.product-canvas,
+  .product-canvas {
+    --size: min(350px, calc(100vw - 30px)) !important;
+    width: var(--size) !important;
+    height: var(--size) !important;
+    min-width: var(--size) !important;
+    min-height: var(--size) !important;
+    max-width: var(--size) !important;
+    max-height: var(--size) !important;
+  }
+}
+
+@media (max-width: 375px) {
+  canvas.product-canvas,
+  .product-canvas {
+    --size: min(320px, calc(100vw - 25px)) !important;
+    width: var(--size) !important;
+    height: var(--size) !important;
+    min-width: var(--size) !important;
+    min-height: var(--size) !important;
+    max-width: var(--size) !important;
+    max-height: var(--size) !important;
+  }
+}
+
+/* Container fixes to prevent distortion */
+.canvas-container {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: fit-content !important;
+  margin: 0 auto !important;
+  padding: 20px !important;
+  background: #f5f5f5 !important;
+  border-radius: 12px !important;
+}
+
+/* Ensure parent doesn't constrain */
+.canvas-section {
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Override any conflicting styles */
+.product-canvas[style*="height"],
+canvas.product-canvas[style*="height"] {
+  height: 600px !important;
+}
+
+.product-canvas[style*="width"],
+canvas.product-canvas[style*="width"] {
+  width: 600px !important;
+}

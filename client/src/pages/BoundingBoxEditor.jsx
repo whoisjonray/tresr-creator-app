@@ -160,7 +160,7 @@ const BoundingBoxEditor = () => {
           setSelectedGarment(templates[0].id);
         }
         
-        console.log('Loaded product templates from API:', templates);
+        // console.log('Loaded product templates from API:', templates);
       }
     } catch (error) {
       console.error('Error loading templates:', error);
@@ -207,14 +207,14 @@ const BoundingBoxEditor = () => {
             };
           }
           setPrintAreas(converted);
-          console.log('Converted old print areas to new structure');
+          // console.log('Converted old print areas to new structure');
         } else {
           setPrintAreas(areas);
-          console.log('Loaded print areas from database');
+          // console.log('Loaded print areas from database');
         }
       }
     } catch (error) {
-      console.log('Using local/default print areas');
+      // console.log('Using local/default print areas');
     }
   };
 
@@ -259,7 +259,7 @@ const BoundingBoxEditor = () => {
       } else {
         // No image available - clear the garment image
         setGarmentImage(null);
-        console.log(`No image available for ${selectedGarment} ${selectedSide}`);
+        // console.log(`No image available for ${selectedGarment} ${selectedSide}`);
       }
     } catch (error) {
       console.error('Failed to load garment image:', error);
@@ -280,7 +280,8 @@ const BoundingBoxEditor = () => {
       return;
     }
     
-    console.log('Drawing canvas with area:', area);
+    // Remove console.log that might be causing issues
+    // console.log('Drawing canvas with area:', area);
     
     // Clear canvas completely
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
@@ -381,7 +382,7 @@ const BoundingBoxEditor = () => {
       }
     }
     
-    console.log('Canvas drawn successfully', { selectedGarment, selectedSide, hasArea: !!area, hasImage: !!garmentImage });
+    // console.log('Canvas drawn successfully', { selectedGarment, selectedSide, hasArea: !!area, hasImage: !!garmentImage });
   };
 
   const getMousePos = (e) => {
@@ -581,10 +582,10 @@ const BoundingBoxEditor = () => {
       
       if (response.data.success) {
         setSaveStatus('Saved to Database!');
-        console.log('Print areas saved to database');
+        // console.log('Print areas saved to database');
       } else {
         setSaveStatus('Saved Locally');
-        console.log('Database save failed, saved locally');
+        // console.log('Database save failed, saved locally');
       }
     } catch (error) {
       console.error('Error saving to database:', error);
