@@ -410,6 +410,19 @@
     background: #1a202c !important;
     color: white !important;
   }
+  
+  /* Hide the dotted line overlay on mobile to prevent overlap with percentage box */
+  .scale-control::before {
+    display: none !important;
+  }
+  
+  /* Ensure proper spacing for scale value */
+  .scale-value,
+  .scale-input {
+    margin-left: 10px !important;
+    z-index: 10 !important;
+    position: relative !important;
+  }
 
   .scale-label {
     display: flex;

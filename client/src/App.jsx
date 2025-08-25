@@ -62,7 +62,7 @@ function AppContent() {
                     <Route path="/admin" element={<AdminPanel />} />
                     <Route path="/admin/users" element={<UserManagement />} />
                     <Route path="/test/superproduct" element={<SuperProductTest />} />
-                    <Route path="/test/bounding-box" element={<BoundingBoxEditorSimple />} />
+                    <Route path="/test/bounding-box" element={<BoundingBoxEditor />} />
                     <Route path="/test/product-templates" element={<ProductTemplateManager />} />
                     <Route path="/scan-map" element={<ScanMap />} />
                     
