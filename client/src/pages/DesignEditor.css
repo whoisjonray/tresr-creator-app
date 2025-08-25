@@ -275,11 +275,11 @@
 }
 
 .product-canvas {
-    width: 600px !important;
-    height: 600px !important;
-    /* Ensure desktop stays 600px, mobile gets responsive sizing */
-    max-width: 600px;
-    min-width: 600px;
+    width: 600px;
+    height: 600px;
+    /* Responsive max width to prevent overflow */
+    max-width: min(600px, calc(100vw - 40px));
+    max-height: min(600px, calc(100vw - 40px));
     aspect-ratio: 1 !important;
     margin: 0 auto;
     position: relative;

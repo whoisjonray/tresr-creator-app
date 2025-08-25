@@ -34,14 +34,13 @@
   }
   /* CRITICAL: Mobile canvas sizing with ENFORCED 1:1 aspect ratio - GARMENT ALWAYS VISIBLE */
   .product-canvas {
-    /* Responsive size that ensures garment visibility */
-    --canvas-size: min(380px, calc(100vw - 40px));
+    /* Responsive size that ensures garment visibility and no overflow */
+    --canvas-size: min(600px, calc(100vw - 40px));
     width: var(--canvas-size) !important;
     height: var(--canvas-size) !important;
+    /* No min-width to allow responsive sizing */
     max-width: var(--canvas-size) !important;
     max-height: var(--canvas-size) !important;
-    min-width: var(--canvas-size) !important;
-    min-height: var(--canvas-size) !important;
     /* Perfect 1:1 aspect ratio */
     aspect-ratio: 1 / 1 !important;
     display: block !important;
@@ -434,11 +433,12 @@
 
   .scale-slider {
     width: 100% !important;
-    /* WCAG AA compliant 44px minimum height */
-    height: 44px !important;
+    /* WCAG AA compliant 48px minimum height for better touch targets */
+    height: 48px !important;
     -webkit-appearance: none;
     background: transparent !important;
     cursor: pointer;
+    padding: 10px 0;
     /* Better touch interaction */
     touch-action: manipulation;
     outline: none;
@@ -453,23 +453,24 @@
 
   .scale-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 32px;
-    height: 32px;
+    width: 44px;
+    height: 44px;
     background: #007AFF;
     border-radius: 50%;
     cursor: pointer;
-    margin-top: -13px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    margin-top: -18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    border: 3px solid white;
   }
   
   .scale-slider::-moz-range-thumb {
-    width: 32px;
-    height: 32px;
+    width: 44px;
+    height: 44px;
     background: #007AFF;
     border-radius: 50%;
     cursor: pointer;
-    border: none;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    border: 3px solid white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
   }
 
   /* Color Swatches - ACCESSIBILITY ENHANCED */

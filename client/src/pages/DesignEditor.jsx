@@ -676,29 +676,9 @@ function DesignEditor() {
     const garmentImageUrl = getCloudinaryImage(activeProduct, selectedColor, displaySide);
     
     if (garmentImageUrl && garmentImage.current) {
-      // Draw garment centered and maintain aspect ratio
-      const img = garmentImage.current;
-      const imgAspect = img.width / img.height;
-      const canvasAspect = canvas.width / canvas.height;
-      
-      let drawWidth, drawHeight, drawX, drawY;
-      
-      // Fit image to canvas while maintaining aspect ratio
-      if (imgAspect > canvasAspect) {
-        // Image is wider than canvas aspect ratio
-        drawWidth = canvas.width;
-        drawHeight = canvas.width / imgAspect;
-        drawX = 0;
-        drawY = (canvas.height - drawHeight) / 2;
-      } else {
-        // Image is taller than canvas aspect ratio
-        drawHeight = canvas.height;
-        drawWidth = canvas.height * imgAspect;
-        drawX = (canvas.width - drawWidth) / 2;
-        drawY = 0;
-      }
-      
-      ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+      // Draw garment at full canvas size (600x600) without aspect ratio adjustment
+      // The garment images are designed to fit within the square canvas
+      ctx.drawImage(garmentImage.current, 0, 0, canvas.width, canvas.height);
     }
     
     // Draw design if available (AFTER garment image)
