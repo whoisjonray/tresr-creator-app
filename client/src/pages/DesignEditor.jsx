@@ -6,18 +6,13 @@ import api from '../services/api';
 import mockupService from '../services/mockupService';
 import canvasImageGenerator from '../services/canvasImageGenerator';
 import { getGarmentImage as getCloudinaryImage } from '../config/garmentImagesCloudinary';
-import mugConvexEffect from '../utils/mugConvexEffect';
 import './DesignEditor.css'; // v2 - square swatches with 14 colors
-import './DesignEditorMobile.css'; // Mobile-first responsive styles
 import { userStorage } from '../utils/userStorage';
 import { usePrintAreas } from '../contexts/PrintAreasContext';
-import { useImagePreloader } from '../hooks/useImagePreloader';
-import { useTouchGestures } from '../hooks/useTouchGestures';
 import { autoDebugAndFix } from '../utils/debug-current-design';
 import { completeCanvasFix } from '../utils/complete-canvas-fix';
 import { forceCanvasRender } from '../utils/force-canvas-render';
 import { fixCanvasProductSwitching, fixAlignmentButtons, watchProductChanges } from '../utils/fix-canvas-product-switching';
-import { forceCanvasAspectRatio, setupCanvasResizeObserver } from '../utils/force-canvas-aspect-ratio';
 
 // Get API base URL from environment
 const getApiBaseURL = () => {
@@ -74,26 +69,26 @@ const PRODUCT_TEMPLATES = [
   { id: 'nft', name: 'NFTREASURE NFT Cards', templateId: 'trading_card', price: 5, colors: ['Default'] }
 ];
 
-// Consolidated color categories for all products - standardized hex codes
+// Consolidated color categories for all products
 const COLOR_PALETTE = [
   // Core neutrals
   { name: 'Black', hex: '#000000' },
-  { name: 'Black Camo', hex: '#2a2a2a' }, // Camo pattern on black base
-  { name: 'Dark Grey', hex: '#4A4A4A' },  // Charcoal, Dark Heather Gray
-  { name: 'Light Grey', hex: '#A8A8A8' }, // Gray Heather, Heather Grey
-  { name: 'Natural', hex: '#F5E6D3' },    // Natural, Bone, Beige tones
-  { name: 'White', hex: '#FFFFFF' },
+  { name: 'Black Camo', hex: '#1a1a1a' }, // Women's hoodie specific
+  { name: 'Dark Grey', hex: '#4A4A4A' },  // Covers: Charcoal, Dark Heather Gray, Heather-Grey
+  { name: 'Light Grey', hex: '#9CA3AF' }, // Covers: Gray, Gray Heather, Heather Grey
+  { name: 'Natural', hex: '#FEF3C7' },    // Covers: Natural, Bone, Beige tones
+  { name: 'White', hex: '#FAFAFA' },
   
-  // Colors - Standardized across all garments
-  { name: 'Mint', hex: '#A8E6CF' },       // Mint, Sage (light green)
-  { name: 'Navy', hex: '#1F2937' },       // Navy, Classic Navy
-  { name: 'Cardinal Red', hex: '#C41E3A' },// Cardinal Red, Red
-  { name: 'Gold', hex: '#FFD700' },       // Gold, Yellow gold
-  { name: 'Alpine Green', hex: '#2E5E3E' },// Forest/Alpine green
+  // Colors
+  { name: 'Mint', hex: '#98FF98' },       // Covers: Mint, Sage
+  { name: 'Navy', hex: '#080F20' },       // Covers: Navy, Classic Navy, Midnight-Navy
+  { name: 'Cardinal Red', hex: '#EC5039' },// Covers: Red, Burgundy, Maroon, Cardinal-Red
+  { name: 'Gold', hex: '#F6CB46' },       // Covers: Gold, Antique-Gold
+  { name: 'Alpine Green', hex: '#165B33' },
   { name: 'Army Heather', hex: '#6B7043' },// Military green heather
-  { name: 'Royal Heather', hex: '#5B7FCC' },// Royal blue heather
-  { name: 'Pink', hex: '#FFB6C1' },       // Light pink
-  { name: 'Cotton Candy', hex: '#FFD4E5' }// Very light pink
+  { name: 'Royal Heather', hex: '#4169E1' },// Royal blue heather, covers: Blue, Royal-Blue, True Royal
+  { name: 'Pink', hex: '#F82F57' },       // Covers: Pink, Desert-Pink
+  { name: 'Cotton Candy', hex: '#FFB6C1' }
 ];
 
 const PRODUCT_ICONS = {
@@ -217,10 +212,6 @@ function DesignEditor() {
   const params = useParams();
   const canvasRef = useRef(null);
   const garmentImage = useRef(new Image());
-  const [hoveredColor, setHoveredColor] = useState(null);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const [toolsExpanded, setToolsExpanded] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   // Get print areas from context
   const { getPrintArea, loading: printAreasLoading, error: printAreasError } = usePrintAreas();
@@ -290,46 +281,9 @@ function DesignEditor() {
   const [isZoomed, setIsZoomed] = useState(false); // Magnifying glass zoom state
   const [isProductPublished, setIsProductPublished] = useState(false);
   
-  // Get available colors for current product
-  const availableColors = useMemo(() => {
-    const product = PRODUCT_TEMPLATES.find(p => p.id === activeProduct);
-    return product?.colors || [];
-  }, [activeProduct]);
-  
-  // Preload all color variations for instant switching
-  const { getCachedImage, isPreloading } = useImagePreloader(activeProduct, availableColors);
-  
-  // Touch gestures for mobile
-  const { reset: resetGestures } = useTouchGestures(canvasRef, {
-    onPinch: ({ scale }) => {
-      setDesignScale(prev => Math.max(10, Math.min(500, prev * scale)));
-    },
-    onDrag: ({ deltaX, deltaY }) => {
-      if (designImage) {
-        const currentPos = getCurrentPosition();
-        updateCurrentPosition(activeProduct, {
-          ...currentPos,
-          x: currentPos.x + deltaX * 1.5, // Scale factor for canvas coordinates
-          y: currentPos.y + deltaY * 1.5
-        });
-      }
-    },
-    onDoubleTap: () => {
-      setDesignScale(100); // Reset scale on double tap
-    }
-  });
-  
   // Load product templates from API on mount
   useEffect(() => {
     loadProductTemplates();
-    
-    // Handle window resize
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
   }, []);
   
   // Initialize product configs once print areas are loaded
@@ -545,12 +499,12 @@ function DesignEditor() {
       // Convert canvas position to API format
       const apiPosition = mockupService.convertToApiPosition(
         { x: currentPos.x, y: currentPos.y },
-        { width: 600, height: 600 }
+        { width: 400, height: 400 }
       );
       
       const apiScale = mockupService.calculateApiScale(
         { width: currentPos.width, height: currentPos.height },
-        { width: 600, height: 600 },
+        { width: 400, height: 400 },
         designScale / 100
       );
       
@@ -603,23 +557,12 @@ function DesignEditor() {
   };
 
   const drawCanvas = () => {
-    if (!canvasRef.current) {
-      console.warn('Canvas ref not available');
-      return;
-    }
+    if (!canvasRef.current) return;
     
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     const config = productConfigs[activeProduct];
     const currentPosition = getCurrentPosition();
-    
-    console.log('🎨 Drawing canvas:', { 
-      canvas, 
-      width: canvas.width, 
-      height: canvas.height,
-      config, 
-      activeProduct 
-    });
     
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -639,28 +582,15 @@ function DesignEditor() {
       ctx.translate(-centerX, -centerY);
     }
     
-    // Fill background with light gray and add border for visibility
+    // Fill background with light gray
     ctx.fillStyle = '#f8f9fa';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    // Draw a border to ensure canvas is visible
-    ctx.strokeStyle = '#e5e5e5';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(1, 1, canvas.width - 2, canvas.height - 2);
-    
-    // Draw text to confirm canvas is rendering
-    if (!designImage && !garmentImage.current) {
-      ctx.fillStyle = '#666';
-      ctx.font = '16px Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText('Canvas Ready - Upload Design', canvas.width / 2, canvas.height / 2);
-    }
-    
     // Get print area dimensions for current product
     const printArea = getPrintArea(activeProduct, viewSide);
-    // Print areas are stored in 600x600 coordinates, no need to scale them
     const printAreaWidth = printArea.width;
     const printAreaHeight = printArea.height;
+    // Coordinates are already top-left from bounding box editor (scaled to 400x400)
     const printAreaX = printArea.x;
     const printAreaY = printArea.y;
     
@@ -676,8 +606,7 @@ function DesignEditor() {
     const garmentImageUrl = getCloudinaryImage(activeProduct, selectedColor, displaySide);
     
     if (garmentImageUrl && garmentImage.current) {
-      // Draw garment at full canvas size (600x600) without aspect ratio adjustment
-      // The garment images are designed to fit within the square canvas
+      // Draw garment at full canvas size like bounding box editor
       ctx.drawImage(garmentImage.current, 0, 0, canvas.width, canvas.height);
     }
     
@@ -685,50 +614,23 @@ function DesignEditor() {
     if (designImage && config) {
       ctx.save();
       
-      // Don't scale - print areas are already in 600x600 coordinates matching the canvas
-      const scaledPrintAreaX = printAreaX;
-      const scaledPrintAreaY = printAreaY;
-      const scaledPrintAreaWidth = printAreaWidth;
-      const scaledPrintAreaHeight = printAreaHeight;
+      // Scale print area coordinates from 600x600 to our 400x400 canvas
+      const scale = canvas.width / 600; // 400/600 = 0.667
+      const adjustedPrintAreaX = printAreaX * scale;
+      const adjustedPrintAreaY = printAreaY * scale;
+      const adjustedPrintAreaWidth = printAreaWidth * scale;
+      const adjustedPrintAreaHeight = printAreaHeight * scale;
       
       // Clip to print area
       ctx.beginPath();
-      ctx.rect(scaledPrintAreaX, scaledPrintAreaY, scaledPrintAreaWidth, scaledPrintAreaHeight);
+      ctx.rect(adjustedPrintAreaX, adjustedPrintAreaY, adjustedPrintAreaWidth, adjustedPrintAreaHeight);
       ctx.clip();
       
       const { x, y, width, height } = currentPosition;
       
-      // Design position is already in 600x600 coordinates, use directly
-      const scaledX = x;
-      const scaledY = y;
-      const scaledWidth = width;
-      const scaledHeight = height;
-      
       try {
-        // Apply convex effect for coffee mug, regular drawing for other products
-        if (activeProduct === 'mug') {
-          // Create temporary canvas for just the design area
-          const tempCanvas = document.createElement('canvas');
-          tempCanvas.width = scaledWidth;
-          tempCanvas.height = scaledHeight;
-          const tempCtx = tempCanvas.getContext('2d');
-          
-          // Draw design on temporary canvas at origin
-          tempCtx.drawImage(designImage, 0, 0, scaledWidth, scaledHeight);
-          
-          // Apply convex warp effect to just the design
-          const warpedCanvas = mugConvexEffect.applyConvexWarp(tempCanvas, {
-            curvature: 0.15, // Very subtle curve for realistic mug wrap
-            perspective: 0.95, // Minimal perspective distortion
-            strips: 150 // More strips for smoother curve
-          });
-          
-          // Draw warped version at the correct position
-          ctx.drawImage(warpedCanvas, scaledX, scaledY);
-        } else {
-          // Draw design normally for other products
-          ctx.drawImage(designImage, scaledX, scaledY, scaledWidth, scaledHeight);
-        }
+        // Draw design at the specified position (x,y are top-left coordinates)
+        ctx.drawImage(designImage, x, y, width, height);
       } catch (e) {
         console.error('Error drawing design:', e);
       }
@@ -741,8 +643,9 @@ function DesignEditor() {
       ctx.strokeStyle = 'rgba(59, 130, 246, 0.5)'; // Semi-transparent blue
       ctx.lineWidth = 2;
       ctx.setLineDash([5, 3]);
-      // Draw bounding box at actual coordinates (canvas is 600x600)
-      ctx.strokeRect(printAreaX, printAreaY, printAreaWidth, printAreaHeight);
+      // Scale the bounding box coordinates from 600x600 to 400x400 canvas
+      const scale = canvas.width / 600;
+      ctx.strokeRect(printAreaX * scale, printAreaY * scale, printAreaWidth * scale, printAreaHeight * scale);
       ctx.setLineDash([]);
       
       // Draw corner handles
@@ -782,42 +685,15 @@ function DesignEditor() {
     // Draw selection border for design when hovering
     if (designImage && config && showBoundingBox) {
       const { x, y, width, height } = currentPosition;
-      // Draw at actual coordinates (canvas is 600x600)
       ctx.strokeStyle = '#3b82f6';
       ctx.lineWidth = 2;
-      ctx.strokeRect(x, y, width, height);  // Use actual coordinates
+      ctx.strokeRect(x, y, width, height);  // Use top-left coordinates
     }
     
     // Restore zoom transformation
     ctx.restore();
   };
 
-  // Effect to ensure canvas is properly initialized
-  React.useEffect(() => {
-    if (canvasRef.current) {
-      console.log('✅ Canvas mounted:', {
-        width: canvasRef.current.width,
-        height: canvasRef.current.height,
-        offsetWidth: canvasRef.current.offsetWidth,
-        offsetHeight: canvasRef.current.offsetHeight,
-        style: window.getComputedStyle(canvasRef.current)
-      });
-      
-      // Force initial draw
-      drawCanvas();
-      
-      // Force 1:1 aspect ratio on mobile
-      forceCanvasAspectRatio();
-      const observer = setupCanvasResizeObserver();
-      
-      return () => {
-        if (observer) observer.disconnect();
-      };
-    } else {
-      console.warn('⚠️ Canvas ref not yet available');
-    }
-  }, []); // Run once on mount
-  
   React.useEffect(() => {
     drawCanvas();
   }, [activeProduct, productConfigs, designImage, showBoundingBox, showCenterLines, isZoomed, isDragging, viewSide, frontDesignImage, backDesignImage]);
@@ -862,7 +738,7 @@ function DesignEditor() {
       garmentImage.current = null;
       drawCanvas();
     }
-  }, [activeProduct, productConfigs[activeProduct]?.selectedColor, productConfigs[activeProduct]?.printLocation, viewSide, hoveredColor, getCachedImage]);
+  }, [activeProduct, productConfigs[activeProduct]?.selectedColor, productConfigs[activeProduct]?.printLocation, viewSide]);
 
   // Fix canvas when product changes
   useEffect(() => {
@@ -962,7 +838,7 @@ function DesignEditor() {
               
               // For large raw images (like 1890x2362), set appropriate scale
               if (img.width > 1000 || img.height > 1000) {
-                // Calculate scale to fit in a reasonable design area (about 400px within 600px canvas)
+                // Calculate scale to fit in a reasonable design area (about 400px)
                 const targetWidth = 400;
                 const scale = (targetWidth / img.width) * 100;
                 setDesignScale(scale);
@@ -998,8 +874,8 @@ function DesignEditor() {
               const teeProduct = PRODUCT_TEMPLATES.find(p => p.id === 'tee');
               if (teeProduct) {
                 // Use centered position for better visibility
-                // The canvas is 600x600, so center is at 300,300
-                const defaultPosition = { x: 300, y: 300 };
+                // The canvas is 400x400, so center is at 200,200
+                const defaultPosition = { x: 200, y: 200 };
                 
                 const newConfig = {
                   enabled: true,
@@ -1219,8 +1095,8 @@ function DesignEditor() {
     if (!designImage) return;
     
     const rect = canvasRef.current.getBoundingClientRect();
-    // Canvas is displayed at 600x600 and coordinate system is 600x600, so no scaling needed
-    const scale = 1.0; // Both display size and canvas coordinates are 600x600
+    // Scale mouse coordinates from display size (400px) to canvas size (600px)
+    const scale = 600 / 400;
     const x = (e.clientX - rect.left) * scale;
     const y = (e.clientY - rect.top) * scale;
     const config = productConfigs[activeProduct];
@@ -1240,8 +1116,8 @@ function DesignEditor() {
     if (!designImage) return;
     
     const rect = canvasRef.current.getBoundingClientRect();
-    // Canvas is displayed at 600x600 and coordinate system is 600x600, so no scaling needed
-    const scale = 1.0; // Both display size and canvas coordinates are 600x600
+    // Scale mouse coordinates from display size (400px) to canvas size (600px)
+    const scale = 600 / 400;
     const x = (e.clientX - rect.left) * scale;
     const y = (e.clientY - rect.top) * scale;
     
@@ -1261,13 +1137,16 @@ function DesignEditor() {
       const printArea = getPrintArea(activeProduct, viewSide);
       const currentPosition = getCurrentPosition();
       
-      // Remove boundaries - allow free positioning
-      // Design can overflow outside the bounding box
-      // (only content inside bounding box will be rendered to mockup)
+      // Calculate boundaries based on print area (using top-left coordinates)
+      const minX = printArea.x;
+      const maxX = printArea.x + printArea.width - currentPosition.width;
+      const minY = printArea.y;
+      const maxY = printArea.y + printArea.height - currentPosition.height;
+      
       const newPosition = {
         ...currentPosition,
-        x: x - dragStart.x,
-        y: y - dragStart.y
+        x: Math.max(minX, Math.min(maxX, x - dragStart.x)),
+        y: Math.max(minY, Math.min(maxY, y - dragStart.y))
       };
       
       updateCurrentPosition(activeProduct, newPosition);
@@ -1299,9 +1178,20 @@ function DesignEditor() {
     const newWidth = baseSize * (scale / 100);
     const newHeight = newWidth / aspectRatio;
     
-    // Allow scaling beyond print area (removed constraint)
+    // Ensure the scaled design fits within print area
+    const maxWidth = printArea.width * 0.95;
+    const maxHeight = printArea.height * 0.95;
     let finalWidth = newWidth;
     let finalHeight = newHeight;
+    
+    if (finalWidth > maxWidth) {
+      finalWidth = maxWidth;
+      finalHeight = finalWidth / aspectRatio;
+    }
+    if (finalHeight > maxHeight) {
+      finalHeight = maxHeight;
+      finalWidth = finalHeight * aspectRatio;
+    }
     
     // Update the position for the current view side
     const positionKey = viewSide === 'front' ? 'frontPosition' : 'backPosition';
@@ -1771,51 +1661,9 @@ function DesignEditor() {
 
   return (
     <div className="design-editor-page">
-      {/* Mobile Navigation Menu */}
-      {isMobile && (
-        <>
-          <button 
-            className={`mobile-menu-button ${mobileMenuOpen ? 'open' : ''}`}
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
-          
-          <div className={`mobile-nav-overlay ${mobileMenuOpen ? 'visible' : ''}`} 
-               onClick={() => setMobileMenuOpen(false)} />
-          
-          <div className={`mobile-nav-menu ${mobileMenuOpen ? 'open' : ''}`}>
-            <div className="mobile-nav-header">
-              <h3>TRESR Creator</h3>
-            </div>
-            <div className="mobile-nav-items">
-              <div className="mobile-nav-item" onClick={() => {
-                navigate('/dashboard');
-                setMobileMenuOpen(false);
-              }}>Dashboard</div>
-              <div className="mobile-nav-item active">Design Editor</div>
-              <div className="mobile-nav-item" onClick={() => {
-                navigate('/products');
-                setMobileMenuOpen(false);
-              }}>My Products</div>
-              <div className="mobile-nav-item" onClick={() => {
-                navigate('/analytics');
-                setMobileMenuOpen(false);
-              }}>Analytics</div>
-              <div className="mobile-nav-item" onClick={() => {
-                navigate('/settings');
-                setMobileMenuOpen(false);
-              }}>Settings</div>
-            </div>
-          </div>
-        </>
-      )}
-      
       <div className="design-editor-header">
         <h1>TRESR Design Editor</h1>
-        <p>Advanced product positioning system</p>
+        <p>Exact TeePublic-style product positioning system</p>
       </div>
 
       <div className="container">
@@ -2154,6 +2002,25 @@ function DesignEditor() {
                 <div className="tools-section">
                   <div className="tools-header">
                     <h3>Tools</h3>
+                    <button 
+                      onClick={() => {
+                        console.log('Manual canvas fix triggered');
+                        forceCanvasRender();
+                        fixCanvasProductSwitching();
+                      }}
+                      style={{
+                        marginLeft: 'auto',
+                        padding: '6px 12px',
+                        background: '#dc2626',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        fontSize: '12px',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Fix Canvas
+                    </button>
                     <div className="tools-grid">
                       <button 
                         className={`tool-btn ${showBoundingBox ? 'active' : ''}`}
@@ -2259,7 +2126,7 @@ function DesignEditor() {
                       value={designScale}
                       onChange={(e) => {
                         const value = parseInt(e.target.value) || 100;
-                        const clampedValue = Math.max(10, Math.min(500, value));
+                        const clampedValue = Math.max(50, Math.min(200, value));
                         handleScaleChange({ target: { value: clampedValue } });
                       }}
                       onKeyDown={(e) => {
@@ -2402,27 +2269,21 @@ function DesignEditor() {
                                 style={{ backgroundColor: colorHex }}
                                 title={color}
                                 onClick={() => {
-                                  // Update canvas to show this color immediately
+                                  // Only add/remove from selectedColors list - don't change canvas background
                                   setProductConfigs(prev => ({
                                     ...prev,
                                     [product.id]: {
                                       ...prev[product.id],
-                                      selectedColor: color, // Set this as the active color
                                       selectedColors: isSelected
                                         ? prev[product.id]?.selectedColors?.filter(c => c !== color) || []
                                         : [...(prev[product.id]?.selectedColors || []), color]
+                                      // Don't set selectedColor here - that's controlled by dropdown
                                     }
                                   }));
-                                  
-                                  // If this is the active product, redraw the canvas
-                                  if (product.id === activeProduct) {
-                                    setTimeout(() => drawCanvas(), 50);
-                                  }
                                 }}
                                 onMouseEnter={() => {
                                   // Temporarily show this color on the garment if it's the active product
                                   if (product.id === activeProduct) {
-                                    setHoveredColor(color);
                                     setProductConfigs(prev => ({
                                       ...prev,
                                       [product.id]: {
@@ -2435,7 +2296,6 @@ function DesignEditor() {
                                 onMouseLeave={() => {
                                   // Remove hover color when mouse leaves - returns to dropdown default color
                                   if (product.id === activeProduct) {
-                                    setHoveredColor(null);
                                     setProductConfigs(prev => ({
                                       ...prev,
                                       [product.id]: {

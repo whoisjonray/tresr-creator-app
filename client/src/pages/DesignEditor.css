@@ -1,87 +1,10 @@
-/* =================================================
-   CSS CUSTOM PROPERTIES - CANVAS SIZING SYSTEM
-   ================================================= */
-:root {
-  /* Base canvas sizes for different breakpoints */
-  --canvas-size-desktop: min(600px, calc(100vw - 80px));
-  --canvas-size-tablet: min(500px, calc(100vw - 60px));
-  --canvas-size-mobile: min(350px, calc(100vw - 40px));
-  --canvas-size-mobile-small: min(320px, calc(100vw - 20px));
-  
-  /* Calculated inner canvas sizes (container minus padding) */
-  --canvas-inner-desktop: calc(var(--canvas-size-desktop) - 40px);
-  --canvas-inner-tablet: calc(var(--canvas-size-tablet) - 30px);
-  --canvas-inner-mobile: calc(var(--canvas-size-mobile) - 30px);
-  --canvas-inner-mobile-small: calc(var(--canvas-size-mobile-small) - 20px);
-}
-
-/* Container queries support for modern browsers */
-@supports (container-type: inline-size) {
-  .canvas-section {
-    container-type: inline-size;
-  }
-  
-  /* Container-based responsive canvas sizing */
-  @container (max-width: 480px) {
-    .canvas-container {
-      --canvas-size: var(--canvas-size-mobile-small);
-    }
-    
-    .product-canvas {
-      width: var(--canvas-inner-mobile-small);
-      height: var(--canvas-inner-mobile-small);
-    }
-  }
-  
-  @container (min-width: 481px) and (max-width: 768px) {
-    .canvas-container {
-      --canvas-size: var(--canvas-size-mobile);
-    }
-    
-    .product-canvas {
-      width: var(--canvas-inner-mobile);
-      height: var(--canvas-inner-mobile);
-    }
-  }
-  
-  @container (min-width: 769px) and (max-width: 1024px) {
-    .canvas-container {
-      --canvas-size: var(--canvas-size-tablet);
-    }
-    
-    .product-canvas {
-      width: var(--canvas-inner-tablet);
-      height: var(--canvas-inner-tablet);
-    }
-  }
-  
-  @container (min-width: 1025px) {
-    .canvas-container {
-      --canvas-size: var(--canvas-size-desktop);
-    }
-    
-    .product-canvas {
-      width: var(--canvas-inner-desktop);
-      height: var(--canvas-inner-desktop);
-    }
-  }
-}
-
-/* Design Editor Page Container */
-.design-editor {
-    padding: 30px 20px 50px 20px; /* Top, horizontal, bottom padding */
-    min-height: 100vh;
-    background: #f8fafc;
-}
-
 /* Header */
 .design-editor-header {
     background: #4a5568;
     color: white;
     padding: 15px 0;
     text-align: center;
-    margin-bottom: 30px;
-    border-radius: 8px;
+    margin-bottom: 20px;
 }
 
 .design-editor-header h1 {
@@ -178,62 +101,6 @@
     margin-bottom: 20px;
 }
 
-/* Mobile Responsive Layout - FIXED */
-@media (max-width: 768px) {
-    .editor-layout {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 15px !important;
-        grid-template-columns: none !important;
-    }
-    
-    .canvas-section {
-        order: 1;
-        width: 100% !important;
-    }
-    
-    .product-config {
-        order: 2;
-        width: 100% !important;
-        max-height: none;
-    }
-    
-    /* CRITICAL: Perfect mobile canvas sizing */
-    .product-canvas {
-        --mobile-canvas-size: min(400px, calc(100vw - 60px));
-        width: var(--mobile-canvas-size) !important;
-        height: var(--mobile-canvas-size) !important;
-        max-width: var(--mobile-canvas-size) !important;
-        min-width: var(--mobile-canvas-size) !important;
-        aspect-ratio: 1 !important;
-        display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        background: white !important;
-        border: 2px solid #e5e5e5 !important;
-        margin: 0 auto !important;
-        object-fit: contain !important;
-        box-sizing: border-box !important;
-    }
-    
-    .canvas-container {
-        --mobile-container-size: calc(var(--mobile-canvas-size, min(400px, calc(100vw - 60px))) + 30px);
-        width: var(--mobile-container-size) !important;
-        height: var(--mobile-container-size) !important;
-        max-width: var(--mobile-container-size) !important;
-        min-height: var(--mobile-container-size) !important;
-        padding: 15px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        background: #f5f5f5 !important;
-        border-radius: 12px !important;
-        margin: 0 auto !important;
-        box-sizing: border-box !important;
-        overflow: visible !important;
-    }
-}
-
 /* Canvas Section */
 .canvas-section {
     background: white;
@@ -245,21 +112,9 @@
 .canvas-container {
     position: relative;
     text-align: center;
-    padding: 20px;
+    padding: 40px 20px;
     background: #f5f5f5;
     border-radius: 12px;
-    /* Ensure proper container sizing */
-    width: 100%;
-    max-width: 640px;
-    margin: 0 auto;
-    /* Maintain aspect ratio container */
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    /* CRITICAL: Force proper dimensions */
-    min-height: 640px;
-    box-sizing: border-box;
-    overflow: visible;
 }
 
 .print-area-label {
@@ -275,60 +130,18 @@
 }
 
 .product-canvas {
-    width: 600px;
-    height: 600px;
-    /* Responsive max width to prevent overflow */
-    max-width: min(600px, calc(100vw - 40px));
-    max-height: min(600px, calc(100vw - 40px));
-    aspect-ratio: 1 !important;
+    width: 400px;
+    height: 400px;
     margin: 0 auto;
     position: relative;
     border-radius: 8px;
-    /* Force white background for visibility */
-    background: white !important;
-    border: 2px solid #e5e5e5 !important;
+    background: transparent;
+    border: none;
     user-select: none;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    /* CRITICAL: Force visibility */
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    z-index: 1;
-    /* Canvas maintains 1:1 aspect ratio across all viewports */
+    /* Canvas is 600x600 but displayed at 400x400 for better quality */
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
-    /* Ensure proper scaling on all devices */
-    object-fit: contain;
-}
-
-/* Desktop canvas - enforce exact 600x600 */
-@media (min-width: 1025px) {
-    .product-canvas {
-        width: 600px !important;
-        height: 600px !important;
-        max-width: 600px !important;
-        min-width: 600px !important;
-        aspect-ratio: 1 !important;
-        display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        background: white !important;
-        border: 2px solid #e5e5e5 !important;
-    }
-    
-    .canvas-container {
-        width: 640px !important;
-        height: 640px !important;
-        max-width: 640px !important;
-        min-width: 640px !important;
-        min-height: 640px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        padding: 20px !important;
-        background: #f5f5f5 !important;
-        box-sizing: border-box !important;
-    }
 }
 
 /* Tools Section */
@@ -337,14 +150,6 @@
     color: white;
     padding: 20px;
     border-top: 1px solid #2d3748;
-    /* Fix z-index and positioning issues */
-    position: relative;
-    z-index: 5;
-    width: 100%;
-    box-sizing: border-box;
-    /* Ensure tools don't overlap canvas on mobile */
-    margin-top: 0;
-    clear: both;
 }
 
 .tools-header {
@@ -388,11 +193,8 @@
 .tool-btn {
     background: #0f172a;
     border: 2px solid #1e293b;
-    /* Increase minimum touch target size to 44px */
-    width: max(48px, 44px);
-    height: max(48px, 44px);
-    min-width: 44px;
-    min-height: 44px;
+    width: 48px;
+    height: 48px;
     border-radius: 6px;
     color: white;
     cursor: pointer;
@@ -403,9 +205,6 @@
     flex-shrink: 0;
     position: relative;
     padding: 0;
-    /* Ensure visible on mobile (no hover-only states) */
-    opacity: 1;
-    visibility: visible;
 }
 
 .tool-btn:hover {
@@ -500,7 +299,7 @@
     position: relative;
 }
 
-/* Add tick marks visual effect */
+/* Add visual tick marks */
 .scale-control::before {
     content: '';
     position: absolute;
@@ -510,9 +309,9 @@
     background: repeating-linear-gradient(
         to right,
         transparent,
-        transparent 19px,
-        #6b7280 19px,
-        #6b7280 21px
+        transparent 9px,
+        #6b7280 9px,
+        #6b7280 11px
     );
     pointer-events: none;
     z-index: 1;
@@ -528,63 +327,22 @@
 
 .scale-slider {
     flex: 1;
-    /* Minimum 44px height for touch accessibility */
-    height: max(44px, 8px);
-    background: transparent;
-    border-radius: 4px;
+    height: 6px;
+    background: #4a5568;
+    border-radius: 3px;
     outline: none;
     -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
     max-width: 300px;
-    /* Ensure touch-friendly on mobile */
-    touch-action: manipulation;
-    cursor: pointer;
-    position: relative;
-}
-
-/* Enhanced track styling for WebKit browsers */
-.scale-slider::-webkit-slider-track {
-    height: 8px;
-    background: linear-gradient(to right, #374151 0%, #4a5568 50%, #6b7280 100%);
-    border-radius: 4px;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
-    border: 1px solid #2d3748;
-}
-
-/* Track styling for Firefox */
-.scale-slider::-moz-range-track {
-    height: 8px;
-    background: linear-gradient(to right, #374151 0%, #4a5568 50%, #6b7280 100%);
-    border-radius: 4px;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
-    border: 1px solid #2d3748;
 }
 
 .scale-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    /* Enhanced thumb design */
-    width: 24px;
-    height: 24px;
-    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
-    border: 3px solid #ffffff;
+    width: 20px;
+    height: 20px;
+    background: #3b82f6;
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 3px 8px rgba(59, 130, 246, 0.4), 0 1px 3px rgba(0, 0, 0, 0.2);
-    margin-top: -9px;
-    transition: all 0.2s ease;
-}
-
-.scale-slider::-webkit-slider-thumb:hover {
-    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.6), 0 2px 6px rgba(0, 0, 0, 0.3);
-    transform: scale(1.1);
-}
-
-.scale-slider::-webkit-slider-thumb:active {
-    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
-    box-shadow: 0 2px 6px rgba(59, 130, 246, 0.8), 0 1px 3px rgba(0, 0, 0, 0.4);
-    transform: scale(0.95);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .scale-value {
@@ -702,11 +460,6 @@
     font-weight: 600;
     color: #374151;
     cursor: pointer;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    padding: 0 5px;
-    max-width: 100%;
 }
 
 .product-name:hover {
@@ -807,11 +560,8 @@
 }
 
 .design-editor-page .color-swatch {
-    /* Ensure minimum 44x44px touch target */
-    width: max(44px, 40px);
-    height: max(44px, 40px);
-    min-width: 44px;
-    min-height: 44px;
+    width: 40px;
+    height: 40px;
     border-radius: 0 !important; /* Square shape - override AdminPanel.css */
     cursor: pointer;
     position: relative;
@@ -820,8 +570,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Better touch interaction */
-    touch-action: manipulation;
 }
 
 .design-editor-page .color-swatch:hover {
@@ -852,14 +600,8 @@
     margin-bottom: 20px;
     width: 100%;
     position: relative;
-    height: 50px;
-    z-index: 15;
-    /* Prevent overlap with canvas */
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(5px);
-    border-radius: 8px;
-    padding: 0 10px;
-    box-sizing: border-box;
+    height: 50px; /* Set fixed height to prevent overlap */
+    z-index: 10; /* Ensure controls stay above canvas */
 }
 
 .view-toggle {
@@ -869,8 +611,10 @@
     padding: 4px;
     gap: 4px;
     width: fit-content;
-    position: relative;
-    z-index: 20;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 15;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
@@ -908,17 +652,16 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
-    position: relative;
-    z-index: 20;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 15;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    white-space: nowrap;
-    flex-shrink: 0;
+    white-space: nowrap; /* Prevent text wrapping */
 }
 
 .replace-image-btn:hover, .add-back-image-btn:hover {
     background: #4338ca;
-    transform: none; /* Prevent any movement on hover */
-    position: relative; /* Ensure static positioning */
 }
 
 .replace-image-btn svg, .add-back-image-btn svg {
@@ -929,12 +672,7 @@
 /* Canvas container positioning */
 .canvas-container {
     position: relative;
-    z-index: 1;
-    /* Ensure canvas container maintains proper size */
-    min-height: 300px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    z-index: 1; /* Lower than controls */
 }
 
 /* Color Swatches for Products */
@@ -951,11 +689,8 @@
 }
 
 .color-swatch {
-    /* Ensure minimum 44x44px touch target */
-    width: max(44px, 32px);
-    height: max(44px, 32px);
-    min-width: 44px;
-    min-height: 44px;
+    width: 32px;
+    height: 32px;
     border-radius: 6px;
     border: 2px solid #e5e7eb;
     cursor: pointer;
@@ -964,8 +699,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Better touch interaction */
-    touch-action: manipulation;
 }
 
 .color-swatch:hover {
@@ -1200,7 +933,7 @@
     border-radius: 4px;
     font-size: 12px;
     cursor: pointer;
-    transition: background-color 0.2s ease, opacity 0.2s ease;
+    transition: all 0.2s ease;
     opacity: 0;
 }
 
@@ -1210,7 +943,6 @@
 
 .product-toggle-btn:hover {
     background: #2563eb;
-    transform: translateX(-50%); /* Maintain position on hover */
 }
 
 .product-card .product-icon {
@@ -1229,11 +961,6 @@
     color: #374151;
     font-size: 0.9rem;
     font-weight: 500;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    padding: 0 5px;
-    max-width: 100%;
 }
 
 .product-card.active .product-name {
@@ -1650,181 +1377,10 @@
   }
 }
 
-/* Mobile phones - MOBILE-FIRST APPROACH */
+/* Mobile phones */
 @media (max-width: 768px) {
   .design-editor {
-    padding: 15px 10px 20px 10px; /* Adequate padding for mobile */
-  }
-  
-  /* Ensure canvas container doesn't overflow */
-  .canvas-container {
-    padding: 10px !important;
-    width: calc(100vw - 40px) !important;
-    max-width: calc(100vw - 40px) !important;
-    box-sizing: border-box !important;
-  }
-  
-  /* Ensure product canvas fits properly */
-  .product-canvas {
-    width: calc(100vw - 80px) !important;
-    height: calc(100vw - 80px) !important;
-    max-width: calc(100vw - 80px) !important;
-    max-height: calc(100vw - 80px) !important;
-    min-width: unset !important;
-    min-height: unset !important;
-  }
-  
-  /* CRITICAL: Prevent tools overlap with canvas */
-  .tools-section {
-    margin-top: 20px !important;
-    padding: 15px !important;
-    background: #1a202c !important;
-    color: white !important;
-    border-top: 1px solid #2d3748 !important;
-    /* Ensure tools section doesn't overlap */
-    position: relative !important;
-    z-index: 5 !important;
-    clear: both !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-  }
-  
-  /* Force horizontal layout for tools */
-  .tools-grid {
-    display: flex !important;
-    flex-direction: row !important;
-    gap: 8px !important;
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    padding: 8px 0 !important;
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  /* Ensure all tool buttons are visible (no hover-only states) */
-  .tool-btn {
-    /* Minimum 44x44px touch targets */
-    width: 44px !important;
-    height: 44px !important;
-    min-width: 44px !important;
-    min-height: 44px !important;
-    flex-shrink: 0 !important;
-    background: #0f172a !important;
-    border: 2px solid #1e293b !important;
-    color: white !important;
-    /* Always visible - no hover states on mobile */
-    opacity: 1 !important;
-    visibility: visible !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    touch-action: manipulation;
-  }
-  
-  /* Scale controls mobile optimization */
-  .scale-control {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 15px;
-    padding: 15px 0;
-    border-top: 1px solid #2d3748;
-    position: relative;
-  }
-
-  /* Mobile tick marks adjustment */
-  .scale-control::before {
-    left: 20px;
-    right: 20px;
-  }
-  
-  /* Aggressive scale slider height enforcement */
-  input[type="range"],
-  input[type="range"].scale-slider,
-  .scale-slider,
-  .scale-control input[type="range"] {
-    /* FORCE 44px height for touch on mobile */
-    height: 44px !important;
-    min-height: 44px !important;
-    width: 100% !important;
-    background: transparent !important;
-    -webkit-appearance: none !important;
-    -moz-appearance: none !important;
-    appearance: none !important;
-    cursor: pointer;
-    touch-action: manipulation;
-    display: block !important;
-    padding: 0 !important;
-    margin: 10px 0 !important;
-  }
-  
-  .scale-slider::-webkit-slider-track {
-    height: 8px;
-    background: linear-gradient(to right, #374151 0%, #4a5568 50%, #6b7280 100%);
-    border-radius: 4px;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
-    border: 1px solid #2d3748;
-  }
-  
-  .scale-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    /* Larger thumb for mobile but with enhanced styling */
-    width: 28px !important;
-    height: 28px !important;
-    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
-    border: 3px solid #ffffff;
-    border-radius: 50%;
-    margin-top: -11px;
-    box-shadow: 0 3px 8px rgba(59, 130, 246, 0.4), 0 1px 3px rgba(0, 0, 0, 0.2);
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .scale-slider::-webkit-slider-thumb:active {
-    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
-    transform: scale(0.95);
-  }
-  
-  .scale-slider::-moz-range-thumb {
-    width: 24px;
-    height: 24px;
-    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
-    border: 3px solid #ffffff;
-    border-radius: 50%;
-    box-shadow: 0 3px 8px rgba(59, 130, 246, 0.4), 0 1px 3px rgba(0, 0, 0, 0.2);
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .scale-slider::-moz-range-thumb:hover {
-    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.6), 0 2px 6px rgba(0, 0, 0, 0.3);
-    transform: scale(1.1);
-  }
-  
-  /* Color swatches mobile optimization */
-  .color-grid {
-    display: grid !important;
-    grid-template-columns: repeat(auto-fill, minmax(44px, 1fr)) !important;
-    gap: 8px !important;
-    max-width: 100% !important;
-  }
-  
-  .color-swatch,
-  .design-editor-page .color-swatch {
-    /* Ensure 44x44px minimum touch targets */
-    width: 44px !important;
-    height: 44px !important;
-    min-width: 44px !important;
-    min-height: 44px !important;
-    border-radius: 6px !important;
-    cursor: pointer;
-    position: relative;
-    transition: all 0.2s ease;
-    border: 2px solid #e5e7eb;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    touch-action: manipulation;
+    padding: 10px;
   }
   
   .editor-header {
@@ -2073,86 +1629,8 @@
   }
 }
 
-/* CRITICAL: Add additional mobile layout fixes */
-@media (max-width: 768px) {
-  /* Ensure canvas and tools never overlap */
-  .canvas-section {
-    position: relative !important;
-    z-index: 1 !important;
-    margin-bottom: 20px !important;
-    clear: both !important;
-  }
-  
-  .tools-section {
-    position: relative !important;
-    z-index: 5 !important;
-    margin-top: 20px !important;
-    clear: both !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-  }
-  
-  /* Ensure proper stacking order */
-  .view-controls {
-    position: relative !important;
-    z-index: 10 !important;
-    margin: 15px 0 !important;
-    clear: both !important;
-  }
-  
-  /* Force proper layout flow */
-  .editor-layout {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 0 !important;
-  }
-  
-  .canvas-section {
-    order: 1;
-    width: 100% !important;
-  }
-  
-  .product-config {
-    order: 2;
-    width: 100% !important;
-    margin-top: 20px !important;
-  }
-  
-  .tools-section {
-    order: 3;
-    width: 100% !important;
-    margin-top: 20px !important;
-  }
-}
-
-/* Small mobile phones - CANVAS PRIORITY */
+/* Small mobile phones */
 @media (max-width: 480px) {
-  /* CRITICAL: Smaller canvas for tiny screens */
-  .product-canvas {
-    --mobile-canvas-size: min(350px, calc(100vw - 40px)) !important;
-    width: var(--mobile-canvas-size) !important;
-    height: var(--mobile-canvas-size) !important;
-    max-width: var(--mobile-canvas-size) !important;
-    min-width: var(--mobile-canvas-size) !important;
-    aspect-ratio: 1 !important;
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    background: white !important;
-    border: 2px solid #e5e5e5 !important;
-  }
-  
-  .canvas-container {
-    --mobile-container-size: calc(var(--mobile-canvas-size, min(350px, calc(100vw - 40px))) + 20px) !important;
-    width: var(--mobile-container-size) !important;
-    height: var(--mobile-container-size) !important;
-    max-width: var(--mobile-container-size) !important;
-    min-height: var(--mobile-container-size) !important;
-    padding: 10px !important;
-    margin: 0 auto !important;
-    box-sizing: border-box !important;
-  }
-
   .design-editor {
     padding: 5px;
   }
@@ -2169,6 +1647,15 @@
     padding: 10px;
   }
   
+  .mockup-container {
+    max-width: 240px;
+  }
+  
+  .mockup-preview {
+    width: 240px;
+    height: 240px;
+  }
+  
   /* Extra small product config */
   .config-header-row {
     grid-template-columns: 1.5fr 60px 100px;
@@ -2177,7 +1664,7 @@
     font-size: 0.8rem;
   }
   
-  /* Color swatches mobile - maintain 44px minimum */
+  /* Color swatches mobile */
   .color-swatches-section {
     padding: 0 10px;
     margin-top: 10px;
@@ -2185,18 +1672,15 @@
   
   .color-grid {
     gap: 6px;
-    grid-template-columns: repeat(auto-fill, minmax(44px, 1fr)) !important;
   }
   
   .color-swatch {
-    width: 44px !important;
-    height: 44px !important;
-    min-width: 44px !important;
-    min-height: 44px !important;
+    width: 28px;
+    height: 28px;
   }
   
   .color-swatch .checkmark {
-    font-size: 16px;
+    font-size: 14px;
   }
   
   .product-item {
@@ -2278,259 +1762,10 @@
   }
 }
 
-/* EMERGENCY CANVAS VISIBILITY OVERRIDE - DESKTOP PRIORITY */
-canvas.product-canvas,
-.product-canvas,
-canvas[class*="product-canvas"] {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  position: relative !important;
-  z-index: 1 !important;
-  pointer-events: auto !important;
-  transform: none !important;
-  /* Desktop gets exact 600px, mobile gets responsive */
-  aspect-ratio: 1 !important;
-  object-fit: contain !important;
-  background-color: white !important;
-  border: 2px solid #e5e5e5 !important;
-  box-sizing: border-box !important;
-}
-
-/* Desktop canvas - exact dimensions */
-@media (min-width: 1025px) {
-  canvas.product-canvas,
-  .product-canvas,
-  canvas[class*="product-canvas"] {
-    width: 600px !important;
-    height: 600px !important;
-    max-width: 600px !important;
-    min-width: 600px !important;
-  }
-}
-
-/* Mobile canvas visibility override - AGGRESSIVE 1:1 RATIO ENFORCEMENT */
-@media (max-width: 768px) {
-  canvas.product-canvas,
-  .product-canvas,
-  canvas[class*="product-canvas"] {
-    --mobile-size: min(400px, calc(100vw - 40px));
-    width: var(--mobile-size) !important;
-    height: var(--mobile-size) !important;
-    max-width: var(--mobile-size) !important;
-    max-height: var(--mobile-size) !important;
-    min-width: var(--mobile-size) !important;
-    min-height: var(--mobile-size) !important;
-    aspect-ratio: 1 / 1 !important;
-    object-fit: contain !important;
-    box-sizing: border-box !important;
-  }
-}
-
-@media (max-width: 480px) {
-  canvas.product-canvas,
-  .product-canvas,
-  canvas[class*="product-canvas"] {
-    --mobile-size: min(350px, calc(100vw - 32px));
-    width: var(--mobile-size) !important;
-    height: var(--mobile-size) !important;
-    max-width: var(--mobile-size) !important;
-    max-height: var(--mobile-size) !important;
-    aspect-ratio: 1 / 1 !important;
-  }
-}
-
 /* High DPI displays */
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .mockup-preview {
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
-  }
-  
-  .product-canvas {
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
-  }
-}
-
-/* =================================================
-   CANVAS ASPECT RATIO TEST BREAKPOINTS
-   ================================================= */
-
-/* Tablet breakpoint - 1024px */
-@media (max-width: 1024px) and (min-width: 769px) {
-  .canvas-container {
-    --canvas-size: var(--canvas-size-tablet);
-  }
-  
-  .product-canvas {
-    width: var(--canvas-inner-tablet);
-    height: var(--canvas-inner-tablet);
-    aspect-ratio: 1 !important;
-  }
-}
-
-/* Mobile breakpoint - 768px */
-@media (max-width: 768px) and (min-width: 481px) {
-  .canvas-container {
-    --canvas-size: var(--canvas-size-mobile);
-  }
-  
-  .product-canvas {
-    width: var(--canvas-inner-mobile);
-    height: var(--canvas-inner-mobile);
-    aspect-ratio: 1 !important;
-  }
-}
-
-/* Small mobile breakpoint - 480px */
-@media (max-width: 480px) {
-  .canvas-container {
-    --canvas-size: var(--canvas-size-mobile-small);
-  }
-  
-  .product-canvas {
-    width: var(--canvas-inner-mobile-small);
-    height: var(--canvas-inner-mobile-small);
-    aspect-ratio: 1 !important;
-  }
-}
-
-/* =================================================
-   CANVAS DEBUGGING UTILITIES (REMOVE IN PRODUCTION)
-   ================================================= */
-
-/* Add visual debugging for canvas aspect ratio */
-.product-canvas[data-debug="true"] {
-  outline: 3px solid red !important;
-  position: relative;
-}
-
-.product-canvas[data-debug="true"]::after {
-  content: attr(width) 'x' attr(height);
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  background: rgba(255, 0, 0, 0.8);
-  color: white;
-  padding: 2px 6px;
-  font-size: 12px;
-  font-family: monospace;
-  pointer-events: none;
-}
-
-.canvas-container[data-debug="true"] {
-  outline: 2px dashed blue !important;
-  position: relative;
-}
-
-.canvas-container[data-debug="true"]::before {
-  content: 'Container: ' attr(data-width) 'x' attr(data-height);
-  position: absolute;
-  top: -25px;
-  left: 0;
-  background: rgba(0, 0, 255, 0.8);
-  color: white;
-  padding: 2px 6px;
-  font-size: 11px;
-  font-family: monospace;
-  z-index: 1000;
-}
-
-/* CRITICAL: Universal Canvas 1:1 Aspect Ratio Fix */
-.product-canvas,
-canvas[class*="canvas"],
-.canvas-element {
-  aspect-ratio: 1 !important;
-  width: 600px !important;
-  height: 600px !important;
-  max-width: min(600px, 90vw) !important;
-  object-fit: contain;
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  margin: 0 auto;
-}
-
-/* Ensure container maintains proper proportions */
-.canvas-container,
-.product-canvas-container,
-.mockup-container {
-  width: 100%;
-  max-width: min(640px, 95vw);
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-/* Fix z-index layering issues globally */
-.view-controls {
-  z-index: 50 !important;
-  position: relative;
-}
-
-.tools-section {
-  z-index: 10 !important;
-  position: relative;
-}
-
-.canvas-section {
-  z-index: 5 !important;
-  position: relative;
-}
-
-/* Responsive breakpoints for better mobile handling */
-@media (max-width: 1024px) {
-  .editor-layout {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 20px;
-  }
-  
-  .product-canvas {
-    max-width: min(500px, 85vw) !important;
-  }
-}
-
-@media (max-width: 480px) {
-  .product-canvas {
-    /* Use the responsive size variables */
-    width: var(--canvas-inner-size) !important;
-    height: var(--canvas-inner-size) !important;
-    aspect-ratio: 1 !important;
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    max-width: 100%;
-    max-height: 100%;
-  }
-  
-  .canvas-container {
-    --canvas-size: min(320px, calc(100vw - 20px));
-    padding: 10px !important;
-    width: var(--canvas-size) !important;
-    height: var(--canvas-size) !important;
-    aspect-ratio: 1;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-  
-  .view-controls {
-    flex-direction: column;
-    gap: 10px;
-    height: auto !important;
-    padding: 15px !important;
-  }
-  
-  .view-toggle,
-  .replace-image-btn {
-    width: 100%;
-    position: relative !important;
-    left: auto !important;
-    right: auto !important;
-    top: auto !important;
   }
 }
