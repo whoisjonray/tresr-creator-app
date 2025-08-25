@@ -622,8 +622,10 @@ const BoundingBoxEditor = () => {
         <div className="canvas-section">
           <canvas
             ref={canvasRef}
+            className="bounding-box-canvas"
             width={CANVAS_WIDTH}
             height={CANVAS_HEIGHT}
+            style={{ display: 'block', margin: '0 auto' }}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}

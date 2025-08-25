@@ -200,12 +200,12 @@
     
     /* CRITICAL: Perfect mobile canvas sizing */
     .product-canvas {
-        --mobile-canvas-size: min(400px, calc(100vw - 60px));
-        width: var(--mobile-canvas-size) !important;
-        height: var(--mobile-canvas-size) !important;
-        max-width: var(--mobile-canvas-size) !important;
-        min-width: var(--mobile-canvas-size) !important;
-        aspect-ratio: 1 !important;
+        --canvas-size: min(500px, calc(100vw - 80px));
+        width: var(--canvas-size) !important;
+        height: var(--canvas-size) !important;
+        min-width: var(--canvas-size) !important;
+        min-height: var(--canvas-size) !important;
+        aspect-ratio: 1 / 1 !important;
         display: block !important;
         visibility: visible !important;
         opacity: 1 !important;
@@ -277,10 +277,9 @@
 .product-canvas {
     width: 600px !important;
     height: 600px !important;
-    /* Ensure desktop stays 600px, mobile gets responsive sizing */
-    max-width: 600px;
-    min-width: 600px;
-    aspect-ratio: 1 !important;
+    min-width: 600px !important;
+    min-height: 600px !important;
+    aspect-ratio: 1 / 1 !important;
     margin: 0 auto;
     position: relative;
     border-radius: 8px;
@@ -2314,7 +2313,7 @@ canvas[class*="product-canvas"] {
   canvas.product-canvas,
   .product-canvas,
   canvas[class*="product-canvas"] {
-    --mobile-size: min(400px, calc(100vw - 40px));
+    --mobile-size: min(400px, calc(100vw - 80px));
     width: var(--mobile-size) !important;
     height: var(--mobile-size) !important;
     max-width: var(--mobile-size) !important;
@@ -2331,12 +2330,16 @@ canvas[class*="product-canvas"] {
   canvas.product-canvas,
   .product-canvas,
   canvas[class*="product-canvas"] {
-    --mobile-size: min(350px, calc(100vw - 32px));
+    --mobile-size: min(350px, calc(100vw - 60px));
     width: var(--mobile-size) !important;
     height: var(--mobile-size) !important;
     max-width: var(--mobile-size) !important;
     max-height: var(--mobile-size) !important;
+    min-width: var(--mobile-size) !important;
+    min-height: var(--mobile-size) !important;
     aspect-ratio: 1 / 1 !important;
+    object-fit: contain !important;
+    box-sizing: border-box !important;
   }
 }
 
@@ -2441,15 +2444,20 @@ canvas[class*="product-canvas"] {
 .product-canvas,
 canvas[class*="canvas"],
 .canvas-element {
-  aspect-ratio: 1 !important;
+  aspect-ratio: 1 / 1 !important;
   width: 600px !important;
   height: 600px !important;
-  max-width: min(600px, 90vw) !important;
+  max-width: 600px !important;
+  min-width: 600px !important;
+  min-height: 600px !important;
   object-fit: contain;
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
   margin: 0 auto;
+  background: white !important;
+  border: 2px solid #e5e5e5 !important;
+  box-sizing: border-box !important;
 }
 
 /* Ensure container maintains proper proportions */

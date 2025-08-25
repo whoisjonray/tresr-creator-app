@@ -7,6 +7,7 @@ import mockupService from '../services/mockupService';
 import canvasImageGenerator from '../services/canvasImageGenerator';
 import { getGarmentImage as getCloudinaryImage } from '../config/garmentImagesCloudinary';
 import './DesignEditor.css'; // v2 - square swatches with 14 colors
+import './DesignEditor-fixed.css'; // Override to ensure square canvas
 import { userStorage } from '../utils/userStorage';
 import { usePrintAreas } from '../contexts/PrintAreasContext';
 import { autoDebugAndFix } from '../utils/debug-current-design';

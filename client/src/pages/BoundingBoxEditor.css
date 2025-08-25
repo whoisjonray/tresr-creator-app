@@ -1,3 +1,30 @@
+/* Bounding Box Editor Canvas Styles */
+.bounding-box-editor canvas,
+.bounding-box-canvas {
+  width: 600px !important;
+  height: 600px !important;
+  aspect-ratio: 1 / 1 !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  background: white !important;
+  border: 2px solid #e5e5e5 !important;
+  margin: 0 auto !important;
+  cursor: crosshair !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 768px) {
+  .bounding-box-editor canvas {
+    --canvas-size: min(500px, calc(100vw - 80px));
+    width: var(--canvas-size) !important;
+    height: var(--canvas-size) !important;
+    min-width: var(--canvas-size) !important;
+    min-height: var(--canvas-size) !important;
+    aspect-ratio: 1 / 1 !important;
+  }
+}
+
 .bounding-box-editor {
   padding: 20px;
   max-width: 1400px;
@@ -38,15 +65,22 @@
 .canvas-section canvas {
   border: 2px solid #ddd;
   border-radius: 8px;
-  background: white;
+  background: white !important;
   display: block !important;
   width: 600px !important;
   height: 600px !important;
-  max-width: none;
-  visibility: visible;
-  opacity: 1;
+  max-width: 600px !important;
+  max-height: 600px !important;
+  min-width: 600px !important;
+  min-height: 600px !important;
+  visibility: visible !important;
+  opacity: 1 !important;
   position: relative;
   z-index: 1;
+  aspect-ratio: 1 / 1 !important;
+  object-fit: contain;
+  box-sizing: border-box;
+  cursor: crosshair;
 }
 
 .canvas-info {
@@ -345,4 +379,68 @@
   overflow-x: auto;
   max-height: 400px;
   overflow-y: auto;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .editor-container {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .canvas-section {
+    order: 1;
+    align-self: center;
+  }
+  
+  .canvas-section canvas {
+    --canvas-size: min(500px, calc(100vw - 80px));
+    width: var(--canvas-size) !important;
+    height: var(--canvas-size) !important;
+    min-width: var(--canvas-size) !important;
+    min-height: var(--canvas-size) !important;
+    aspect-ratio: 1 / 1 !important;
+  }
+  
+  .controls-section {
+    order: 2;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .action-buttons button {
+    min-width: auto;
+  }
+  
+  .control-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .side-buttons {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .bounding-box-editor {
+    padding: 15px;
+  }
+  
+  .canvas-section canvas {
+    --canvas-size: min(350px, calc(100vw - 40px));
+    width: var(--canvas-size) !important;
+    height: var(--canvas-size) !important;
+    min-width: var(--canvas-size) !important;
+    min-height: var(--canvas-size) !important;
+    aspect-ratio: 1 / 1 !important;
+  }
+  
+  .garment-selector,
+  .side-selector,
+  .numeric-controls,
+  .dtg-controls {
+    padding: 15px;
+  }
 }

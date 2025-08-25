@@ -1,0 +1,104 @@
+/* =================================================
+   FIXED CANVAS SIZING - ENFORCED SQUARE ASPECT RATIO
+   ================================================= */
+
+/* Override all existing canvas rules to ensure square */
+.product-canvas {
+  /* Desktop: Fixed 600x600 square */
+  width: 600px !important;
+  height: 600px !important;
+  min-width: 600px !important;
+  min-height: 600px !important;
+  max-width: 600px !important;
+  max-height: 600px !important;
+  aspect-ratio: 1 / 1 !important;
+  
+  /* Layout and visibility */
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  margin: 0 auto !important;
+  position: relative !important;
+  
+  /* Styling */
+  background: white !important;
+  border: 2px solid #e5e5e5 !important;
+  border-radius: 8px !important;
+  box-sizing: border-box !important;
+  
+  /* Image rendering */
+  object-fit: contain !important;
+  image-rendering: -webkit-optimize-contrast !important;
+  image-rendering: crisp-edges !important;
+}
+
+/* Tablet - Responsive but square */
+@media (max-width: 768px) {
+  .product-canvas {
+    --canvas-size: min(500px, calc(100vw - 60px)) !important;
+    width: var(--canvas-size) !important;
+    height: var(--canvas-size) !important;
+    min-width: var(--canvas-size) !important;
+    min-height: var(--canvas-size) !important;
+    max-width: var(--canvas-size) !important;
+    max-height: var(--canvas-size) !important;
+  }
+}
+
+/* Mobile - Smaller but still square */
+@media (max-width: 480px) {
+  .product-canvas {
+    --canvas-size: min(350px, calc(100vw - 40px)) !important;
+    width: var(--canvas-size) !important;
+    height: var(--canvas-size) !important;
+    min-width: var(--canvas-size) !important;
+    min-height: var(--canvas-size) !important;
+    max-width: var(--canvas-size) !important;
+    max-height: var(--canvas-size) !important;
+  }
+}
+
+/* Small mobile - Minimum viable square */
+@media (max-width: 375px) {
+  .product-canvas {
+    --canvas-size: min(320px, calc(100vw - 30px)) !important;
+    width: var(--canvas-size) !important;
+    height: var(--canvas-size) !important;
+    min-width: var(--canvas-size) !important;
+    min-height: var(--canvas-size) !important;
+    max-width: var(--canvas-size) !important;
+    max-height: var(--canvas-size) !important;
+  }
+}
+
+/* Container should adapt to canvas size */
+.canvas-container {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 20px !important;
+  background: #f5f5f5 !important;
+  border-radius: 12px !important;
+  margin: 0 auto 30px !important;
+  width: fit-content !important;
+  min-width: fit-content !important;
+}
+
+/* Ensure canvas section doesn't constrain */
+.canvas-section {
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+}
+
+/* Override any container query rules */
+@supports (container-type: inline-size) {
+  @container (max-width: 9999px) {
+    .product-canvas {
+      /* Force inheritance from media queries above */
+      width: inherit !important;
+      height: inherit !important;
+    }
+  }
+}
