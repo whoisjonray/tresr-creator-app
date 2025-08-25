@@ -32,13 +32,14 @@
     width: 100% !important;
     padding: 20px 15px !important;
   }
-  /* CRITICAL: Mobile canvas sizing with ENFORCED 1:1 aspect ratio - GARMENT ALWAYS VISIBLE */
+  /* CRITICAL: Mobile canvas sizing with ENFORCED 1:1 aspect ratio - FIXED CUTOFF ISSUES */
   .product-canvas {
-    /* Responsive size that ensures garment visibility and no overflow */
-    --canvas-size: min(600px, calc(100vw - 40px));
+    /* Responsive size that ensures garment visibility and prevents right-side cutoff */
+    --canvas-size: min(380px, calc(100vw - 60px));
     width: var(--canvas-size) !important;
     height: var(--canvas-size) !important;
-    /* No min-width to allow responsive sizing */
+    min-width: var(--canvas-size) !important;
+    min-height: var(--canvas-size) !important;
     max-width: var(--canvas-size) !important;
     max-height: var(--canvas-size) !important;
     /* Perfect 1:1 aspect ratio */
@@ -69,17 +70,17 @@
   }
   
   .canvas-container {
-    /* CRITICAL: Container that ensures garment visibility */
-    --canvas-size: min(380px, calc(100vw - 40px));
+    /* CRITICAL: Container that ensures garment visibility and prevents cutoff */
+    --canvas-size: min(380px, calc(100vw - 60px));
     --container-size: calc(var(--canvas-size) + 30px);
     
     padding: 15px !important;
     background: #f5f5f5 !important;
     margin: 0 auto !important;
-    /* Perfect proportions with adequate space */
+    /* Perfect proportions with adequate space - prevent viewport overflow */
     width: var(--container-size) !important;
     height: var(--container-size) !important;
-    max-width: var(--container-size) !important;
+    max-width: calc(100vw - 30px) !important; /* Critical: prevent container from exceeding viewport */
     max-height: var(--container-size) !important;
     aspect-ratio: 1 / 1 !important;
     display: flex !important;
@@ -306,7 +307,7 @@
     object-fit: contain;
   }
 
-  /* Tools Section - CRITICAL MOBILE FIXES */
+  /* Tools Section - CRITICAL MOBILE FIXES - ENHANCED HORIZONTAL SCROLLING */
   .mobile-tools-section,
   .tools-section {
     background: #1a202c !important;
@@ -320,7 +321,7 @@
     z-index: 5 !important;
     width: 100% !important;
     box-sizing: border-box !important;
-    padding: 15px !important;
+    padding: 15px 10px !important; /* Reduced horizontal padding for more space */
     /* Ensure tools don't float over canvas */
     clear: both !important;
     overflow: visible !important;
@@ -354,53 +355,106 @@
     background: #1a202c;
   }
   
-  /* Force tools to be horizontal on mobile - ENHANCED */
+  /* Force tools to be horizontal on mobile - ENHANCED SCROLLING FIXED */
   .tools-content .tools-grid,
   .mobile-tools-section .tools-grid,
   .tools-section .tools-grid {
     display: flex !important;
     flex-direction: row !important;
-    gap: 8px !important;
+    gap: 10px !important;
     flex-wrap: nowrap !important;
     overflow-x: auto !important;
-    padding: 10px 0 !important;
-    -webkit-overflow-scrolling: touch;
-    /* Hide scrollbar but keep functionality */
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    overflow-y: visible !important;
+    padding: 15px 5px !important;
+    margin: 0 -5px !important; /* Extend beyond container to use full width */
+    -webkit-overflow-scrolling: touch !important;
+    /* Show scrollbar on mobile for better UX */
+    scrollbar-width: thin !important;
+    scrollbar-color: #4a5568 #1a202c !important;
+    /* Ensure all tools are accessible */
+    min-width: 100% !important;
+    width: auto !important;
   }
   
   .tools-content .tools-grid::-webkit-scrollbar,
   .mobile-tools-section .tools-grid::-webkit-scrollbar,
   .tools-section .tools-grid::-webkit-scrollbar {
-    display: none;
+    height: 8px;
+    background: #1a202c;
+  }
+  
+  .tools-content .tools-grid::-webkit-scrollbar-track,
+  .mobile-tools-section .tools-grid::-webkit-scrollbar-track,
+  .tools-section .tools-grid::-webkit-scrollbar-track {
+    background: #2d3748;
+    border-radius: 4px;
+  }
+  
+  .tools-content .tools-grid::-webkit-scrollbar-thumb,
+  .mobile-tools-section .tools-grid::-webkit-scrollbar-thumb,
+  .tools-section .tools-grid::-webkit-scrollbar-thumb {
+    background: #4a5568;
+    border-radius: 4px;
+  }
+  
+  .tools-content .tools-grid::-webkit-scrollbar-thumb:hover,
+  .mobile-tools-section .tools-grid::-webkit-scrollbar-thumb:hover,
+  .tools-section .tools-grid::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
   }
   
   .tools-content .tool-btn,
   .mobile-tools-section .tool-btn,
   .tools-section .tool-btn {
-    flex-shrink: 0;
-    /* WCAG compliant 44x44px minimum touch targets */
-    width: 44px !important;
-    height: 44px !important;
-    min-width: 44px !important;
-    min-height: 44px !important;
+    flex-shrink: 0 !important;
+    /* WCAG compliant 48x48px minimum touch targets for better accessibility */
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    min-height: 48px !important;
+    max-width: 48px !important;
+    max-height: 48px !important;
     background: #0f172a !important;
     border: 2px solid #1e293b !important;
     color: white !important;
-    border-radius: 6px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    border-radius: 8px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     cursor: pointer;
     transition: all 0.2s ease;
     /* Always visible - no hover-only states */
     opacity: 1 !important;
     visibility: visible !important;
     touch-action: manipulation;
+    /* Prevent text selection on touch */
+    user-select: none;
+    -webkit-user-select: none;
+    /* Enhanced contrast for visibility */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  .tools-content .tool-btn:active,
+  .mobile-tools-section .tool-btn:active,
+  .tools-section .tool-btn:active {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+    transform: scale(0.95) !important;
+  }
+  
+  /* Fix Canvas button specifically - ensure it's always visible */
+  .tools-content .tool-btn[title*="Fix"],
+  .tools-content .tool-btn[title*="Canvas"],
+  .mobile-tools-section .tool-btn[title*="Fix"],
+  .tools-section .tool-btn[title*="Fix"] {
+    background: #dc2626 !important;
+    border-color: #ef4444 !important;
+    font-weight: bold !important;
   }
 
-  /* Scale Slider - ACCESSIBILITY ENHANCED */
+  /* Scale Slider - ACCESSIBILITY ENHANCED - FIXED ALIGNMENT */
   .mobile-scale-control,
   .scale-control {
     padding: 16px !important;
@@ -408,6 +462,11 @@
     margin-top: 15px !important;
     background: #1a202c !important;
     color: white !important;
+    /* Ensure proper layout on mobile */
+    display: block !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
   }
   
   /* Hide the dotted line overlay on mobile to prevent overlap with percentage box */
@@ -415,12 +474,32 @@
     display: none !important;
   }
   
-  /* Ensure proper spacing for scale value */
+  /* FIXED: Ensure proper spacing and alignment for scale value and percentage box */
   .scale-value,
   .scale-input {
     margin-left: 10px !important;
-    z-index: 10 !important;
+    z-index: 15 !important;
     position: relative !important;
+    background: #1a202c !important;
+    color: white !important;
+    border: 1px solid #4a5568 !important;
+    border-radius: 4px !important;
+    padding: 4px 8px !important;
+    font-size: 14px !important;
+    text-align: center !important;
+    min-width: 60px !important;
+    display: inline-block !important;
+  }
+  
+  /* Ensure scale label is properly aligned */
+  .scale-label {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 12px !important;
+    font-size: 14px !important;
+    color: #e2e8f0 !important;
+    font-weight: 500 !important;
   }
 
   .scale-label {
@@ -876,11 +955,11 @@
     display: block;
   }
 }
-/* CRITICAL: Breakpoint-specific canvas fixes - GARMENT VISIBILITY PRIORITY */
+/* CRITICAL: Breakpoint-specific canvas fixes - PREVENT CUTOFF ON RIGHT SIDE */
 @media (max-width: 480px) {
   .product-canvas {
-    /* Slightly larger to ensure garment visibility */
-    --canvas-size: min(360px, calc(100vw - 30px)) !important;
+    /* Carefully calculated to prevent right-side cutoff */
+    --canvas-size: min(340px, calc(100vw - 50px)) !important;
     width: var(--canvas-size) !important;
     height: var(--canvas-size) !important;
     max-width: var(--canvas-size) !important;
@@ -889,12 +968,26 @@
     border: 2px solid #e5e5e5 !important;
   }
   .canvas-container {
-    --canvas-size: min(360px, calc(100vw - 30px)) !important;
+    --canvas-size: min(340px, calc(100vw - 50px)) !important;
     --container-size: calc(var(--canvas-size) + 20px) !important;
     width: var(--container-size) !important;
     height: var(--container-size) !important;
-    max-width: var(--container-size) !important;
+    max-width: calc(100vw - 20px) !important; /* Critical: prevent viewport overflow */
     padding: 10px !important;
+  }
+  
+  /* Ensure tools section doesn't interfere with canvas sizing */
+  .tools-section,
+  .mobile-tools-section {
+    margin-top: 25px !important;
+    padding: 12px 8px !important;
+  }
+  
+  .tools-content .tools-grid,
+  .mobile-tools-section .tools-grid,
+  .tools-section .tools-grid {
+    padding: 12px 3px !important;
+    gap: 8px !important;
   }
 }
 
@@ -921,8 +1014,8 @@
 
 @media (max-width: 375px) {
   .product-canvas {
-    /* iPhone SE sized - still ensure garment shows */
-    --canvas-size: min(340px, calc(100vw - 26px)) !important;
+    /* iPhone SE and similar - prevent cutoff while maintaining visibility */
+    --canvas-size: min(300px, calc(100vw - 45px)) !important;
     width: var(--canvas-size) !important;
     height: var(--canvas-size) !important;
     max-width: var(--canvas-size) !important;
@@ -931,20 +1024,25 @@
     border: 2px solid #e5e5e5 !important;
   }
   .canvas-container {
-    --canvas-size: min(340px, calc(100vw - 26px)) !important;
+    --canvas-size: min(300px, calc(100vw - 45px)) !important;
     --container-size: calc(var(--canvas-size) + 16px) !important;
     width: var(--container-size) !important;
     height: var(--container-size) !important;
-    max-width: var(--container-size) !important;
+    max-width: calc(100vw - 15px) !important; /* Critical: prevent viewport overflow */
     padding: 8px !important;
+  }
+  
+  .tools-section,
+  .mobile-tools-section {
+    padding: 10px 6px !important;
   }
 }
 
-/* Extra small screens - absolute minimum */
+/* Extra small screens - absolute minimum while preventing cutoff */
 @media (max-width: 320px) {
   .product-canvas {
-    /* Absolute minimum while keeping garment visible */
-    --canvas-size: min(290px, calc(100vw - 20px)) !important;
+    /* Absolute minimum while keeping garment visible and preventing cutoff */
+    --canvas-size: min(270px, calc(100vw - 40px)) !important;
     width: var(--canvas-size) !important;
     height: var(--canvas-size) !important;
     max-width: var(--canvas-size) !important;
@@ -953,11 +1051,27 @@
     border: 1px solid #e5e5e5 !important;
   }
   .canvas-container {
-    --canvas-size: min(290px, calc(100vw - 20px)) !important;
+    --canvas-size: min(270px, calc(100vw - 40px)) !important;
     --container-size: calc(var(--canvas-size) + 14px) !important;
     width: var(--container-size) !important;
     height: var(--container-size) !important;
-    max-width: var(--container-size) !important;
+    max-width: calc(100vw - 10px) !important; /* Critical: prevent viewport overflow */
     padding: 7px !important;
+  }
+  
+  .tools-section,
+  .mobile-tools-section {
+    padding: 8px 4px !important;
+  }
+  
+  .tools-content .tool-btn,
+  .mobile-tools-section .tool-btn,
+  .tools-section .tool-btn {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    max-width: 44px !important;
+    max-height: 44px !important;
   }
 }

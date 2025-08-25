@@ -45,10 +45,10 @@
   }
 }
 
-/* Mobile - Smaller but still square */
+/* Mobile - Smaller but still square - FIXED OVERFLOW */
 @media (max-width: 480px) {
   .product-canvas {
-    --canvas-size: min(350px, calc(100vw - 40px)) !important;
+    --canvas-size: min(350px, calc(100vw - 50px)) !important;
     width: var(--canvas-size) !important;
     height: var(--canvas-size) !important;
     min-width: var(--canvas-size) !important;
@@ -56,12 +56,21 @@
     max-width: var(--canvas-size) !important;
     max-height: var(--canvas-size) !important;
   }
+  
+  /* Fix container to prevent canvas cutoff */
+  .canvas-container {
+    padding: 15px !important;
+    margin: 0 auto !important;
+    width: calc(var(--canvas-size) + 30px) !important;
+    max-width: calc(100vw - 20px) !important;
+    overflow: visible !important;
+  }
 }
 
-/* Small mobile - Minimum viable square */
+/* Small mobile - Minimum viable square - PREVENT CUTOFF */
 @media (max-width: 375px) {
   .product-canvas {
-    --canvas-size: min(320px, calc(100vw - 30px)) !important;
+    --canvas-size: min(320px, calc(100vw - 35px)) !important;
     width: var(--canvas-size) !important;
     height: var(--canvas-size) !important;
     min-width: var(--canvas-size) !important;
@@ -69,9 +78,17 @@
     max-width: var(--canvas-size) !important;
     max-height: var(--canvas-size) !important;
   }
+  
+  .canvas-container {
+    padding: 12px !important;
+    margin: 0 auto !important;
+    width: calc(var(--canvas-size) + 24px) !important;
+    max-width: calc(100vw - 15px) !important;
+    overflow: visible !important;
+  }
 }
 
-/* Container should adapt to canvas size */
+/* Container should adapt to canvas size - PREVENT MOBILE CUTOFF */
 .canvas-container {
   display: flex !important;
   align-items: center !important;
@@ -82,6 +99,9 @@
   margin: 0 auto 30px !important;
   width: fit-content !important;
   min-width: fit-content !important;
+  max-width: calc(100vw - 20px) !important;
+  overflow: visible !important;
+  box-sizing: border-box !important;
 }
 
 /* Ensure canvas section doesn't constrain */

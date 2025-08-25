@@ -1,0 +1,141 @@
+/* =================================================
+   MOBILE FIXES FOR CANVAS AND TOOLS
+   ================================================= */
+
+/* Fix tools section scrolling on mobile */
+@media (max-width: 768px) {
+  /* Tools container */
+  .tools-section {
+    width: 100% !important;
+    padding: 15px 10px !important;
+    overflow: visible !important;
+  }
+  
+  /* Tools grid - make it properly scrollable */
+  .tools-section .tools-grid,
+  .tools-content .tools-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 10px !important;
+    padding: 10px 5px 15px 5px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    flex-wrap: nowrap !important;
+    -webkit-overflow-scrolling: touch !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  /* Tool buttons */
+  .tools-section button,
+  .tools-section .tool-btn,
+  .tool-btn {
+    flex: 0 0 auto !important;
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    min-height: 48px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  /* Fix Canvas button */
+  button:has-text("Fix Canvas"),
+  button[onclick*="fixCanvas"],
+  .fix-canvas-btn {
+    background: #dc2626 !important;
+    color: white !important;
+    border: 2px solid #991b1b !important;
+    min-width: auto !important;
+    width: auto !important;
+    padding: 0 12px !important;
+    white-space: nowrap !important;
+    font-size: 14px !important;
+    flex: 0 0 auto !important;
+  }
+  
+  /* Canvas container fixes */
+  .canvas-container {
+    max-width: calc(100vw - 20px) !important;
+    margin: 0 auto !important;
+    overflow: visible !important;
+  }
+  
+  /* Product canvas mobile sizing */
+  .product-canvas {
+    max-width: calc(100vw - 40px) !important;
+  }
+  
+  /* Scale control alignment */
+  .scale-control {
+    width: 100% !important;
+    padding: 16px !important;
+    box-sizing: border-box !important;
+  }
+  
+  .scale-control .scale-slider {
+    width: calc(100% - 80px) !important;
+    margin-right: 10px !important;
+  }
+  
+  .scale-control .scale-input,
+  .scale-control .scale-value {
+    width: 60px !important;
+    min-width: 60px !important;
+    text-align: center !important;
+  }
+}
+
+/* Small mobile specific fixes */
+@media (max-width: 480px) {
+  .product-canvas {
+    --mobile-size: min(350px, calc(100vw - 50px)) !important;
+    width: var(--mobile-size) !important;
+    height: var(--mobile-size) !important;
+    max-width: var(--mobile-size) !important;
+  }
+  
+  .canvas-container {
+    padding: 15px !important;
+    width: calc(100vw - 20px) !important;
+    max-width: calc(100vw - 20px) !important;
+  }
+}
+
+/* iPhone SE and smaller */
+@media (max-width: 375px) {
+  .product-canvas {
+    --mobile-size: min(320px, calc(100vw - 45px)) !important;
+    width: var(--mobile-size) !important;
+    height: var(--mobile-size) !important;
+    max-width: var(--mobile-size) !important;
+  }
+  
+  .canvas-container {
+    padding: 12px !important;
+    width: calc(100vw - 15px) !important;
+    max-width: calc(100vw - 15px) !important;
+  }
+}
+
+/* Tools section scrollbar styling */
+.tools-section .tools-grid::-webkit-scrollbar {
+  height: 6px !important;
+}
+
+.tools-section .tools-grid::-webkit-scrollbar-track {
+  background: #1a202c !important;
+  border-radius: 3px !important;
+}
+
+.tools-section .tools-grid::-webkit-scrollbar-thumb {
+  background: #4a5568 !important;
+  border-radius: 3px !important;
+}
+
+.tools-section .tools-grid::-webkit-scrollbar-thumb:hover {
+  background: #6b7280 !important;
+}
