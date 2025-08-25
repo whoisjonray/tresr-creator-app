@@ -13,6 +13,7 @@ import { autoDebugAndFix } from '../utils/debug-current-design';
 import { completeCanvasFix } from '../utils/complete-canvas-fix';
 import { forceCanvasRender } from '../utils/force-canvas-render';
 import { fixCanvasProductSwitching, fixAlignmentButtons, watchProductChanges } from '../utils/fix-canvas-product-switching';
+import { useResponsiveCanvas } from '../hooks/useResponsiveCanvas';
 
 // Get API base URL from environment
 const getApiBaseURL = () => {
@@ -212,6 +213,9 @@ function DesignEditor() {
   const params = useParams();
   const canvasRef = useRef(null);
   const garmentImage = useRef(new Image());
+  
+  // Get responsive canvas dimensions (ChatGPT solution)
+  const { displayDimensions, internalDimensions, scale, containerDimensions } = useResponsiveCanvas();
   
   // Get print areas from context
   const { getPrintArea, loading: printAreasLoading, error: printAreasError } = usePrintAreas();
@@ -1823,7 +1827,15 @@ function DesignEditor() {
             {/* Editor Layout */}
             <div className="editor-layout">
               {/* Canvas Section */}
-              <div className="canvas-section">
+              <div style={{
+                background: 'white',
+                borderRadius: '8px',
+                overflow: 'visible',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                width: 'fit-content',
+                margin: '0 auto',
+                padding: '20px'
+              }}>
                 {/* View Controls */}
                 {activeProduct && productConfigs[activeProduct]?.enabled && 
                  !['art-sqsm', 'art-sqm', 'art-lg', 'nft'].includes(activeProduct) && (
@@ -1956,7 +1968,19 @@ function DesignEditor() {
                     )}
                   </div>
                 )}
-                <div className="canvas-container">
+                <div style={{
+                  width: `${containerDimensions.width}px`,
+                  height: `${containerDimensions.height}px`,
+                  padding: '20px',
+                  background: '#f5f5f5',
+                  borderRadius: '12px',
+                  position: 'relative',
+                  textAlign: 'center',
+                  margin: '0 auto',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}>
                   {isGeneratingMockup && (
                     <div style={{
                       position: 'absolute',
@@ -1974,16 +1998,25 @@ function DesignEditor() {
                   )}
                   <canvas
                     ref={canvasRef}
-                    width={600}
-                    height={600}
-                    className="product-canvas"
+                    width={internalDimensions.width}
+                    height={internalDimensions.height}
+                    style={{
+                      width: `${displayDimensions.width}px`,
+                      height: `${displayDimensions.height}px`,
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '8px',
+                      backgroundColor: '#f5f5f5',
+                      display: 'block',
+                      margin: '0 auto',
+                      cursor: 'move'
+                    }}
                     onMouseDown={handleCanvasMouseDown}
                     onMouseMove={handleCanvasMouseMove}
                     onMouseUp={handleCanvasMouseUp}
                     onMouseEnter={() => {}}
                     onMouseLeave={() => {
                       handleCanvasMouseUp();
-                      if (canvasRef.current) canvasRef.current.style.cursor = 'default';
+                      if (canvasRef.current) canvasRef.current.style.cursor = 'move';
                     }}
                   />
                 </div>
