@@ -7,9 +7,6 @@ import mockupService from '../services/mockupService';
 import canvasImageGenerator from '../services/canvasImageGenerator';
 import { getGarmentImage as getCloudinaryImage } from '../config/garmentImagesCloudinary';
 import './DesignEditor.css'; // v2 - square swatches with 14 colors
-import './DesignEditor-fixed.css'; // Override to ensure square canvas
-import './mobile-fixes.css'; // Mobile responsiveness fixes
-import './canvas-square-fix.css'; // CRITICAL: Force canvas to be square
 import { userStorage } from '../utils/userStorage';
 import { usePrintAreas } from '../contexts/PrintAreasContext';
 import { autoDebugAndFix } from '../utils/debug-current-design';
@@ -617,12 +614,12 @@ function DesignEditor() {
     if (designImage && config) {
       ctx.save();
       
-      // No scaling needed - canvas is 600x600
-      const scale = 1; // Canvas is already 600x600
-      const adjustedPrintAreaX = printAreaX;
-      const adjustedPrintAreaY = printAreaY;
-      const adjustedPrintAreaWidth = printAreaWidth;
-      const adjustedPrintAreaHeight = printAreaHeight;
+      // Scale print area coordinates from 600x600 to our 400x400 canvas
+      const scale = canvas.width / 600; // 400/600 = 0.667
+      const adjustedPrintAreaX = printAreaX * scale;
+      const adjustedPrintAreaY = printAreaY * scale;
+      const adjustedPrintAreaWidth = printAreaWidth * scale;
+      const adjustedPrintAreaHeight = printAreaHeight * scale;
       
       // Clip to print area
       ctx.beginPath();

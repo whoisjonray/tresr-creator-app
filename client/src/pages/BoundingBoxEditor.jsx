@@ -160,7 +160,7 @@ const BoundingBoxEditor = () => {
           setSelectedGarment(templates[0].id);
         }
         
-        // console.log('Loaded product templates from API:', templates);
+        console.log('Loaded product templates from API:', templates);
       }
     } catch (error) {
       console.error('Error loading templates:', error);
@@ -207,14 +207,14 @@ const BoundingBoxEditor = () => {
             };
           }
           setPrintAreas(converted);
-          // console.log('Converted old print areas to new structure');
+          console.log('Converted old print areas to new structure');
         } else {
           setPrintAreas(areas);
-          // console.log('Loaded print areas from database');
+          console.log('Loaded print areas from database');
         }
       }
     } catch (error) {
-      // console.log('Using local/default print areas');
+      console.log('Using local/default print areas');
     }
   };
 
@@ -259,7 +259,7 @@ const BoundingBoxEditor = () => {
       } else {
         // No image available - clear the garment image
         setGarmentImage(null);
-        // console.log(`No image available for ${selectedGarment} ${selectedSide}`);
+        console.log(`No image available for ${selectedGarment} ${selectedSide}`);
       }
     } catch (error) {
       console.error('Failed to load garment image:', error);
@@ -269,33 +269,14 @@ const BoundingBoxEditor = () => {
 
   const drawCanvas = () => {
     const canvas = canvasRef.current;
-    if (!canvas) {
-      console.error('Canvas ref is null, cannot draw');
-      return;
-    }
+    if (!canvas) return;
     
     const ctx = canvas.getContext('2d');
-    if (!ctx) {
-      console.error('Canvas context is null, cannot draw');
-      return;
-    }
-    
-    // Remove console.log that might be causing issues
-    // console.log('Drawing canvas with area:', area);
-    
-    // Clear canvas completely
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
     // Draw garment image or placeholder
     if (garmentImage) {
-      try {
-        ctx.drawImage(garmentImage, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-      } catch (error) {
-        console.error('Error drawing garment image:', error);
-        // Fall back to placeholder
-        ctx.fillStyle = '#f0f0f0';
-        ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-      }
+      ctx.drawImage(garmentImage, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     } else {
       // Draw placeholder with text
       ctx.fillStyle = '#f0f0f0';
@@ -315,74 +296,50 @@ const BoundingBoxEditor = () => {
     // Draw bounding box
     const area = printAreas[selectedGarment]?.[selectedSide];
     if (area) {
-      try {
-        // Draw semi-transparent fill
-        ctx.fillStyle = 'rgba(0, 123, 255, 0.2)';
-        ctx.fillRect(area.x, area.y, area.width, area.height);
+      // Draw semi-transparent fill
+      ctx.fillStyle = 'rgba(0, 123, 255, 0.1)';
+      ctx.fillRect(area.x, area.y, area.width, area.height);
 
-        // Draw border
-        ctx.strokeStyle = '#007bff';
-        ctx.lineWidth = 3;
-        ctx.strokeRect(area.x, area.y, area.width, area.height);
+      // Draw border
+      ctx.strokeStyle = '#007bff';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(area.x, area.y, area.width, area.height);
 
-        // Draw resize handles with better visibility
-        const handleSize = 12; // Increased for better touch interaction
-        ctx.fillStyle = '#007bff';
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 2;
-        
-        const drawHandle = (x, y) => {
-          ctx.fillRect(x - handleSize/2, y - handleSize/2, handleSize, handleSize);
-          ctx.strokeRect(x - handleSize/2, y - handleSize/2, handleSize, handleSize);
-        };
-        
-        // Corners
-        drawHandle(area.x, area.y);
-        drawHandle(area.x + area.width, area.y);
-        drawHandle(area.x, area.y + area.height);
-        drawHandle(area.x + area.width, area.y + area.height);
-        
-        // Edges
-        drawHandle(area.x + area.width/2, area.y);
-        drawHandle(area.x + area.width/2, area.y + area.height);
-        drawHandle(area.x, area.y + area.height/2);
-        drawHandle(area.x + area.width, area.y + area.height/2);
+      // Draw resize handles
+      const handleSize = 8;
+      ctx.fillStyle = '#007bff';
+      
+      // Corners
+      ctx.fillRect(area.x - handleSize/2, area.y - handleSize/2, handleSize, handleSize);
+      ctx.fillRect(area.x + area.width - handleSize/2, area.y - handleSize/2, handleSize, handleSize);
+      ctx.fillRect(area.x - handleSize/2, area.y + area.height - handleSize/2, handleSize, handleSize);
+      ctx.fillRect(area.x + area.width - handleSize/2, area.y + area.height - handleSize/2, handleSize, handleSize);
+      
+      // Edges
+      ctx.fillRect(area.x + area.width/2 - handleSize/2, area.y - handleSize/2, handleSize, handleSize);
+      ctx.fillRect(area.x + area.width/2 - handleSize/2, area.y + area.height - handleSize/2, handleSize, handleSize);
+      ctx.fillRect(area.x - handleSize/2, area.y + area.height/2 - handleSize/2, handleSize, handleSize);
+      ctx.fillRect(area.x + area.width - handleSize/2, area.y + area.height/2 - handleSize/2, handleSize, handleSize);
 
-        // Draw center crosshair with better visibility
-        ctx.strokeStyle = '#ff0000';
-        ctx.lineWidth = 2;
-        const centerX = area.x + area.width / 2;
-        const centerY = area.y + area.height / 2;
-        
-        ctx.beginPath();
-        ctx.moveTo(centerX - 15, centerY);
-        ctx.lineTo(centerX + 15, centerY);
-        ctx.moveTo(centerX, centerY - 15);
-        ctx.lineTo(centerX, centerY + 15);
-        ctx.stroke();
+      // Draw center crosshair
+      ctx.strokeStyle = '#ff0000';
+      ctx.lineWidth = 1;
+      const centerX = area.x + area.width / 2;
+      const centerY = area.y + area.height / 2;
+      
+      ctx.beginPath();
+      ctx.moveTo(centerX - 10, centerY);
+      ctx.lineTo(centerX + 10, centerY);
+      ctx.moveTo(centerX, centerY - 10);
+      ctx.lineTo(centerX, centerY + 10);
+      ctx.stroke();
 
-        // Draw dimensions with better contrast
-        ctx.fillStyle = '#000';
-        ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 3;
-        ctx.font = 'bold 14px monospace';
-        
-        const dimensionText = `${Math.round(area.width)} x ${Math.round(area.height)}`;
-        const positionText = `(${Math.round(area.x)}, ${Math.round(area.y)})`;
-        
-        // Draw text outline for better visibility
-        ctx.strokeText(dimensionText, area.x, area.y - 10);
-        ctx.fillText(dimensionText, area.x, area.y - 10);
-        
-        ctx.strokeText(positionText, area.x, area.y + area.height + 20);
-        ctx.fillText(positionText, area.x, area.y + area.height + 20);
-        
-      } catch (error) {
-        console.error('Error drawing bounding box:', error);
-      }
+      // Draw dimensions
+      ctx.fillStyle = '#333';
+      ctx.font = '12px monospace';
+      ctx.fillText(`${Math.round(area.width)} x ${Math.round(area.height)}`, area.x, area.y - 5);
+      ctx.fillText(`(${Math.round(area.x)}, ${Math.round(area.y)})`, area.x, area.y + area.height + 15);
     }
-    
-    // console.log('Canvas drawn successfully', { selectedGarment, selectedSide, hasArea: !!area, hasImage: !!garmentImage });
   };
 
   const getMousePos = (e) => {
@@ -397,8 +354,8 @@ const BoundingBoxEditor = () => {
   const getResizeHandle = (pos) => {
     const area = printAreas[selectedGarment]?.[selectedSide];
     if (!area) return null;
-    const handleSize = 12; // Increased for better touch interaction
-    const tolerance = 8; // Increased tolerance for easier interaction
+    const handleSize = 8;
+    const tolerance = 5;
 
     // Check corners
     if (Math.abs(pos.x - area.x) < tolerance && Math.abs(pos.y - area.y) < tolerance) return 'nw';
@@ -582,10 +539,10 @@ const BoundingBoxEditor = () => {
       
       if (response.data.success) {
         setSaveStatus('Saved to Database!');
-        // console.log('Print areas saved to database');
+        console.log('Print areas saved to database');
       } else {
         setSaveStatus('Saved Locally');
-        // console.log('Database save failed, saved locally');
+        console.log('Database save failed, saved locally');
       }
     } catch (error) {
       console.error('Error saving to database:', error);
@@ -665,40 +622,12 @@ const BoundingBoxEditor = () => {
         <div className="canvas-section">
           <canvas
             ref={canvasRef}
-            className="bounding-box-canvas"
             width={CANVAS_WIDTH}
             height={CANVAS_HEIGHT}
-            style={{ 
-              display: 'block', 
-              margin: '0 auto',
-              touchAction: 'none'
-            }}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
-            onTouchStart={(e) => {
-              e.preventDefault();
-              const touch = e.touches[0];
-              const mouseEvent = new MouseEvent('mousedown', {
-                clientX: touch.clientX,
-                clientY: touch.clientY
-              });
-              handleMouseDown(mouseEvent);
-            }}
-            onTouchMove={(e) => {
-              e.preventDefault();
-              const touch = e.touches[0];
-              const mouseEvent = new MouseEvent('mousemove', {
-                clientX: touch.clientX,
-                clientY: touch.clientY
-              });
-              handleMouseMove(mouseEvent);
-            }}
-            onTouchEnd={(e) => {
-              e.preventDefault();
-              handleMouseUp();
-            }}
           />
           <div className="canvas-info">
             <p>Click and drag the blue box to reposition</p>
