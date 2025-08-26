@@ -72,9 +72,10 @@ export const PrintAreasProvider = ({ children }) => {
           console.error('Failed to parse saved areas from localStorage:', e);
         }
       }
-        // If no print areas in database or localStorage, use the correct defaults
-        console.warn('No print areas in database or localStorage, using correct defaults');
-        const correctDefaults = {
+      
+      // If no print areas in database or localStorage, use the correct defaults
+      console.warn('No print areas in database or localStorage, using correct defaults');
+      const correctDefaults = {
           'tee': { 
             front: { width: 280, height: 350, x: 160, y: 125 },
             back: { width: 280, height: 350, x: 160, y: 125 }
@@ -141,7 +142,6 @@ export const PrintAreasProvider = ({ children }) => {
           }
         };
         setPrintAreas(correctDefaults);
-      }
     } catch (err) {
       console.error('Failed to load print areas:', err);
       setError(err.message);
