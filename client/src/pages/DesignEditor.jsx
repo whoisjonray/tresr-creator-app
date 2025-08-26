@@ -570,10 +570,10 @@ function DesignEditor() {
     const config = productConfigs[activeProduct];
     const currentPosition = getCurrentPosition();
     
-    // Clear canvas
+    // PHASE 1: Clear canvas and prepare background (BEFORE any transformations)
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // Fill background with light gray
+    // Fill background with light gray (MUST be before ctx.save())
     ctx.fillStyle = '#f8f9fa';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
@@ -585,7 +585,7 @@ function DesignEditor() {
     const printAreaX = printArea.x;
     const printAreaY = printArea.y;
     
-    // Try to get and draw the garment image
+    // Get garment image info
     const selectedColor = config?.hoverColor || config?.selectedColor || config?.defaultColor || 'Black';
     // Determine which side to show based on print location
     let displaySide = 'front';
@@ -596,13 +596,9 @@ function DesignEditor() {
     }
     const garmentImageUrl = getCloudinaryImage(activeProduct, selectedColor, displaySide);
     
-    if (garmentImageUrl && garmentImage.current) {
-      // Draw garment at full canvas size like bounding box editor
-      ctx.drawImage(garmentImage.current, 0, 0, canvas.width, canvas.height);
-    }
+    // PHASE 2: Apply transformations ONCE for all content
+    ctx.save(); // Single save point for consistent coordinate system
     
-    // Apply zoom transformation AFTER garment but BEFORE design and bounding box
-    ctx.save();
     if (isZoomed) {
       const zoomPrintArea = getPrintArea(activeProduct, viewSide);
       const zoomFactor = 2;
@@ -614,11 +610,12 @@ function DesignEditor() {
       ctx.translate(canvas.width/2, canvas.height/2);
       ctx.scale(zoomFactor, zoomFactor);
       ctx.translate(-centerX, -centerY);
-      
-      // After zoom, redraw the garment scaled
-      if (garmentImageUrl && garmentImage.current) {
-        ctx.drawImage(garmentImage.current, 0, 0, canvas.width, canvas.height);
-      }
+    }
+    
+    // PHASE 3: Draw ALL content under the same transformation
+    // Draw garment (now under consistent transform with bounding box)
+    if (garmentImageUrl && garmentImage.current) {
+      ctx.drawImage(garmentImage.current, 0, 0, canvas.width, canvas.height);
     }
     
     // Draw design if available (AFTER garment image)
@@ -699,7 +696,7 @@ function DesignEditor() {
       ctx.strokeRect(x, y, width, height);  // Use top-left coordinates
     }
     
-    // Restore zoom transformation
+    // PHASE 4: Restore state (single restore point)
     ctx.restore();
   };
 

@@ -1717,11 +1717,15 @@
   }
   
   .editor-layout {
-    padding: 5px;
+    padding: 0;
     margin: 0;
-    width: 100%;
-    max-width: 100%;
+    width: 100vw;
+    max-width: 100vw;
     box-sizing: border-box;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
   
   .editor-header {
@@ -1736,12 +1740,13 @@
   }
   
   .canvas-section {
-    padding: 5px;
-    width: calc(100vw - 10px);
-    max-width: calc(100vw - 10px);
+    padding: 10px;
+    width: 100%;
+    max-width: 100%;
     min-width: auto;
-    margin: 0 auto;
+    margin: 0;
     display: block;
+    box-sizing: border-box;
   }
   
   .canvas-container {
@@ -2093,6 +2098,21 @@
   .design-info {
     grid-template-columns: 1fr;
     gap: 15px;
+    padding: 0 10px;
+  }
+  
+  .design-info .form-group {
+    width: 100%;
+  }
+  
+  .design-info input,
+  .design-info textarea,
+  .design-info select {
+    width: 100% !important;
+    min-height: 44px !important;
+    font-size: 16px !important;
+    padding: 12px !important;
+    box-sizing: border-box;
   }
   
   /* Title field specific fix */
