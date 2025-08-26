@@ -1361,6 +1361,35 @@
     cursor: pointer;
 }
 
+/* Meme Category & SEO Styling */
+.meme-category-select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.meme-category-select:hover {
+    border-color: #007bff;
+}
+
+.meme-category-select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.seo-textarea {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    min-height: 120px;
+}
+
 /* Creator dropdown styling */
 .creator-search-container {
     position: relative;

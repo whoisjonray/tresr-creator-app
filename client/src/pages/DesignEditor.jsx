@@ -73,6 +73,21 @@ const PRODUCT_TEMPLATES = [
 ];
 
 // Consolidated color categories for all products
+const MEME_CATEGORIES = [
+  'Coffee',
+  'Crypto/Web3', 
+  'Bitcoin',
+  'Fitness',
+  '80s/90s Nostalgia',
+  'Mental Health',
+  'Cat Lovers',
+  'Dog Lovers',
+  'Science/Space',
+  'Entrepreneurship',
+  'A.I / ChatGPT',
+  'Devs'
+];
+
 const COLOR_PALETTE = [
   // Core neutrals
   { name: 'Black', hex: '#000000' },
@@ -260,8 +275,8 @@ function DesignEditor() {
   const [designUrl, setDesignUrl] = useState(null);
   const [designTitle, setDesignTitle] = useState('');
   const [designDescription, setDesignDescription] = useState('');
-  const [supportingText, setSupportingText] = useState('');
-  const [tags, setTags] = useState('');
+  const [seoText, setSeoText] = useState('');
+  const [memeCategory, setMemeCategory] = useState('');
   const [matureContent, setMatureContent] = useState(false);
   const [currentMockup, setCurrentMockup] = useState(null);
   const [isGeneratingMockup, setIsGeneratingMockup] = useState(false);
@@ -983,8 +998,8 @@ function DesignEditor() {
           // Load metadata if available
           if (parsedDesignData?.metadata) {
             const metadata = parsedDesignData.metadata;
-            if (metadata.tags) setTags(Array.isArray(metadata.tags) ? metadata.tags.join(', ') : metadata.tags);
-            if (metadata.supportingText) setSupportingText(metadata.supportingText);
+            if (metadata.memeCategory) setMemeCategory(metadata.memeCategory);
+            if (metadata.seoText) setSeoText(metadata.seoText);
             if (metadata.printMethod) setPrintMethod(metadata.printMethod);
           }
         })
@@ -1001,18 +1016,14 @@ function DesignEditor() {
       setDesignTitle(productData.name || '');
       setDesignDescription(productData.description || '');
       
-      // Handle tags - could be array or string
-      if (Array.isArray(productData.tags)) {
-        setTags(productData.tags.join(', '));
-      } else if (typeof productData.tags === 'string') {
-        setTags(productData.tags);
-      } else {
-        setTags('');
+      // Handle meme category
+      if (productData.memeCategory) {
+        setMemeCategory(productData.memeCategory);
       }
       
-      // Load supporting text if available
-      if (productData.supportingText) {
-        setSupportingText(productData.supportingText);
+      // Load SEO text if available
+      if (productData.seoText) {
+        setSeoText(productData.seoText);
       }
       
       // Load print method if available
@@ -1345,8 +1356,8 @@ function DesignEditor() {
         id: isEditMode ? params.id : `draft_${timestamp}_${randomSuffix}`,
         name: designTitle,
         description: designDescription,
-        supportingText: supportingText, // Save supporting text
-        tags: tags ? tags.split(',').map(t => t.trim()).filter(t => t) : [],
+        seoText: seoText, // Save SEO text
+        memeCategory: memeCategory,
         nfcEnabled: nfcExperienceType !== 'none',
         originalDesignImage: frontDesignImageSrc, // Store original front for editing
         previewImage: frontDesignImageSrc, // Store for product card display
@@ -1650,9 +1661,9 @@ function DesignEditor() {
         // Create the Shopify product
         const shopifyProductData = {
           title: designTitle,
-          body_html: designDescription || '',
+          body_html: seoText || designDescription || '',
           vendor: isAdmin ? selectedCreator : (creator?.name || 'TRESR'),
-          tags: tags.join(', '),
+          tags: memeCategory || '',
           product_type: 'SuperProduct',
           variants: variants,
           images: productImages,
@@ -1710,8 +1721,8 @@ function DesignEditor() {
               mockups,
               designTitle,
               designDescription,
-              supportingText,
-              tags,
+              seoText,
+              memeCategory,
               nfcEnabled: nfcOption !== 'no-nfc',
               nfcOption: nfcOption,
               productConfigs,
@@ -1954,32 +1965,48 @@ function DesignEditor() {
               </div>
             )}
             <div className="form-group">
-              <label>Tags</label>
-              <input
-                type="text"
-                className="tags-input"
-                value={tags}
-                onChange={(e) => setTags(e.target.value)}
-                placeholder="nature, animals, landscape, forest"
-              />
+              <label>Select Your Meme Category Wisely:</label>
+              <select
+                className="meme-category-select"
+                value={memeCategory}
+                onChange={(e) => setMemeCategory(e.target.value)}
+              >
+                <option value="">Choose a category...</option>
+                {MEME_CATEGORIES.map(category => (
+                  <option key={category} value={category}>{category}</option>
+                ))}
+              </select>
             </div>
             <div className="form-group form-group-full-width" style={{ gridColumn: 'span 3' }}>
-              <label>Description</label>
+              <label>Meta Description (max 159 chars)</label>
               <textarea
                 className="description-textarea"
                 value={designDescription}
-                onChange={(e) => setDesignDescription(e.target.value)}
-                placeholder="A beautiful forest landscape with a majestic lion, perfect for nature lovers and wildlife enthusiasts."
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value.length <= 159) {
+                    setDesignDescription(value);
+                  }
+                }}
+                maxLength="159"
+                placeholder="Perfect for coffee lovers who understand the struggle. Premium quality print on demand t-shirts."
               />
+              <span style={{ fontSize: '12px', color: '#888', marginTop: '4px' }}>
+                {designDescription.length}/159 characters
+              </span>
             </div>
             <div className="form-group form-group-full-width" style={{ gridColumn: 'span 3' }}>
-              <label>Supporting Text</label>
+              <label>SEO Text (supports HTML)</label>
               <textarea
-                className="supporting-textarea"
-                value={supportingText}
-                onChange={(e) => setSupportingText(e.target.value)}
-                placeholder="This design captures the raw beauty of African wildlife in their natural habitat."
+                className="seo-textarea"
+                value={seoText}
+                onChange={(e) => setSeoText(e.target.value)}
+                placeholder="<p>This premium design features...</p><ul><li>High quality DTG printing</li><li>Eco-friendly materials</li></ul>"
+                style={{ minHeight: '120px' }}
               />
+              <span style={{ fontSize: '12px', color: '#888', marginTop: '4px' }}>
+                You can use HTML tags like &lt;p&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;strong&gt;, etc.
+              </span>
             </div>
           </div>
         </div>
