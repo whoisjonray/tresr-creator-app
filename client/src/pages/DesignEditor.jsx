@@ -1217,13 +1217,25 @@ function DesignEditor() {
     const enabledProducts = Object.entries(productConfigs)
       .filter(([_, config]) => config.enabled);
     
-    // Calculate variants based on each product's available colors
-    const totalVariants = enabledProducts.reduce((total, [productId, config]) => {
+    // Calculate variants based on SELECTED colors only, not all available colors
+    let totalVariants = enabledProducts.reduce((total, [productId, config]) => {
       const product = PRODUCT_TEMPLATES.find(p => p.id === productId);
-      const availableColors = product?.colors?.length || 1; // Use product's available colors
+      
+      // Count only selected colors for this product
+      const selectedColors = config.selectedColors || [];
+      const colorCount = selectedColors.length > 0 ? selectedColors.length : 1; // At least 1 for default color
+      
       const sizes = 8; // Standard sizes S-5XL
-      return total + (availableColors * sizes);
+      return total + (colorCount * sizes);
     }, 0);
+    
+    // Add NFC variants if optional (doubles the count)
+    // If "include-nfc" - no extra variants (included in price)
+    // If "optional-nfc" - doubles variants (with/without NFC)
+    // If "no-nfc" - no extra variants
+    if (nfcOption === 'optional-nfc' && totalVariants > 0) {
+      totalVariants = totalVariants * 2; // Each variant has with/without NFC option
+    }
     
     return totalVariants;
   };
