@@ -273,6 +273,7 @@ function DesignEditor() {
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [designScale, setDesignScale] = useState(100);
+  const [nfcOption, setNfcOption] = useState('no-nfc');
   const [loading, setLoading] = useState(false);
   const [generationProgress, setGenerationProgress] = useState({
     current: 0,
@@ -2339,14 +2340,38 @@ function DesignEditor() {
                 ⚠️ Coming Soon...
               </div>
               
-              <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '20px' }}>
-                This feature is almost ready. Soon, you'll be able to attach powerful interactive experiences directly to your products using TRESR's NFC tech.
-              </p>
+              {/* NFC Options Dropdown */}
+              <div className="nfc-options-wrapper" style={{ marginTop: '20px', marginBottom: '20px' }}>
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#374151' }}>
+                  NFC Configuration
+                </label>
+                <select 
+                  className="nfc-dropdown"
+                  onChange={(e) => setNfcOption(e.target.value)}
+                  value={nfcOption || 'no-nfc'}
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    borderRadius: '6px',
+                    border: '1px solid #d1d5db',
+                    fontSize: '14px',
+                    backgroundColor: 'white',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <option value="force-nfc">Force NFC on all purchases</option>
+                  <option value="optional-nfc">Make NFC optional</option>
+                  <option value="no-nfc">No NFC ever</option>
+                </select>
+              </div>
               
               <div className="nfc-info">
                 <h3>💡 What's an NFC Experience?</h3>
                 <p>TRESR products are smart apparel.</p>
                 <p>When scanned, they can unlock exclusive content, verify NFT ownership, assign reward points, redirect to custom destinations, and more — all powered by encrypted NFC tags.</p>
+                <p style={{ fontWeight: '600', marginTop: '10px', color: '#374151' }}>
+                  Adding NFC adds $12 to retail price of product.
+                </p>
               </div>
               
             </div>
