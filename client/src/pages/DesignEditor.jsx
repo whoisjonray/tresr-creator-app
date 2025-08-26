@@ -85,7 +85,8 @@ const MEME_CATEGORIES = [
   'Science/Space',
   'Entrepreneurship',
   'A.I / ChatGPT',
-  'Devs'
+  'Devs',
+  'Other'
 ];
 
 const COLOR_PALETTE = [

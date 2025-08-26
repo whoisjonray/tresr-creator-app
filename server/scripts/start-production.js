@@ -10,10 +10,10 @@ async function startProduction() {
   console.log('Environment:', process.env.NODE_ENV);
   console.log('Railway Environment:', process.env.RAILWAY_ENVIRONMENT);
   
-  // Ensure print areas configuration exists in persistent storage
+  // Ensure print areas configuration exists in persistent storage (SMART VERSION)
   try {
-    const ensurePrintAreas = require('./ensure-print-areas');
-    await ensurePrintAreas();
+    const ensurePrintAreasSmart = require('./ensure-print-areas-smart');
+    await ensurePrintAreasSmart();
   } catch (error) {
     console.error('⚠️ Failed to ensure print areas:', error.message);
     // Continue anyway - don't block startup
