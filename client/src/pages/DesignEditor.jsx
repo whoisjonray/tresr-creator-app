@@ -15,6 +15,7 @@ import { forceCanvasRender } from '../utils/force-canvas-render';
 import { fixCanvasProductSwitching, fixAlignmentButtons, watchProductChanges } from '../utils/fix-canvas-product-switching';
 import { useResponsiveCanvas } from '../hooks/useResponsiveCanvas';
 import { useTouchDrag } from '../hooks/useTouchDrag';
+import { useAuth } from '../hooks/useAuth';
 
 // Get API base URL from environment
 const getApiBaseURL = () => {
@@ -286,11 +287,46 @@ function DesignEditor() {
   const [showCenterLines, setShowCenterLines] = useState(true); // Toggle for center lines
   const [isZoomed, setIsZoomed] = useState(false); // Magnifying glass zoom state
   const [isProductPublished, setIsProductPublished] = useState(false);
+  const [selectedCreator, setSelectedCreator] = useState('');
+  const [availableCreators, setAvailableCreators] = useState([]);
+  
+  // Get auth context
+  const { creator } = useAuth();
+  const isAdmin = creator?.email === 'whoisjonray@gmail.com';
   
   // Load product templates from API on mount
   useEffect(() => {
     loadProductTemplates();
-  }, []);
+    if (isAdmin) {
+      loadAvailableCreators();
+    }
+  }, [isAdmin]);
+  
+  // Load available creators for admin
+  const loadAvailableCreators = async () => {
+    try {
+      // For now, use hardcoded list of creators
+      // In future, fetch from Shopify vendors or database
+      const creators = [
+        'TRESR',
+        'SORE THUMB COLLECTIVE',
+        'SOLTEK',
+        'JOHN HILLENBRAND',
+        'MEMELORD',
+        'DIGITAL',
+        'ONANOTHERCREATIVELVL',
+        'NOTTHEENDD',
+        'SOLANA',
+        'HATCHYVERSE',
+        'HATCHY POCKETS'
+      ];
+      setAvailableCreators(creators);
+      setSelectedCreator(creator?.name || 'TRESR');
+    } catch (error) {
+      console.error('Failed to load creators:', error);
+      setSelectedCreator(creator?.name || 'TRESR');
+    }
+  };
   
   // Initialize product configs once print areas are loaded
   useEffect(() => {
@@ -1294,6 +1330,7 @@ function DesignEditor() {
         backDesignUrl: backDesignUrl,
         printMethod: printMethod, // Save the selected print method
         productConfigs: productConfigs, // Save product positions and configurations
+        creatorBrand: isAdmin ? selectedCreator : (creator?.name || 'TRESR'), // Save selected creator
         // No longer saving global selected colors - each product has its own default color
         mockups: [
           {
@@ -1560,6 +1597,7 @@ function DesignEditor() {
           frontDesignUrl,
           backDesignUrl,
           printMethod, // Pass the selected print method
+          creatorBrand: isAdmin ? selectedCreator : (creator?.name || 'TRESR'), // Pass selected creator
           isEditMode: params.id && location.state?.productData, // Add edit mode flag
           editProductId: params.id // Pass the product ID if editing
         } 
@@ -1715,6 +1753,22 @@ function DesignEditor() {
                 <option value="dtf">DTF Printing</option>
               </select>
             </div>
+            {isAdmin && (
+              <div className="form-group">
+                <label>Creator Brand</label>
+                <select
+                  value={selectedCreator}
+                  onChange={(e) => setSelectedCreator(e.target.value)}
+                  className="creator-select"
+                >
+                  {availableCreators.map(creatorName => (
+                    <option key={creatorName} value={creatorName}>
+                      {creatorName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
             <div className="form-group">
               <label>Tags</label>
               <input
