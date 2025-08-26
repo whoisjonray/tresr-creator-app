@@ -10,6 +10,15 @@ async function startProduction() {
   console.log('Environment:', process.env.NODE_ENV);
   console.log('Railway Environment:', process.env.RAILWAY_ENVIRONMENT);
   
+  // Ensure print areas configuration exists in persistent storage
+  try {
+    const ensurePrintAreas = require('./ensure-print-areas');
+    await ensurePrintAreas();
+  } catch (error) {
+    console.error('⚠️ Failed to ensure print areas:', error.message);
+    // Continue anyway - don't block startup
+  }
+  
   // Check for various MySQL environment variable formats
   console.log('\n🔍 Checking for MySQL environment variables:');
   console.log('MYSQL_URL:', process.env.MYSQL_URL ? 'Set ✅' : 'Not set ❌');

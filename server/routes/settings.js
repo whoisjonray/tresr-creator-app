@@ -25,20 +25,31 @@ const requireAdmin = (req, res, next) => {
 // Get current print areas (global settings)
 router.get('/print-areas', async (req, res) => {
   try {
-    // Try to load from PERSISTENT config file (Railway volume)
-    const configPath = process.env.RAILWAY_VOLUME_MOUNT_PATH 
-      ? path.join(process.env.RAILWAY_VOLUME_MOUNT_PATH, 'printAreas.json')
-      : path.join(__dirname, '../config/printAreas.json');
+    // Railway volume is always mounted at /app/persistent when configured in railway.json
+    const persistentPath = '/app/persistent';
+    let configPath;
+    
+    // Check if we're in production (Railway) or development
+    if (process.env.NODE_ENV === 'production' || process.env.RAILWAY_ENVIRONMENT) {
+      configPath = path.join(persistentPath, 'printAreas.json');
+      console.log('Loading from persistent storage:', configPath);
+    } else {
+      configPath = path.join(__dirname, '../config/printAreas.json');
+      console.log('Loading from local config:', configPath);
+    }
     
     try {
       const data = await fs.readFile(configPath, 'utf8');
       const printAreas = JSON.parse(data);
+      
+      console.log('✅ Loaded print areas from:', configPath);
       
       res.json({
         success: true,
         printAreas: printAreas
       });
     } catch (error) {
+      console.log('No saved config found at:', configPath);
       // Return defaults if no saved config
       res.json({
         success: true,
@@ -67,20 +78,20 @@ router.post('/print-areas', requireAdmin, async (req, res) => {
       });
     }
     
-    // Use persistent storage path if available
-    const persistentPath = process.env.RAILWAY_VOLUME_MOUNT_PATH || '/app/persistent';
+    // Railway volume is always mounted at /app/persistent when configured in railway.json
+    const persistentPath = '/app/persistent';
     let configPath, configDir;
     
     if (process.env.NODE_ENV === 'production' || process.env.RAILWAY_ENVIRONMENT) {
       // Use Railway persistent volume in production
       configDir = persistentPath;
       configPath = path.join(persistentPath, 'printAreas.json');
-      console.log('Using persistent storage path:', configPath);
+      console.log('Saving to persistent storage:', configPath);
     } else {
       // Fallback to local config (development)
       configDir = path.join(__dirname, '../config');
       configPath = path.join(configDir, 'printAreas.json');
-      console.log('Using local config path:', configPath);
+      console.log('Saving to local config:', configPath);
     }
     
     await fs.mkdir(configDir, { recursive: true });
