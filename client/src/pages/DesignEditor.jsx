@@ -14,6 +14,7 @@ import { completeCanvasFix } from '../utils/complete-canvas-fix';
 import { forceCanvasRender } from '../utils/force-canvas-render';
 import { fixCanvasProductSwitching, fixAlignmentButtons, watchProductChanges } from '../utils/fix-canvas-product-switching';
 import { useResponsiveCanvas } from '../hooks/useResponsiveCanvas';
+import { useTouchDrag } from '../hooks/useTouchDrag';
 
 // Get API base URL from environment
 const getApiBaseURL = () => {
@@ -1094,73 +1095,23 @@ function DesignEditor() {
     }
   }, [params.id, location.state]);
 
-  const handleCanvasMouseDown = (e) => {
-    if (!designImage) return;
-    
-    const rect = canvasRef.current.getBoundingClientRect();
-    // Scale mouse coordinates from display size to canvas size
-    const scaleX = canvasRef.current.width / rect.width;
-    const scaleY = canvasRef.current.height / rect.height;
-    const x = (e.clientX - rect.left) * scaleX;
-    const y = (e.clientY - rect.top) * scaleY;
-    const config = productConfigs[activeProduct];
-    
-    // Check if click is on the design (using top-left coordinates)
-    const { x: cx, y: cy, width, height } = getCurrentPosition();
-    if (x >= cx && x <= cx + width && y >= cy && y <= cy + height) {
-      setIsDragging(true);
-      setDragStart({ 
-        x: x - cx, 
-        y: y - cy 
-      });
-    }
-  };
-
-  const handleCanvasMouseMove = (e) => {
-    if (!designImage) return;
-    
-    const rect = canvasRef.current.getBoundingClientRect();
-    // Scale mouse coordinates from display size to canvas size
-    const scaleX = canvasRef.current.width / rect.width;
-    const scaleY = canvasRef.current.height / rect.height;
-    const x = (e.clientX - rect.left) * scaleX;
-    const y = (e.clientY - rect.top) * scaleY;
-    
-    // Update cursor on hover
-    if (!isDragging) {
-      const { x: cx, y: cy, width, height } = getCurrentPosition();
-      
-      if (x >= cx && x <= cx + width && y >= cy && y <= cy + height) {
-        canvasRef.current.style.cursor = 'move';
-      } else {
-        canvasRef.current.style.cursor = 'default';
-      }
-    }
-    
-    // Handle dragging
-    if (isDragging) {
-      const printArea = getPrintArea(activeProduct, viewSide);
-      const currentPosition = getCurrentPosition();
-      
-      // Calculate boundaries based on print area (using top-left coordinates)
-      const minX = printArea.x;
-      const maxX = printArea.x + printArea.width - currentPosition.width;
-      const minY = printArea.y;
-      const maxY = printArea.y + printArea.height - currentPosition.height;
-      
-      const newPosition = {
-        ...currentPosition,
-        x: Math.max(minX, Math.min(maxX, x - dragStart.x)),
-        y: Math.max(minY, Math.min(maxY, y - dragStart.y))
-      };
-      
-      updateCurrentPosition(activeProduct, newPosition);
-    }
-  };
-
-  const handleCanvasMouseUp = () => {
-    setIsDragging(false);
-  };
+  // Use the touch-enabled drag hook
+  const {
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
+    handleMouseDown: handleCanvasMouseDown,
+    handleMouseMove: handleCanvasMouseMove,
+    handleMouseUp: handleCanvasMouseUp
+  } = useTouchDrag(
+    canvasRef,
+    designImage,
+    getCurrentPosition,
+    updateCurrentPosition,
+    getPrintArea,
+    activeProduct,
+    viewSide
+  );
 
   const handleScaleChange = (e) => {
     const scale = parseInt(e.target.value);
@@ -2022,7 +1973,8 @@ function DesignEditor() {
                       backgroundColor: '#f5f5f5',
                       display: 'block',
                       margin: '0 auto',
-                      cursor: 'move'
+                      cursor: 'move',
+                      touchAction: 'none' // Prevent default touch behavior
                     }}
                     onMouseDown={handleCanvasMouseDown}
                     onMouseMove={handleCanvasMouseMove}
@@ -2032,6 +1984,9 @@ function DesignEditor() {
                       handleCanvasMouseUp();
                       if (canvasRef.current) canvasRef.current.style.cursor = 'move';
                     }}
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
                   />
                 </div>
                 

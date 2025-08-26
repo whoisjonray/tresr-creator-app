@@ -1384,6 +1384,18 @@
 @media (max-width: 768px) {
   .design-editor {
     padding: 10px;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .editor-layout {
+    padding-left: 10px;
+    padding-right: 10px; /* Equal padding on both sides */
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
   }
   
   .editor-header {
@@ -1391,6 +1403,65 @@
     flex-direction: column;
     gap: 15px;
     align-items: stretch;
+  }
+  
+  /* Fix text overflow in form fields */
+  input[type="text"],
+  input[type="number"],
+  textarea,
+  select,
+  .design-title-field,
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    font-size: 16px !important; /* Prevent zoom on iOS */
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 44px; /* Touch target size */
+  }
+  
+  /* Fix range slider for touch */
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 44px; /* Touch target */
+    background: transparent;
+    cursor: pointer;
+    touch-action: none; /* Enable touch dragging */
+  }
+  
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 32px;
+    width: 32px;
+    border-radius: 50%;
+    background: #5b6cff;
+    cursor: pointer;
+    margin-top: -12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  
+  input[type="range"]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 8px;
+    cursor: pointer;
+    background: #e5e7eb;
+    border-radius: 4px;
+  }
+  
+  /* Fix add/remove button positioning */
+  .replace-image-btn,
+  .add-back-image-btn,
+  .remove-btn {
+    position: static !important;
+    margin: 10px auto;
+    display: flex;
+    justify-content: center;
+    transform: none !important;
+    width: fit-content;
   }
   
   .header-left {
@@ -1639,6 +1710,18 @@
 @media (max-width: 480px) {
   .design-editor {
     padding: 5px;
+    width: 100vw;
+    max-width: 100vw;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+  
+  .editor-layout {
+    padding: 5px;
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
   
   .editor-header {
@@ -1899,6 +1982,7 @@
     gap: 15px;
     padding: 15px;
     align-items: stretch;
+    position: relative;
   }
   
   .product-name {
@@ -2090,6 +2174,11 @@
   .product-canvas {
     max-width: 100% !important;
     height: auto !important;
+    touch-action: none; /* Enable touch dragging */
+  }
+  
+  canvas {
+    touch-action: none; /* Enable touch dragging on canvas */
   }
   
   .canvas-container {
@@ -2097,6 +2186,7 @@
     justify-content: center;
     align-items: center;
     padding: 15px;
+    touch-action: none; /* Prevent default touch behavior */
     width: 100%;
   }
 }
