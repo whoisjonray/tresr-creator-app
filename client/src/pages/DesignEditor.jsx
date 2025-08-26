@@ -1225,7 +1225,7 @@ function DesignEditor() {
       const selectedColors = config.selectedColors || [];
       const colorCount = selectedColors.length > 0 ? selectedColors.length : 1; // At least 1 for default color
       
-      const sizes = 8; // Standard sizes S-5XL
+      const sizes = 6; // Standard sizes XS, S, M, L, XL, 2XL
       return total + (colorCount * sizes);
     }, 0);
     

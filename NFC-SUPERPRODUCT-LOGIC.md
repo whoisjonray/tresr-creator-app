@@ -34,7 +34,8 @@
 
 ```javascript
 // Base calculation: enabled products × selected colors × sizes
-baseVariants = Σ(enabledProducts × selectedColors × 8 sizes)
+baseVariants = Σ(enabledProducts × selectedColors × 6 sizes)
+// Sizes: XS, S, M, L, XL, 2XL
 
 // NFC multiplier
 if (nfcOption === 'optional-nfc') {
@@ -47,16 +48,16 @@ if (nfcOption === 'optional-nfc') {
 ### Example Calculations
 
 **Scenario 1: 2 products, 3 colors each, Include NFC**
-- Product 1: 3 colors × 8 sizes = 24 variants
-- Product 2: 3 colors × 8 sizes = 24 variants
-- Total: 48 variants (NFC included in all)
+- Product 1: 3 colors × 6 sizes = 18 variants
+- Product 2: 3 colors × 6 sizes = 18 variants
+- Total: 36 variants (NFC included in all)
 
 **Scenario 2: Same setup, Optional NFC**
-- Base: 48 variants
-- With NFC option: 48 × 2 = 96 variants total
+- Base: 36 variants
+- With NFC option: 36 × 2 = 72 variants total
 
 **Scenario 3: Same setup, No NFC**
-- Total: 48 variants (no NFC option)
+- Total: 36 variants (no NFC option)
 
 ## Implementation in SuperProduct Page
 
