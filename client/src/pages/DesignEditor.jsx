@@ -572,7 +572,11 @@ function DesignEditor() {
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // Apply zoom transformation if zoomed
+    // Fill background with light gray
+    ctx.fillStyle = '#f8f9fa';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Apply zoom transformation if zoomed (after background, before content)
     ctx.save();
     if (isZoomed) {
       const printArea = getPrintArea(activeProduct, viewSide);
@@ -586,10 +590,6 @@ function DesignEditor() {
       ctx.scale(zoomFactor, zoomFactor);
       ctx.translate(-centerX, -centerY);
     }
-    
-    // Fill background with light gray
-    ctx.fillStyle = '#f8f9fa';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
     
     // Get print area dimensions for current product
     const printArea = getPrintArea(activeProduct, viewSide);
@@ -619,12 +619,11 @@ function DesignEditor() {
     if (designImage && config) {
       ctx.save();
       
-      // Scale print area coordinates from 600x600 to our 400x400 canvas
-      const scale = canvas.width / 600; // 400/600 = 0.667
-      const adjustedPrintAreaX = printAreaX * scale;
-      const adjustedPrintAreaY = printAreaY * scale;
-      const adjustedPrintAreaWidth = printAreaWidth * scale;
-      const adjustedPrintAreaHeight = printAreaHeight * scale;
+      // No scaling needed - both canvases are 600x600
+      const adjustedPrintAreaX = printAreaX;
+      const adjustedPrintAreaY = printAreaY;
+      const adjustedPrintAreaWidth = printAreaWidth;
+      const adjustedPrintAreaHeight = printAreaHeight;
       
       // Clip to print area
       ctx.beginPath();
@@ -648,9 +647,8 @@ function DesignEditor() {
       ctx.strokeStyle = 'rgba(59, 130, 246, 0.5)'; // Semi-transparent blue
       ctx.lineWidth = 2;
       ctx.setLineDash([5, 3]);
-      // Scale the bounding box coordinates from 600x600 to 400x400 canvas
-      const scale = canvas.width / 600;
-      ctx.strokeRect(printAreaX * scale, printAreaY * scale, printAreaWidth * scale, printAreaHeight * scale);
+      // No scaling needed - both canvases are 600x600
+      ctx.strokeRect(printAreaX, printAreaY, printAreaWidth, printAreaHeight);
       ctx.setLineDash([]);
       
       // Draw corner handles
@@ -1100,10 +1098,11 @@ function DesignEditor() {
     if (!designImage) return;
     
     const rect = canvasRef.current.getBoundingClientRect();
-    // Scale mouse coordinates from display size (400px) to canvas size (600px)
-    const scale = 600 / 400;
-    const x = (e.clientX - rect.left) * scale;
-    const y = (e.clientY - rect.top) * scale;
+    // Scale mouse coordinates from display size to canvas size
+    const scaleX = canvasRef.current.width / rect.width;
+    const scaleY = canvasRef.current.height / rect.height;
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleY;
     const config = productConfigs[activeProduct];
     
     // Check if click is on the design (using top-left coordinates)
@@ -1121,10 +1120,11 @@ function DesignEditor() {
     if (!designImage) return;
     
     const rect = canvasRef.current.getBoundingClientRect();
-    // Scale mouse coordinates from display size (400px) to canvas size (600px)
-    const scale = 600 / 400;
-    const x = (e.clientX - rect.left) * scale;
-    const y = (e.clientY - rect.top) * scale;
+    // Scale mouse coordinates from display size to canvas size
+    const scaleX = canvasRef.current.width / rect.width;
+    const scaleY = canvasRef.current.height / rect.height;
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleY;
     
     // Update cursor on hover
     if (!isDragging) {
