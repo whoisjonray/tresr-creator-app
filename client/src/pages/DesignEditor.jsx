@@ -577,21 +577,6 @@ function DesignEditor() {
     ctx.fillStyle = '#f8f9fa';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    // Apply zoom transformation if zoomed (after background, before content)
-    ctx.save();
-    if (isZoomed) {
-      const printArea = getPrintArea(activeProduct, viewSide);
-      const zoomFactor = 2;
-      // Calculate actual center of print area (printArea.x/y are already top-left, scaled)
-      const centerX = printArea.x + (printArea.width / 2);
-      const centerY = printArea.y + (printArea.height / 2);
-      
-      // Translate to center of print area and scale
-      ctx.translate(canvas.width/2, canvas.height/2);
-      ctx.scale(zoomFactor, zoomFactor);
-      ctx.translate(-centerX, -centerY);
-    }
-    
     // Get print area dimensions for current product
     const printArea = getPrintArea(activeProduct, viewSide);
     const printAreaWidth = printArea.width;
@@ -614,6 +599,26 @@ function DesignEditor() {
     if (garmentImageUrl && garmentImage.current) {
       // Draw garment at full canvas size like bounding box editor
       ctx.drawImage(garmentImage.current, 0, 0, canvas.width, canvas.height);
+    }
+    
+    // Apply zoom transformation AFTER garment but BEFORE design and bounding box
+    ctx.save();
+    if (isZoomed) {
+      const zoomPrintArea = getPrintArea(activeProduct, viewSide);
+      const zoomFactor = 2;
+      // Calculate actual center of print area
+      const centerX = zoomPrintArea.x + (zoomPrintArea.width / 2);
+      const centerY = zoomPrintArea.y + (zoomPrintArea.height / 2);
+      
+      // Translate to center of print area and scale
+      ctx.translate(canvas.width/2, canvas.height/2);
+      ctx.scale(zoomFactor, zoomFactor);
+      ctx.translate(-centerX, -centerY);
+      
+      // After zoom, redraw the garment scaled
+      if (garmentImageUrl && garmentImage.current) {
+        ctx.drawImage(garmentImage.current, 0, 0, canvas.width, canvas.height);
+      }
     }
     
     // Draw design if available (AFTER garment image)

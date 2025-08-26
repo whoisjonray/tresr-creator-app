@@ -1987,8 +1987,12 @@
   
   .product-name {
     font-weight: 600;
-    font-size: 16px;
+    font-size: 14px; /* Smaller on mobile */
     margin-bottom: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
   }
   
   .product-toggle {
@@ -2025,10 +2029,28 @@
   .scale-control {
     width: 100%;
     padding: 0 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .scale-control label {
+    flex-shrink: 0;
+    font-size: 12px;
+    width: 35px;
   }
   
   .scale-control input[type="range"] {
-    width: calc(100% - 80px);
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .scale-control input[type="number"] {
+    width: 50px !important;
+    flex-shrink: 0;
+    padding: 4px;
+    font-size: 14px !important;
+    text-align: center;
   }
   
   /* Product grid responsive */
@@ -2071,6 +2093,21 @@
   .design-info {
     grid-template-columns: 1fr;
     gap: 15px;
+  }
+  
+  /* Title field specific fix */
+  .design-title-field,
+  input[name="title"],
+  input[placeholder*="Design"],
+  input[placeholder*="Title"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 16px !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   
   /* Button responsive */
