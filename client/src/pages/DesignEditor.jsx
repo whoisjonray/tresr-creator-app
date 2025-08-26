@@ -1719,23 +1719,25 @@ function DesignEditor() {
               <label>Tags</label>
               <input
                 type="text"
+                className="tags-input"
                 value={tags}
                 onChange={(e) => setTags(e.target.value)}
                 placeholder="nature, animals, landscape, forest"
               />
             </div>
-            <div className="form-group" style={{ gridColumn: 'span 3' }}>
+            <div className="form-group form-group-full-width" style={{ gridColumn: 'span 3' }}>
               <label>Description</label>
               <textarea
+                className="description-textarea"
                 value={designDescription}
                 onChange={(e) => setDesignDescription(e.target.value)}
                 placeholder="A beautiful forest landscape with a majestic lion, perfect for nature lovers and wildlife enthusiasts."
               />
             </div>
-            <div className="form-group" style={{ gridColumn: 'span 3' }}>
+            <div className="form-group form-group-full-width" style={{ gridColumn: 'span 3' }}>
               <label>Supporting Text</label>
-              <input
-                type="text"
+              <textarea
+                className="supporting-textarea"
                 value={supportingText}
                 onChange={(e) => setSupportingText(e.target.value)}
                 placeholder="This design captures the raw beauty of African wildlife in their natural habitat."
@@ -2411,7 +2413,7 @@ function DesignEditor() {
                     <button
                       className="btn-publish"
                       onClick={handleGenerateProducts}
-                      disabled={loading || !designTitle || calculateTotalVariants() === 0}
+                      disabled={loading || !designTitle || !designFile}
                     >
                       {loading ? 'Publishing...' : 'Publish'}
                     </button>

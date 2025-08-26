@@ -69,6 +69,27 @@
     margin-top: 20px;
 }
 
+/* Mobile-optimized form fields */
+@media (max-width: 768px) {
+  .design-info {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 24px;
+    padding: 0;
+    margin-top: 20px;
+  }
+  
+  .design-info .form-group {
+    width: 100%;
+    margin-bottom: 0; /* Use gap instead */
+  }
+  
+  .design-info .form-group-full-width,
+  .design-info .form-group[style*="gridColumn"] {
+    grid-column: unset !important;
+  }
+}
+
 .form-group {
     display: flex;
     flex-direction: column;
@@ -81,16 +102,61 @@
 }
 
 .form-group input,
-.form-group textarea {
+.form-group textarea,
+.form-group select {
     padding: 12px;
     border: 1px solid #d1d5db;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Mobile-specific form field sizing */
+@media (max-width: 768px) {
+  .form-group input,
+  .form-group select {
+    height: 48px;
+    padding: 0 16px;
+    font-size: 16px !important; /* Prevent iOS zoom */
+  }
+  
+  .form-group textarea {
+    min-height: 96px;
+    padding: 12px 16px;
+    font-size: 16px !important; /* Prevent iOS zoom */
+    line-height: 1.5;
+  }
+  
+  .form-group label {
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: #374151;
+    font-weight: 500;
+  }
 }
 
 .form-group textarea {
     resize: vertical;
-    height: 80px;
+    min-height: 80px;
+}
+
+@media (max-width: 768px) {
+  .form-group textarea {
+    min-height: 96px;
+    max-height: 200px;
+  }
+  
+  /* Specific heights for different textareas */
+  .form-group textarea[placeholder*="Describe"],
+  .form-group textarea[placeholder*="beautiful"] {
+    min-height: 120px;
+  }
+  
+  .form-group textarea[placeholder*="captures"],
+  .form-group textarea[placeholder*="Supporting"] {
+    min-height: 80px;
+  }
 }
 
 /* Main Editor Layout */
@@ -1278,6 +1344,25 @@
     cursor: pointer;
 }
 
+/* Mobile-specific textarea styling */
+@media (max-width: 768px) {
+  .description-textarea {
+    min-height: 120px !important;
+    width: 100% !important;
+  }
+  
+  .supporting-textarea {
+    min-height: 100px !important;
+    width: 100% !important;
+  }
+  
+  .design-title-input,
+  .tags-input {
+    width: 100% !important;
+    height: 48px !important;
+  }
+}
+
 .print-method-select:focus {
     outline: none;
     border-color: #00c896;
@@ -2097,26 +2182,7 @@
     padding: 20px;
   }
   
-  /* Form fields responsive */
-  .design-info {
-    grid-template-columns: 1fr;
-    gap: 15px;
-    padding: 0 10px;
-  }
-  
-  .design-info .form-group {
-    width: 100%;
-  }
-  
-  .design-info input,
-  .design-info textarea,
-  .design-info select {
-    width: 100% !important;
-    min-height: 44px !important;
-    font-size: 16px !important;
-    padding: 12px !important;
-    box-sizing: border-box;
-  }
+  /* Form fields responsive - already handled above */
   
   /* Title field specific fix */
   .design-title-field,
