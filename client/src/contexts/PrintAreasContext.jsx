@@ -25,25 +25,53 @@ export const PrintAreasProvider = ({ children }) => {
       setLoading(true);
       setError(null);
       
-      const response = await api.get('/api/settings/print-areas');
-      console.log('PrintAreasContext: Loaded print areas from database:', response.data);
-      
-      if (response.data.success && response.data.printAreas) {
-        setPrintAreas(response.data.printAreas);
-        console.log('✅ Loaded print areas from database successfully');
-      } else {
-        // Check localStorage first before using defaults
-        const savedAreas = localStorage.getItem('savedPrintAreas');
-        if (savedAreas) {
-          try {
-            const parsedAreas = JSON.parse(savedAreas);
-            setPrintAreas(parsedAreas);
-            console.log('✅ Loaded print areas from localStorage');
-            return;
-          } catch (e) {
-            console.error('Failed to parse saved areas from localStorage:', e);
+      // Strategy 1: Try to load from backend API (with retry)
+      let backendData = null;
+      for (let attempt = 1; attempt <= 2; attempt++) {
+        try {
+          const response = await api.get('/api/settings/print-areas');
+          console.log(`PrintAreasContext: API attempt ${attempt}:`, response.data);
+          
+          if (response.data.success && response.data.printAreas) {
+            backendData = response.data.printAreas;
+            console.log('✅ Loaded print areas from backend successfully');
+            break;
+          }
+        } catch (apiError) {
+          console.warn(`API attempt ${attempt} failed:`, apiError.message);
+          if (attempt === 2) {
+            console.warn('Backend API failed after 2 attempts, falling back to localStorage');
           }
         }
+      }
+      
+      // Strategy 2: Use backend data if available
+      if (backendData) {
+        setPrintAreas(backendData);
+        // CRITICAL: Always save backend data to localStorage as backup
+        // This ensures data persists even if backend is wiped
+        try {
+          localStorage.setItem('savedPrintAreas', JSON.stringify(backendData));
+          localStorage.setItem('printAreasBackupTime', new Date().toISOString());
+          console.log('✅ Backed up backend data to localStorage for persistence');
+        } catch (localError) {
+          console.warn('Failed to backup to localStorage:', localError);
+        }
+        return;
+      }
+      
+      // Strategy 3: Check localStorage as fallback
+      const savedAreas = localStorage.getItem('savedPrintAreas');
+      if (savedAreas) {
+        try {
+          const parsedAreas = JSON.parse(savedAreas);
+          setPrintAreas(parsedAreas);
+          console.log('✅ Loaded print areas from localStorage (backend unavailable)');
+          return;
+        } catch (e) {
+          console.error('Failed to parse saved areas from localStorage:', e);
+        }
+      }
         // If no print areas in database or localStorage, use the correct defaults
         console.warn('No print areas in database or localStorage, using correct defaults');
         const correctDefaults = {

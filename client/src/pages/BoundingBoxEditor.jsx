@@ -530,27 +530,46 @@ const BoundingBoxEditor = () => {
     try {
       // Save to localStorage immediately for local persistence
       localStorage.setItem('savedPrintAreas', JSON.stringify(printAreas));
+      console.log('✅ Saved print areas to localStorage as backup');
       
-      // Save to database via API
-      setSaveStatus('Saving...');
-      const response = await api.post('/api/settings/print-areas', {
-        printAreas: printAreas
-      });
+      // Save to database via API with retry logic
+      setSaveStatus('Saving to backend...');
       
-      if (response.data.success) {
-        setSaveStatus('Saved to Database!');
-        console.log('Print areas saved to database');
-      } else {
-        setSaveStatus('Saved Locally');
-        console.log('Database save failed, saved locally');
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        try {
+          const response = await api.post('/api/settings/print-areas', {
+            printAreas: printAreas
+          });
+          
+          if (response.data.success) {
+            setSaveStatus('✅ Saved to Persistent Storage!');
+            console.log(`✅ Print areas saved to backend on attempt ${attempt}`);
+            setTimeout(() => setSaveStatus(''), 3000);
+            return;
+          } else {
+            throw new Error(response.data.error || 'Backend save failed');
+          }
+        } catch (apiError) {
+          console.warn(`Backend save attempt ${attempt} failed:`, apiError.message);
+          
+          if (attempt === 3) {
+            // Final attempt failed
+            setSaveStatus('⚠️ Saved Locally Only (Backend Failed)');
+            console.error('All backend save attempts failed. Coordinates saved to localStorage only.');
+            console.error('This means coordinates will reset on next deployment!');
+            setTimeout(() => setSaveStatus(''), 5000);
+            return;
+          }
+          
+          // Wait before retry
+          await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+        }
       }
     } catch (error) {
-      console.error('Error saving to database:', error);
-      // Still saved to localStorage even if database fails
-      setSaveStatus('Saved Locally');
+      console.error('Critical error during save operation:', error);
+      setSaveStatus('❌ Save Error - Check Console');
+      setTimeout(() => setSaveStatus(''), 5000);
     }
-    
-    setTimeout(() => setSaveStatus(''), 3000);
   };
 
   const copyToClipboard = () => {

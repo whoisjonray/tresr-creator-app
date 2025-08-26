@@ -25,8 +25,10 @@ const requireAdmin = (req, res, next) => {
 // Get current print areas (global settings)
 router.get('/print-areas', async (req, res) => {
   try {
-    // Try to load from database or config file
-    const configPath = path.join(__dirname, '../config/printAreas.json');
+    // Try to load from PERSISTENT config file (Railway volume)
+    const configPath = process.env.RAILWAY_VOLUME_MOUNT_PATH 
+      ? path.join(process.env.RAILWAY_VOLUME_MOUNT_PATH, 'printAreas.json')
+      : path.join(__dirname, '../config/printAreas.json');
     
     try {
       const data = await fs.readFile(configPath, 'utf8');
@@ -65,12 +67,23 @@ router.post('/print-areas', requireAdmin, async (req, res) => {
       });
     }
     
-    // Create config directory if it doesn't exist
-    const configDir = path.join(__dirname, '../config');
-    await fs.mkdir(configDir, { recursive: true });
+    // Use persistent storage path if available
+    const persistentPath = process.env.RAILWAY_VOLUME_MOUNT_PATH || '/app/persistent';
+    let configPath, configDir;
     
-    // Save to config file (this affects ALL users globally)
-    const configPath = path.join(configDir, 'printAreas.json');
+    if (process.env.NODE_ENV === 'production' || process.env.RAILWAY_ENVIRONMENT) {
+      // Use Railway persistent volume in production
+      configDir = persistentPath;
+      configPath = path.join(persistentPath, 'printAreas.json');
+      console.log('Using persistent storage path:', configPath);
+    } else {
+      // Fallback to local config (development)
+      configDir = path.join(__dirname, '../config');
+      configPath = path.join(configDir, 'printAreas.json');
+      console.log('Using local config path:', configPath);
+    }
+    
+    await fs.mkdir(configDir, { recursive: true });
     await fs.writeFile(configPath, JSON.stringify(printAreas, null, 2));
     
     // Also update the client-side config file if needed
@@ -89,7 +102,9 @@ router.post('/print-areas', requireAdmin, async (req, res) => {
       success: true,
       message: 'Print areas saved globally for all users',
       updatedBy: email,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      storage: process.env.NODE_ENV === 'production' ? 'persistent' : 'local',
+      path: configPath
     });
     
   } catch (error) {
@@ -113,7 +128,9 @@ router.get('/global', async (req, res) => {
     
     // Load print areas if saved
     try {
-      const configPath = path.join(__dirname, '../config/printAreas.json');
+      const configPath = process.env.RAILWAY_VOLUME_MOUNT_PATH 
+        ? path.join(process.env.RAILWAY_VOLUME_MOUNT_PATH, 'printAreas.json')
+        : path.join(__dirname, '../config/printAreas.json');
       const data = await fs.readFile(configPath, 'utf8');
       settings.printAreas = JSON.parse(data);
     } catch (error) {
