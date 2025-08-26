@@ -251,6 +251,7 @@ try {
   console.log('⚠️ Sanity client not available, skipping person import routes');
 }
 app.use('/api/settings', require('./routes/settings-db'));
+app.use('/api/ai', require('./routes/ai-analysis'));
 
 // TEST ROUTES: Data flow debugging
 app.use('/api/test', require('./routes/test-data-flow'));

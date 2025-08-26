@@ -16,6 +16,7 @@ import { fixCanvasProductSwitching, fixAlignmentButtons, watchProductChanges } f
 import { useResponsiveCanvas } from '../hooks/useResponsiveCanvas';
 import { useTouchDrag } from '../hooks/useTouchDrag';
 import { useAuth } from '../hooks/useAuth';
+import AIAnalysisPanel from '../components/AIAnalysisPanel';
 
 // Get API base URL from environment
 const getApiBaseURL = () => {
@@ -307,6 +308,7 @@ function DesignEditor() {
   const [availableCreators, setAvailableCreators] = useState([]);
   const [creatorSearch, setCreatorSearch] = useState('');
   const [showCreatorDropdown, setShowCreatorDropdown] = useState(false);
+  const [showAIPanel, setShowAIPanel] = useState(false);
   
   // Get auth context
   const { creator } = useAuth();
@@ -1893,6 +1895,40 @@ function DesignEditor() {
               View full print guidelines →
             </a>
           </div>
+          
+          {/* AI Content Generator Button */}
+          <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'flex-end' }}>
+            <button 
+              onClick={() => setShowAIPanel(!showAIPanel)}
+              style={{
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                color: 'white',
+                border: 'none',
+                padding: '10px 20px',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: '600',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                boxShadow: '0 2px 10px rgba(102, 126, 234, 0.3)'
+              }}
+            >
+              <span>✨</span>
+              {showAIPanel ? 'Hide AI Assistant' : 'AI Content Generator'}
+            </button>
+          </div>
+          
+          {/* AI Analysis Panel */}
+          {showAIPanel && (
+            <AIAnalysisPanel 
+              designImageSrc={frontDesignImageSrc || designImageSrc}
+              onDescriptionSelect={(desc) => setDesignDescription(desc)}
+              onSeoTextSelect={(text) => setSeoText(text)}
+              onCategorySelect={(cat) => setMemeCategory(cat)}
+            />
+          )}
           
           <div className="design-info">
             <div className="form-group">
