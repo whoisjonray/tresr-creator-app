@@ -9,7 +9,8 @@
 - Price already includes $12 NFC cost
 - Display: "✓ NFC Rewards Included" (non-toggleable, grayed out)
 - Customer cannot opt out
-- Single SKU per size/color combination
+- Creates 2x variants (NFC variant is pre-selected/forced)
+- Example: Black/Medium becomes Black/Medium/With-NFC ($37) only
 
 ### 2. Make NFC Optional (customer chooses)
 **Dropdown Value**: `optional-nfc`
@@ -38,26 +39,26 @@ baseVariants = Σ(enabledProducts × selectedColors × 6 sizes)
 // Sizes: XS, S, M, L, XL, 2XL
 
 // NFC multiplier
-if (nfcOption === 'optional-nfc') {
-  totalVariants = baseVariants × 2  // Each variant has with/without NFC
+if (nfcOption === 'include-nfc' || nfcOption === 'optional-nfc') {
+  totalVariants = baseVariants × 2  // Each variant has NFC option (forced or optional)
 } else {
-  totalVariants = baseVariants      // No additional variants
+  totalVariants = baseVariants      // No additional variants (no-nfc)
 }
 ```
 
 ### Example Calculations
 
 **Scenario 1: 2 products, 3 colors each, Include NFC**
-- Product 1: 3 colors × 6 sizes = 18 variants
-- Product 2: 3 colors × 6 sizes = 18 variants
-- Total: 36 variants (NFC included in all)
+- Product 1: 3 colors × 6 sizes = 18 base variants
+- Product 2: 3 colors × 6 sizes = 18 base variants
+- Total: 36 × 2 = 72 variants (NFC variant pre-selected/forced)
 
 **Scenario 2: Same setup, Optional NFC**
 - Base: 36 variants
-- With NFC option: 36 × 2 = 72 variants total
+- With NFC option: 36 × 2 = 72 variants total (customer chooses)
 
 **Scenario 3: Same setup, No NFC**
-- Total: 36 variants (no NFC option)
+- Total: 36 variants (no NFC option at all)
 
 ## Implementation in SuperProduct Page
 

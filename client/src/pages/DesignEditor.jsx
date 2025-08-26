@@ -1229,12 +1229,12 @@ function DesignEditor() {
       return total + (colorCount * sizes);
     }, 0);
     
-    // Add NFC variants if optional (doubles the count)
-    // If "include-nfc" - no extra variants (included in price)
-    // If "optional-nfc" - doubles variants (with/without NFC)
-    // If "no-nfc" - no extra variants
-    if (nfcOption === 'optional-nfc' && totalVariants > 0) {
-      totalVariants = totalVariants * 2; // Each variant has with/without NFC option
+    // Add NFC variants based on option
+    // If "include-nfc" - doubles variants (NFC variant pre-selected/forced)
+    // If "optional-nfc" - doubles variants (customer can choose with/without NFC)
+    // If "no-nfc" - no extra variants (no NFC option at all)
+    if ((nfcOption === 'include-nfc' || nfcOption === 'optional-nfc') && totalVariants > 0) {
+      totalVariants = totalVariants * 2; // Each variant has NFC option (forced or optional)
     }
     
     return totalVariants;
