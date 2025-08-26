@@ -273,7 +273,7 @@ function DesignEditor() {
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [designScale, setDesignScale] = useState(100);
-  const [nfcOption, setNfcOption] = useState('no-nfc');
+  const [nfcOption, setNfcOption] = useState('include-nfc');
   const [loading, setLoading] = useState(false);
   const [generationProgress, setGenerationProgress] = useState({
     current: 0,
@@ -743,7 +743,7 @@ function DesignEditor() {
       garmentImage.current = null;
       drawCanvas();
     }
-  }, [activeProduct, productConfigs[activeProduct]?.selectedColor, productConfigs[activeProduct]?.printLocation, viewSide]);
+  }, [activeProduct, productConfigs[activeProduct]?.selectedColor, productConfigs[activeProduct]?.hoverColor, productConfigs[activeProduct]?.printLocation, viewSide]);
 
   // Fix canvas when product changes
   useEffect(() => {
@@ -1586,7 +1586,8 @@ function DesignEditor() {
           designDescription,
           supportingText,
           tags,
-          nfcEnabled: nfcExperienceType !== 'none',
+          nfcEnabled: nfcOption !== 'no-nfc',
+          nfcOption: nfcOption, // Pass the NFC option for variant creation
           productConfigs, // Pass product configs with selected colors
           designImageSrc: finalDesignImage, // Use the final design image
           frontDesignImageSrc,
@@ -2300,6 +2301,8 @@ function DesignEditor() {
                                         hoverColor: color // Temporary hover color
                                       }
                                     }));
+                                    // Force immediate redraw
+                                    setTimeout(() => drawCanvas(), 10);
                                   }
                                 }}
                                 onMouseLeave={() => {
@@ -2312,6 +2315,8 @@ function DesignEditor() {
                                         hoverColor: null // Clear hover color, returns to dropdown selectedColor/defaultColor
                                       }
                                     }));
+                                    // Force immediate redraw
+                                    setTimeout(() => drawCanvas(), 10);
                                   }
                                 }}
                               >
@@ -2348,7 +2353,7 @@ function DesignEditor() {
                 <select 
                   className="nfc-dropdown"
                   onChange={(e) => setNfcOption(e.target.value)}
-                  value={nfcOption || 'no-nfc'}
+                  value={nfcOption || 'include-nfc'}
                   style={{
                     width: '100%',
                     padding: '10px',
@@ -2359,9 +2364,9 @@ function DesignEditor() {
                     cursor: 'pointer'
                   }}
                 >
-                  <option value="force-nfc">Force NFC on all purchases</option>
-                  <option value="optional-nfc">Make NFC optional</option>
-                  <option value="no-nfc">No NFC ever</option>
+                  <option value="include-nfc">Include NFC for all purchases (adds $12 to retail price)</option>
+                  <option value="optional-nfc">Make NFC Optional (customer chooses)</option>
+                  <option value="no-nfc">Do Not Include NFC Ever</option>
                 </select>
               </div>
               
