@@ -2024,25 +2024,6 @@ function DesignEditor() {
                 <div className="tools-section">
                   <div className="tools-header">
                     <h3>Tools</h3>
-                    <button 
-                      onClick={() => {
-                        console.log('Manual canvas fix triggered');
-                        forceCanvasRender();
-                        fixCanvasProductSwitching();
-                      }}
-                      style={{
-                        marginLeft: 'auto',
-                        padding: '6px 12px',
-                        background: '#dc2626',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        fontSize: '12px',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      Fix Canvas
-                    </button>
                     <div className="tools-grid">
                       <button 
                         className={`tool-btn ${showBoundingBox ? 'active' : ''}`}
