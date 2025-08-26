@@ -1697,6 +1697,7 @@ function DesignEditor() {
               <label>Design Title</label>
               <input
                 type="text"
+                className="design-title-input"
                 value={designTitle}
                 onChange={(e) => setDesignTitle(e.target.value)}
                 placeholder="Awesome Forest Scene"
@@ -2310,9 +2311,6 @@ function DesignEditor() {
               </div>
               <p className="nfc-subtitle">Turn your product into smart apparel with built-in NFC features.</p>
               
-              <div className="coming-soon-badge">
-                ⚠️ Coming Soon...
-              </div>
               
               {/* NFC Options Dropdown */}
               <div className="nfc-options-wrapper" style={{ marginTop: '20px', marginBottom: '20px' }}>
@@ -2368,7 +2366,7 @@ function DesignEditor() {
                       <button
                         className="btn-update"
                         onClick={handleUpdateDesign}
-                        disabled={loading || !designTitle || calculateTotalVariants() === 0}
+                        disabled={loading || !designTitle || !designFile}
                         style={{backgroundColor: '#3498db', color: 'white', border: 'none', padding: '12px 24px', borderRadius: '6px', cursor: 'pointer'}}
                       >
                         {loading ? 'Updating...' : 'Update Design'}
@@ -2394,7 +2392,7 @@ function DesignEditor() {
                       <button
                         className="btn-publish"
                         onClick={handleGenerateProducts}
-                        disabled={loading || !designTitle || calculateTotalVariants() === 0}
+                        disabled={loading || !designTitle || !designFile}
                       >
                         {loading ? 'Publishing...' : 'Publish'}
                       </button>

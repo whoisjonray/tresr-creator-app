@@ -101,6 +101,9 @@
     margin-bottom: 20px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 /* Canvas Section */
@@ -1719,8 +1722,8 @@
   .editor-layout {
     padding: 0;
     margin: 0;
-    width: 100vw;
-    max-width: 100vw;
+    width: 100%;
+    max-width: 100%;
     box-sizing: border-box;
     overflow-x: hidden;
     display: flex;
@@ -2117,17 +2120,20 @@
   
   /* Title field specific fix */
   .design-title-field,
+  .design-title-input,
   input[name="title"],
   input[placeholder*="Design"],
-  input[placeholder*="Title"] {
+  input[placeholder*="Title"],
+  input[placeholder*="Awesome"] {
     width: 100% !important;
     max-width: 100% !important;
     box-sizing: border-box;
-    padding: 10px;
+    padding: 12px !important;
     font-size: 16px !important;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    min-height: 44px !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
   }
   
   /* Button responsive */
