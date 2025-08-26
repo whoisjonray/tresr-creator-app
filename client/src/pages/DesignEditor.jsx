@@ -289,6 +289,8 @@ function DesignEditor() {
   const [isProductPublished, setIsProductPublished] = useState(false);
   const [selectedCreator, setSelectedCreator] = useState('');
   const [availableCreators, setAvailableCreators] = useState([]);
+  const [creatorSearch, setCreatorSearch] = useState('');
+  const [showCreatorDropdown, setShowCreatorDropdown] = useState(false);
   
   // Get auth context
   const { creator } = useAuth();
@@ -302,31 +304,56 @@ function DesignEditor() {
     }
   }, [isAdmin]);
   
-  // Load available creators for admin
+  // Load available creators for admin from Sanity
   const loadAvailableCreators = async () => {
     try {
-      // For now, use hardcoded list of creators
-      // In future, fetch from Shopify vendors or database
-      const creators = [
+      // Fetch creators from Sanity API
+      const projectId = 'a9vtdosx';
+      const dataset = 'production';
+      const query = encodeURIComponent('*[_type == "person"] { name }');
+      const url = `https://${projectId}.api.sanity.io/v1/data/query/${dataset}?query=${query}`;
+      
+      const response = await fetch(url);
+      const data = await response.json();
+      
+      if (data.result) {
+        // Extract unique creator names and filter out nulls
+        const creatorNames = data.result
+          .map(person => person.name)
+          .filter(name => name)
+          .sort();
+        
+        // Add some default creators if they're not in Sanity
+        const defaultCreators = ['TRESR', 'SORE THUMB COLLECTIVE'];
+        const uniqueCreators = [...new Set([...defaultCreators, ...creatorNames])];
+        
+        setAvailableCreators(uniqueCreators);
+        setSelectedCreator(creator?.name || 'TRESR');
+        console.log(`Loaded ${uniqueCreators.length} creators from Sanity`);
+      }
+    } catch (error) {
+      console.error('Failed to load creators from Sanity:', error);
+      // Fallback to essential creators
+      const fallbackCreators = [
         'TRESR',
         'SORE THUMB COLLECTIVE',
         'SOLTEK',
         'JOHN HILLENBRAND',
-        'MEMELORD',
-        'DIGITAL',
-        'ONANOTHERCREATIVELVL',
-        'NOTTHEENDD',
-        'SOLANA',
-        'HATCHYVERSE',
-        'HATCHY POCKETS'
+        'MEMELORD'
       ];
-      setAvailableCreators(creators);
-      setSelectedCreator(creator?.name || 'TRESR');
-    } catch (error) {
-      console.error('Failed to load creators:', error);
+      setAvailableCreators(fallbackCreators);
       setSelectedCreator(creator?.name || 'TRESR');
     }
   };
+  
+  // Filter creators based on search
+  const filteredCreators = React.useMemo(() => {
+    if (!creatorSearch) return availableCreators;
+    const search = creatorSearch.toLowerCase();
+    return availableCreators.filter(name => 
+      name.toLowerCase().includes(search)
+    );
+  }, [availableCreators, creatorSearch]);
   
   // Initialize product configs once print areas are loaded
   useEffect(() => {
@@ -1580,28 +1607,153 @@ function DesignEditor() {
       // Use front design as the primary preview image
       const finalDesignImage = frontDesignUrl || frontDesignImageSrc || (isEditMode && location.state?.productData?.originalDesignImage);
       
-      // Navigate to products page with the generated data
-      navigate('/products', { 
-        state: { 
-          mockups,
-          designTitle,
-          designDescription,
-          supportingText,
-          tags,
-          nfcEnabled: nfcOption !== 'no-nfc',
-          nfcOption: nfcOption, // Pass the NFC option for variant creation
-          productConfigs, // Pass product configs with selected colors
-          designImageSrc: finalDesignImage, // Use the final design image
-          frontDesignImageSrc,
-          backDesignImageSrc,
-          frontDesignUrl,
-          backDesignUrl,
-          printMethod, // Pass the selected print method
-          creatorBrand: isAdmin ? selectedCreator : (creator?.name || 'TRESR'), // Pass selected creator
-          isEditMode: params.id && location.state?.productData, // Add edit mode flag
-          editProductId: params.id // Pass the product ID if editing
-        } 
+      // Create Shopify SuperProduct
+      console.log('🛍️ Creating Shopify SuperProduct...');
+      setGenerationProgress({
+        current: processedVariants,
+        total: totalVariants,
+        message: 'Creating product in Shopify...'
       });
+      
+      try {
+        // Prepare product data for Shopify
+        const productImages = Object.values(mockups)
+          .filter(m => m.image && !m.error)
+          .map(m => ({ 
+            src: m.image,
+            alt: `${m.name} in ${m.color}`
+          }));
+        
+        // Create variants for each enabled product
+        const variants = [];
+        for (const product of enabledProducts) {
+          const config = productConfigs[product.id];
+          const selectedColor = config.selectedColor || product.colors?.[0] || 'Black';
+          
+          // Base price for this product type
+          const basePrice = product.price || 29.99;
+          
+          // Create variant for this product
+          variants.push({
+            option1: product.name,  // Style/Product type
+            option2: selectedColor,  // Color
+            option3: product.size || 'Standard',  // Size
+            price: basePrice.toString(),
+            sku: `${designTitle.toLowerCase().replace(/\s+/g, '-')}-${product.id}-${selectedColor.toLowerCase()}`,
+            inventory_quantity: 999,  // Unlimited for POD
+            inventory_management: null,
+            fulfillment_service: 'manual',
+            requires_shipping: true
+          });
+        }
+        
+        // Create the Shopify product
+        const shopifyProductData = {
+          title: designTitle,
+          body_html: designDescription || '',
+          vendor: isAdmin ? selectedCreator : (creator?.name || 'TRESR'),
+          tags: tags.join(', '),
+          product_type: 'SuperProduct',
+          variants: variants,
+          images: productImages,
+          options: [
+            { name: 'Style', values: enabledProducts.map(p => p.name) },
+            { name: 'Color', values: [...new Set(enabledProducts.map(p => productConfigs[p.id].selectedColor || p.colors?.[0] || 'Black'))] },
+            { name: 'Size', values: ['Standard'] }
+          ]
+        };
+        
+        console.log('📦 Shopify product data:', shopifyProductData);
+        
+        // Call the backend API to create product
+        const response = await fetch(`${getApiBaseURL()}/api/products/create-superproduct`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            productData: shopifyProductData,
+            mockups: mockups,
+            designData: {
+              frontDesignUrl,
+              backDesignUrl,
+              printMethod,
+              nfcOption,
+              productConfigs
+            }
+          })
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Failed to create product: ${response.statusText}`);
+        }
+        
+        const result = await response.json();
+        console.log('✅ Successfully created Shopify product:', result);
+        
+        // Show success message
+        setGenerationProgress({
+          current: totalVariants,
+          total: totalVariants,
+          message: '✅ Product published successfully!'
+        });
+        
+        // Wait a moment for user to see success message
+        setTimeout(() => {
+          // Navigate to products page with success state
+          navigate('/products', { 
+            state: { 
+              newProductCreated: true,
+              productId: result.product?.id,
+              productTitle: designTitle,
+              mockups,
+              designTitle,
+              designDescription,
+              supportingText,
+              tags,
+              nfcEnabled: nfcOption !== 'no-nfc',
+              nfcOption: nfcOption,
+              productConfigs,
+              designImageSrc: finalDesignImage,
+              frontDesignImageSrc,
+              backDesignImageSrc,
+              frontDesignUrl,
+              backDesignUrl,
+              printMethod,
+              creatorBrand: isAdmin ? selectedCreator : (creator?.name || 'TRESR'),
+              isEditMode: params.id && location.state?.productData,
+              editProductId: params.id
+            } 
+          });
+        }, 1500);
+        
+      } catch (error) {
+        console.error('❌ Error creating Shopify product:', error);
+        alert(`Failed to create product in Shopify: ${error.message}`);
+        // Still navigate to products page but without success state
+        navigate('/products', { 
+          state: { 
+            mockups,
+            designTitle,
+            designDescription,
+            supportingText,
+            tags,
+            nfcEnabled: nfcOption !== 'no-nfc',
+            nfcOption: nfcOption,
+            productConfigs,
+            designImageSrc: finalDesignImage,
+            frontDesignImageSrc,
+            backDesignImageSrc,
+            frontDesignUrl,
+            backDesignUrl,
+            printMethod,
+            creatorBrand: isAdmin ? selectedCreator : (creator?.name || 'TRESR'),
+            isEditMode: params.id && location.state?.productData,
+            editProductId: params.id
+          } 
+        });
+      }
       
     } catch (error) {
       console.error('Error generating products:', error);
@@ -1756,17 +1908,49 @@ function DesignEditor() {
             {isAdmin && (
               <div className="form-group">
                 <label>Creator Brand</label>
-                <select
-                  value={selectedCreator}
-                  onChange={(e) => setSelectedCreator(e.target.value)}
-                  className="creator-select"
-                >
-                  {availableCreators.map(creatorName => (
-                    <option key={creatorName} value={creatorName}>
-                      {creatorName}
-                    </option>
-                  ))}
-                </select>
+                <div className="creator-search-container">
+                  <input
+                    type="text"
+                    className="creator-search-input"
+                    placeholder={selectedCreator || "Search creators..."}
+                    value={creatorSearch}
+                    onChange={(e) => setCreatorSearch(e.target.value)}
+                    onFocus={() => setShowCreatorDropdown(true)}
+                    onBlur={() => setTimeout(() => setShowCreatorDropdown(false), 200)}
+                  />
+                  {showCreatorDropdown && (
+                    <div className="creator-dropdown">
+                      <div className="creator-dropdown-header">
+                        {filteredCreators.length} creators found
+                      </div>
+                      <div className="creator-dropdown-list">
+                        {filteredCreators.slice(0, 100).map(creatorName => (
+                          <div
+                            key={creatorName}
+                            className={`creator-option ${selectedCreator === creatorName ? 'selected' : ''}`}
+                            onClick={() => {
+                              setSelectedCreator(creatorName);
+                              setCreatorSearch('');
+                              setShowCreatorDropdown(false);
+                            }}
+                          >
+                            {creatorName}
+                          </div>
+                        ))}
+                        {filteredCreators.length > 100 && (
+                          <div className="creator-dropdown-footer">
+                            Type to refine search...
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  {selectedCreator && (
+                    <div className="selected-creator-badge">
+                      Selected: {selectedCreator}
+                    </div>
+                  )}
+                </div>
               </div>
             )}
             <div className="form-group">

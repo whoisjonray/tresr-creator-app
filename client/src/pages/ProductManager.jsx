@@ -41,6 +41,8 @@ function ProductManager() {
   const [canImport, setCanImport] = useState(false);
   const [importing, setImporting] = useState(false);
   const [importProgress, setImportProgress] = useState('');
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [successProductTitle, setSuccessProductTitle] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
   
@@ -87,8 +89,24 @@ function ProductManager() {
       checkImportStatus();
     }
     
-    // Check if we received data from the design editor
-    if (location.state && location.state.mockups) {
+    // Check if we successfully created a product
+    if (location.state && location.state.newProductCreated) {
+      setShowSuccessMessage(true);
+      setSuccessProductTitle(location.state.productTitle || 'Your product');
+      
+      // Hide success message after 5 seconds
+      setTimeout(() => {
+        setShowSuccessMessage(false);
+      }, 5000);
+      
+      // Load products from database to show the new product
+      loadProductsFromDatabase();
+      
+      // Clear the navigation state
+      window.history.replaceState({}, document.title);
+    }
+    // Check if we received data from the design editor (for draft/save for later)
+    else if (location.state && location.state.mockups) {
       const { mockups, designTitle, designDescription, supportingText, tags, nfcEnabled, productConfigs, selectedColors, designImageSrc, frontDesignImageSrc, backDesignImageSrc, frontDesignUrl, backDesignUrl, printMethod, isEditMode, editProductId } = location.state;
       
       // Convert the mockups object to a product format
@@ -326,6 +344,41 @@ function ProductManager() {
 
   return (
     <div className="products-page">
+      {/* Success Message Banner */}
+      {showSuccessMessage && (
+        <div className="success-banner" style={{
+          backgroundColor: '#10b981',
+          color: 'white',
+          padding: '15px 20px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginBottom: '20px',
+          borderRadius: '8px',
+          animation: 'slideDown 0.3s ease'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span style={{ fontSize: '20px' }}>🎉</span>
+            <span style={{ fontWeight: '500' }}>
+              Successfully published "{successProductTitle}" to Shopify!
+            </span>
+          </div>
+          <button 
+            onClick={() => setShowSuccessMessage(false)}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'white',
+              fontSize: '20px',
+              cursor: 'pointer',
+              opacity: 0.8
+            }}
+          >
+            ✕
+          </button>
+        </div>
+      )}
+      
       <div className="products-header">
         <h1>Your Products</h1>
         <div className="header-actions">

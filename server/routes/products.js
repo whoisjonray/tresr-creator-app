@@ -106,6 +106,85 @@ router.post('/', requireAuth, async (req, res) => {
   }
 });
 
+// Create a SuperProduct with multiple variants
+router.post('/create-superproduct', requireAuth, async (req, res) => {
+  try {
+    const { creator } = req.session;
+    const { productData, mockups, designData } = req.body;
+
+    // Override vendor with creator's name from session
+    productData.vendor = productData.vendor || creator.name;
+
+    // Add creator tags
+    const creatorTag = `creator:${productData.vendor.toLowerCase().replace(/\s+/g, '-')}`;
+    productData.tags = productData.tags ? 
+      `${productData.tags}, ${creatorTag}, creator-product, superproduct` : 
+      `${creatorTag}, creator-product, superproduct`;
+
+    // Add commission metafield
+    productData.metafields = [
+      {
+        namespace: 'tresr',
+        key: 'creator_id',
+        value: creator.id || creator.userId,
+        type: 'single_line_text_field'
+      },
+      {
+        namespace: 'tresr',
+        key: 'commission_rate',
+        value: '40',
+        type: 'number_integer'
+      },
+      {
+        namespace: 'tresr',
+        key: 'design_data',
+        value: JSON.stringify(designData),
+        type: 'json'
+      },
+      {
+        namespace: 'tresr',
+        key: 'mockup_data',
+        value: JSON.stringify(mockups),
+        type: 'json'
+      }
+    ];
+
+    // Add NFC config if provided
+    if (designData.nfcOption && designData.nfcOption !== 'no-nfc') {
+      productData.metafields.push({
+        namespace: 'tresr',
+        key: 'nfc_enabled',
+        value: 'true',
+        type: 'single_line_text_field'
+      });
+    }
+
+    console.log('Creating SuperProduct in Shopify:', {
+      title: productData.title,
+      vendor: productData.vendor,
+      variants: productData.variants.length,
+      images: productData.images.length
+    });
+
+    // Create product in Shopify
+    const product = await shopifyService.createProduct(productData);
+
+    console.log('✅ Successfully created SuperProduct:', product.id);
+
+    res.json({
+      success: true,
+      product
+    });
+
+  } catch (error) {
+    console.error('Error creating SuperProduct:', error);
+    res.status(500).json({ 
+      error: 'Failed to create SuperProduct',
+      message: error.message 
+    });
+  }
+});
+
 // Update a product
 router.put('/:id', requireAuth, async (req, res) => {
   try {
