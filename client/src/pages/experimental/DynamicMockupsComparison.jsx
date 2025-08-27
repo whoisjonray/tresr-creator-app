@@ -253,7 +253,7 @@ function DynamicMockupsComparison() {
           
           <div className="positioning-section">
             <h3>2. Position Design</h3>
-            <div className="canvas-wrapper">
+            <div className="canvas-wrapper" style={{ minHeight: '300px', background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '0.5rem', padding: '1rem' }}>
               {designImage ? (
                 <DesignCanvas
                   product={{
@@ -267,21 +267,23 @@ function DynamicMockupsComparison() {
                   isActive={true}
                 />
               ) : (
-                <div className="canvas-placeholder">
-                  <canvas 
-                    width={500} 
-                    height={600} 
-                    style={{
-                      width: '100%',
-                      height: 'auto',
-                      border: '1px solid #ddd',
-                      borderRadius: '8px',
-                      background: 'white'
-                    }}
-                  />
-                  <div className="placeholder-text">
-                    Upload a design to enable positioning
+                <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
+                  <div style={{ 
+                    width: '100%', 
+                    height: '250px', 
+                    background: 'white', 
+                    border: '2px dashed #d1d5db',
+                    borderRadius: '0.5rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '1rem'
+                  }}>
+                    <p style={{ color: '#9ca3af' }}>Canvas will appear here after upload</p>
                   </div>
+                  <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>
+                    👆 Upload a design above to enable positioning
+                  </p>
                 </div>
               )}
             </div>
