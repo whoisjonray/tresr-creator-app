@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import DesignEditor from './pages/DesignEditor';
@@ -22,7 +22,12 @@ import { AuthProvider, useAuth } from './hooks/useAuth';
 import { DataMigration } from './components/DataMigration';
 import DynamicProvider from './providers/DynamicProvider';
 import { PrintAreasProvider } from './contexts/PrintAreasContext';
+import { FEATURES } from './config/featureFlags';
 import './App.css';
+
+// Lazy load experimental components
+const DynamicMockupsEditor = lazy(() => import('./pages/experimental/DynamicMockupsEditor'));
+const MockupComparison = lazy(() => import('./pages/experimental/MockupComparison'));
 
 function AppContent() {
   const { creator } = useAuth();
@@ -80,6 +85,27 @@ function AppContent() {
                     
                     {/* Analytics Route */}
                     <Route path="/analytics" element={<div>Analytics (Coming Soon)</div>} />
+                    
+                    {/* Experimental Dynamic Mockups Routes */}
+                    {FEATURES.ENABLE_EXPERIMENTAL_ROUTES && (
+                      <>
+                        <Route path="/experimental/design/new" element={
+                          <Suspense fallback={<div>Loading Dynamic Mockups Editor...</div>}>
+                            <DynamicMockupsEditor />
+                          </Suspense>
+                        } />
+                        <Route path="/experimental/design/:id/edit" element={
+                          <Suspense fallback={<div>Loading Dynamic Mockups Editor...</div>}>
+                            <DynamicMockupsEditor />
+                          </Suspense>
+                        } />
+                        <Route path="/admin/mockup-comparison" element={
+                          <Suspense fallback={<div>Loading Comparison Dashboard...</div>}>
+                            <MockupComparison />
+                          </Suspense>
+                        } />
+                      </>
+                    )}
                     
                     <Route path="/" element={<Navigate to="/dashboard" replace />} />
                   </Routes>
