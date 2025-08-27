@@ -1,176 +1,428 @@
+// Dynamic Mockups API Service for Backend
+// Handles all Dynamic Mockups API interactions
+
 const axios = require('axios');
+const FormData = require('form-data');
+const cloudinaryService = require('./cloudinary');
 
 class DynamicMockupsService {
   constructor() {
     this.apiKey = process.env.DYNAMIC_MOCKUPS_API_KEY;
-    this.baseUrl = 'https://api.dynamicmockups.com/v1';
-    this.isDevelopment = process.env.NODE_ENV === 'development';
+    this.baseUrl = 'https://app.dynamicmockups.com/api/v1';
+    this.websiteKey = process.env.DYNAMIC_MOCKUPS_WEBSITE_KEY;
     
-    console.log('Dynamic Mockups API key loaded:', this.apiKey ? 'Yes' : 'No');
-    console.log('Environment:', process.env.NODE_ENV);
-    console.log('Development mode:', this.isDevelopment);
-    
-    if (!this.apiKey || this.isDevelopment) {
-      console.log('Using placeholder mode for Dynamic Mockups');
+    // Initialize axios instance with default config
+    this.client = axios.create({
+      baseURL: this.baseUrl,
+      headers: {
+        'x-api-key': this.apiKey,
+        'Accept': 'application/json'
+      },
+      timeout: 30000 // 30 second timeout
+    });
+
+    // Cache for collections and templates
+    this.collectionsCache = null;
+    this.collectionsCacheTime = null;
+    this.cacheTTL = 3600000; // 1 hour cache
+  }
+
+  // Check if service is configured
+  isConfigured() {
+    return !!(this.apiKey && process.env.DYNAMIC_MOCKUPS_ENABLED === 'true');
+  }
+
+  // Get all collections
+  async getCollections() {
+    // Check cache first
+    if (this.collectionsCache && this.collectionsCacheTime && 
+        (Date.now() - this.collectionsCacheTime) < this.cacheTTL) {
+      console.log('📦 Returning cached collections');
+      return this.collectionsCache;
+    }
+
+    try {
+      console.log('🔄 Fetching collections from Dynamic Mockups...');
+      const response = await this.client.get('/collections');
+      
+      // Cache the result
+      this.collectionsCache = response.data;
+      this.collectionsCacheTime = Date.now();
+      
+      console.log(`✅ Fetched ${response.data.length} collections`);
+      return response.data;
+    } catch (error) {
+      console.error('❌ Failed to fetch collections:', error.response?.data || error.message);
+      throw new Error(`Failed to fetch collections: ${error.message}`);
     }
   }
 
-  async generateMockup(options) {
+  // Get mockups (optionally filtered by collection)
+  async getMockups(collectionUuid = null) {
     try {
-      // Use placeholder mode in development or when API key is not configured
-      if (!this.apiKey || this.isDevelopment) {
-        // Return simulated mockup URL
-        await new Promise(resolve => setTimeout(resolve, 100)); // Simulate API delay
-        
-        // Generate a base64 placeholder image
-        const colorMap = {
-          'White': '#f5f5f5',
-          'Black': '#000000',
-          'Navy': '#000080',
-          'Red': '#ff0000',
-          'Blue': '#0000ff',
-          'Green': '#008000',
-          'Yellow': '#ffff00',
-          'Pink': '#ffc0cb',
-          'Gray': '#808080'
-        };
-        
-        const bgColor = colorMap[options.color] || options.color || '#cccccc';
-        const productName = (options.template_id || 'product').replace(/_/g, ' ');
-        
-        // Create a simple SVG placeholder
-        const svg = `
-          <svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
-            <rect width="400" height="400" fill="${bgColor}"/>
-            <text x="50%" y="50%" text-anchor="middle" fill="${bgColor === '#f5f5f5' || bgColor === '#ffff00' ? '#333' : '#fff'}" 
-                  font-family="Arial" font-size="24" dy=".3em">
-              ${productName}
-            </text>
-          </svg>
-        `;
-        
-        // Convert SVG to base64 data URL
-        const base64 = Buffer.from(svg).toString('base64');
-        const dataUrl = `data:image/svg+xml;base64,${base64}`;
-        
-        return {
-          url: dataUrl,
-          templateId: options.template_id,
-          color: options.color
-        };
+      console.log(`🔄 Fetching mockups${collectionUuid ? ` for collection ${collectionUuid}` : ''}...`);
+      
+      const params = {};
+      if (collectionUuid) {
+        params.collection_uuid = collectionUuid;
       }
+      
+      const response = await this.client.get('/mockups', { params });
+      
+      console.log(`✅ Fetched ${response.data.length} mockups`);
+      return response.data;
+    } catch (error) {
+      console.error('❌ Failed to fetch mockups:', error.response?.data || error.message);
+      throw new Error(`Failed to fetch mockups: ${error.message}`);
+    }
+  }
 
-      const response = await axios.post(
-        `${this.baseUrl}/mockups/generate`,
-        {
-          template_id: options.template_id,
-          layers: [{
-            id: 'design',
-            type: 'image',
-            url: options.design_url,
-            position: options.position || { x: 0.5, y: 0.5 },
-            scale: options.scale || 1.0,
-            rotation: options.rotation || 0
-          }],
-          format: 'png',
-          size: 'large',
-          background_color: options.color
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${this.apiKey}`,
-            'Content-Type': 'application/json'
-          }
+  // Get specific mockup details
+  async getMockup(mockupUuid) {
+    try {
+      console.log(`🔄 Fetching mockup ${mockupUuid}...`);
+      const response = await this.client.get(`/mockup/${mockupUuid}`);
+      
+      console.log('✅ Fetched mockup details');
+      return response.data;
+    } catch (error) {
+      console.error('❌ Failed to fetch mockup:', error.response?.data || error.message);
+      throw new Error(`Failed to fetch mockup: ${error.message}`);
+    }
+  }
+
+  // Render a single mockup
+  async renderMockup(options) {
+    const {
+      mockupUuid,
+      designUrl,
+      designConfig = {},
+      exportOptions = {}
+    } = options;
+
+    try {
+      console.log(`🎨 Rendering mockup ${mockupUuid}...`);
+      
+      // Build smart object configuration
+      const smartObjects = [{
+        uuid: 'main_design', // We'll need to get actual UUID from mockup details
+        asset: {
+          url: designUrl,
+          fit: designConfig.fit || 'contain',
+          position: designConfig.position || { x: 0.5, y: 0.5 },
+          scale: designConfig.scale || 1.0,
+          rotation: designConfig.rotation || 0
         }
-      );
+      }];
 
-      return {
-        url: response.data.url,
-        templateId: options.template_id,
-        color: options.color
+      // Build request body
+      const requestBody = {
+        mockup_uuid: mockupUuid,
+        smart_objects: smartObjects,
+        export_label: `tresr-${Date.now()}`,
+        export_options: {
+          image_format: exportOptions.format || 'webp',
+          image_size: exportOptions.size || 1200,
+          mode: exportOptions.mode || 'download'
+        }
       };
 
-    } catch (error) {
-      console.error('Dynamic Mockups API error:', error.response?.data || error.message);
-      throw new Error(`Failed to generate mockup: ${error.message}`);
-    }
-  }
-
-  async getTemplates() {
-    try {
-      // Use placeholder templates in development or when API key is not configured
-      if (!this.apiKey || this.isDevelopment) {
-        return [
-          { id: 'tshirt_front', name: 'T-Shirt Front', category: 'apparel' },
-          { id: 'tshirt_back', name: 'T-Shirt Back', category: 'apparel' },
-          { id: 'hoodie_front', name: 'Hoodie Front', category: 'apparel' },
-          { id: 'hoodie_back', name: 'Hoodie Back', category: 'apparel' },
-          { id: 'tank_top_front', name: 'Tank Top Front', category: 'apparel' },
-          { id: 'long_sleeve_front', name: 'Long Sleeve Front', category: 'apparel' }
-        ];
-      }
-
-      const response = await axios.get(
-        `${this.baseUrl}/templates`,
-        {
-          headers: {
-            'Authorization': `Bearer ${this.apiKey}`
-          },
-          params: {
-            category: 'apparel'
-          }
-        }
-      );
-
-      return response.data.templates;
-
-    } catch (error) {
-      console.error('Dynamic Mockups API error:', error.response?.data || error.message);
-      throw new Error(`Failed to fetch templates: ${error.message}`);
-    }
-  }
-
-  async uploadDesign(base64Image) {
-    try {
-      // Use placeholder upload in development or when API key is not configured
-      if (!this.apiKey || this.isDevelopment) {
-        // Simulate upload delay
-        await new Promise(resolve => setTimeout(resolve, 200));
-        
-        // Return the base64 as a data URL (simulating an uploaded URL)
-        if (!base64Image.startsWith('data:')) {
-          return `data:image/png;base64,${base64Image}`;
-        }
-        return base64Image;
-      }
-
-      // Remove data:image/png;base64, prefix if present
-      const imageData = base64Image.replace(/^data:image\/\w+;base64,/, '');
+      const response = await this.client.post('/renders', requestBody);
       
-      const response = await axios.post(
-        `${this.baseUrl}/uploads`,
-        {
-          image: imageData,
-          format: 'png'
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${this.apiKey}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-
-      return response.data.url;
-
+      console.log('✅ Mockup rendered successfully');
+      return {
+        url: response.data.export_url,
+        path: response.data.export_path,
+        label: response.data.export_label
+      };
     } catch (error) {
-      console.error('Dynamic Mockups upload error:', error.response?.data || error.message);
-      throw new Error(`Failed to upload design: ${error.message}`);
+      console.error('❌ Failed to render mockup:', error.response?.data || error.message);
+      throw new Error(`Failed to render mockup: ${error.message}`);
+    }
+  }
+
+  // Bulk render multiple mockups from a collection
+  async bulkRender(options) {
+    const {
+      collectionUuid,
+      designUrl,
+      designConfigs = {},
+      exportOptions = {}
+    } = options;
+
+    try {
+      console.log(`🎨 Bulk rendering collection ${collectionUuid}...`);
+      
+      // Build artworks mapping
+      const artworks = {
+        main_design: designUrl
+      };
+
+      // Build request body
+      const requestBody = {
+        collection_uuid: collectionUuid,
+        artworks,
+        export_label: `tresr-bulk-${Date.now()}`,
+        export_options: {
+          image_format: exportOptions.format || 'webp',
+          image_size: exportOptions.size || 1200,
+          mode: exportOptions.mode || 'download'
+        }
+      };
+
+      const response = await this.client.post('/renders/bulk', requestBody);
+      
+      console.log(`✅ Bulk render completed: ${response.data.renders.length} mockups`);
+      return response.data.renders;
+    } catch (error) {
+      console.error('❌ Failed to bulk render:', error.response?.data || error.message);
+      throw new Error(`Failed to bulk render: ${error.message}`);
+    }
+  }
+
+  // Generate print files
+  async generatePrintFiles(options) {
+    const {
+      mockupUuid,
+      designUrl,
+      designConfig = {},
+      printOptions = {}
+    } = options;
+
+    try {
+      console.log(`🖨️ Generating print files for mockup ${mockupUuid}...`);
+      
+      // Get mockup details first to understand smart objects
+      const mockup = await this.getMockup(mockupUuid);
+      
+      // Find the main design smart object
+      const mainSmartObject = mockup.smart_objects?.[0];
+      if (!mainSmartObject) {
+        throw new Error('No smart object found in mockup');
+      }
+
+      // Build smart object configuration
+      const smartObjects = [{
+        uuid: mainSmartObject.uuid,
+        asset: {
+          url: designUrl,
+          fit: designConfig.fit || 'contain',
+          position: designConfig.position || { x: 0.5, y: 0.5 },
+          scale: designConfig.scale || 1.0,
+          rotation: designConfig.rotation || 0,
+          dpi: printOptions.dpi || 300
+        }
+      }];
+
+      // Build request body
+      const requestBody = {
+        mockup_uuid: mockupUuid,
+        smart_objects: smartObjects,
+        export_label: `tresr-print-${Date.now()}`,
+        export_options: {
+          image_format: printOptions.format || 'pdf',
+          image_dpi: printOptions.dpi || 300,
+          color_profile: printOptions.colorProfile || 'CMYK',
+          include_bleed: printOptions.includeBleed !== false,
+          include_cut_marks: printOptions.includeCutMarks !== false
+        }
+      };
+
+      const response = await this.client.post('/renders/print-files', requestBody);
+      
+      console.log('✅ Print files generated successfully');
+      return response.data.print_files;
+    } catch (error) {
+      console.error('❌ Failed to generate print files:', error.response?.data || error.message);
+      throw new Error(`Failed to generate print files: ${error.message}`);
+    }
+  }
+
+  // Upload PSD file and create mockup template
+  async uploadPSD(options) {
+    const {
+      psdFileUrl,
+      name,
+      categoryId = 6, // Default to "Other" category
+      createMockup = true,
+      collections = []
+    } = options;
+
+    try {
+      console.log(`📤 Uploading PSD: ${name}...`);
+      
+      const requestBody = {
+        psd_file_url: psdFileUrl,
+        psd_name: name,
+        psd_category_id: categoryId
+      };
+
+      // Add mockup creation options if requested
+      if (createMockup) {
+        requestBody.mockup_template = {
+          create_after_upload: true,
+          collections: collections
+        };
+      }
+
+      const response = await this.client.post('/psd/upload', requestBody);
+      
+      console.log('✅ PSD uploaded successfully');
+      return {
+        mockupUuid: response.data.mockup_uuid,
+        mockupName: response.data.mockup_name,
+        thumbnail: response.data.thumbnail_url,
+        smartObjects: response.data.smart_objects
+      };
+    } catch (error) {
+      console.error('❌ Failed to upload PSD:', error.response?.data || error.message);
+      throw new Error(`Failed to upload PSD: ${error.message}`);
+    }
+  }
+
+  // Map TRESR products to Dynamic Mockups templates
+  async mapProductToMockup(productId) {
+    // Actual Dynamic Mockups template UUIDs from your account
+    const productMockupMap = {
+      // T-Shirts
+      'tee': 'aadbef17-d095-4c2a-b1fe-118e76b50e8a', // White Gildan 5000 T-shirt
+      'boxy': '9988aa28-7a7c-4bd1-9200-6f30f4580fb0', // Dynamic Mockups Test V1 (T-shirt)
+      'next-crop': '', // Need crop top template
+      'baby-tee': 'aadbef17-d095-4c2a-b1fe-118e76b50e8a', // Using regular tee for now
+      
+      // Hoodies
+      'wmn-hoodie': 'beaf974e-804f-47d1-9e7c-cb6e295f29ed', // Man in studio hoodie
+      'med-hood': 'd8cdbf1f-0cf1-4a7f-a82d-d30296e95b48', // Man wearing hoodie in woods
+      'mediu': 'b6fa0aab-d154-4fa5-91ce-3a1e4313f67f', // Young man in hoodie by wall
+      'sweat': 'b6fa0aab-d154-4fa5-91ce-3a1e4313f67f', // Using hoodie template for now
+      
+      // Other products - need templates
+      'patch-c': '', // Need hat template
+      'patch-flat': '', // Need flat hat template
+      'polo': '', // Need polo template
+      'long-polo': '', // Need long polo template
+      'mug': '', // Need mug template
+      'art-sqsm': 'e607aea7-b0c4-4813-a603-6ee3d3e149f8', // Dynamic Mockups Test V1 (Artwork)
+      'art-sqm': 'e607aea7-b0c4-4813-a603-6ee3d3e149f8', // Using same artwork template
+      'art-lg': 'e607aea7-b0c4-4813-a603-6ee3d3e149f8', // Using same artwork template
+      'nft': '' // Need trading card template
+    };
+
+    const uuid = productMockupMap[productId];
+    
+    if (!uuid) {
+      console.warn(`⚠️ No Dynamic Mockups template mapped for product: ${productId}`);
+      return null;
+    }
+    
+    return uuid;
+  }
+
+  // Create or get TRESR collection
+  async ensureTRESRCollection() {
+    try {
+      // Your TRESR Garments collection UUID
+      const TRESR_COLLECTION_UUID = 'bf772f69-a436-43fb-af9d-91d5afba829a';
+      
+      return {
+        uuid: TRESR_COLLECTION_UUID,
+        name: 'TRESR Garments'
+      };
+    } catch (error) {
+      console.error('Failed to ensure TRESR collection:', error);
+      return null;
+    }
+  }
+  
+  // Get the TRESR collection UUID directly
+  getTRESRCollectionUUID() {
+    return 'bf772f69-a436-43fb-af9d-91d5afba829a';
+  }
+
+  // Upload design to Cloudinary and return URL
+  async uploadDesignToCloudinary(imageDataUrl) {
+    try {
+      // Remove data URL prefix
+      const base64Data = imageDataUrl.replace(/^data:image\/\w+;base64,/, '');
+      
+      // Upload to Cloudinary
+      const uploadResult = await cloudinaryService.uploadImage(base64Data, {
+        folder: 'tresr-designs',
+        resource_type: 'image'
+      });
+
+      return uploadResult.secure_url;
+    } catch (error) {
+      console.error('Failed to upload design to Cloudinary:', error);
+      throw error;
+    }
+  }
+
+  // Process multiple products efficiently
+  async processProductBatch(products, designUrl) {
+    const results = [];
+    
+    // Group products by collection if possible for bulk rendering
+    const productsByCollection = {};
+    
+    for (const product of products) {
+      const mockupUuid = await this.mapProductToMockup(product.id);
+      if (mockupUuid) {
+        // For now, process individually
+        // In future, group by collection for bulk rendering
+        try {
+          const result = await this.renderMockup({
+            mockupUuid,
+            designUrl,
+            designConfig: product.designConfig || {},
+            exportOptions: {
+              format: 'webp',
+              size: 1200
+            }
+          });
+          
+          results.push({
+            productId: product.id,
+            success: true,
+            mockupUrl: result.url
+          });
+        } catch (error) {
+          results.push({
+            productId: product.id,
+            success: false,
+            error: error.message
+          });
+        }
+      }
+    }
+    
+    return results;
+  }
+
+  // Health check
+  async healthCheck() {
+    if (!this.isConfigured()) {
+      return {
+        status: 'disabled',
+        message: 'Dynamic Mockups not configured or disabled'
+      };
+    }
+
+    try {
+      // Try to fetch collections as a health check
+      await this.getCollections();
+      return {
+        status: 'healthy',
+        message: 'Dynamic Mockups API is accessible'
+      };
+    } catch (error) {
+      return {
+        status: 'unhealthy',
+        message: `API Error: ${error.message}`
+      };
     }
   }
 }
 
-// Create singleton instance
-const dynamicMockupsService = new DynamicMockupsService();
-
-module.exports = dynamicMockupsService;
+// Export singleton instance
+module.exports = new DynamicMockupsService();

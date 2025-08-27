@@ -234,6 +234,15 @@ app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);
 app.use('/api/mockups', mockupsRoutes);
 app.use('/api/creators', creatorsRoutes);
+
+// API Routes - v2 (Dynamic Mockups Experimental)
+try {
+  const mockupsV2Routes = require('./routes/api/v2/mockups');
+  app.use('/api/v2/mockups', mockupsV2Routes);
+  console.log('✅ Dynamic Mockups v2 routes loaded');
+} catch (error) {
+  console.log('⚠️ Dynamic Mockups v2 routes not available:', error.message);
+}
 app.use('/api/admin', adminRoutes);
 app.use('/api/admin/impersonate', require('./routes/admin/impersonate'));
 app.use('/api/designs', designsRoutes);
