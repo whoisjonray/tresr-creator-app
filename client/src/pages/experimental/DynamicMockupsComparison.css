@@ -103,10 +103,28 @@
   margin-bottom: 1.5rem;
 }
 
-.positioning-section canvas {
+.canvas-wrapper {
+  margin-bottom: 1rem;
+}
+
+.canvas-wrapper canvas {
   width: 100%;
   height: auto;
-  margin-bottom: 1rem;
+}
+
+.canvas-placeholder {
+  position: relative;
+}
+
+.placeholder-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #9ca3af;
+  font-size: 0.875rem;
+  text-align: center;
+  pointer-events: none;
 }
 
 .position-controls {

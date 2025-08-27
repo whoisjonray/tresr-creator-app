@@ -130,15 +130,13 @@ function DynamicMockupsComparison() {
     try {
       console.log('🎨 Generating Canvas mockup...');
       
-      // Get garment image from Cloudinary
-      const garmentImage = getGarmentImage(selectedProduct.id, selectedColor.toLowerCase().replace(' ', ''), 'front');
-      
-      // Use your existing canvas image generator
-      const mockupUrl = await canvasImageGenerator.generateMockup(
+      // Use the canvas image generator with correct method
+      const mockupUrl = await canvasImageGenerator.generateProductImage(
         designImageUrl,
-        garmentImage,
-        position,
-        { product: selectedProduct.id, color: selectedColor }
+        selectedProduct.id,  // garmentTemplate
+        selectedColor,       // color
+        position,           // position object with x, y, width, height
+        designPosition.scale // scale
       );
       
       const duration = Date.now() - startTime;
@@ -255,19 +253,38 @@ function DynamicMockupsComparison() {
           
           <div className="positioning-section">
             <h3>2. Position Design</h3>
-            {designImage && (
-              <DesignCanvas
-                product={{
-                  ...selectedProduct,
-                  printArea: getCurrentPrintArea(),
-                  color: selectedColor
-                }}
-                designImage={designImage}
-                designPosition={designPosition}
-                onPositionChange={setDesignPosition}
-                isActive={true}
-              />
-            )}
+            <div className="canvas-wrapper">
+              {designImage ? (
+                <DesignCanvas
+                  product={{
+                    ...selectedProduct,
+                    printArea: getCurrentPrintArea(),
+                    color: selectedColor
+                  }}
+                  designImage={designImage}
+                  designPosition={designPosition}
+                  onPositionChange={setDesignPosition}
+                  isActive={true}
+                />
+              ) : (
+                <div className="canvas-placeholder">
+                  <canvas 
+                    width={500} 
+                    height={600} 
+                    style={{
+                      width: '100%',
+                      height: 'auto',
+                      border: '1px solid #ddd',
+                      borderRadius: '8px',
+                      background: 'white'
+                    }}
+                  />
+                  <div className="placeholder-text">
+                    Upload a design to enable positioning
+                  </div>
+                </div>
+              )}
+            </div>
             
             <div className="position-controls">
               <div className="control-row">
