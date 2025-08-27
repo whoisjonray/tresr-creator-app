@@ -51,14 +51,21 @@ function DynamicMockupsEditor() {
     try {
       console.log('Loading Dynamic Mockups data...');
       const [cols, temps] = await Promise.all([
-        mockupServiceDM.getCollections(),
-        mockupServiceDM.getMockups()
+        mockupServiceDM.getCollections().catch(() => []),
+        mockupServiceDM.getMockups().catch(() => [])
       ]);
-      setCollections(cols);
-      setTemplates(temps);
-      console.log(`Loaded ${cols.length} collections and ${temps.length} templates`);
+      
+      // Ensure we have arrays
+      const collectionsArray = Array.isArray(cols) ? cols : [];
+      const templatesArray = Array.isArray(temps) ? temps : [];
+      
+      setCollections(collectionsArray);
+      setTemplates(templatesArray);
+      console.log(`Loaded ${collectionsArray.length} collections and ${templatesArray.length} templates`);
     } catch (error) {
       console.error('Failed to load Dynamic Mockups data:', error);
+      setCollections([]);
+      setTemplates([]);
     }
   };
   
@@ -333,20 +340,20 @@ function DynamicMockupsEditor() {
         <div className="editor-info">
           <div className="info-section">
             <h3>Available Templates</h3>
-            <p>{templates.length} templates loaded</p>
+            <p>{templates?.length || 0} templates loaded</p>
             <ul className="template-list">
-              {templates.slice(0, 5).map(t => (
-                <li key={t.uuid}>{t.name}</li>
+              {Array.isArray(templates) && templates.slice(0, 5).map(t => (
+                <li key={t.uuid || t.id}>{t.name}</li>
               ))}
             </ul>
           </div>
           
           <div className="info-section">
             <h3>Collections</h3>
-            <p>{collections.length} collection(s)</p>
+            <p>{collections?.length || 0} collection(s)</p>
             <ul className="collection-list">
-              {collections.map(c => (
-                <li key={c.uuid}>{c.name}</li>
+              {Array.isArray(collections) && collections.map(c => (
+                <li key={c.uuid || c.id}>{c.name}</li>
               ))}
             </ul>
           </div>
