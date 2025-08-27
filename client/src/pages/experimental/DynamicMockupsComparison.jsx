@@ -176,8 +176,8 @@ function DynamicMockupsComparison() {
         y: designPosition.y
       };
       
-      // Generate mockup
-      const mockup = await mockupServiceDM.generateMockup(
+      // Generate mockup using generatePreview method
+      const mockup = await mockupServiceDM.generatePreview(
         designUrl,
         selectedProduct.dmTemplateId,
         selectedColor,
