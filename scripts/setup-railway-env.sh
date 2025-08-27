@@ -13,7 +13,7 @@ read
 
 # Core Dynamic Mockups configuration
 railway variables --set "DYNAMIC_MOCKUPS_ENABLED=true"
-railway variables --set "DYNAMIC_MOCKUPS_API_KEY=54a29578-65a8-4dfb-a4be-0abe2c63e3aa:c98a742930e0510322c97c3f7d7619c635d0f0a5f3481cfd96c4795296f3edb3"
+railway variables --set "DYNAMIC_MOCKUPS_API_KEY=${DYNAMIC_MOCKUPS_API_KEY}"  # Use environment variable
 railway variables --set "DYNAMIC_MOCKUPS_WEBSITE_KEY="
 
 # React app feature flags
