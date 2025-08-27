@@ -26,7 +26,7 @@ import { FEATURES } from './config/featureFlags';
 import './App.css';
 
 // Lazy load experimental components
-const DynamicMockupsEditor = lazy(() => import('./pages/experimental/DynamicMockupsEditor'));
+const DynamicMockupsComparison = lazy(() => import('./pages/experimental/DynamicMockupsComparison'));
 const MockupComparison = lazy(() => import('./pages/experimental/MockupComparison'));
 
 function AppContent() {
@@ -89,14 +89,9 @@ function AppContent() {
                     {/* Experimental Dynamic Mockups Routes */}
                     {FEATURES.ENABLE_EXPERIMENTAL_ROUTES && (
                       <>
-                        <Route path="/experimental/design/new" element={
-                          <Suspense fallback={<div>Loading Dynamic Mockups Editor...</div>}>
-                            <DynamicMockupsEditor />
-                          </Suspense>
-                        } />
-                        <Route path="/experimental/design/:id/edit" element={
-                          <Suspense fallback={<div>Loading Dynamic Mockups Editor...</div>}>
-                            <DynamicMockupsEditor />
+                        <Route path="/experimental/compare" element={
+                          <Suspense fallback={<div>Loading Dynamic Mockups Comparison...</div>}>
+                            <DynamicMockupsComparison />
                           </Suspense>
                         } />
                         <Route path="/admin/mockup-comparison" element={
