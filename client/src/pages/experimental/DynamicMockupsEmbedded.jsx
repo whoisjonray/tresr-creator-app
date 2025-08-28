@@ -12,7 +12,7 @@ function DynamicMockupsEmbedded() {
   const [isInitialized, setIsInitialized] = useState(false);
   const [error, setError] = useState(null);
   const [editorMode, setEditorMode] = useState('download');
-  const [websiteKey, setWebsiteKey] = useState(''); // Need to get actual website key
+  const [websiteKey, setWebsiteKey] = useState('Qtw1zfUN7ZVJ'); // Your actual website key
   const [mockupUuid, setMockupUuid] = useState(''); // Optional: open specific mockup
   const iframeRef = useRef(null);
   const initTimeoutRef = useRef(null);
