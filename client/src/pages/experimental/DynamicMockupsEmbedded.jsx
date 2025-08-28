@@ -13,15 +13,22 @@ function DynamicMockupsEmbedded() {
   const [error, setError] = useState(null);
   const [editorMode, setEditorMode] = useState('download');
   
-  // Environment-specific website keys as recommended by Dynamic Mockups team
+  // Environment-specific website keys as provided by user
   const getWebsiteKey = () => {
     const hostname = window.location.hostname;
-    if (hostname === 'localhost' || hostname === '127.0.0.1') {
-      return 'localhost-dev-key'; // Replace with your localhost key
-    } else if (hostname === 'creators.tresr.com') {
-      return 'Qtw1zfUN7ZVJ'; // Production key
+    
+    if (hostname === 'creators.tresr.com') {
+      return 'uxRCniavmJbA'; // creators.tresr.com key
+    } else if (hostname === 'tresr.com' || hostname === 'www.tresr.com') {
+      return 'Qtw1zfUN7ZVJ'; // TRESR.com key
+    } else if (hostname.includes('dynamic-mockups-test-production.up.railway.app')) {
+      return '18VAujfqJ5iA'; // Railway test domain key
+    } else if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'uxRCniavmJbA'; // Use creators key for local dev
     }
-    return 'Qtw1zfUN7ZVJ'; // Fallback to production key
+    
+    // Default to creators key since that's where this page will be accessed most
+    return 'uxRCniavmJbA';
   };
   
   const [websiteKey, setWebsiteKey] = useState(getWebsiteKey());
@@ -157,12 +164,15 @@ function DynamicMockupsEmbedded() {
           />
           <small>Get this from Dynamic Mockups: Dashboard → Settings → Integrations → Website Keys</small>
           <div className="key-info">
-            <strong>Important:</strong> You need separate website keys for each domain:
+            <strong>Domain → Website Key Mapping:</strong>
             <ul>
-              <li><code>localhost:3003</code> → Development key</li>
-              <li><code>creators.tresr.com</code> → Production key</li>
+              <li><code>creators.tresr.com</code> → <code>uxRCniavmJbA</code></li>
+              <li><code>tresr.com</code> → <code>Qtw1zfUN7ZVJ</code></li>
+              <li><code>railway-test.up.railway.app</code> → <code>18VAujfqJ5iA</code></li>
+              <li><code>localhost</code> → <code>uxRCniavmJbA</code> (uses creators key)</li>
             </ul>
-            <p>Current domain: <code>{window.location.hostname}</code></p>
+            <p>Current domain: <code>{typeof window !== 'undefined' ? window.location.hostname : 'SSR'}</code></p>
+            <p>Selected key: <code>{websiteKey}</code></p>
           </div>
         </div>
         
@@ -206,9 +216,9 @@ function DynamicMockupsEmbedded() {
               <ol>
                 <li>Log into your <a href="https://app.dynamicmockups.com" target="_blank" rel="noopener">Dynamic Mockups dashboard</a></li>
                 <li>Navigate to <strong>Settings → Integrations</strong></li>
-                <li>Find your website key (<code>Qtw1zfUN7ZVJ</code>)</li>
+                <li>Find your website key (<code>{websiteKey}</code>)</li>
                 <li>Check the whitelisted domains for this key</li>
-                <li>Ensure <code>creators.tresr.com</code> is listed (without https:// or trailing slash)</li>
+                <li>Ensure <code>{typeof window !== 'undefined' ? window.location.hostname : 'your-domain'}</code> is listed (without https:// or trailing slash)</li>
                 <li>If using a different key, update it in the field above</li>
                 <li>Save changes and refresh this page</li>
               </ol>
