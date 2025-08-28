@@ -27,6 +27,7 @@ import './App.css';
 
 // Lazy load experimental components
 const DynamicMockupsComparison = lazy(() => import('./pages/experimental/DynamicMockupsComparison'));
+const DynamicMockupsEmbedded = lazy(() => import('./pages/experimental/DynamicMockupsEmbedded'));
 const MockupComparison = lazy(() => import('./pages/experimental/MockupComparison'));
 
 function AppContent() {
@@ -92,6 +93,11 @@ function AppContent() {
                         <Route path="/experimental/compare" element={
                           <Suspense fallback={<div>Loading Dynamic Mockups Comparison...</div>}>
                             <DynamicMockupsComparison />
+                          </Suspense>
+                        } />
+                        <Route path="/experimental/embedded" element={
+                          <Suspense fallback={<div>Loading Dynamic Mockups Embedded Editor...</div>}>
+                            <DynamicMockupsEmbedded />
                           </Suspense>
                         } />
                         <Route path="/admin/mockup-comparison" element={
