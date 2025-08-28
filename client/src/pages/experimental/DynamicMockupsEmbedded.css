@@ -147,6 +147,73 @@
   font-weight: 600;
 }
 
+/* Error Banner */
+.dm-error-banner {
+  margin: 1rem 2rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+}
+
+.error-content h3 {
+  color: #dc2626;
+  margin: 0 0 0.75rem 0;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.error-content p {
+  color: #7f1d1d;
+  margin: 0.5rem 0;
+  font-size: 0.875rem;
+}
+
+.error-instructions {
+  background: white;
+  border: 1px solid #fecaca;
+  border-radius: 0.375rem;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.error-instructions h4 {
+  color: #991b1b;
+  margin: 0 0 0.75rem 0;
+  font-size: 1rem;
+}
+
+.error-instructions ol {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+  color: #7f1d1d;
+  font-size: 0.875rem;
+  line-height: 1.8;
+}
+
+.error-instructions li {
+  margin: 0.25rem 0;
+}
+
+.error-instructions code {
+  background: #fee2e2;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-family: monospace;
+  color: #991b1b;
+  font-weight: 600;
+}
+
+.error-note {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #fecaca;
+  font-size: 0.8125rem;
+  color: #7f1d1d;
+}
+
 /* Loading Overlay */
 .dm-loading-overlay {
   position: fixed;

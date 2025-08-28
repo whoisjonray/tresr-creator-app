@@ -10,21 +10,34 @@ function DynamicMockupsEmbedded() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [error, setError] = useState(null);
   const [editorMode, setEditorMode] = useState('download');
   const [websiteKey, setWebsiteKey] = useState('Qtw1zfUN7ZVJ'); // Default key from instructions
   const [mockupUuid, setMockupUuid] = useState(''); // Optional: open specific mockup
   const iframeRef = useRef(null);
+  const initTimeoutRef = useRef(null);
   
   useEffect(() => {
     // Only initialize once the iframe is loaded and not already initialized
-    if (!isInitialized && iframeRef.current) {
-      initializeEditor();
+    if (!isInitialized && websiteKey) {
+      // Add a delay to ensure iframe is ready
+      initTimeoutRef.current = setTimeout(() => {
+        initializeEditor();
+      }, 1000);
     }
+    
+    return () => {
+      if (initTimeoutRef.current) {
+        clearTimeout(initTimeoutRef.current);
+      }
+    };
   }, [editorMode, websiteKey, mockupUuid, isInitialized]);
   
-  const initializeEditor = () => {
+  const initializeEditor = async () => {
     try {
       console.log('🚀 Initializing Dynamic Mockups Editor...');
+      console.log('Current domain:', window.location.hostname);
+      setError(null);
       
       // Build iframe source URL (can include specific mockup UUID)
       let iframeSrc = "https://embed.dynamicmockups.com";
@@ -36,6 +49,9 @@ function DynamicMockupsEmbedded() {
       if (iframeRef.current && iframeRef.current.src !== iframeSrc) {
         iframeRef.current.src = iframeSrc;
       }
+      
+      // Wait a bit for iframe to load
+      await new Promise(resolve => setTimeout(resolve, 500));
       
       // Initialize using the SDK
       initDynamicMockupsIframe({
@@ -50,8 +66,18 @@ function DynamicMockupsEmbedded() {
       setIsLoading(false);
       console.log('✅ Dynamic Mockups Editor Initialized');
       
+      // Check for domain validation errors after initialization
+      setTimeout(() => {
+        // If still loading after 5 seconds, likely a domain validation issue
+        if (isLoading) {
+          setError('Domain validation failed. Please whitelist this domain in Dynamic Mockups.');
+          setIsLoading(false);
+        }
+      }, 5000);
+      
     } catch (error) {
       console.error('❌ Failed to initialize Dynamic Mockups:', error);
+      setError(error.message || 'Failed to initialize editor');
       setIsLoading(false);
     }
   };
@@ -134,6 +160,30 @@ function DynamicMockupsEmbedded() {
         </div>
       </div>
       
+      {/* Error Display */}
+      {error && (
+        <div className="dm-error-banner">
+          <div className="error-content">
+            <h3>⚠️ Domain Validation Error</h3>
+            <p>{error}</p>
+            <div className="error-instructions">
+              <h4>To fix this issue:</h4>
+              <ol>
+                <li>Log into your Dynamic Mockups dashboard</li>
+                <li>Go to Settings → API & Integrations</li>
+                <li>Add <code>creators.tresr.com</code> to your whitelisted domains</li>
+                <li>Also add <code>localhost:3003</code> for local development</li>
+                <li>Save changes and refresh this page</li>
+              </ol>
+              <p className="error-note">
+                <strong>Note:</strong> The 403 error indicates that Dynamic Mockups is blocking requests from this domain. 
+                Domain whitelisting is required for the embedded editor to work.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+      
       {/* Info Panel */}
       <div className="dm-embedded-info">
         <div className="info-card">
@@ -144,6 +194,7 @@ function DynamicMockupsEmbedded() {
             <li>No backend integration needed</li>
             <li>Users can upload, position, and download</li>
             <li>Requires website key from DM dashboard</li>
+            <li><strong>Domain must be whitelisted in DM settings</strong></li>
           </ul>
         </div>
         
