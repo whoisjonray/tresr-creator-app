@@ -1,7 +1,7 @@
 // Dynamic Mockups Embedded Editor
 // Testing their official embeddable editor to understand functionality
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { initDynamicMockupsIframe } from "@dynamic-mockups/mockup-editor-sdk";
 import './DynamicMockupsEmbedded.css';
@@ -9,32 +9,61 @@ import './DynamicMockupsEmbedded.css';
 function DynamicMockupsEmbedded() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
+  const [isInitialized, setIsInitialized] = useState(false);
   const [editorMode, setEditorMode] = useState('download');
-  const [websiteKey, setWebsiteKey] = useState(''); // We'll need to get this from their dashboard
+  const [websiteKey, setWebsiteKey] = useState('Qtw1zfUN7ZVJ'); // Default key from instructions
+  const [mockupUuid, setMockupUuid] = useState(''); // Optional: open specific mockup
+  const iframeRef = useRef(null);
   
   useEffect(() => {
-    // Initialize the Dynamic Mockups iframe
+    // Only initialize once the iframe is loaded and not already initialized
+    if (!isInitialized && iframeRef.current) {
+      initializeEditor();
+    }
+  }, [editorMode, websiteKey, mockupUuid, isInitialized]);
+  
+  const initializeEditor = () => {
     try {
+      console.log('🚀 Initializing Dynamic Mockups Editor...');
+      
+      // Build iframe source URL (can include specific mockup UUID)
+      let iframeSrc = "https://embed.dynamicmockups.com";
+      if (mockupUuid) {
+        iframeSrc += `?mockup=${mockupUuid}`;
+      }
+      
+      // Update iframe source if needed
+      if (iframeRef.current && iframeRef.current.src !== iframeSrc) {
+        iframeRef.current.src = iframeSrc;
+      }
+      
+      // Initialize using the SDK
       initDynamicMockupsIframe({
         iframeId: "dm-iframe",
         data: { 
-          "x-website-key": websiteKey || "Qtw1zfUN7ZVJ" // Using the key from instructions
+          "x-website-key": websiteKey
         },
-        mode: editorMode,
-        onReady: () => {
-          console.log('✅ Dynamic Mockups Editor Ready');
-          setIsLoading(false);
-        },
-        onError: (error) => {
-          console.error('❌ Dynamic Mockups Editor Error:', error);
-          setIsLoading(false);
-        }
+        mode: editorMode
       });
+      
+      setIsInitialized(true);
+      setIsLoading(false);
+      console.log('✅ Dynamic Mockups Editor Initialized');
+      
     } catch (error) {
-      console.error('Failed to initialize Dynamic Mockups:', error);
+      console.error('❌ Failed to initialize Dynamic Mockups:', error);
       setIsLoading(false);
     }
-  }, [editorMode, websiteKey]);
+  };
+  
+  const handleReinitialize = () => {
+    setIsInitialized(false);
+    setIsLoading(true);
+    // Small delay to allow state to update
+    setTimeout(() => {
+      initializeEditor();
+    }, 100);
+  };
   
   return (
     <div className="dm-embedded-container">
@@ -60,7 +89,11 @@ function DynamicMockupsEmbedded() {
           <label>Editor Mode:</label>
           <select 
             value={editorMode} 
-            onChange={(e) => setEditorMode(e.target.value)}
+            onChange={(e) => {
+              setEditorMode(e.target.value);
+              handleReinitialize();
+            }}
+            disabled={!isInitialized}
           >
             <option value="download">Download Mode</option>
             <option value="export">Export Mode</option>
@@ -69,7 +102,7 @@ function DynamicMockupsEmbedded() {
         </div>
         
         <div className="control-group">
-          <label>Website Key:</label>
+          <label>Website Key: (Required)</label>
           <input 
             type="text" 
             value={websiteKey} 
@@ -77,6 +110,27 @@ function DynamicMockupsEmbedded() {
             placeholder="Enter your website key"
           />
           <small>Get this from your Dynamic Mockups dashboard</small>
+        </div>
+        
+        <div className="control-group">
+          <label>Mockup UUID: (Optional)</label>
+          <input 
+            type="text" 
+            value={mockupUuid} 
+            onChange={(e) => setMockupUuid(e.target.value)}
+            placeholder="Enter mockup UUID to open specific template"
+          />
+          <small>Leave empty to show all templates</small>
+        </div>
+        
+        <div className="control-group">
+          <button 
+            className="btn-reinitialize"
+            onClick={handleReinitialize}
+            disabled={!websiteKey}
+          >
+            🔄 Reinitialize Editor
+          </button>
         </div>
       </div>
       
