@@ -9,7 +9,7 @@ import mockupServiceDM from '../../services/mockupServiceDM';
 import canvasImageGenerator from '../../services/canvasImageGenerator';
 import { getGarmentImage } from '../../config/garmentImagesCloudinary';
 import { usePrintAreas } from '../../contexts/PrintAreasContext';
-import DesignCanvas from '../../components/DesignCanvas';
+// import DesignCanvas from '../../components/DesignCanvas'; // Temporarily disabled
 import './DynamicMockupsComparison.css';
 
 // Use the same product templates as the main editor
@@ -24,6 +24,101 @@ const PRODUCT_TEMPLATES = [
 ];
 
 const COLOR_OPTIONS = ['White', 'Black', 'Navy', 'Light Grey'];
+
+// Simple inline canvas component for positioning
+function SimpleCanvas({ designImage, designPosition, onPositionChange, printArea }) {
+  const canvasRef = React.useRef(null);
+  const [isDragging, setIsDragging] = React.useState(false);
+  
+  React.useEffect(() => {
+    if (!canvasRef.current || !designImage) return;
+    
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw print area outline
+    ctx.strokeStyle = '#d1d5db';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(printArea.x, printArea.y, printArea.width, printArea.height);
+    
+    // Draw design if available
+    if (designImage) {
+      const x = printArea.x + (designPosition.x * printArea.width);
+      const y = printArea.y + (designPosition.y * printArea.height);
+      const width = designPosition.scale * printArea.width * 0.8;
+      const height = (designImage.height / designImage.width) * width;
+      
+      ctx.drawImage(
+        designImage,
+        x - width / 2,
+        y - height / 2,
+        width,
+        height
+      );
+      
+      // Draw selection border
+      ctx.strokeStyle = '#10b981';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([5, 5]);
+      ctx.strokeRect(x - width / 2, y - height / 2, width, height);
+      ctx.setLineDash([]);
+    }
+  }, [designImage, designPosition, printArea]);
+  
+  const handleCanvasClick = (e) => {
+    const rect = canvasRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    // Scale to canvas coordinates
+    const scaleX = canvasRef.current.width / rect.width;
+    const scaleY = canvasRef.current.height / rect.height;
+    
+    const canvasX = x * scaleX;
+    const canvasY = y * scaleY;
+    
+    // Check if click is within print area
+    if (
+      canvasX >= printArea.x &&
+      canvasX <= printArea.x + printArea.width &&
+      canvasY >= printArea.y &&
+      canvasY <= printArea.y + printArea.height
+    ) {
+      const newX = (canvasX - printArea.x) / printArea.width;
+      const newY = (canvasY - printArea.y) / printArea.height;
+      
+      onPositionChange({
+        ...designPosition,
+        x: Math.max(0, Math.min(1, newX)),
+        y: Math.max(0, Math.min(1, newY))
+      });
+    }
+  };
+  
+  return (
+    <canvas
+      ref={canvasRef}
+      width={500}
+      height={600}
+      onClick={handleCanvasClick}
+      style={{
+        width: '100%',
+        height: 'auto',
+        cursor: 'crosshair',
+        border: '2px solid #e5e7eb',
+        borderRadius: '0.5rem',
+        background: 'white'
+      }}
+    />
+  );
+}
 
 function DynamicMockupsComparison() {
   const navigate = useNavigate();
@@ -255,16 +350,11 @@ function DynamicMockupsComparison() {
             <h3>2. Position Design</h3>
             <div className="canvas-wrapper" style={{ minHeight: '300px', background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '0.5rem', padding: '1rem' }}>
               {designImage ? (
-                <DesignCanvas
-                  product={{
-                    ...selectedProduct,
-                    printArea: getCurrentPrintArea(),
-                    color: selectedColor
-                  }}
+                <SimpleCanvas
                   designImage={designImage}
                   designPosition={designPosition}
                   onPositionChange={setDesignPosition}
-                  isActive={true}
+                  printArea={getCurrentPrintArea()}
                 />
               ) : (
                 <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
