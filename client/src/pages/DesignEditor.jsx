@@ -304,6 +304,7 @@ function DesignEditor() {
   const [showCenterLines, setShowCenterLines] = useState(true); // Toggle for center lines
   const [isZoomed, setIsZoomed] = useState(false); // Magnifying glass zoom state
   const [isProductPublished, setIsProductPublished] = useState(false);
+  const [mockupPreviewData, setMockupPreviewData] = useState(null); // Modal for mockup preview
   const [selectedCreator, setSelectedCreator] = useState('');
   const [availableCreators, setAvailableCreators] = useState([]);
   const [creatorSearch, setCreatorSearch] = useState('');
@@ -1524,18 +1525,24 @@ function DesignEditor() {
         // Store mockup URLs for preview
         const mockupResults = response.data.mockups;
         
-        // Save design with mockup URLs
-        await handleSaveForLater(mockupResults);
-        
-        alert(`Successfully generated ${mockupResults.length} mockups! Design saved to your drafts.`);
-        
-        // Optionally navigate to a preview page
-        navigate('/products', { 
-          state: { 
-            mockups: mockupResults,
-            designTitle: designTitle 
-          }
+        // Display mockup preview modal
+        setMockupPreviewData({
+          isOpen: true,
+          mockups: mockupResults,
+          designTitle: designTitle,
+          designUrl: response.data.designUrl
         });
+        
+        // Save design with mockup URLs for later reference
+        const designDataWithMockups = {
+          ...designData,
+          mockupUrls: mockupResults
+        };
+        
+        // Optional: save to drafts
+        // await handleSaveForLater(designDataWithMockups);
+        
+        console.log(`✅ Generated ${response.data.successCount} mockups successfully!`);
       } else {
         throw new Error(response.data.error || 'Failed to generate mockups');
       }
@@ -2889,6 +2896,149 @@ function DesignEditor() {
         )}
       </div>
     </div>
+
+    {/* Mockup Preview Modal */}
+    {mockupPreviewData && mockupPreviewData.isOpen && (
+      <div className="mockup-preview-modal" style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 10000
+      }}>
+        <div className="mockup-preview-content" style={{
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          maxWidth: '90vw',
+          maxHeight: '90vh',
+          overflow: 'auto',
+          padding: '30px',
+          position: 'relative'
+        }}>
+          {/* Close button */}
+          <button 
+            onClick={() => setMockupPreviewData(null)}
+            style={{
+              position: 'absolute',
+              top: '15px',
+              right: '15px',
+              backgroundColor: 'transparent',
+              border: 'none',
+              fontSize: '24px',
+              cursor: 'pointer',
+              color: '#666'
+            }}
+          >
+            ✕
+          </button>
+          
+          <h2 style={{ marginBottom: '20px' }}>🎨 Generated Mockups</h2>
+          <p style={{ marginBottom: '20px', color: '#666' }}>
+            {mockupPreviewData.designTitle} - {mockupPreviewData.mockups?.filter(m => m.success)?.length || 0} mockups generated
+          </p>
+          
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+            gap: '20px',
+            marginBottom: '20px'
+          }}>
+            {mockupPreviewData.mockups?.map((mockup, index) => (
+              <div key={index} style={{
+                border: '1px solid #e0e0e0',
+                borderRadius: '8px',
+                padding: '15px',
+                textAlign: 'center'
+              }}>
+                {mockup.success ? (
+                  <>
+                    <img 
+                      src={mockup.mockupUrl} 
+                      alt={mockup.productName}
+                      style={{
+                        width: '100%',
+                        height: '250px',
+                        objectFit: 'contain',
+                        marginBottom: '10px'
+                      }}
+                      onError={(e) => {
+                        e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgICAgICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2NjY2NjYyIvPgogICAgICAgIDx0ZXh0IHg9IjUwJSIgeT0iNTAlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMzMzIiAKICAgICAgICAgICAgICBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGR5PSIuM2VtIj4KICAgICAgICAgIE1vY2t1cCBQcmV2aWV3CiAgICAgICAgPC90ZXh0PgogICAgICA8L3N2Zz4=';
+                      }}
+                    />
+                    <h4>{mockup.productName}</h4>
+                    <a 
+                      href={mockup.mockupUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style={{
+                        color: '#667eea',
+                        textDecoration: 'none',
+                        fontSize: '14px'
+                      }}
+                    >
+                      View Full Size →
+                    </a>
+                  </>
+                ) : (
+                  <div style={{ padding: '20px', color: '#999' }}>
+                    <p>❌ Failed to generate</p>
+                    <p style={{ fontSize: '12px' }}>{mockup.productName}</p>
+                    <p style={{ fontSize: '11px', color: '#cc0000' }}>{mockup.error}</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+          
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginTop: '20px',
+            paddingTop: '20px',
+            borderTop: '1px solid #e0e0e0'
+          }}>
+            <button 
+              onClick={() => {
+                setMockupPreviewData(null);
+                handleSaveForLater(mockupPreviewData);
+              }}
+              style={{
+                padding: '10px 20px',
+                backgroundColor: '#f0f0f0',
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer'
+              }}
+            >
+              💾 Save to Drafts
+            </button>
+            
+            <button 
+              onClick={() => {
+                setMockupPreviewData(null);
+                handleGenerateProducts();
+              }}
+              style={{
+                padding: '10px 20px',
+                backgroundColor: '#667eea',
+                color: 'white',
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer'
+              }}
+            >
+              🚀 Publish to Shopify
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
   );
 }
 

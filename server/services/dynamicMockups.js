@@ -103,41 +103,61 @@ class DynamicMockupsService {
     try {
       console.log(`🎨 Rendering mockup ${mockupUuid}...`);
       
-      // Build smart object configuration
+      // First, get the mockup details to find the smart object UUID
+      const mockupDetails = await this.getMockup(mockupUuid);
+      
+      // Find the first smart object (usually the main design area)
+      const smartObject = mockupDetails.smart_objects?.[0];
+      if (!smartObject) {
+        throw new Error(`No smart objects found in mockup ${mockupUuid}`);
+      }
+      
+      console.log(`📍 Using smart object: ${smartObject.uuid} (${smartObject.name || 'Design Area'})`);
+      
+      // Build smart object configuration according to API docs
       const smartObjects = [{
-        uuid: 'main_design', // We'll need to get actual UUID from mockup details
+        uuid: smartObject.uuid,
         asset: {
           url: designUrl,
-          fit: designConfig.fit || 'contain',
-          position: designConfig.position || { x: 0.5, y: 0.5 },
-          scale: designConfig.scale || 1.0,
-          rotation: designConfig.rotation || 0
+          fit: designConfig.fit || 'stretch', // stretch, contain, or cover
+          // Note: position, size, and rotate go at asset level, not nested
+          position: {
+            top: designConfig.y || 0,
+            left: designConfig.x || 0
+          },
+          size: {
+            width: designConfig.width || 100,
+            height: designConfig.height || 100
+          },
+          rotate: designConfig.rotation || 0
         }
       }];
 
-      // Build request body
+      // Build request body according to API documentation
       const requestBody = {
         mockup_uuid: mockupUuid,
         smart_objects: smartObjects,
         export_label: `tresr-${Date.now()}`,
         export_options: {
-          image_format: exportOptions.format || 'webp',
-          image_size: exportOptions.size || 1200,
-          mode: exportOptions.mode || 'download'
+          image_format: exportOptions.format || 'png', // jpg, png, or webp
+          image_size: exportOptions.size || 1200, // width in pixels
+          mode: exportOptions.mode || null // 'view' to display in browser
         }
       };
+
+      console.log('📤 Sending render request:', JSON.stringify(requestBody, null, 2));
 
       const response = await this.client.post('/renders', requestBody);
       
       console.log('✅ Mockup rendered successfully');
       return {
-        url: response.data.export_url,
+        url: response.data.export_path || response.data.export_url,
         path: response.data.export_path,
         label: response.data.export_label
       };
     } catch (error) {
       console.error('❌ Failed to render mockup:', error.response?.data || error.message);
-      throw new Error(`Failed to render mockup: ${error.message}`);
+      throw new Error(`Failed to render mockup: ${error.response?.data?.message || error.message}`);
     }
   }
 
