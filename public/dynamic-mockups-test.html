@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Mockups Test - Outside Auth Ring</title>
+    <script src="https://cdn.jsdelivr.net/npm/@dynamic-mockups/mockup-editor-sdk@latest/dist/index.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .info-box {
+            background: #e6f3ff;
+            border: 1px solid #3182ce;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .info-box h3 {
+            margin-top: 0;
+            color: #2c5282;
+        }
+        .info-box code {
+            background: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+        .controls {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .control-group {
+            margin-bottom: 15px;
+        }
+        .control-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #4a5568;
+        }
+        .control-group input,
+        .control-group select {
+            padding: 8px 12px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            font-size: 14px;
+            width: 300px;
+            max-width: 100%;
+        }
+        .control-group small {
+            display: block;
+            margin-top: 5px;
+            color: #718096;
+            font-size: 12px;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #5a67d8;
+        }
+        button:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+        }
+        #status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 20px 0;
+            font-weight: 500;
+        }
+        .status-loading {
+            background: #fef5e7;
+            border: 1px solid #f9c74f;
+            color: #764a00;
+        }
+        .status-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .status-error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        #dm-iframe {
+            width: 100%;
+            height: 80vh;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .console-output {
+            background: #1a202c;
+            color: #a0aec0;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin: 20px 0;
+        }
+        .console-output .log {
+            margin: 2px 0;
+        }
+        .console-output .error {
+            color: #fc8181;
+        }
+        .console-output .success {
+            color: #68d391;
+        }
+        .console-output .info {
+            color: #63b3ed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Dynamic Mockups Test Page (Outside Auth Ring)</h1>
+        
+        <div class="info-box">
+            <h3>📍 Current Environment</h3>
+            <p>
+                <strong>Page URL:</strong> <code id="current-url"></code><br>
+                <strong>Domain:</strong> <code id="current-domain"></code><br>
+                <strong>Protocol:</strong> <code id="current-protocol"></code><br>
+                <strong>Auth Status:</strong> <span style="color: green; font-weight: bold;">✅ No authentication required</span>
+            </p>
+        </div>
+
+        <div class="controls">
+            <h3>⚙️ Configuration</h3>
+            
+            <div class="control-group">
+                <label for="websiteKey">Website Key:</label>
+                <input type="text" id="websiteKey" value="Qtw1zfUN7ZVJ" />
+                <small>Your Dynamic Mockups website key</small>
+            </div>
+            
+            <div class="control-group">
+                <label for="editorMode">Editor Mode:</label>
+                <select id="editorMode">
+                    <option value="download">Download</option>
+                    <option value="export">Export</option>
+                    <option value="preview">Preview</option>
+                </select>
+                <small>Choose how users interact with the editor</small>
+            </div>
+            
+            <div class="control-group">
+                <label for="mockupUuid">Mockup UUID (Optional):</label>
+                <input type="text" id="mockupUuid" placeholder="Leave empty to show all templates" />
+                <small>Specific mockup template to load</small>
+            </div>
+            
+            <button onclick="initializeEditor()">🚀 Initialize Editor</button>
+            <button onclick="clearConsole()">🗑️ Clear Console</button>
+        </div>
+
+        <div id="status" class="status-loading">⏳ Waiting for initialization...</div>
+
+        <div class="console-output" id="console">
+            <div class="log info">📋 Console output will appear here...</div>
+        </div>
+
+        <iframe 
+            id="dm-iframe" 
+            src="https://embed.dynamicmockups.com"
+            title="Dynamic Mockups Editor"
+            allow="camera; microphone; clipboard-write"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-downloads"
+        ></iframe>
+
+        <div class="info-box" style="margin-top: 20px;">
+            <h3>📝 Test Results</h3>
+            <p>This page is served directly from the public folder without any authentication:</p>
+            <ul>
+                <li>✅ No Dynamic.xyz authentication required</li>
+                <li>✅ No authentication headers or cookies</li>
+                <li>✅ Direct access without login</li>
+                <li>✅ Clean environment for testing</li>
+            </ul>
+            <p>If the editor works here but not in the main app, it confirms the authentication layer is interfering with domain validation.</p>
+        </div>
+    </div>
+
+    <script>
+        // Display current environment info
+        document.getElementById('current-url').textContent = window.location.href;
+        document.getElementById('current-domain').textContent = window.location.hostname;
+        document.getElementById('current-protocol').textContent = window.location.protocol;
+
+        // Console logging
+        function logToConsole(message, type = 'log') {
+            const consoleElement = document.getElementById('console');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = `log ${type}`;
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            consoleElement.appendChild(logEntry);
+            consoleElement.scrollTop = consoleElement.scrollHeight;
+            
+            // Also log to browser console
+            console.log(message);
+        }
+
+        function clearConsole() {
+            document.getElementById('console').innerHTML = '<div class="log info">📋 Console cleared</div>';
+        }
+
+        function updateStatus(message, type) {
+            const statusElement = document.getElementById('status');
+            statusElement.textContent = message;
+            statusElement.className = `status-${type}`;
+        }
+
+        // Initialize Dynamic Mockups Editor
+        function initializeEditor() {
+            const websiteKey = document.getElementById('websiteKey').value;
+            const editorMode = document.getElementById('editorMode').value;
+            const mockupUuid = document.getElementById('mockupUuid').value;
+            
+            if (!websiteKey) {
+                logToConsole('❌ Website key is required!', 'error');
+                updateStatus('❌ Website key is required!', 'error');
+                return;
+            }
+            
+            logToConsole('🚀 Starting initialization...', 'info');
+            logToConsole(`Website Key: ${websiteKey}`, 'info');
+            logToConsole(`Editor Mode: ${editorMode}`, 'info');
+            logToConsole(`Domain: ${window.location.hostname}`, 'info');
+            logToConsole(`Origin: ${window.location.origin}`, 'info');
+            
+            updateStatus('⏳ Initializing Dynamic Mockups Editor...', 'loading');
+            
+            // Update iframe src if mockup UUID is provided
+            const iframe = document.getElementById('dm-iframe');
+            if (mockupUuid) {
+                iframe.src = `https://embed.dynamicmockups.com?mockup=${mockupUuid}`;
+                logToConsole(`Iframe URL updated with mockup: ${mockupUuid}`, 'info');
+            }
+            
+            try {
+                // Check if SDK is loaded
+                if (typeof DynamicMockups === 'undefined') {
+                    throw new Error('Dynamic Mockups SDK not loaded');
+                }
+                
+                // Initialize the editor
+                DynamicMockups.initDynamicMockupsIframe({
+                    iframeId: "dm-iframe",
+                    data: { 
+                        "x-website-key": websiteKey
+                    },
+                    mode: editorMode
+                });
+                
+                logToConsole('✅ SDK initialization called successfully', 'success');
+                updateStatus('✅ Editor initialized! Check if it loads below.', 'success');
+                
+                // Monitor for errors after initialization
+                setTimeout(() => {
+                    logToConsole('🔍 Checking for domain validation errors...', 'info');
+                    // Check if iframe content is accessible
+                    try {
+                        const iframeDoc = iframe.contentWindow.document;
+                        logToConsole('✅ Iframe is accessible', 'success');
+                    } catch (e) {
+                        logToConsole('⚠️ Iframe not accessible (cross-origin)', 'error');
+                    }
+                }, 3000);
+                
+            } catch (error) {
+                logToConsole(`❌ Error: ${error.message}`, 'error');
+                updateStatus(`❌ Failed to initialize: ${error.message}`, 'error');
+            }
+        }
+
+        // Listen for console errors
+        window.addEventListener('error', function(event) {
+            logToConsole(`❌ Global error: ${event.message}`, 'error');
+        });
+
+        // Auto-initialize on load if website key is present
+        window.addEventListener('load', function() {
+            logToConsole('📄 Page loaded successfully', 'success');
+            logToConsole(`Testing from: ${window.location.href}`, 'info');
+            
+            // Check for URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const autoInit = urlParams.get('autoInit');
+            
+            if (autoInit === 'true') {
+                logToConsole('🤖 Auto-initialization enabled', 'info');
+                setTimeout(initializeEditor, 1000);
+            }
+        });
+    </script>
+</body>
+</html>
