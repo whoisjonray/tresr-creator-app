@@ -12,10 +12,11 @@ function DynamicMockupsEmbedded() {
   const [isInitialized, setIsInitialized] = useState(false);
   const [error, setError] = useState(null);
   const [editorMode, setEditorMode] = useState('download');
-  const [websiteKey, setWebsiteKey] = useState('Qtw1zfUN7ZVJ'); // Default key from instructions
+  const [websiteKey, setWebsiteKey] = useState(''); // Need to get actual website key
   const [mockupUuid, setMockupUuid] = useState(''); // Optional: open specific mockup
   const iframeRef = useRef(null);
   const initTimeoutRef = useRef(null);
+  const [iframeLoaded, setIframeLoaded] = useState(false);
   
   useEffect(() => {
     // Only initialize once the iframe is loaded and not already initialized
@@ -37,23 +38,28 @@ function DynamicMockupsEmbedded() {
     try {
       console.log('🚀 Initializing Dynamic Mockups Editor...');
       console.log('Current domain:', window.location.hostname);
+      console.log('Website key:', websiteKey);
       setError(null);
       
-      // Build iframe source URL (can include specific mockup UUID)
-      let iframeSrc = "https://embed.dynamicmockups.com";
-      if (mockupUuid) {
-        iframeSrc += `?mockup=${mockupUuid}`;
+      if (!websiteKey) {
+        setError('Website key is required. Please enter your Dynamic Mockups website key.');
+        setIsLoading(false);
+        return;
       }
       
-      // Update iframe source if needed
-      if (iframeRef.current && iframeRef.current.src !== iframeSrc) {
-        iframeRef.current.src = iframeSrc;
+      // Wait for iframe to be fully loaded
+      if (!iframeLoaded) {
+        console.log('⏳ Waiting for iframe to load...');
+        return;
       }
-      
-      // Wait a bit for iframe to load
-      await new Promise(resolve => setTimeout(resolve, 500));
       
       // Initialize using the SDK
+      console.log('📦 Calling initDynamicMockupsIframe with:', {
+        iframeId: "dm-iframe",
+        websiteKey: websiteKey,
+        mode: editorMode
+      });
+      
       initDynamicMockupsIframe({
         iframeId: "dm-iframe",
         data: { 
@@ -70,7 +76,7 @@ function DynamicMockupsEmbedded() {
       setTimeout(() => {
         // If still loading after 5 seconds, likely a domain validation issue
         if (isLoading) {
-          setError('Domain validation failed. Please whitelist this domain in Dynamic Mockups.');
+          setError('Domain validation failed. Please ensure creators.tresr.com is whitelisted in Dynamic Mockups and you have the correct website key.');
           setIsLoading(false);
         }
       }, 5000);
@@ -135,7 +141,7 @@ function DynamicMockupsEmbedded() {
             onChange={(e) => setWebsiteKey(e.target.value)}
             placeholder="Enter your website key"
           />
-          <small>Get this from your Dynamic Mockups dashboard</small>
+          <small>Get this from Dynamic Mockups: Dashboard → Settings → Integrations → Website Keys</small>
         </div>
         
         <div className="control-group">
@@ -232,8 +238,18 @@ function DynamicMockupsEmbedded() {
       {/* Dynamic Mockups Iframe */}
       <div className="dm-iframe-container">
         <iframe
+          ref={iframeRef}
           id="dm-iframe"
           src="https://embed.dynamicmockups.com"
+          onLoad={() => {
+            console.log('🖼️ Iframe loaded');
+            setIframeLoaded(true);
+            if (websiteKey && !isInitialized) {
+              setTimeout(() => {
+                initializeEditor();
+              }, 500);
+            }
+          }}
           style={{
             width: '100%',
             height: '90vh',
@@ -242,6 +258,7 @@ function DynamicMockupsEmbedded() {
             boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
           }}
           title="Dynamic Mockups Editor"
+          allow="camera; microphone"
         />
       </div>
       
