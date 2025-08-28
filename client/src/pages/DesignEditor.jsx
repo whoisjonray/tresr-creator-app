@@ -812,6 +812,7 @@ function DesignEditor() {
     
     if (garmentImageUrl) {
       const img = new Image();
+      img.crossOrigin = 'anonymous'; // Enable CORS to prevent canvas tainting
       img.onload = () => {
         garmentImage.current = img;
         drawCanvas(); // Redraw canvas with new garment image
@@ -1491,20 +1492,15 @@ function DesignEditor() {
       
       console.log('🎨 Generating mockups with Dynamic Mockups API...');
       
-      // Get the current canvas design data
+      // Get the current design data - prioritize original design images to avoid CORS issues
       let designDataUrl;
       
-      // First try to use the canvas ref if available
-      if (canvasRef.current) {
-        designDataUrl = canvasRef.current.toDataURL('image/png');
-        console.log('✅ Got design from canvas ref');
-      } 
-      // Otherwise use the existing design images
-      else if (frontDesignImageSrc || frontDesignUrl) {
+      // First check for existing design images (avoids CORS issues)
+      if (frontDesignImageSrc || frontDesignUrl) {
         designDataUrl = frontDesignImageSrc || frontDesignUrl;
-        console.log('✅ Using existing design image');
+        console.log('✅ Using existing design image (no CORS issues)');
       }
-      // Or if we have a file, convert it
+      // If we have a file, convert it
       else if (frontDesignFile) {
         const reader = new FileReader();
         designDataUrl = await new Promise((resolve) => {
@@ -1512,6 +1508,20 @@ function DesignEditor() {
           reader.readAsDataURL(frontDesignFile);
         });
         console.log('✅ Converted design file to data URL');
+      }
+      // Try canvas only if it's not tainted (no cross-origin images)
+      else if (canvasRef.current) {
+        try {
+          // Check if canvas is tainted by trying to export it
+          designDataUrl = canvasRef.current.toDataURL('image/png');
+          console.log('✅ Got design from canvas (not tainted)');
+        } catch (error) {
+          console.warn('⚠️ Canvas is tainted (CORS), cannot export directly');
+          // If canvas is tainted, we need the original design image
+          if (!frontDesignImageSrc && !frontDesignUrl && !frontDesignFile) {
+            throw new Error('Canvas contains cross-origin content and cannot be exported. Please re-upload your design.');
+          }
+        }
       }
       else {
         throw new Error('No design available. Please upload or create a design first.');
