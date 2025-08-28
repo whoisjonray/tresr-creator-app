@@ -1492,17 +1492,34 @@ function DesignEditor() {
       console.log('🎨 Generating mockups with Dynamic Mockups API...');
       
       // Get the current canvas design data
-      const canvasElement = document.querySelector('.design-canvas canvas');
-      if (!canvasElement) {
-        throw new Error('Canvas not found');
+      let designDataUrl;
+      
+      // First try to use the canvas ref if available
+      if (canvasRef.current) {
+        designDataUrl = canvasRef.current.toDataURL('image/png');
+        console.log('✅ Got design from canvas ref');
+      } 
+      // Otherwise use the existing design images
+      else if (frontDesignImageSrc || frontDesignUrl) {
+        designDataUrl = frontDesignImageSrc || frontDesignUrl;
+        console.log('✅ Using existing design image');
+      }
+      // Or if we have a file, convert it
+      else if (frontDesignFile) {
+        const reader = new FileReader();
+        designDataUrl = await new Promise((resolve) => {
+          reader.onload = (e) => resolve(e.target.result);
+          reader.readAsDataURL(frontDesignFile);
+        });
+        console.log('✅ Converted design file to data URL');
+      }
+      else {
+        throw new Error('No design available. Please upload or create a design first.');
       }
       
-      // Export canvas as data URL
-      const designDataUrl = canvasElement.toDataURL('image/png');
-      
       // Get design position from current product config
-      const currentProduct = PRODUCT_TEMPLATES.find(p => p.id === selectedProduct);
-      const currentConfig = productConfigs[selectedProduct];
+      const currentProduct = PRODUCT_TEMPLATES.find(p => p.id === activeProduct);
+      const currentConfig = productConfigs[activeProduct];
       
       // Prepare design data with position coordinates
       const designData = {
