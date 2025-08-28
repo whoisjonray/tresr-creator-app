@@ -29,6 +29,7 @@ import './App.css';
 const DynamicMockupsComparison = lazy(() => import('./pages/experimental/DynamicMockupsComparison'));
 const DynamicMockupsEmbedded = lazy(() => import('./pages/experimental/DynamicMockupsEmbedded'));
 const DynamicMockupsDebug = lazy(() => import('./pages/experimental/DynamicMockupsDebug'));
+const DynamicMockupsStandalone = lazy(() => import('./pages/DynamicMockupsStandalone'));
 const MockupComparison = lazy(() => import('./pages/experimental/MockupComparison'));
 
 function AppContent() {
@@ -51,6 +52,13 @@ function AppContent() {
   return (
     <Router>
       <Routes>
+        {/* Standalone route - outside auth */}
+        <Route path="/mockups-standalone" element={
+          <Suspense fallback={<div>Loading Standalone Editor...</div>}>
+            <DynamicMockupsStandalone />
+          </Suspense>
+        } />
+        
         {/* Protected routes - inside AuthGuard */}
         <Route path="/*" element={
           <AuthGuard>
