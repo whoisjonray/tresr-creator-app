@@ -60,7 +60,7 @@ function AppContent() {
         } />
         
         {/* Protected routes - inside AuthGuard */}
-        <Route path="/*" element={
+        <Route path="*" element={
           <AuthGuard>
             <DataMigration>
               <ImpersonationBanner />
