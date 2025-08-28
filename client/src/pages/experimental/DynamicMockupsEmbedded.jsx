@@ -12,16 +12,35 @@ function DynamicMockupsEmbedded() {
   const [isInitialized, setIsInitialized] = useState(false);
   const [error, setError] = useState(null);
   const [editorMode, setEditorMode] = useState('download');
-  const [websiteKey, setWebsiteKey] = useState('Qtw1zfUN7ZVJ'); // Your actual website key
+  
+  // Environment-specific website keys as recommended by Dynamic Mockups team
+  const getWebsiteKey = () => {
+    const hostname = window.location.hostname;
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'localhost-dev-key'; // Replace with your localhost key
+    } else if (hostname === 'creators.tresr.com') {
+      return 'Qtw1zfUN7ZVJ'; // Production key
+    }
+    return 'Qtw1zfUN7ZVJ'; // Fallback to production key
+  };
+  
+  const [websiteKey, setWebsiteKey] = useState(getWebsiteKey());
   const [mockupUuid, setMockupUuid] = useState(''); // Optional: open specific mockup
   const iframeRef = useRef(null);
   const initTimeoutRef = useRef(null);
   const [iframeLoaded, setIframeLoaded] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   
+  // SSR-safe mounting effect
   useEffect(() => {
-    // Only initialize once the iframe is loaded and not already initialized
-    if (!isInitialized && websiteKey) {
-      // Add a delay to ensure iframe is ready
+    setIsMounted(true);
+    return () => setIsMounted(false);
+  }, []);
+
+  // Initialize editor only after component is mounted and iframe is loaded
+  useEffect(() => {
+    if (isMounted && iframeLoaded && !isInitialized && websiteKey) {
+      // Add a delay to ensure iframe is fully ready
       initTimeoutRef.current = setTimeout(() => {
         initializeEditor();
       }, 1000);
@@ -32,14 +51,14 @@ function DynamicMockupsEmbedded() {
         clearTimeout(initTimeoutRef.current);
       }
     };
-  }, [editorMode, websiteKey, mockupUuid, isInitialized]);
+  }, [isMounted, iframeLoaded, editorMode, websiteKey, mockupUuid, isInitialized]);
   
   const initializeEditor = async () => {
     try {
-      console.log('🚀 Initializing Dynamic Mockups Editor...');
+      console.log('🚀 Initializing Dynamic Mockups Editor (SSR-safe)...');
       console.log('Current domain:', window.location.hostname);
       console.log('Website key:', websiteKey);
-      console.log('Current origin:', window.location.origin);
+      console.log('Mounted:', isMounted, 'IFrame loaded:', iframeLoaded);
       setError(null);
       
       if (!websiteKey) {
@@ -48,59 +67,30 @@ function DynamicMockupsEmbedded() {
         return;
       }
       
-      // Wait for iframe to be fully loaded
-      if (!iframeLoaded) {
-        console.log('⏳ Waiting for iframe to load...');
+      // Ensure we're in browser environment and iframe is ready
+      if (!isMounted || !iframeLoaded || typeof window === 'undefined') {
+        console.log('⏳ Waiting for proper browser environment...');
         return;
       }
       
-      // Try two approaches
-      // 1. First try with the SDK
-      console.log('📦 Attempting SDK initialization...');
+      // Use the exact pattern recommended by Dynamic Mockups team
+      console.log('📦 Initializing with recommended SSR-safe pattern...');
       
-      try {
-        initDynamicMockupsIframe({
-          iframeId: "dm-iframe",
-          data: { 
-            "x-website-key": websiteKey
-          },
-          mode: editorMode
-        });
-        
-        console.log('✅ SDK initialization called');
-      } catch (sdkError) {
-        console.error('SDK initialization error:', sdkError);
-      }
-      
-      // 2. Also try posting message directly to iframe
-      console.log('📮 Attempting direct postMessage...');
-      if (iframeRef.current && iframeRef.current.contentWindow) {
-        iframeRef.current.contentWindow.postMessage({
-          type: 'init',
-          data: {
-            'x-website-key': websiteKey,
-            mode: editorMode,
-            origin: window.location.origin
-          }
-        }, 'https://embed.dynamicmockups.com');
-      }
+      initDynamicMockupsIframe({
+        iframeId: "dm-iframe",
+        data: { 
+          "x-website-key": websiteKey
+        },
+        mode: editorMode
+      });
       
       setIsInitialized(true);
       setIsLoading(false);
-      console.log('✅ Dynamic Mockups Editor Initialization attempted');
-      
-      // Check for domain validation errors after initialization
-      setTimeout(() => {
-        // If still loading after 5 seconds, likely a domain validation issue
-        if (isLoading) {
-          setError('Domain validation failed. The domain creators.tresr.com needs to be whitelisted in your Dynamic Mockups account under Settings → Integrations.');
-          setIsLoading(false);
-        }
-      }, 5000);
+      console.log('✅ Dynamic Mockups Editor initialized successfully');
       
     } catch (error) {
       console.error('❌ Failed to initialize Dynamic Mockups:', error);
-      setError(error.message || 'Failed to initialize editor');
+      setError(`Initialization failed: ${error.message}. Please check that creators.tresr.com is whitelisted for your website key.`);
       setIsLoading(false);
     }
   };
@@ -108,10 +98,17 @@ function DynamicMockupsEmbedded() {
   const handleReinitialize = () => {
     setIsInitialized(false);
     setIsLoading(true);
-    // Small delay to allow state to update
-    setTimeout(() => {
-      initializeEditor();
-    }, 100);
+    setError(null);
+    setIframeLoaded(false);
+    
+    // Force iframe reload by updating its src
+    if (iframeRef.current) {
+      const currentSrc = iframeRef.current.src;
+      iframeRef.current.src = '';
+      setTimeout(() => {
+        iframeRef.current.src = currentSrc;
+      }, 100);
+    }
   };
   
   return (
@@ -159,6 +156,14 @@ function DynamicMockupsEmbedded() {
             placeholder="Enter your website key"
           />
           <small>Get this from Dynamic Mockups: Dashboard → Settings → Integrations → Website Keys</small>
+          <div className="key-info">
+            <strong>Important:</strong> You need separate website keys for each domain:
+            <ul>
+              <li><code>localhost:3003</code> → Development key</li>
+              <li><code>creators.tresr.com</code> → Production key</li>
+            </ul>
+            <p>Current domain: <code>{window.location.hostname}</code></p>
+          </div>
         </div>
         
         <div className="control-group">
@@ -274,12 +279,9 @@ function DynamicMockupsEmbedded() {
           onLoad={() => {
             console.log('🖼️ Iframe loaded');
             console.log('Iframe URL:', iframeRef.current?.src);
+            console.log('Ready state:', iframeRef.current?.contentDocument?.readyState);
             setIframeLoaded(true);
-            if (websiteKey && !isInitialized) {
-              setTimeout(() => {
-                initializeEditor();
-              }, 500);
-            }
+            // The useEffect will handle initialization when all conditions are met
           }}
           style={{
             width: '100%',
