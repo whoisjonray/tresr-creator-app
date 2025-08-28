@@ -45,12 +45,15 @@ class DynamicMockupsService {
       console.log('🔄 Fetching collections from Dynamic Mockups...');
       const response = await this.client.get('/collections');
       
+      // Handle nested response structure
+      const collections = response.data?.data || response.data || [];
+      
       // Cache the result
-      this.collectionsCache = response.data;
+      this.collectionsCache = collections;
       this.collectionsCacheTime = Date.now();
       
-      console.log(`✅ Fetched ${response.data.length} collections`);
-      return response.data;
+      console.log(`✅ Fetched ${collections.length} collections`);
+      return collections;
     } catch (error) {
       console.error('❌ Failed to fetch collections:', error.response?.data || error.message);
       throw new Error(`Failed to fetch collections: ${error.message}`);
@@ -69,8 +72,11 @@ class DynamicMockupsService {
       
       const response = await this.client.get('/mockups', { params });
       
-      console.log(`✅ Fetched ${response.data.length} mockups`);
-      return response.data;
+      // Handle nested response structure
+      const mockups = response.data?.data || response.data || [];
+      
+      console.log(`✅ Fetched ${mockups.length} mockups`);
+      return mockups;
     } catch (error) {
       console.error('❌ Failed to fetch mockups:', error.response?.data || error.message);
       throw new Error(`Failed to fetch mockups: ${error.message}`);
@@ -83,8 +89,11 @@ class DynamicMockupsService {
       console.log(`🔄 Fetching mockup ${mockupUuid}...`);
       const response = await this.client.get(`/mockup/${mockupUuid}`);
       
+      // Handle nested response structure
+      const mockupData = response.data?.data || response.data;
+      
       console.log('✅ Fetched mockup details');
-      return response.data;
+      return mockupData;
     } catch (error) {
       console.error('❌ Failed to fetch mockup:', error.response?.data || error.message);
       throw new Error(`Failed to fetch mockup: ${error.message}`);
@@ -149,11 +158,14 @@ class DynamicMockupsService {
 
       const response = await this.client.post('/renders', requestBody);
       
+      // Handle nested response structure from API
+      const responseData = response.data?.data || response.data;
+      
       console.log('✅ Mockup rendered successfully');
       return {
-        url: response.data.export_path || response.data.export_url,
-        path: response.data.export_path,
-        label: response.data.export_label
+        url: responseData.export_path || responseData.export_url,
+        path: responseData.export_path,
+        label: responseData.export_label
       };
     } catch (error) {
       console.error('❌ Failed to render mockup:', error.response?.data || error.message);

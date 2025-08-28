@@ -11,8 +11,9 @@ const path = require('path');
 const API_KEY = process.env.DYNAMIC_MOCKUPS_API_KEY;
 const API_BASE = 'https://app.dynamicmockups.com/api/v1';
 
-// Test design image URL - use a simple placeholder that's publicly accessible
-const TEST_DESIGN_URL = 'https://via.placeholder.com/500/667eea/ffffff?text=TRESR+TEST';
+// Test design image URL - use a proper Cloudinary URL that Dynamic Mockups can access
+// This is a sample design from TRESR's Cloudinary account
+const TEST_DESIGN_URL = 'https://res.cloudinary.com/dqslerzk9/image/upload/v1756408584/tresr-designs/test-design-for-mockups.png';
 
 console.log('🧪 Testing Dynamic Mockups Render API...\n');
 
@@ -94,10 +95,13 @@ async function testRenderAPI() {
     console.log(JSON.stringify(renderRequest, null, 2));
     const renderResponse = await client.post('/renders', renderRequest);
     
-    if (renderResponse.data && renderResponse.data.export_path) {
+    // Handle nested response structure
+    const responseData = renderResponse.data?.data || renderResponse.data;
+    
+    if (responseData && responseData.export_path) {
       console.log('✅ Mockup rendered successfully!');
-      console.log(`   Preview URL: ${renderResponse.data.export_path}`);
-      console.log(`   Label: ${renderResponse.data.export_label || 'N/A'}`);
+      console.log(`   Preview URL: ${responseData.export_path}`);
+      console.log(`   Label: ${responseData.export_label || 'N/A'}`);
       
       console.log('\n🎉 SUCCESS! Dynamic Mockups Render API is working!');
       console.log('\n📋 Next Steps:');
