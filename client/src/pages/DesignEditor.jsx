@@ -1445,6 +1445,8 @@ function DesignEditor() {
 
   // New handler for generating mockups with Dynamic Mockups
   const handleGenerateMockups = async () => {
+    console.log('🎨 Generate Mockups clicked!');
+    
     // Check if we're in edit mode
     const isEditMode = params.id || (params.id && location.state?.productData);
     
@@ -1452,6 +1454,13 @@ function DesignEditor() {
     const hasFrontImage = frontDesignImageSrc || frontDesignUrl || frontDesignFile || (isEditMode && location.state?.productData?.originalDesignImage);
     const hasBackImage = backDesignImageSrc || backDesignUrl || backDesignFile;
     const hasAnyImage = hasFrontImage || hasBackImage;
+    
+    console.log('Image check:', {
+      frontDesignImageSrc: !!frontDesignImageSrc,
+      frontDesignUrl: !!frontDesignUrl,
+      frontDesignFile: !!frontDesignFile,
+      hasAnyImage
+    });
     
     if (!hasAnyImage) {
       alert('Please upload a design first');
@@ -2811,7 +2820,7 @@ function DesignEditor() {
                       <button
                         className="btn-mockups"
                         onClick={handleGenerateMockups}
-                        disabled={loading || !designTitle || !designFile}
+                        disabled={loading || !designTitle || (!frontDesignFile && !backDesignFile && !frontDesignImageSrc && !backDesignImageSrc)}
                         style={{ 
                           background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                           color: 'white',
@@ -2842,7 +2851,7 @@ function DesignEditor() {
                     <button
                       className="btn-mockups"
                       onClick={handleGenerateMockups}
-                      disabled={loading || !designTitle || !designFile}
+                      disabled={loading || !designTitle || (!frontDesignFile && !backDesignFile && !frontDesignImageSrc && !backDesignImageSrc)}
                       style={{ 
                         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                         color: 'white',
