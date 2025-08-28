@@ -2840,6 +2840,18 @@ function DesignEditor() {
                       Save for Later
                     </button>
                     <button
+                      className="btn-mockups"
+                      onClick={handleGenerateMockups}
+                      disabled={loading || !designTitle || !designFile}
+                      style={{ 
+                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        color: 'white',
+                        marginRight: '10px'
+                      }}
+                    >
+                      {loading ? 'Generating...' : '🎨 Generate Mockups'}
+                    </button>
+                    <button
                       className="btn-publish"
                       onClick={handleGenerateProducts}
                       disabled={loading || !designTitle || !designFile}
