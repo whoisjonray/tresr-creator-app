@@ -1938,8 +1938,9 @@ function DesignEditor() {
   }
 
   return (
-    <div className="design-editor-page">
-      <div className="design-editor-header">
+    <>
+      <div className="design-editor-page">
+        <div className="design-editor-header">
         <h1>TRESR Design Editor</h1>
         <p>Exact TeePublic-style product positioning system</p>
       </div>
@@ -2897,8 +2898,8 @@ function DesignEditor() {
       </div>
     </div>
 
-    {/* Mockup Preview Modal */}
-    {mockupPreviewData && mockupPreviewData.isOpen && (
+      {/* Mockup Preview Modal */}
+      {mockupPreviewData && mockupPreviewData.isOpen && (
       <div className="mockup-preview-modal" style={{
         position: 'fixed',
         top: 0,
@@ -3039,6 +3040,7 @@ function DesignEditor() {
         </div>
       </div>
     )}
+    </>
   );
 }
 
