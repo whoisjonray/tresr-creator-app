@@ -4,6 +4,118 @@ const dynamicMockupsService = require('../services/dynamicMockups');
 const cloudinaryService = require('../services/cloudinary');
 const { requireAuth } = require('../middleware/auth');
 
+// Generate batch mockups for a design across multiple products
+router.post('/generate-batch', requireAuth, async (req, res) => {
+  try {
+    const { 
+      imageDataUrl,
+      title,
+      products
+    } = req.body;
+
+    if (!imageDataUrl || !products || !products.length) {
+      return res.status(400).json({ 
+        error: 'Design image and products are required' 
+      });
+    }
+
+    console.log('🎨 Batch mockup generation request received:', {
+      title,
+      productCount: products.length
+    });
+
+    // First, upload the design to Cloudinary to get a URL
+    let designUrl = imageDataUrl;
+    
+    if (imageDataUrl.startsWith('data:')) {
+      try {
+        console.log('📤 Uploading design to Cloudinary...');
+        const cloudinaryResult = await cloudinaryService.uploadImage(imageDataUrl, {
+          folder: 'tresr-creator-designs',
+          tags: ['creator-design', 'temporary']
+        });
+        designUrl = cloudinaryResult.secure_url;
+        console.log('✅ Design uploaded:', designUrl);
+      } catch (uploadError) {
+        console.error('Failed to upload design to Cloudinary:', uploadError);
+        // Continue with data URL if upload fails
+      }
+    }
+
+    // Generate mockups for each product
+    const mockupResults = [];
+    
+    for (const product of products) {
+      const { id, name, config } = product;
+      
+      console.log(`🖼️ Generating mockup for ${name}...`);
+      
+      try {
+        // Get the Dynamic Mockups template UUID for this product
+        const mockupUuid = dynamicMockupsService.getProductMockupId(id);
+        
+        if (!mockupUuid) {
+          console.warn(`No mockup template found for product ${id}`);
+          continue;
+        }
+        
+        // Prepare design configuration
+        const designConfig = {
+          x: config?.x || 0.5,
+          y: config?.y || 0.5, 
+          scale: config?.scale || 1.0,
+          rotation: config?.rotation || 0
+        };
+        
+        // Generate the mockup
+        const mockupResult = await dynamicMockupsService.renderMockup({
+          mockupUuid,
+          designUrl,
+          designConfig,
+          exportOptions: {
+            format: 'png',
+            quality: 95,
+            width: 1000
+          }
+        });
+        
+        mockupResults.push({
+          productId: id,
+          productName: name,
+          mockupUrl: mockupResult.url,
+          success: true
+        });
+        
+        console.log(`✅ Mockup generated for ${name}`);
+        
+      } catch (mockupError) {
+        console.error(`Failed to generate mockup for ${name}:`, mockupError);
+        mockupResults.push({
+          productId: id,
+          productName: name,
+          error: mockupError.message,
+          success: false
+        });
+      }
+    }
+
+    res.json({
+      success: true,
+      mockups: mockupResults,
+      designUrl,
+      totalProducts: products.length,
+      successCount: mockupResults.filter(m => m.success).length
+    });
+
+  } catch (error) {
+    console.error('Error in batch mockup generation:', error);
+    res.status(500).json({ 
+      error: 'Failed to generate batch mockups',
+      message: error.message 
+    });
+  }
+});
+
 // Generate mockups for a design
 router.post('/generate', requireAuth, async (req, res) => {
   try {

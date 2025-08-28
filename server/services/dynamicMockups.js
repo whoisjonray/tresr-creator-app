@@ -280,6 +280,37 @@ class DynamicMockupsService {
     }
   }
 
+  // Get product mockup ID (synchronous version for quick lookups)
+  getProductMockupId(productId) {
+    // Actual Dynamic Mockups template UUIDs from your account
+    const productMockupMap = {
+      // T-Shirts
+      'tee': 'aadbef17-d095-4c2a-b1fe-118e76b50e8a', // White Gildan 5000 T-shirt
+      'boxy': '9988aa28-7a7c-4bd1-9200-6f30f4580fb0', // Dynamic Mockups Test V1 (T-shirt)
+      'next-crop': '', // Need crop top template
+      'baby-tee': 'aadbef17-d095-4c2a-b1fe-118e76b50e8a', // Using regular tee for now
+      
+      // Hoodies
+      'wmn-hoodie': 'beaf974e-804f-47d1-9e7c-cb6e295f29ed', // Man in studio hoodie
+      'med-hood': 'd8cdbf1f-0cf1-4a7f-a82d-d30296e95b48', // Man wearing hoodie in woods
+      'mediu': 'b6fa0aab-d154-4fa5-91ce-3a1e4313f67f', // Young man in hoodie by wall
+      'sweat': 'b6fa0aab-d154-4fa5-91ce-3a1e4313f67f', // Using hoodie template for now
+      
+      // Other products - need templates
+      'patch-c': '', // Need hat template
+      'patch-flat': '', // Need flat hat template
+      'polo': '', // Need polo template
+      'long-polo': '', // Need long polo template
+      'mug': '', // Need mug template
+      'art-sqsm': 'e607aea7-b0c4-4813-a603-6ee3d3e149f8', // Dynamic Mockups Test V1 (Artwork)
+      'art-sqm': 'e607aea7-b0c4-4813-a603-6ee3d3e149f8', // Using same artwork template
+      'art-lg': 'e607aea7-b0c4-4813-a603-6ee3d3e149f8', // Using same artwork template
+      'nft': '' // Need trading card template
+    };
+
+    return productMockupMap[productId] || null;
+  }
+
   // Map TRESR products to Dynamic Mockups templates
   async mapProductToMockup(productId) {
     // Actual Dynamic Mockups template UUIDs from your account

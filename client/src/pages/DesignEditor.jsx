@@ -1442,6 +1442,113 @@ function DesignEditor() {
     return `data:image/svg+xml;base64,${btoa(svg)}`;
   };
 
+  // New handler for generating mockups with Dynamic Mockups
+  const handleGenerateMockups = async () => {
+    // Check if we're in edit mode
+    const isEditMode = params.id || (params.id && location.state?.productData);
+    
+    // Check for images from multiple sources
+    const hasFrontImage = frontDesignImageSrc || frontDesignUrl || frontDesignFile || (isEditMode && location.state?.productData?.originalDesignImage);
+    const hasBackImage = backDesignImageSrc || backDesignUrl || backDesignFile;
+    const hasAnyImage = hasFrontImage || hasBackImage;
+    
+    if (!hasAnyImage) {
+      alert('Please upload a design first');
+      return;
+    }
+    
+    if (!designTitle) {
+      alert('Please add a title for your design');
+      return;
+    }
+    
+    setLoading(true);
+    setGenerationProgress({
+      current: 0,
+      total: 1,
+      message: 'Preparing design for Dynamic Mockups...'
+    });
+    
+    try {
+      // Get enabled products
+      const enabledProducts = PRODUCT_TEMPLATES.filter(p => productConfigs[p.id]?.enabled);
+      
+      if (enabledProducts.length === 0) {
+        alert('Please enable at least one product');
+        setLoading(false);
+        return;
+      }
+      
+      console.log('🎨 Generating mockups with Dynamic Mockups API...');
+      
+      // Get the current canvas design data
+      const canvasElement = document.querySelector('.design-canvas canvas');
+      if (!canvasElement) {
+        throw new Error('Canvas not found');
+      }
+      
+      // Export canvas as data URL
+      const designDataUrl = canvasElement.toDataURL('image/png');
+      
+      // Get design position from current product config
+      const currentProduct = PRODUCT_TEMPLATES.find(p => p.id === selectedProduct);
+      const currentConfig = productConfigs[selectedProduct];
+      
+      // Prepare design data with position coordinates
+      const designData = {
+        imageDataUrl: designDataUrl,
+        title: designTitle,
+        description: designDescription,
+        products: enabledProducts.map(product => ({
+          id: product.id,
+          name: product.name,
+          config: productConfigs[product.id] || {
+            position: { x: 0.5, y: 0.3 },
+            scale: 0.8
+          }
+        }))
+      };
+      
+      setGenerationProgress({
+        current: 0,
+        total: enabledProducts.length,
+        message: 'Sending design to Dynamic Mockups...'
+      });
+      
+      // Call Dynamic Mockups API endpoint
+      const response = await api.post('/mockups/generate-batch', designData);
+      
+      if (response.data.success) {
+        console.log('✅ Mockups generated successfully:', response.data.mockups);
+        
+        // Store mockup URLs for preview
+        const mockupResults = response.data.mockups;
+        
+        // Save design with mockup URLs
+        await handleSaveForLater(mockupResults);
+        
+        alert(`Successfully generated ${mockupResults.length} mockups! Design saved to your drafts.`);
+        
+        // Optionally navigate to a preview page
+        navigate('/products', { 
+          state: { 
+            mockups: mockupResults,
+            designTitle: designTitle 
+          }
+        });
+      } else {
+        throw new Error(response.data.error || 'Failed to generate mockups');
+      }
+      
+    } catch (error) {
+      console.error('Error generating mockups:', error);
+      alert(`Failed to generate mockups: ${error.message}`);
+    } finally {
+      setLoading(false);
+      setGenerationProgress(null);
+    }
+  };
+
   const handleGenerateProducts = async () => {
     // Check if we're in edit mode - either from location.state or just have a params.id
     const isEditMode = params.id || (params.id && location.state?.productData);
@@ -2694,11 +2801,23 @@ function DesignEditor() {
                         Save for Later
                       </button>
                       <button
+                        className="btn-mockups"
+                        onClick={handleGenerateMockups}
+                        disabled={loading || !designTitle || !designFile}
+                        style={{ 
+                          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                          color: 'white',
+                          marginRight: '10px'
+                        }}
+                      >
+                        {loading ? 'Generating...' : '🎨 Generate Mockups'}
+                      </button>
+                      <button
                         className="btn-publish"
                         onClick={handleGenerateProducts}
                         disabled={loading || !designTitle || !designFile}
                       >
-                        {loading ? 'Publishing...' : 'Publish'}
+                        {loading ? 'Publishing...' : 'Publish to Shopify'}
                       </button>
                     </>
                   )
