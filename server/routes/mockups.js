@@ -99,12 +99,21 @@ router.post('/generate-batch', requireAuth, async (req, res) => {
       }
     }
 
+    // Add summary statistics for better error handling on frontend
+    const successfulMockups = mockupResults.filter(m => m.success);
+    const failedMockups = mockupResults.filter(m => !m.success);
+    
     res.json({
       success: true,
       mockups: mockupResults,
       designUrl,
       totalProducts: products.length,
-      successCount: mockupResults.filter(m => m.success).length
+      successCount: successfulMockups.length,
+      failedCount: failedMockups.length,
+      summary: {
+        successful: successfulMockups.map(m => m.productName),
+        failed: failedMockups.map(m => ({ name: m.productName, error: m.error }))
+      }
     });
 
   } catch (error) {

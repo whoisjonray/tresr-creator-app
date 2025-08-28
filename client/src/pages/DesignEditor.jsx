@@ -1529,29 +1529,42 @@ function DesignEditor() {
       const response = await api.post('/mockups/generate-batch', designData);
       
       if (response.data.success) {
-        console.log('✅ Mockups generated successfully:', response.data.mockups);
+        console.log('✅ API Response:', response.data);
         
-        // Store mockup URLs for preview
-        const mockupResults = response.data.mockups;
+        // Filter successful mockups for display
+        const allMockups = response.data.mockups || [];
+        const successfulMockups = allMockups.filter(m => m.success && m.mockupUrl);
+        const failedMockups = allMockups.filter(m => !m.success);
         
-        // Display mockup preview modal
-        setMockupPreviewData({
-          isOpen: true,
-          mockups: mockupResults,
-          designTitle: designTitle,
-          designUrl: response.data.designUrl
-        });
-        
-        // Save design with mockup URLs for later reference
-        const designDataWithMockups = {
-          ...designData,
-          mockupUrls: mockupResults
-        };
-        
-        // Optional: save to drafts
-        // await handleSaveForLater(designDataWithMockups);
-        
-        console.log(`✅ Generated ${response.data.successCount} mockups successfully!`);
+        if (successfulMockups.length > 0) {
+          console.log(`✅ Successfully generated ${successfulMockups.length} mockups`);
+          
+          // Display mockup preview modal with successful mockups
+          setMockupPreviewData({
+            isOpen: true,
+            mockups: successfulMockups,
+            designTitle: designTitle,
+            designUrl: response.data.designUrl
+          });
+          
+          // Save design with mockup URLs for later reference
+          const designDataWithMockups = {
+            ...designData,
+            mockupUrls: successfulMockups
+          };
+          
+          // Show appropriate user feedback
+          if (failedMockups.length > 0) {
+            console.warn(`⚠️ ${failedMockups.length} mockups failed:`, response.data.summary?.failed);
+            alert(`Generated ${successfulMockups.length} of ${allMockups.length} mockups.\n\nSome products don't have templates configured yet.`);
+          } else {
+            console.log('✅ All mockups generated successfully!');
+          }
+        } else {
+          // All mockups failed
+          console.error('❌ All mockups failed:', response.data.summary?.failed);
+          throw new Error('No mockups could be generated. Please ensure products have templates configured.');
+        }
       } else {
         throw new Error(response.data.error || 'Failed to generate mockups');
       }
