@@ -39,6 +39,7 @@ function DynamicMockupsEmbedded() {
       console.log('🚀 Initializing Dynamic Mockups Editor...');
       console.log('Current domain:', window.location.hostname);
       console.log('Website key:', websiteKey);
+      console.log('Current origin:', window.location.origin);
       setError(null);
       
       if (!websiteKey) {
@@ -53,30 +54,46 @@ function DynamicMockupsEmbedded() {
         return;
       }
       
-      // Initialize using the SDK
-      console.log('📦 Calling initDynamicMockupsIframe with:', {
-        iframeId: "dm-iframe",
-        websiteKey: websiteKey,
-        mode: editorMode
-      });
+      // Try two approaches
+      // 1. First try with the SDK
+      console.log('📦 Attempting SDK initialization...');
       
-      initDynamicMockupsIframe({
-        iframeId: "dm-iframe",
-        data: { 
-          "x-website-key": websiteKey
-        },
-        mode: editorMode
-      });
+      try {
+        initDynamicMockupsIframe({
+          iframeId: "dm-iframe",
+          data: { 
+            "x-website-key": websiteKey
+          },
+          mode: editorMode
+        });
+        
+        console.log('✅ SDK initialization called');
+      } catch (sdkError) {
+        console.error('SDK initialization error:', sdkError);
+      }
+      
+      // 2. Also try posting message directly to iframe
+      console.log('📮 Attempting direct postMessage...');
+      if (iframeRef.current && iframeRef.current.contentWindow) {
+        iframeRef.current.contentWindow.postMessage({
+          type: 'init',
+          data: {
+            'x-website-key': websiteKey,
+            mode: editorMode,
+            origin: window.location.origin
+          }
+        }, 'https://embed.dynamicmockups.com');
+      }
       
       setIsInitialized(true);
       setIsLoading(false);
-      console.log('✅ Dynamic Mockups Editor Initialized');
+      console.log('✅ Dynamic Mockups Editor Initialization attempted');
       
       // Check for domain validation errors after initialization
       setTimeout(() => {
         // If still loading after 5 seconds, likely a domain validation issue
         if (isLoading) {
-          setError('Domain validation failed. Please ensure creators.tresr.com is whitelisted in Dynamic Mockups and you have the correct website key.');
+          setError('Domain validation failed. The domain creators.tresr.com needs to be whitelisted in your Dynamic Mockups account under Settings → Integrations.');
           setIsLoading(false);
         }
       }, 5000);
@@ -173,17 +190,30 @@ function DynamicMockupsEmbedded() {
             <h3>⚠️ Domain Validation Error</h3>
             <p>{error}</p>
             <div className="error-instructions">
-              <h4>To fix this issue:</h4>
+              <h4>Current Configuration:</h4>
+              <ul>
+                <li>Website Key: <code>{websiteKey}</code></li>
+                <li>Current Domain: <code>{window.location.hostname}</code></li>
+                <li>Mode: <code>{editorMode}</code></li>
+              </ul>
+              
+              <h4>To fix the 403 domain validation error:</h4>
               <ol>
-                <li>Log into your Dynamic Mockups dashboard</li>
-                <li>Go to Settings → API & Integrations</li>
-                <li>Add <code>creators.tresr.com</code> to your whitelisted domains</li>
-                <li>Also add <code>localhost:3003</code> for local development</li>
+                <li>Log into your <a href="https://app.dynamicmockups.com" target="_blank" rel="noopener">Dynamic Mockups dashboard</a></li>
+                <li>Navigate to <strong>Settings → Integrations</strong></li>
+                <li>Find your website key (<code>Qtw1zfUN7ZVJ</code>)</li>
+                <li>Check the whitelisted domains for this key</li>
+                <li>Ensure <code>creators.tresr.com</code> is listed (without https:// or trailing slash)</li>
+                <li>If using a different key, update it in the field above</li>
                 <li>Save changes and refresh this page</li>
               </ol>
+              
               <p className="error-note">
-                <strong>Note:</strong> The 403 error indicates that Dynamic Mockups is blocking requests from this domain. 
-                Domain whitelisting is required for the embedded editor to work.
+                <strong>Important:</strong> The embedded editor validates the domain on every request. 
+                Even if you've added the domain, double-check that:
+                <br />• The domain is exactly <code>creators.tresr.com</code> (no www, no https://)
+                <br />• The website key matches the one with that domain whitelisted
+                <br />• You've saved the changes in Dynamic Mockups dashboard
               </p>
             </div>
           </div>
@@ -240,9 +270,10 @@ function DynamicMockupsEmbedded() {
         <iframe
           ref={iframeRef}
           id="dm-iframe"
-          src="https://embed.dynamicmockups.com"
+          src={`https://embed.dynamicmockups.com${mockupUuid ? `?mockup=${mockupUuid}` : ''}`}
           onLoad={() => {
             console.log('🖼️ Iframe loaded');
+            console.log('Iframe URL:', iframeRef.current?.src);
             setIframeLoaded(true);
             if (websiteKey && !isInitialized) {
               setTimeout(() => {
@@ -258,7 +289,8 @@ function DynamicMockupsEmbedded() {
             boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
           }}
           title="Dynamic Mockups Editor"
-          allow="camera; microphone"
+          allow="camera; microphone; clipboard-write"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-downloads"
         />
       </div>
       
