@@ -529,24 +529,59 @@ function DynamicMockupsComparison() {
           </div>
           
           {/* Comparison Summary */}
-          {stats.canvas && stats.dynamic && !stats.canvas.error && !stats.dynamic.error && (
+          {(stats.canvas || stats.dynamic) && (
             <div className="comparison-summary">
               <h3>Performance Comparison</h3>
               <div className="summary-grid">
                 <div className="summary-item">
-                  <span>Winner (Speed)</span>
+                  <span>Overall Winner</span>
                   <span className="winner">
-                    {stats.canvas.duration < stats.dynamic.duration ? 'Canvas' : 'Dynamic Mockups'}
-                    ({Math.abs(stats.canvas.duration - stats.dynamic.duration)}ms faster)
+                    {(() => {
+                      const canvasSuccess = canvasMockup && !stats.canvas?.error;
+                      const dynamicSuccess = dynamicMockup && !stats.dynamic?.error;
+                      
+                      // If only one succeeded, it wins
+                      if (canvasSuccess && !dynamicSuccess) return '✅ Canvas (Dynamic failed)';
+                      if (dynamicSuccess && !canvasSuccess) return '✅ Dynamic Mockups (Canvas failed)';
+                      
+                      // If both failed
+                      if (!canvasSuccess && !dynamicSuccess) return '❌ Both failed';
+                      
+                      // Both succeeded - compare speeds
+                      if (canvasSuccess && dynamicSuccess) {
+                        const canvasTime = stats.canvas?.duration || Infinity;
+                        const dynamicTime = stats.dynamic?.duration || Infinity;
+                        
+                        if (canvasTime < dynamicTime) {
+                          return `Canvas (${Math.abs(canvasTime - dynamicTime)}ms faster)`;
+                        } else {
+                          return `Dynamic Mockups (${Math.abs(canvasTime - dynamicTime)}ms faster + better positioning)`;
+                        }
+                      }
+                      
+                      return 'Pending...';
+                    })()}
                   </span>
                 </div>
                 <div className="summary-item">
-                  <span>Canvas Time</span>
-                  <span>{stats.canvas.duration}ms</span>
+                  <span>Canvas</span>
+                  <span className={canvasMockup ? 'success' : 'error'}>
+                    {stats.canvas?.error ? `❌ ${stats.canvas.error}` : 
+                     stats.canvas?.duration ? `✅ ${stats.canvas.duration}ms` : 
+                     '⏳ Not generated'}
+                  </span>
                 </div>
                 <div className="summary-item">
-                  <span>Dynamic Mockups Time</span>
-                  <span>{stats.dynamic.duration}ms</span>
+                  <span>Dynamic Mockups</span>
+                  <span className={dynamicMockup ? 'success' : 'error'}>
+                    {stats.dynamic?.error ? `❌ ${stats.dynamic.error}` : 
+                     stats.dynamic?.duration ? `✅ ${stats.dynamic.duration}ms` : 
+                     '⏳ Not generated'}
+                  </span>
+                </div>
+                <div className="summary-item">
+                  <span>Positioning</span>
+                  <span>Dynamic Mockups offers superior positioning controls</span>
                 </div>
               </div>
             </div>

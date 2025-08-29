@@ -378,6 +378,16 @@
   color: #10b981;
 }
 
+.summary-item .success {
+  color: #10b981;
+  font-weight: 500;
+}
+
+.summary-item .error {
+  color: #ef4444;
+  font-weight: 500;
+}
+
 /* Responsive */
 @media (max-width: 1200px) {
   .comparison-layout {
