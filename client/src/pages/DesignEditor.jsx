@@ -1566,26 +1566,27 @@ function DesignEditor() {
         if (successfulMockups.length > 0) {
           console.log(`✅ Successfully generated ${successfulMockups.length} mockups`);
           
-          // Display mockup preview modal with successful mockups
-          setMockupPreviewData({
-            isOpen: true,
-            mockups: successfulMockups,
-            designTitle: designTitle,
-            designUrl: response.data.designUrl
+          // Navigate to MockupReview page with generated mockups
+          navigate('/mockup-review', {
+            state: {
+              mockups: successfulMockups,
+              designData: {
+                title: designTitle,
+                description: designDescription,
+                vendor: selectedCreator,
+                frontImage: designDataUrl,
+                backImage: backDesignImageSrc || backDesignUrl,
+                position: currentConfig?.position || { x: 0.5, y: 0.3 },
+                scale: currentConfig?.scale || 0.8,
+                productConfigs: productConfigs,
+                designUrl: response.data.designUrl
+              }
+            }
           });
           
-          // Save design with mockup URLs for later reference
-          const designDataWithMockups = {
-            ...designData,
-            mockupUrls: successfulMockups
-          };
-          
-          // Show appropriate user feedback
+          // Show warning if some failed
           if (failedMockups.length > 0) {
             console.warn(`⚠️ ${failedMockups.length} mockups failed:`, response.data.summary?.failed);
-            alert(`Generated ${successfulMockups.length} of ${allMockups.length} mockups.\n\nSome products don't have templates configured yet.`);
-          } else {
-            console.log('✅ All mockups generated successfully!');
           }
         } else {
           // All mockups failed
@@ -2863,18 +2864,10 @@ function DesignEditor() {
                         disabled={loading || !designTitle || (!frontDesignFile && !backDesignFile && !frontDesignImageSrc && !backDesignImageSrc)}
                         style={{ 
                           background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                          color: 'white',
-                          marginRight: '10px'
+                          color: 'white'
                         }}
                       >
                         {loading ? 'Generating...' : '🎨 Generate Mockups'}
-                      </button>
-                      <button
-                        className="btn-publish"
-                        onClick={handleGenerateProducts}
-                        disabled={loading || !designTitle || !designFile}
-                      >
-                        {loading ? 'Publishing...' : 'Publish to Shopify'}
                       </button>
                     </>
                   )
@@ -2894,18 +2887,10 @@ function DesignEditor() {
                       disabled={loading || !designTitle || (!frontDesignFile && !backDesignFile && !frontDesignImageSrc && !backDesignImageSrc)}
                       style={{ 
                         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                        color: 'white',
-                        marginRight: '10px'
+                        color: 'white'
                       }}
                     >
                       {loading ? 'Generating...' : '🎨 Generate Mockups'}
-                    </button>
-                    <button
-                      className="btn-publish"
-                      onClick={handleGenerateProducts}
-                      disabled={loading || !designTitle || !designFile}
-                    >
-                      {loading ? 'Publishing...' : 'Publish'}
                     </button>
                   </>
                 )}

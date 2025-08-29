@@ -14,6 +14,7 @@ import BoundingBoxEditor from './pages/BoundingBoxEditor';
 import BoundingBoxEditorSimple from './pages/BoundingBoxEditorSimple';
 import ProductTemplateManager from './pages/ProductTemplateManager';
 import ScanMap from './pages/ScanMap';
+import MockupReview from './pages/MockupReview';
 import Navigation from './components/Navigation';
 import SidebarNavigation from './components/SidebarNavigation';
 import ImpersonationBanner from './components/ImpersonationBanner';
@@ -73,6 +74,7 @@ function AppContent() {
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/design/new" element={<DesignEditor />} />
                     <Route path="/design/:id/edit" element={<DesignEditor />} />
+                    <Route path="/mockup-review" element={<MockupReview />} />
                     <Route path="/products" element={<ProductManager />} />
                     <Route path="/admin" element={<AdminPanel />} />
                     <Route path="/admin/users" element={<UserManagement />} />
