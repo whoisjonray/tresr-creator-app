@@ -15,6 +15,7 @@ import BoundingBoxEditorSimple from './pages/BoundingBoxEditorSimple';
 import ProductTemplateManager from './pages/ProductTemplateManager';
 import ScanMap from './pages/ScanMap';
 import MockupReview from './pages/MockupReview';
+import SuperProductCreator from './pages/SuperProductCreator';
 import Navigation from './components/Navigation';
 import SidebarNavigation from './components/SidebarNavigation';
 import ImpersonationBanner from './components/ImpersonationBanner';
@@ -82,6 +83,9 @@ function AppContent() {
                     <Route path="/test/bounding-box" element={<BoundingBoxEditor />} />
                     <Route path="/test/product-templates" element={<ProductTemplateManager />} />
                     <Route path="/scan-map" element={<ScanMap />} />
+                    
+                    {/* SuperProduct Creator - Standalone */}
+                    <Route path="/superproduct-creator" element={<SuperProductCreator />} />
                     
                     {/* Documentation Routes */}
                     <Route path="/docs/getting-started" element={<div>Getting Started Guide (Coming Soon)</div>} />
