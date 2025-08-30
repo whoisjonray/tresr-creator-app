@@ -11,19 +11,27 @@ import { forceCanvasRender } from '../utils/force-canvas-render';
 import { fixCanvasProductSwitching } from '../utils/fix-canvas-product-switching';
 import { useResponsiveCanvas } from '../hooks/useResponsiveCanvas';
 import { useTouchDrag } from '../hooks/useTouchDrag';
+import CreditsModal from '../components/CreditsModal';
 import './SuperProductCreator.css';
 import './DesignEditor.css'; // Import DesignEditor styles too
 
 // Use same product templates as DesignEditor
 const PRODUCT_TEMPLATES = [
-  { id: 'tee', name: 'Medium Weight T-Shirt', templateId: 'tshirt_front', price: 22, colors: ['Black', 'Navy', 'Natural', 'White', 'Dark Grey', 'Cardinal Red'] },
-  { id: 'boxy', name: 'Oversized Drop Shoulder', templateId: 'tshirt_boxy_front', price: 26, colors: ['Black', 'Natural'] },
-  { id: 'next-crop', name: 'Next Level Crop Top', templateId: 'croptop_front', price: 24, colors: ['Black', 'Gold', 'Royal Heather', 'Dark Grey', 'Pink', 'Light Grey', 'Navy', 'Cardinal Red', 'White'] },
-  { id: 'baby-tee', name: 'Ladies Baby Tee', templateId: 'babytee_front', price: 23, colors: ['Black', 'White'] },
-  { id: 'wmn-hoodie', name: "Women's Independent Hoodie", templateId: 'hoodie_front', price: 42, colors: ['Black', 'Black Camo', 'Pink', 'Natural', 'Cotton Candy', 'Light Grey', 'Mint', 'White'] },
-  { id: 'med-hood', name: 'Medium Weight Hoodie', templateId: 'hoodie_front', price: 42, colors: ['Black', 'White', 'Gold', 'Light Grey', 'Cardinal Red', 'Alpine Green', 'Navy', 'Mint'] },
-  { id: 'mediu', name: 'Medium Weight Sweatshirt', templateId: 'crewneck_front', price: 36, colors: ['Black', 'White', 'Navy', 'Light Grey', 'Army Heather', 'Cardinal Red', 'Royal Heather', 'Dark Grey'] },
-  { id: 'polo', name: 'Standard Polo', templateId: 'polo_front', price: 28, colors: ['Black', 'White', 'Navy', 'Light Grey'] },
+  { id: 'tee', name: 'Medium Weight T-Shirt', icon: '👕', templateId: 'tshirt_front', price: 22, colors: ['Black', 'Navy', 'Natural', 'White', 'Dark Grey', 'Cardinal Red'] },
+  { id: 'boxy', name: 'Oversized Drop Shoulder', icon: '🧥', templateId: 'tshirt_boxy_front', price: 26, colors: ['Black', 'Natural'] },
+  { id: 'next-crop', name: 'Next Level Crop Top', icon: '👚', templateId: 'croptop_front', price: 24, colors: ['Black', 'Gold', 'Royal Heather', 'Dark Grey', 'Pink', 'Light Grey', 'Navy', 'Cardinal Red', 'White'] },
+  { id: 'baby-tee', name: 'Ladies Baby Tee', icon: '👚', templateId: 'babytee_front', price: 23, colors: ['Black', 'White'] },
+  { id: 'wmn-hoodie', name: "Women's Independent Hoodie", icon: '🧥', templateId: 'hoodie_front', price: 42, colors: ['Black', 'Black Camo', 'Pink', 'Natural', 'Cotton Candy', 'Light Grey', 'Mint', 'White'] },
+  { id: 'med-hood', name: 'Medium Weight Hoodie', icon: '🧥', templateId: 'hoodie_front', price: 42, colors: ['Black', 'White', 'Gold', 'Light Grey', 'Cardinal Red', 'Alpine Green', 'Navy', 'Mint'] },
+  { id: 'mediu', name: 'Medium Weight Sweatshirt', icon: '👔', templateId: 'crewneck_front', price: 36, colors: ['Black', 'White', 'Navy', 'Light Grey', 'Army Heather', 'Cardinal Red', 'Royal Heather', 'Dark Grey'] },
+  { id: 'polo', name: 'Standard Polo', icon: '👔', templateId: 'polo_front', price: 28, colors: ['Black', 'White', 'Navy', 'Light Grey'] },
+  { id: 'patch-c', name: 'Patch Hat - Curved', icon: '🧢', templateId: 'hat_front', price: 22, colors: ['Black', 'Navy'] },
+  { id: 'patch-flat', name: 'Patch Hat - Flat', icon: '🧢', templateId: 'hat_flat', price: 24, colors: ['Black', 'Navy'] },
+  { id: 'mug', name: 'Coffee Mug', icon: '☕', templateId: 'mug_front', price: 15, colors: ['White'] },
+  { id: 'art-sqsm', name: 'Art Canvas - 12x12', icon: '🖼️', templateId: 'canvas_square', price: 35, colors: ['White'] },
+  { id: 'art-sqm', name: 'Art Canvas - 16x16', icon: '🖼️', templateId: 'canvas_square', price: 45, colors: ['White'] },
+  { id: 'art-lg', name: 'Art Canvas - 24x24', icon: '🖼️', templateId: 'canvas_square', price: 65, colors: ['White'] },
+  { id: 'nft', name: 'NFTREASURE NFT Cards', icon: '🎴', templateId: 'trading_card', price: 5, colors: ['Default'] }
 ];
 
 const COLOR_PALETTE = [
@@ -258,6 +266,19 @@ function SuperProductCreatorV2() {
     // });
   };
 
+  const handlePurchaseCredits = (creditAmount) => {
+    setCredits(prev => prev + creditAmount);
+    // Show success message
+    const toast = document.createElement('div');
+    toast.className = 'toast show';
+    toast.textContent = `Successfully purchased ${creditAmount} credits!`;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  };
+
   return (
     <div className="spc-container">
       {/* Header */}
@@ -277,7 +298,7 @@ function SuperProductCreatorV2() {
           <div className="spc-credits">
             <span>{credits}</span> Credits
           </div>
-          <button className="spc-btn spc-btn-primary">Buy Credits</button>
+          <button className="spc-btn spc-btn-primary" onClick={() => setShowCreditsModal(true)}>Buy Credits</button>
         </div>
       </div>
 
@@ -373,11 +394,13 @@ function SuperProductCreatorV2() {
                       </div>
                       <div className="spc-field-row">
                         <label>Category</label>
-                        <select value={designAnalysis.category}>
-                          <option>Technology</option>
-                          <option>Coffee</option>
-                          <option>Crypto/Web3</option>
-                          <option>Mental Health</option>
+                        <select 
+                          value={designAnalysis.category || 'Other'}
+                          onChange={(e) => setDesignAnalysis({...designAnalysis, category: e.target.value})}
+                        >
+                          {MEME_CATEGORIES.map(cat => (
+                            <option key={cat} value={cat}>{cat}</option>
+                          ))}
                         </select>
                       </div>
                       <div className="spc-field-row">
@@ -462,77 +485,101 @@ function SuperProductCreatorV2() {
             </div>
           )}
 
-          {/* Step 3: Configure Products (using DesignEditor layout) */}
+          {/* Step 3: Configure Products (matching superproduct-demo-final.html) */}
           {currentStep === 3 && (
-            <div className="configure-section">
-              <div className="editor-layout">
-                {/* Canvas Section */}
-                <div style={{
-                  background: 'white',
-                  borderRadius: '8px',
-                  padding: '20px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '16px'
-                }}>
-                  {/* Product Selector */}
-                  <div className="product-selector">
+            <div className="spc-step-content active">
+              <div className="spc-page-title">Configure Products</div>
+              
+              <div className="configure-section">
+                {/* Product Selection Grid */}
+                <div className="products-grid-container">
+                  <div className="products-grid">
                     {PRODUCT_TEMPLATES.map(product => (
-                      <button
+                      <div 
                         key={product.id}
-                        className={`product-btn ${activeProduct === product.id ? 'active' : ''}`}
-                        onClick={() => handleProductChange(product.id)}
+                        className={`product-card ${enabledProducts[product.id] ? 'selected' : ''} ${activeProduct === product.id ? 'currently-editing' : ''}`}
+                        onClick={() => {
+                          toggleProductEnabled(product.id);
+                          handleProductChange(product.id);
+                        }}
                       >
-                        {product.name}
-                      </button>
+                        {activeProduct === product.id && (
+                          <div className="product-editing-badge">Currently Editing</div>
+                        )}
+                        {enabledProducts[product.id] && <div className="product-check">✓</div>}
+                        <div className="product-icon">{product.icon}</div>
+                        <div className="product-name" dangerouslySetInnerHTML={{ __html: product.name.replace(/\s/g, '<br>') }} />
+                      </div>
                     ))}
                   </div>
+                </div>
 
-                  {/* Canvas */}
-                  <div ref={containerRef} className="canvas-container">
-                    <canvas
-                      ref={canvasRef}
-                      width={600}
-                      height={600}
-                      style={{ 
-                        width: '100%', 
-                        height: 'auto',
-                        border: '1px solid #e5e7eb',
-                        borderRadius: '8px'
-                      }}
-                      onTouchStart={handleTouchStart}
-                      onTouchMove={handleTouchMove}
-                      onTouchEnd={handleTouchEnd}
-                    />
-                  </div>
+                {/* Two Column Layout */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                  {/* Canvas Section */}
+                  <div style={{
+                    background: '#0f1419',
+                    borderRadius: '12px',
+                    padding: '20px'
+                  }}>
 
-                  {/* Controls */}
-                  <div className="canvas-controls">
-                    <div className="control-group">
-                      <label>Scale</label>
-                      <input
-                        type="range"
-                        min="0.5"
-                        max="2"
-                        step="0.1"
-                        value={designScale}
-                        onChange={(e) => setDesignScale(parseFloat(e.target.value))}
+                    {/* Canvas */}
+                    <div ref={containerRef} style={{ 
+                      background: 'white',
+                      borderRadius: '8px',
+                      padding: '20px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
+                      <canvas
+                        ref={canvasRef}
+                        width={600}
+                        height={600}
+                        style={{ 
+                          width: '100%', 
+                          maxWidth: '400px',
+                          height: 'auto'
+                        }}
+                        onTouchStart={handleTouchStart}
+                        onTouchMove={handleTouchMove}
+                        onTouchEnd={handleTouchEnd}
                       />
-                      <span>{Math.round(designScale * 100)}%</span>
                     </div>
-                    <div className="control-group">
-                      <label>Rotation</label>
-                      <input
-                        type="range"
-                        min="-180"
-                        max="180"
-                        step="1"
-                        value={designRotation}
-                        onChange={(e) => setDesignRotation(parseInt(e.target.value))}
-                      />
-                      <span>{designRotation}°</span>
+
+                    {/* Controls */}
+                    <div style={{ marginTop: '16px', display: 'flex', gap: '16px', alignItems: 'center' }}>
+                      <div style={{ flex: 1 }}>
+                        <label style={{ color: '#9ca3af', fontSize: '12px', display: 'block', marginBottom: '4px' }}>Scale</label>
+                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                          <input
+                            type="range"
+                            min="0.5"
+                            max="2"
+                            step="0.1"
+                            value={designScale}
+                            onChange={(e) => setDesignScale(parseFloat(e.target.value))}
+                            style={{ flex: 1 }}
+                          />
+                          <span style={{ color: 'white', minWidth: '40px' }}>{Math.round(designScale * 100)}%</span>
+                        </div>
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <label style={{ color: '#9ca3af', fontSize: '12px', display: 'block', marginBottom: '4px' }}>Rotation</label>
+                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                          <input
+                            type="range"
+                            min="-180"
+                            max="180"
+                            step="1"
+                            value={designRotation}
+                            onChange={(e) => setDesignRotation(parseInt(e.target.value))}
+                            style={{ flex: 1 }}
+                          />
+                          <span style={{ color: 'white', minWidth: '40px' }}>{designRotation}°</span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
 
                   {/* Color Palette */}
                   <div className="color-palette">
@@ -551,8 +598,12 @@ function SuperProductCreatorV2() {
                   </div>
                 </div>
 
-                {/* Product Configuration */}
-                <div className="product-config">
+                  {/* Product Configuration Table */}
+                  <div className="product-config" style={{ 
+                    background: '#0f1419',
+                    borderRadius: '12px',
+                    padding: '20px'
+                  }}>
                   <div className="config-header-row">
                     <div className="header-item">Item</div>
                     <div className="header-enable">Enable</div>
@@ -744,6 +795,14 @@ function SuperProductCreatorV2() {
           )}
         </div>
       </div>
+      
+      {/* Credits Modal */}
+      <CreditsModal 
+        isOpen={showCreditsModal}
+        onClose={() => setShowCreditsModal(false)}
+        currentCredits={credits}
+        onPurchase={handlePurchaseCredits}
+      />
     </div>
   );
 }
