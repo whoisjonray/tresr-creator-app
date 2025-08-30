@@ -54,12 +54,14 @@ function AppContent() {
   return (
     <Router>
       <Routes>
-        {/* Standalone route - outside auth */}
+        {/* Standalone routes - outside auth */}
         <Route path="/mockups-standalone" element={
           <Suspense fallback={<div>Loading Standalone Editor...</div>}>
             <DynamicMockupsStandalone />
           </Suspense>
         } />
+        
+        <Route path="/superproduct-creator" element={<SuperProductCreator />} />
         
         {/* Protected routes - inside AuthGuard */}
         <Route path="*" element={
@@ -83,9 +85,6 @@ function AppContent() {
                     <Route path="/test/bounding-box" element={<BoundingBoxEditor />} />
                     <Route path="/test/product-templates" element={<ProductTemplateManager />} />
                     <Route path="/scan-map" element={<ScanMap />} />
-                    
-                    {/* SuperProduct Creator - Standalone */}
-                    <Route path="/superproduct-creator" element={<SuperProductCreator />} />
                     
                     {/* Documentation Routes */}
                     <Route path="/docs/getting-started" element={<div>Getting Started Guide (Coming Soon)</div>} />
