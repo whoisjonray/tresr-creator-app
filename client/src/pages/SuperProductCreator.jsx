@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { testSuperProductConfig } from '../config/testSuperProductConfig';
+import axios from 'axios';
 import './SuperProductCreator.css';
 
 function SuperProductCreator() {
@@ -20,10 +22,46 @@ function SuperProductCreator() {
   const [generatingImages, setGeneratingImages] = useState(false);
   const [generationProgress, setGenerationProgress] = useState(0);
   
+  // Product selection state
+  const [selectedFit, setSelectedFit] = useState('Male');
+  const [selectedStyle, setSelectedStyle] = useState(null);
+  const [selectedColor, setSelectedColor] = useState('black');
+  const [currentMockupUrl, setCurrentMockupUrl] = useState(null);
+  const [designPosition, setDesignPosition] = useState({ x: 200, y: 180 });
+  const [designScale, setDesignScale] = useState(1);
+  const [isDragging, setIsDragging] = useState(false);
+  
   const fileInputRef = useRef(null);
+  const canvasRef = useRef(null);
+  const designCanvasRef = useRef(null);
 
-  // Sample design for demo
-  const sampleDesign = 'https://via.placeholder.com/400x400/2a2f3e/3b82f6?text=Your+Design';
+  // Get available styles based on selected fit
+  const getAvailableStyles = () => {
+    if (!testSuperProductConfig.options.style.values[selectedFit.toLowerCase()]) {
+      return [];
+    }
+    return testSuperProductConfig.options.style.values[selectedFit.toLowerCase()];
+  };
+
+  // Update mockup URL when style/color changes
+  useEffect(() => {
+    if (selectedStyle && selectedColor) {
+      const baseUrl = `https://res.cloudinary.com/dqslerzk9/image/upload/v1752270681/garments`;
+      // Format: garments/{product}_{color}_{side}.png
+      const mockupPath = `${selectedStyle.id}_${selectedColor}_front.png`;
+      const fullUrl = `${baseUrl}/${mockupPath}`;
+      setCurrentMockupUrl(fullUrl);
+    }
+  }, [selectedStyle, selectedColor]);
+
+  // Initialize with first style when fit changes
+  useEffect(() => {
+    const styles = getAvailableStyles();
+    if (styles.length > 0 && !selectedStyle) {
+      setSelectedStyle(styles[0]);
+      setSelectedColor(styles[0].colors[0]);
+    }
+  }, [selectedFit]);
 
   const products = [
     { id: 'tee', name: 'Medium Weight\nT-Shirt', icon: '👕' },
@@ -50,22 +88,33 @@ function SuperProductCreator() {
     { id: 'kitchen', name: 'Kitchen Counter', gradient: 'linear-gradient(135deg, #F5F5F5 0%, #E0E0E0 50%, #D3D3D3 100%)', conversion: '10.4%', views: '1.9k' }
   ];
 
-  const handleFileUpload = (e) => {
+  const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (event) => {
+      reader.onload = async (event) => {
         setUploadedDesign(event.target.result);
-        // Simulate AI analysis
-        setTimeout(() => {
-          setDesignAnalysis({
-            description: "The design features a grumpy-looking orange cat clutching a coffee mug. Above the cat, \"I LIKE COFFEE\" is displayed, and below, \"I JUST DON'T LIKE DOING THINGS\" is written. The overall mood is humorous and relatable.",
-            category: 'Coffee',
-            audience: 'Cat lovers, coffee enthusiasts, millennials & Gen Z who appreciate dark humor'
-          });
-          setProductTitle('Grumpy Cat Coffee Lover');
-          setCredits(prev => prev - 1);
-        }, 1500);
+        
+        // Call Gemini AI for analysis (simulated for now)
+        try {
+          // In production, this would call the actual Gemini API
+          // const response = await axios.post('/api/ai/analyze-image', { image: event.target.result });
+          
+          // Simulated AI response
+          setTimeout(() => {
+            setDesignAnalysis({
+              description: "The design features a grumpy-looking orange cat clutching a coffee mug. Above the cat, \"I LIKE COFFEE\" is displayed, and below, \"I JUST DON'T LIKE DOING THINGS\" is written. The overall mood is humorous and relatable.",
+              category: 'Coffee',
+              audience: 'Cat lovers, coffee enthusiasts, millennials & Gen Z who appreciate dark humor',
+              tags: ['cat', 'coffee', 'humor', 'millennial', 'grumpy'],
+              suggestedProducts: ['tee', 'mug', 'hoodie']
+            });
+            setProductTitle('Grumpy Cat Coffee Lover');
+            setCredits(prev => prev - 1);
+          }, 1500);
+        } catch (error) {
+          console.error('AI analysis failed:', error);
+        }
       };
       reader.readAsDataURL(file);
     }
@@ -92,7 +141,71 @@ function SuperProductCreator() {
     return Object.values(selectedProducts).filter(Boolean).length;
   };
 
-  const generateImages = () => {
+  // Canvas drawing function
+  const drawCanvas = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, 600, 600);
+    
+    // Draw garment background
+    if (currentMockupUrl) {
+      const garmentImg = new Image();
+      garmentImg.onload = () => {
+        ctx.drawImage(garmentImg, 0, 0, 600, 600);
+        
+        // Draw design overlay if uploaded
+        if (uploadedDesign) {
+          const designImg = new Image();
+          designImg.onload = () => {
+            const width = 200 * designScale;
+            const height = 250 * designScale;
+            ctx.drawImage(designImg, designPosition.x - width/2, designPosition.y - height/2, width, height);
+          };
+          designImg.src = uploadedDesign;
+        }
+      };
+      garmentImg.src = currentMockupUrl;
+    }
+  };
+
+  // Redraw canvas when dependencies change
+  useEffect(() => {
+    drawCanvas();
+  }, [currentMockupUrl, uploadedDesign, designPosition, designScale]);
+
+  // Canvas mouse interaction handlers
+  const handleCanvasMouseDown = (e) => {
+    const rect = canvasRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) * (600 / rect.width);
+    const y = (e.clientY - rect.top) * (600 / rect.height);
+    
+    // Check if click is on design area
+    const designWidth = 200 * designScale;
+    const designHeight = 250 * designScale;
+    
+    if (x >= designPosition.x - designWidth/2 && x <= designPosition.x + designWidth/2 &&
+        y >= designPosition.y - designHeight/2 && y <= designPosition.y + designHeight/2) {
+      setIsDragging(true);
+    }
+  };
+
+  const handleCanvasMouseMove = (e) => {
+    if (!isDragging) return;
+    
+    const rect = canvasRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) * (600 / rect.width);
+    const y = (e.clientY - rect.top) * (600 / rect.height);
+    
+    setDesignPosition({ x, y });
+  };
+
+  const handleCanvasMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const generateImages = async () => {
     setGeneratingImages(true);
     setGenerationProgress(0);
     
@@ -109,6 +222,16 @@ function SuperProductCreator() {
     }, 500);
     
     setCredits(prev => prev - 30);
+    
+    // In production, this would call the actual image generation API
+    // const selectedProductsList = Object.entries(selectedProducts)
+    //   .filter(([_, enabled]) => enabled)
+    //   .map(([id]) => id);
+    // await axios.post('/api/generate-mockups', { 
+    //   products: selectedProductsList,
+    //   design: uploadedDesign,
+    //   background: selectedBackground
+    // });
   };
 
   return (
@@ -314,10 +437,22 @@ function SuperProductCreator() {
                         <div className="spc-background-preview" style={{ background: bg.gradient }}>
                           <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <img 
-                              src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270681/garments/tee/front/black.png"
+                              src={currentMockupUrl || "https://res.cloudinary.com/dqslerzk9/image/upload/v1752270681/garments/tee_black_front.png"}
                               style={{ width: '60%', height: 'auto', zIndex: 10, filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.3))' }}
                               alt="T-shirt preview"
                             />
+                            {uploadedDesign && (
+                              <img 
+                                src={uploadedDesign}
+                                style={{ 
+                                  position: 'absolute', 
+                                  width: '25%', 
+                                  height: 'auto',
+                                  zIndex: 11
+                                }}
+                                alt="Design preview"
+                              />
+                            )}
                           </div>
                         </div>
                         <div className="spc-background-info">
@@ -381,15 +516,16 @@ function SuperProductCreator() {
                     {/* Canvas Editor */}
                     <div className="spc-canvas-section">
                       <div className="spc-canvas-container">
-                        <img 
-                          src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270681/garments/tee/front/black.png"
-                          alt="Product preview"
+                        <canvas 
+                          ref={canvasRef}
+                          width={600}
+                          height={600}
+                          style={{ width: '100%', height: 'auto', cursor: isDragging ? 'grabbing' : 'grab' }}
+                          onMouseDown={handleCanvasMouseDown}
+                          onMouseMove={handleCanvasMouseMove}
+                          onMouseUp={handleCanvasMouseUp}
+                          onMouseLeave={handleCanvasMouseUp}
                         />
-                        {uploadedDesign && (
-                          <div className="spc-design-overlay">
-                            <img src={uploadedDesign} alt="Design" />
-                          </div>
-                        )}
                       </div>
                       <div className="spc-canvas-controls">
                         <div className="spc-canvas-tools">
@@ -402,8 +538,18 @@ function SuperProductCreator() {
                         </div>
                         <div className="spc-canvas-scale">
                           <span>Scale</span>
-                          <input type="range" min="50" max="150" defaultValue="100" />
-                          <input type="number" defaultValue="100" />
+                          <input 
+                            type="range" 
+                            min="50" 
+                            max="150" 
+                            value={designScale * 100}
+                            onChange={(e) => setDesignScale(e.target.value / 100)}
+                          />
+                          <input 
+                            type="number" 
+                            value={Math.round(designScale * 100)}
+                            onChange={(e) => setDesignScale(e.target.value / 100)}
+                          />
                           <span>%</span>
                         </div>
                       </div>
@@ -411,31 +557,82 @@ function SuperProductCreator() {
 
                     {/* Product Details Table */}
                     <div className="spc-product-details">
-                      <div className="spc-table-header">
-                        <div>Item</div>
-                        <div>Enable</div>
-                        <div>Default Color</div>
-                      </div>
-                      {Object.entries(selectedProducts).filter(([_, enabled]) => enabled).map(([productId]) => {
-                        const product = products.find(p => p.id === productId);
-                        return (
-                          <div key={productId} className="spc-table-row">
-                            <div>{product?.name.replace(/\n/g, ' ')}</div>
-                            <div>
-                              <div className="spc-toggle-switch on">
-                                <div className="spc-toggle-slider"></div>
-                              </div>
-                            </div>
-                            <div>
-                              <select className="spc-color-dropdown">
-                                <option>Black</option>
-                                <option>White</option>
-                                <option>Navy</option>
-                              </select>
-                            </div>
+                      <div className="spc-product-options">
+                        <div className="spc-option-group">
+                          <label>Fit</label>
+                          <div className="spc-fit-buttons">
+                            <button 
+                              className={selectedFit === 'Male' ? 'active' : ''}
+                              onClick={() => {
+                                setSelectedFit('Male');
+                                const maleStyles = testSuperProductConfig.options.style.values.male;
+                                if (maleStyles.length > 0) {
+                                  setSelectedStyle(maleStyles[0]);
+                                  setSelectedColor(maleStyles[0].colors[0]);
+                                }
+                              }}
+                            >
+                              Male
+                            </button>
+                            <button 
+                              className={selectedFit === 'Female' ? 'active' : ''}
+                              onClick={() => {
+                                setSelectedFit('Female');
+                                const femaleStyles = testSuperProductConfig.options.style.values.female;
+                                if (femaleStyles.length > 0) {
+                                  setSelectedStyle(femaleStyles[0]);
+                                  setSelectedColor(femaleStyles[0].colors[0]);
+                                }
+                              }}
+                            >
+                              Female
+                            </button>
                           </div>
-                        );
-                      })}
+                        </div>
+                        
+                        <div className="spc-option-group">
+                          <label>Style</label>
+                          <select 
+                            value={selectedStyle?.id || ''}
+                            onChange={(e) => {
+                              const style = getAvailableStyles().find(s => s.id === e.target.value);
+                              setSelectedStyle(style);
+                              if (style && !style.colors.includes(selectedColor)) {
+                                setSelectedColor(style.colors[0]);
+                              }
+                            }}
+                          >
+                            {getAvailableStyles().map(style => (
+                              <option key={style.id} value={style.id}>
+                                {style.name} - ${style.price}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        
+                        <div className="spc-option-group">
+                          <label>Color</label>
+                          <div className="spc-color-grid">
+                            {selectedStyle?.colors.map(color => (
+                              <button
+                                key={color}
+                                className={`spc-color-swatch ${selectedColor === color ? 'active' : ''}`}
+                                style={{ 
+                                  background: color === 'black' ? '#000' : 
+                                           color === 'white' ? '#fff' : 
+                                           color === 'navy' ? '#001f3f' :
+                                           color === 'cardinal-red' ? '#990000' :
+                                           color === 'heather-grey' ? '#9b9b9b' :
+                                           color === 'natural' ? '#f5f5dc' : '#ccc',
+                                  border: color === 'white' ? '1px solid #ddd' : 'none'
+                                }}
+                                onClick={() => setSelectedColor(color)}
+                                title={color}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
