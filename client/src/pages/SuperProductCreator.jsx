@@ -1,83 +1,54 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useAuth } from '../hooks/useAuth';
 import './SuperProductCreator.css';
 
 function SuperProductCreator() {
-  const { creator } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [credits, setCredits] = useState(200);
+  const [credits, setCredits] = useState(250);
   
   // Design state
   const [uploadedDesign, setUploadedDesign] = useState(null);
+  const [designAnalysis, setDesignAnalysis] = useState(null);
+  const [productTitle, setProductTitle] = useState('');
   const [selectedBackground, setSelectedBackground] = useState(null);
-  const [designPosition, setDesignPosition] = useState({ x: 150, y: 150, scale: 1 });
-  const canvasRef = useRef(null);
-  
-  // Product configuration
-  const [productConfig, setProductConfig] = useState({
-    'tee': { enabled: true, name: 'Medium Weight T-Shirt' },
-    'boxy': { enabled: false, name: 'Oversized Drop Shoulder' },
-    'next-crop': { enabled: false, name: 'Next Level Crop Top' },
-    'baby-tee': { enabled: true, name: 'Ladies Baby Tee' },
-    'wmn-hoodie': { enabled: true, name: "Women's Independent Hoodie" },
-    'med-hood': { enabled: false, name: 'Medium Weight Hoodie' },
-    'mediu': { enabled: false, name: 'Medium Weight Sweatshirt' },
-    'polo': { enabled: false, name: 'Standard Polo' },
-    'patch-c': { enabled: false, name: 'Patch Hat - Curved' },
-    'patch-flat': { enabled: false, name: 'Patch Hat - Flat' },
-    'mug': { enabled: false, name: 'Coffee Mug' },
-    'art-sqsm': { enabled: false, name: 'Art Canvas - 12x12' },
-    'art-sqm': { enabled: false, name: 'Art Canvas - 16x16' },
-    'art-lg': { enabled: false, name: 'Art Canvas - 24x24' },
-    'nft': { enabled: false, name: 'NFTREASURE NFT Cards' }
+  const [selectedProducts, setSelectedProducts] = useState({
+    'tee': true,
+    'baby-tee': true,
+    'wmn-hoodie': true
   });
+  const [currentEditingProduct, setCurrentEditingProduct] = useState('tee');
+  const [generatingImages, setGeneratingImages] = useState(false);
+  const [generationProgress, setGenerationProgress] = useState(0);
+  
+  const fileInputRef = useRef(null);
 
-  const [generatingMockups, setGeneratingMockups] = useState(false);
-  const [mockupsGenerated, setMockupsGenerated] = useState(false);
+  // Sample design for demo
+  const sampleDesign = 'https://via.placeholder.com/400x400/2a2f3e/3b82f6?text=Your+Design';
 
-  const steps = [
-    { id: 1, name: 'Upload Design', icon: '📁' },
-    { id: 2, name: 'Choose Background', icon: '🎨' },
-    { id: 3, name: 'Configure Products', icon: '⚙️' },
-    { id: 4, name: 'Generate & Review', icon: '🖼️' },
-    { id: 5, name: 'Publish', icon: '🚀' }
+  const products = [
+    { id: 'tee', name: 'Medium Weight\nT-Shirt', icon: '👕' },
+    { id: 'boxy', name: 'Oversized Drop\nShoulder', icon: '🧥' },
+    { id: 'next-crop', name: 'Next Level Crop\nTop', icon: '👚' },
+    { id: 'baby-tee', name: 'Ladies Baby Tee', icon: '👕' },
+    { id: 'wmn-hoodie', name: "Women's\nIndependent\nHoodie", icon: '🧥' },
+    { id: 'med-hood', name: 'Medium Weight\nHoodie', icon: '🧥' },
+    { id: 'mediu', name: 'Medium Weight\nSweatshirt', icon: '👔' },
+    { id: 'polo', name: 'Standard Polo', icon: '👔' },
+    { id: 'patch-c', name: 'Patch Hat -\nCurved', icon: '🧢' },
+    { id: 'patch-flat', name: 'Patch Hat - Flat', icon: '🧢' },
+    { id: 'mug', name: 'Coffee Mug', icon: '☕' },
+    { id: 'art-sqsm', name: 'Art Canvas -\n12x12', icon: '🎨' },
+    { id: 'art-sqm', name: 'Art Canvas -\n16x16', icon: '🎨' },
+    { id: 'art-lg', name: 'Art Canvas -\n24x24', icon: '🎨' },
+    { id: 'nft', name: 'NFTREASURE\nNFT Cards', icon: '🎴' }
   ];
 
   const backgrounds = [
-    { id: 'cozy-morning', name: 'Cozy Morning', icon: '☕' },
-    { id: 'home-office', name: 'Home Office', icon: '💻' },
-    { id: 'urban-street', name: 'Urban Street', icon: '🏙️' },
-    { id: 'minimalist', name: 'Minimalist', icon: '⬜' }
+    { id: 'coffee-shop', name: 'Cozy Coffee Shop', gradient: 'linear-gradient(135deg, #8B4513 0%, #D2691E 50%, #F4A460 100%)', conversion: '15.2%', views: '4.5k' },
+    { id: 'home-office', name: 'Home Office Morning', gradient: 'linear-gradient(135deg, #E8F4F8 0%, #B8D4E3 50%, #87CEEB 100%)', conversion: '13.7%', views: '3.2k' },
+    { id: 'bookstore', name: 'Bookstore Café', gradient: 'linear-gradient(135deg, #704214 0%, #8B4513 50%, #A0522D 100%)', conversion: '11.9%', views: '2.8k' },
+    { id: 'kitchen', name: 'Kitchen Counter', gradient: 'linear-gradient(135deg, #F5F5F5 0%, #E0E0E0 50%, #D3D3D3 100%)', conversion: '10.4%', views: '1.9k' }
   ];
-
-  useEffect(() => {
-    drawCanvas();
-  }, [uploadedDesign, designPosition]);
-
-  const drawCanvas = () => {
-    if (!canvasRef.current || !uploadedDesign) return;
-    
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    
-    // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Draw background
-    ctx.fillStyle = '#f8f9fa';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Draw design
-    const img = new Image();
-    img.onload = () => {
-      const { x, y, scale } = designPosition;
-      const width = img.width * scale;
-      const height = img.height * scale;
-      ctx.drawImage(img, x - width/2, y - height/2, width, height);
-    };
-    img.src = uploadedDesign;
-  };
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
@@ -85,298 +56,519 @@ function SuperProductCreator() {
       const reader = new FileReader();
       reader.onload = (event) => {
         setUploadedDesign(event.target.result);
-        setCurrentStep(2);
+        // Simulate AI analysis
+        setTimeout(() => {
+          setDesignAnalysis({
+            description: "The design features a grumpy-looking orange cat clutching a coffee mug. Above the cat, \"I LIKE COFFEE\" is displayed, and below, \"I JUST DON'T LIKE DOING THINGS\" is written. The overall mood is humorous and relatable.",
+            category: 'Coffee',
+            audience: 'Cat lovers, coffee enthusiasts, millennials & Gen Z who appreciate dark humor'
+          });
+          setProductTitle('Grumpy Cat Coffee Lover');
+          setCredits(prev => prev - 1);
+        }, 1500);
       };
       reader.readAsDataURL(file);
     }
   };
 
+  const goToStep = (step) => {
+    if (step === 1) {
+      // Reset everything if going back to step 1
+      setUploadedDesign(null);
+      setDesignAnalysis(null);
+      setSelectedBackground(null);
+    }
+    setCurrentStep(step);
+  };
+
   const toggleProduct = (productId) => {
-    setProductConfig(prev => ({
+    setSelectedProducts(prev => ({
       ...prev,
-      [productId]: { ...prev[productId], enabled: !prev[productId].enabled }
+      [productId]: !prev[productId]
     }));
   };
 
-  const getEnabledProductCount = () => {
-    return Object.values(productConfig).filter(p => p.enabled).length;
+  const getSelectedCount = () => {
+    return Object.values(selectedProducts).filter(Boolean).length;
   };
 
-  const generateMockups = () => {
-    if (credits < 30) {
-      alert('Not enough credits!');
-      return;
-    }
+  const generateImages = () => {
+    setGeneratingImages(true);
+    setGenerationProgress(0);
     
-    setGeneratingMockups(true);
-    setTimeout(() => {
-      setGeneratingMockups(false);
-      setMockupsGenerated(true);
-      setCredits(prev => prev - 30);
-      setCurrentStep(5);
-    }, 3000);
-  };
-
-  const goToStep = (step) => {
-    if (step === 1) {
-      setUploadedDesign(null);
-      setSelectedBackground(null);
-      setMockupsGenerated(false);
-    }
-    setCurrentStep(step);
+    // Simulate progress
+    const interval = setInterval(() => {
+      setGenerationProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          setGeneratingImages(false);
+          return 100;
+        }
+        return prev + 10;
+      });
+    }, 500);
+    
+    setCredits(prev => prev - 30);
   };
 
   return (
     <div className="spc-container">
       {/* Header */}
       <div className="spc-header">
-        <div className="spc-logo">
-          <span>💎</span>
-          <span>TRESR Creator</span>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div className={`spc-hamburger ${sidebarOpen ? 'active' : ''}`} onClick={() => setSidebarOpen(!sidebarOpen)}>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div className="spc-logo">
+            <span>🎨</span>
+            <span>TRESR Creator</span>
+          </div>
         </div>
         <div className="spc-credit-balance">
           <div className="spc-credits">
-            💰 {credits} Credits
+            <span>{credits}</span> Credits
           </div>
-          <button className="spc-btn-buy-credits">Buy Credits</button>
+          <button className="spc-btn spc-btn-primary">Buy Credits</button>
         </div>
       </div>
 
       {/* Progress Steps */}
       <div className="spc-progress-container">
         <div className="spc-progress-steps">
-          {steps.map((step) => (
-            <div 
-              key={step.id}
-              className={`spc-step ${currentStep === step.id ? 'active' : ''} ${currentStep > step.id ? 'completed' : ''}`}
-              onClick={() => step.id < currentStep && goToStep(step.id)}
-            >
-              <div className="spc-step-number">
-                {currentStep > step.id ? '✓' : step.icon}
-              </div>
-              <div className="spc-step-name">{step.name}</div>
-            </div>
-          ))}
+          <div className={`spc-step ${currentStep === 1 ? 'active' : ''} ${currentStep > 1 ? 'completed' : ''}`} onClick={() => currentStep > 1 && goToStep(1)}>
+            <div className="spc-step-number">{currentStep > 1 ? '✓' : '1'}</div>
+            <div className="spc-step-label">Upload Design</div>
+          </div>
+          <div className={`spc-step ${currentStep === 2 ? 'active' : ''} ${currentStep > 2 ? 'completed' : ''}`} onClick={() => currentStep > 2 && goToStep(2)}>
+            <div className="spc-step-number">{currentStep > 2 ? '✓' : '2'}</div>
+            <div className="spc-step-label">Select Background</div>
+          </div>
+          <div className={`spc-step ${currentStep === 3 ? 'active' : ''} ${currentStep > 3 ? 'completed' : ''}`} onClick={() => currentStep > 3 && goToStep(3)}>
+            <div className="spc-step-number">{currentStep > 3 ? '✓' : '3'}</div>
+            <div className="spc-step-label">Configure Products</div>
+          </div>
+          <div className={`spc-step ${currentStep === 4 ? 'active' : ''} ${currentStep > 4 ? 'completed' : ''}`} onClick={() => currentStep > 4 && goToStep(4)}>
+            <div className="spc-step-number">{currentStep > 4 ? '✓' : '4'}</div>
+            <div className="spc-step-label">Generate Images</div>
+          </div>
+          <div className={`spc-step ${currentStep === 5 ? 'active' : ''}`}>
+            <div className="spc-step-number">5</div>
+            <div className="spc-step-label">Publish</div>
+          </div>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="spc-main">
-        {/* Menu Toggle Button */}
-        {!sidebarOpen && (
-          <button 
-            className="spc-menu-toggle"
-            onClick={() => setSidebarOpen(true)}
-          >
-            ☰
-          </button>
-        )}
-        
+      {/* Sidebar Overlay */}
+      {sidebarOpen && <div className="spc-sidebar-overlay" onClick={() => setSidebarOpen(false)}></div>}
+
+      {/* Main Container */}
+      <div className="spc-main-container">
         {/* Sidebar */}
         <div className={`spc-sidebar ${sidebarOpen ? 'open' : ''}`}>
-          <div className="spc-sidebar-header">
-            <h3>Navigation</h3>
-            <button onClick={() => setSidebarOpen(false)}>×</button>
+          <div className="spc-menu-item active">
+            <span>🏠</span>
+            <span>Dashboard</span>
           </div>
-          <nav className="spc-nav">
-            <a href="/dashboard">Dashboard</a>
-            <a href="#" className="active">SuperProduct Creator</a>
-            <a href="/products">Products</a>
-            <a href="/analytics">Analytics</a>
-            <a href="/settings">Settings</a>
-          </nav>
+          <div className="spc-menu-item">
+            <span>🎨</span>
+            <span>Create Design</span>
+          </div>
+          <div className="spc-menu-item">
+            <span>📦</span>
+            <span>Products</span>
+          </div>
+          <div className="spc-menu-item">
+            <span>📊</span>
+            <span>Analytics</span>
+          </div>
+          <div className="spc-menu-item">
+            <span>📚</span>
+            <span>Library</span>
+          </div>
+          <div className="spc-menu-item">
+            <span>🚀</span>
+            <span>Bulk Create</span>
+          </div>
         </div>
 
         {/* Content Area */}
         <div className="spc-content">
-          {/* Step 1: Upload Design */}
-          {currentStep === 1 && (
-            <div className="spc-step-content">
-              <h2>Upload Your Design</h2>
-              <p>Start by uploading your design image. We support PNG, JPG, and SVG formats.</p>
-              
-              <div className="spc-upload-area">
-                <input 
-                  type="file" 
-                  id="design-upload" 
-                  accept="image/*" 
-                  onChange={handleFileUpload}
-                  style={{ display: 'none' }}
-                />
-                <label htmlFor="design-upload" className="spc-upload-box">
-                  <div className="spc-upload-icon">📁</div>
-                  <div className="spc-upload-text">
-                    Click to browse or drag and drop your design here
+          <div className="spc-step-wrapper">
+            {/* Step 1: Upload Design */}
+            {currentStep === 1 && (
+              <div className="spc-step-content active">
+                <div className="spc-page-title">Upload Your Design</div>
+                <div className="spc-page-subtitle">Start by uploading your design for AI analysis</div>
+
+                <div className="spc-upload-section">
+                  {/* Upload Options */}
+                  <div className="spc-upload-options">
+                    <button className="spc-btn spc-btn-secondary" onClick={() => fileInputRef.current?.click()}>
+                      📤 Upload File
+                    </button>
+                    <div className="spc-or">OR</div>
+                    <button className="spc-btn spc-btn-secondary">
+                      📚 Select from Library
+                    </button>
                   </div>
-                  <button className="spc-btn-primary">Choose File</button>
-                </label>
-              </div>
-            </div>
-          )}
 
-          {/* Step 2: Choose Background */}
-          {currentStep === 2 && (
-            <div className="spc-step-content">
-              <h2>Choose Your Background</h2>
-              <p>Select a lifestyle background that matches your design's vibe</p>
-              
-              <div className="spc-backgrounds">
-                {backgrounds.map(bg => (
-                  <div 
-                    key={bg.id}
-                    className={`spc-background-card ${selectedBackground === bg.id ? 'selected' : ''}`}
-                    onClick={() => setSelectedBackground(bg.id)}
-                  >
-                    <div className="spc-background-preview">{bg.icon}</div>
-                    <div className="spc-background-name">{bg.name}</div>
+                  {/* Upload Box */}
+                  <div className="spc-upload-box" onClick={() => !uploadedDesign && fileInputRef.current?.click()}>
+                    {!uploadedDesign ? (
+                      <div className="spc-upload-prompt">
+                        <div style={{ fontSize: '48px' }}>📤</div>
+                        <div style={{ fontSize: '16px', marginTop: '8px' }}>Drop your design here</div>
+                        <div style={{ fontSize: '14px', color: '#6b7280', marginTop: '4px' }}>
+                          or click to browse • PNG, JPG, SVG up to 10MB
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="spc-uploaded-image">
+                        <img src={uploadedDesign} alt="Uploaded design" />
+                      </div>
+                    )}
                   </div>
-                ))}
-              </div>
 
-              <div className="spc-actions">
-                <button onClick={() => setCurrentStep(1)} className="spc-btn-secondary">← Back</button>
-                <button 
-                  onClick={() => setCurrentStep(3)} 
-                  className="spc-btn-primary"
-                  disabled={!selectedBackground}
-                >
-                  Continue →
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Step 3: Configure Products */}
-          {currentStep === 3 && (
-            <div className="spc-step-content">
-              <h2>Configure Products</h2>
-              <p>Select which products you want to create with your design</p>
-              
-              <div className="spc-split-layout">
-                <div className="spc-canvas-section">
-                  <canvas 
-                    ref={canvasRef}
-                    width={400}
-                    height={400}
-                    className="spc-canvas"
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    style={{ display: 'none' }}
                   />
-                  <div className="spc-canvas-controls">
-                    <label>Scale: </label>
-                    <input 
-                      type="range" 
-                      min="0.5" 
-                      max="2" 
-                      step="0.1"
-                      value={designPosition.scale}
-                      onChange={(e) => setDesignPosition(prev => ({ ...prev, scale: parseFloat(e.target.value) }))}
-                    />
-                    <span>{Math.round(designPosition.scale * 100)}%</span>
-                  </div>
-                </div>
 
-                <div className="spc-products-section">
-                  <div className="spc-products-grid">
-                    {Object.entries(productConfig).slice(0, 8).map(([id, product]) => (
+                  {/* AI Analysis */}
+                  {designAnalysis && (
+                    <div className="spc-ai-analysis">
+                      <div className="spc-ai-header">
+                        <span style={{ fontSize: '24px' }}>✨</span>
+                        <div style={{ fontSize: '18px', fontWeight: '600' }}>AI Design Analysis</div>
+                        <span className="spc-credits" style={{ fontSize: '12px' }}>1 credit</span>
+                      </div>
+                      <div className="spc-ai-content">
+                        <div className="spc-ai-description">{designAnalysis.description}</div>
+                        <div className="spc-ai-fields">
+                          <div className="spc-field-row">
+                            <label>Title</label>
+                            <div className="spc-field-input">
+                              <input 
+                                type="text" 
+                                value={productTitle} 
+                                onChange={(e) => setProductTitle(e.target.value)}
+                              />
+                              <button className="spc-refresh-btn" title="Regenerate title (1 credit)">
+                                🔄
+                              </button>
+                            </div>
+                          </div>
+                          <div className="spc-field-row">
+                            <label>Category</label>
+                            <select value={designAnalysis.category} onChange={() => {}}>
+                              <option>Coffee</option>
+                              <option>Crypto/Web3</option>
+                              <option>Cat Lovers</option>
+                              <option>Mental Health</option>
+                            </select>
+                          </div>
+                          <div className="spc-field-row">
+                            <label>Target Audience</label>
+                            <div className="spc-field-input">
+                              <div style={{ flex: 1 }}>{designAnalysis.audience}</div>
+                              <button className="spc-refresh-btn" title="Regenerate audience (1 credit)">
+                                🔄
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="spc-step-actions">
+                        <button 
+                          className="spc-btn spc-btn-primary" 
+                          onClick={() => setCurrentStep(2)}
+                        >
+                          Continue to Background Selection →
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Step 2: Background Selection */}
+            {currentStep === 2 && (
+              <div className="spc-step-content active">
+                <div className="spc-page-title">Choose Your Background</div>
+                <div className="spc-page-subtitle">Select a lifestyle background that matches your design's vibe</div>
+
+                <div className="spc-backgrounds-container">
+                  <div className="spc-backgrounds-grid">
+                    {backgrounds.map(bg => (
                       <div 
-                        key={id}
-                        className={`spc-product-card ${product.enabled ? 'enabled' : ''}`}
-                        onClick={() => toggleProduct(id)}
+                        key={bg.id}
+                        className={`spc-background-card ${selectedBackground === bg.id ? 'selected' : ''}`}
+                        onClick={() => setSelectedBackground(bg.id)}
                       >
-                        {product.enabled && <div className="spc-product-badge">✓</div>}
-                        <div className="spc-product-icon">👕</div>
-                        <div className="spc-product-name">{product.name}</div>
+                        <div className="spc-background-preview" style={{ background: bg.gradient }}>
+                          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <img 
+                              src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270681/garments/tee/front/black.png"
+                              style={{ width: '60%', height: 'auto', zIndex: 10, filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.3))' }}
+                              alt="T-shirt preview"
+                            />
+                          </div>
+                        </div>
+                        <div className="spc-background-info">
+                          <div className="spc-background-name">{bg.name}</div>
+                          <div className="spc-background-stats">
+                            <span>📈 <span style={{ color: '#10b981', fontWeight: '600' }}>{bg.conversion}</span></span>
+                            <span>👁️ <span style={{ color: '#10b981', fontWeight: '600' }}>{bg.views}</span> views</span>
+                          </div>
+                        </div>
                       </div>
                     ))}
                   </div>
-                  
-                  <div className="spc-product-count">
-                    {getEnabledProductCount()} products selected
-                  </div>
+                </div>
+
+                <div className="spc-step-actions">
+                  <button className="spc-btn spc-btn-secondary" onClick={() => setCurrentStep(1)}>
+                    ← Back
+                  </button>
+                  <button 
+                    className="spc-btn spc-btn-primary" 
+                    onClick={() => setCurrentStep(3)}
+                    disabled={!selectedBackground}
+                  >
+                    Continue to Product Configuration →
+                  </button>
                 </div>
               </div>
+            )}
 
-              <div className="spc-actions">
-                <button onClick={() => setCurrentStep(2)} className="spc-btn-secondary">← Back</button>
-                <button 
-                  onClick={() => setCurrentStep(4)} 
-                  className="spc-btn-primary"
-                  disabled={getEnabledProductCount() === 0}
-                >
-                  Continue →
-                </button>
-              </div>
-            </div>
-          )}
+            {/* Step 3: Configure Products */}
+            {currentStep === 3 && (
+              <div className="spc-step-content active">
+                <div className="spc-page-title">Configure Products</div>
 
-          {/* Step 4: Generate & Review */}
-          {currentStep === 4 && (
-            <div className="spc-step-content">
-              <h2>Generate Mockups</h2>
-              <p>Ready to create {getEnabledProductCount() * 6} product mockups</p>
-              
-              <div className="spc-generate-section">
-                {!mockupsGenerated ? (
-                  <>
-                    <div className="spc-cost-info">
-                      <div>Cost: 30 credits</div>
-                      <div>Your balance: {credits} credits</div>
-                    </div>
-                    <button 
-                      onClick={generateMockups} 
-                      className="spc-btn-primary spc-btn-large"
-                      disabled={generatingMockups}
-                    >
-                      {generatingMockups ? 'Generating...' : 'Generate Mockups'}
-                    </button>
-                  </>
-                ) : (
-                  <div className="spc-mockups-preview">
-                    <div className="spc-mockup-grid">
-                      {[1, 2, 3, 4].map(i => (
-                        <div key={i} className="spc-mockup-card">
-                          <div className="spc-mockup-image">👕</div>
-                          <div className="spc-mockup-title">Product Mockup {i}</div>
+                <div className="spc-configure-section">
+                  {/* Product Selection Grid */}
+                  <div className="spc-products-grid-container">
+                    <div className="spc-products-grid">
+                      {products.map(product => (
+                        <div 
+                          key={product.id}
+                          className={`spc-product-card ${selectedProducts[product.id] ? 'selected' : ''} ${currentEditingProduct === product.id ? 'currently-editing' : ''}`}
+                          onClick={() => {
+                            toggleProduct(product.id);
+                            setCurrentEditingProduct(product.id);
+                          }}
+                        >
+                          {currentEditingProduct === product.id && (
+                            <div className="spc-product-editing-badge">Currently Editing</div>
+                          )}
+                          {selectedProducts[product.id] && <div className="spc-product-check">✓</div>}
+                          <div className="spc-product-icon">{product.icon}</div>
+                          <div className="spc-product-name" dangerouslySetInnerHTML={{ __html: product.name.replace(/\n/g, '<br>') }} />
                         </div>
                       ))}
                     </div>
-                    <button onClick={() => setCurrentStep(5)} className="spc-btn-primary">
-                      Continue to Publish →
-                    </button>
                   </div>
-                )}
-              </div>
 
-              <div className="spc-actions">
-                <button onClick={() => setCurrentStep(3)} className="spc-btn-secondary">← Back</button>
-              </div>
-            </div>
-          )}
+                  {/* Canvas and Product Details */}
+                  <div className="spc-configure-columns">
+                    {/* Canvas Editor */}
+                    <div className="spc-canvas-section">
+                      <div className="spc-canvas-container">
+                        <img 
+                          src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270681/garments/tee/front/black.png"
+                          alt="Product preview"
+                        />
+                        {uploadedDesign && (
+                          <div className="spc-design-overlay">
+                            <img src={uploadedDesign} alt="Design" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="spc-canvas-controls">
+                        <div className="spc-canvas-tools">
+                          <span>Tools</span>
+                          <button className="active">Move</button>
+                          <button>Rotate</button>
+                          <button>🔍</button>
+                          <button>🗑️</button>
+                          <button>⚙️</button>
+                        </div>
+                        <div className="spc-canvas-scale">
+                          <span>Scale</span>
+                          <input type="range" min="50" max="150" defaultValue="100" />
+                          <input type="number" defaultValue="100" />
+                          <span>%</span>
+                        </div>
+                      </div>
+                    </div>
 
-          {/* Step 5: Publish */}
-          {currentStep === 5 && (
-            <div className="spc-step-content">
-              <h2>Publish Your Products</h2>
-              <p>Your products are ready! Choose how you want to publish them.</p>
-              
-              <div className="spc-publish-options">
-                <div className="spc-publish-card">
-                  <h3>Save as Draft</h3>
-                  <p>Save your work and come back later</p>
-                  <button className="spc-btn-secondary">Save Draft</button>
+                    {/* Product Details Table */}
+                    <div className="spc-product-details">
+                      <div className="spc-table-header">
+                        <div>Item</div>
+                        <div>Enable</div>
+                        <div>Default Color</div>
+                      </div>
+                      {Object.entries(selectedProducts).filter(([_, enabled]) => enabled).map(([productId]) => {
+                        const product = products.find(p => p.id === productId);
+                        return (
+                          <div key={productId} className="spc-table-row">
+                            <div>{product?.name.replace(/\n/g, ' ')}</div>
+                            <div>
+                              <div className="spc-toggle-switch on">
+                                <div className="spc-toggle-slider"></div>
+                              </div>
+                            </div>
+                            <div>
+                              <select className="spc-color-dropdown">
+                                <option>Black</option>
+                                <option>White</option>
+                                <option>Navy</option>
+                              </select>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
-                
-                <div className="spc-publish-card">
-                  <h3>Publish to Store</h3>
-                  <p>Make your products live immediately</p>
-                  <button className="spc-btn-primary">Publish Now</button>
+
+                <div className="spc-step-actions">
+                  <button className="spc-btn spc-btn-secondary" onClick={() => setCurrentStep(2)}>
+                    ← Back
+                  </button>
+                  <button 
+                    className="spc-btn spc-btn-primary" 
+                    onClick={() => setCurrentStep(4)}
+                    disabled={getSelectedCount() === 0}
+                  >
+                    Continue to Image Generation →
+                  </button>
                 </div>
               </div>
+            )}
 
-              <div className="spc-actions">
-                <button onClick={() => setCurrentStep(4)} className="spc-btn-secondary">← Back</button>
+            {/* Step 4: Generate Images */}
+            {currentStep === 4 && (
+              <div className="spc-step-content active">
+                <div className="spc-page-title">Generate Product Images</div>
+                <div className="spc-page-subtitle">
+                  Ready to create {getSelectedCount() * 6} stunning product mockups
+                </div>
+
+                <div className="spc-generation-container">
+                  {!generatingImages && generationProgress === 0 && (
+                    <>
+                      <div className="spc-generation-preview">
+                        <div className="spc-generation-stats">
+                          <div>
+                            <span className="spc-stat-number">{getSelectedCount()}</span>
+                            <span className="spc-stat-label">Products</span>
+                          </div>
+                          <div>
+                            <span className="spc-stat-number">6</span>
+                            <span className="spc-stat-label">Images Each</span>
+                          </div>
+                          <div>
+                            <span className="spc-stat-number">{getSelectedCount() * 6}</span>
+                            <span className="spc-stat-label">Total Images</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="spc-generation-cost">
+                        <div className="spc-cost-breakdown">
+                          <span>Generation Cost:</span>
+                          <span className="spc-cost-amount">30 Credits</span>
+                        </div>
+                        <div className="spc-credits-remaining">
+                          Your balance: {credits} credits
+                        </div>
+                      </div>
+                      <button 
+                        className="spc-btn spc-btn-primary spc-btn-large"
+                        onClick={generateImages}
+                      >
+                        Generate All Images
+                      </button>
+                    </>
+                  )}
+
+                  {generatingImages && (
+                    <div className="spc-generation-progress">
+                      <div className="spc-progress-bar">
+                        <div className="spc-progress-fill" style={{ width: `${generationProgress}%` }}></div>
+                      </div>
+                      <div className="spc-progress-text">Generating... {generationProgress}%</div>
+                    </div>
+                  )}
+
+                  {generationProgress === 100 && (
+                    <>
+                      <div className="spc-generation-complete">
+                        <div style={{ fontSize: '48px', marginBottom: '16px' }}>✅</div>
+                        <div style={{ fontSize: '24px', fontWeight: '600', marginBottom: '8px' }}>
+                          Images Generated Successfully!
+                        </div>
+                        <div style={{ color: '#9ca3af' }}>
+                          All {getSelectedCount() * 6} product mockups have been created
+                        </div>
+                      </div>
+                      <button 
+                        className="spc-btn spc-btn-primary"
+                        onClick={() => setCurrentStep(5)}
+                      >
+                        Continue to Publish →
+                      </button>
+                    </>
+                  )}
+                </div>
+
+                <div className="spc-step-actions">
+                  <button className="spc-btn spc-btn-secondary" onClick={() => setCurrentStep(3)}>
+                    ← Back
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+
+            {/* Step 5: Publish */}
+            {currentStep === 5 && (
+              <div className="spc-step-content active">
+                <div className="spc-page-title">Publish Your Products</div>
+                <div className="spc-page-subtitle">Your products are ready to go live!</div>
+
+                <div className="spc-publish-container">
+                  <div className="spc-publish-options">
+                    <div className="spc-publish-card">
+                      <div className="spc-publish-icon">📝</div>
+                      <h3>Save as Draft</h3>
+                      <p>Save your work and come back later to finish</p>
+                      <button className="spc-btn spc-btn-secondary">Save Draft</button>
+                    </div>
+                    <div className="spc-publish-card">
+                      <div className="spc-publish-icon">🚀</div>
+                      <h3>Publish to Store</h3>
+                      <p>Make your products live immediately</p>
+                      <button className="spc-btn spc-btn-primary">Publish Now</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="spc-step-actions">
+                  <button className="spc-btn spc-btn-secondary" onClick={() => setCurrentStep(4)}>
+                    ← Back
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
