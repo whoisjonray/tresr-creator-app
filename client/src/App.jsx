@@ -16,6 +16,7 @@ import ProductTemplateManager from './pages/ProductTemplateManager';
 import ScanMap from './pages/ScanMap';
 import MockupReview from './pages/MockupReview';
 import SuperProductCreator from './pages/SuperProductCreator';
+import SuperProductCreatorV2 from './pages/SuperProductCreatorV2';
 import Navigation from './components/Navigation';
 import SidebarNavigation from './components/SidebarNavigation';
 import ImpersonationBanner from './components/ImpersonationBanner';
@@ -62,6 +63,7 @@ function AppContent() {
         } />
         
         <Route path="/superproduct-creator" element={<SuperProductCreator />} />
+        <Route path="/superproduct-v2" element={<SuperProductCreatorV2 />} />
         
         {/* Protected routes - inside AuthGuard */}
         <Route path="*" element={
