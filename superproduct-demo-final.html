@@ -1,0 +1,2899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>TRESR SuperProduct Creator - Final Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #1a1f2e;
+            height: 100vh;
+            color: #fff;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            background: #0f1419;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2a2f3e;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            cursor: pointer;
+            padding: 8px;
+            margin-right: 12px;
+        }
+
+        .hamburger span {
+            width: 24px;
+            height: 2px;
+            background: #9ca3af;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        .credit-balance {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .credits {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid #3b82f6;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #3b82f6;
+            font-weight: 500;
+        }
+
+        /* Progress Steps */
+        .progress-container {
+            background: #0f1419;
+            padding: 16px 20px;
+            border-bottom: 1px solid #2a2f3e;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 24px;
+            background: #0f1419;
+            border-bottom: 1px solid #2a2f3e;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+
+        .step.active {
+            opacity: 1;
+        }
+
+        .step.completed {
+            opacity: 0.8;
+        }
+
+        .step-number {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #2a2f3e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .step.active .step-number {
+            background: #3b82f6;
+        }
+
+        .step.completed .step-number {
+            background: #10b981;
+        }
+
+        .step-label {
+            font-size: 14px;
+            color: #9ca3af;
+        }
+
+        .step.active .step-label {
+            color: #fff;
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background: #0f1419;
+            border-right: 1px solid #2a2f3e;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 4px;
+            font-size: 14px;
+            color: #9ca3af;
+        }
+
+        .menu-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: #fff;
+        }
+
+        .menu-item.active {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        /* Content Area */
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            background: #1a1f2e;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .page-subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        /* Step Content */
+        .step-content {
+            display: none;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        /* Step 1: Upload */
+        .upload-section {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .upload-box {
+            background: #0f1419;
+            border: 2px dashed #2a2f3e;
+            border-radius: 12px;
+            padding: 48px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 24px;
+        }
+
+        .upload-box:hover {
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .upload-box.has-file {
+            border-style: solid;
+            border-color: #10b981;
+            padding: 20px;
+        }
+
+        .uploaded-image {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .uploaded-image img {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .landscape-warning {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            color: #92400e;
+            font-size: 14px;
+            display: none;
+        }
+
+        .landscape-warning.show {
+            display: block;
+        }
+
+        /* Step 2: Background Selection */
+        .backgrounds-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .backgrounds-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .background-card {
+            background: #0f1419;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .background-card:hover {
+            transform: translateY(-4px);
+            border-color: #2a2f3e;
+        }
+
+        .background-card.selected {
+            border-color: #3b82f6;
+        }
+
+        .background-preview {
+            aspect-ratio: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Step 3: Configure Products - Matching design/new exactly */
+        .configure-section {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .products-grid-container {
+            background: #0f1419;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .product-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+
+        .product-card.selected {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .product-card.currently-editing {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .product-check {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            background: #10b981;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .product-card.selected .product-check {
+            display: flex;
+        }
+
+        .product-editing-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: #3b82f6;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .product-card.currently-editing .product-editing-badge {
+            display: block;
+        }
+
+        .product-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .product-name {
+            font-size: 12px;
+            color: #374151;
+            line-height: 1.3;
+            font-weight: 500;
+        }
+
+        /* Product Details Table */
+        .product-details-table {
+            background: #0f1419;
+            border-radius: 12px;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .table-header {
+            background: #1a1f2e;
+            padding: 12px 20px;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            font-size: 12px;
+            font-weight: 600;
+            color: #9ca3af;
+            text-transform: uppercase;
+        }
+
+        .table-row {
+            padding: 16px 20px;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            align-items: center;
+            border-bottom: 1px solid #2a2f3e;
+        }
+
+        .table-row:last-child {
+            border-bottom: none;
+        }
+
+        .product-info {
+            font-weight: 500;
+        }
+
+        .toggle-switch {
+            width: 44px;
+            height: 24px;
+            background: #374151;
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-switch.on {
+            background: #10b981;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-switch.on .toggle-slider {
+            transform: translateX(20px);
+        }
+
+        .color-selector {
+            position: relative;
+        }
+
+        .color-dropdown {
+            background: #1a1f2e;
+            border: 1px solid #374151;
+            border-radius: 6px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #d1d5db;
+        }
+
+        .print-positions {
+            display: flex;
+            gap: 8px;
+            font-size: 12px;
+        }
+
+        .print-position {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .print-checkbox {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Step 4: Generate Images */
+        .generation-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .generation-summary {
+            background: #0f1419;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 16px;
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-number {
+            font-size: 32px;
+            font-weight: 600;
+            color: #3b82f6;
+        }
+
+        .summary-label {
+            font-size: 14px;
+            color: #9ca3af;
+            margin-top: 4px;
+        }
+
+        .generation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .mockup-card {
+            background: #0f1419;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .mockup-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .mockup-image {
+            height: 200px;
+            background: white;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mockup-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .mockup-info {
+            padding: 12px;
+        }
+
+        .mockup-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .mockup-color {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .lifestyle-section {
+            background: #0f1419;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .lifestyle-prompt {
+            width: 100%;
+            background: #1a1f2e;
+            border: 1px solid #2a2f3e;
+            border-radius: 8px;
+            padding: 12px;
+            color: #fff;
+            font-size: 14px;
+            margin-bottom: 16px;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .prompt-suggestions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .prompt-chip {
+            padding: 6px 12px;
+            background: #1a1f2e;
+            border: 1px solid #2a2f3e;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #9ca3af;
+        }
+        
+        /* Library Styles */
+        .filter-tab {
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .filter-tab.active {
+            color: #3b82f6;
+            border-bottom: 2px solid #3b82f6;
+        }
+        
+        .filter-tab:hover {
+            color: #fff;
+        }
+        
+        .library-item {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .library-item:hover {
+            transform: translateY(-4px);
+        }
+        
+        /* Bulk Create Styles */
+        .bulk-tab {
+            padding: 10px 20px;
+            background: #1a1f2e;
+            border: 1px solid #2a2f3e;
+            border-radius: 8px;
+            color: #9ca3af;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .bulk-tab.active {
+            background: #3b82f6;
+            border-color: #3b82f6;
+            color: #fff;
+        }
+        
+        .csv-drop-zone:hover {
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.05);
+        }
+        
+        .csv-drop-zone.dragover {
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .prompt-chip:hover {
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+
+        .lifestyle-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .lifestyle-card {
+            background: #1a1f2e;
+            border-radius: 8px;
+            overflow: hidden;
+            aspect-ratio: 1;
+            position: relative;
+        }
+
+        .lifestyle-image {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+
+        /* Step 5: Publish */
+        .publish-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .publish-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .preview-item {
+            background: #0f1419;
+            border-radius: 8px;
+            overflow: hidden;
+            aspect-ratio: 1;
+            position: relative;
+        }
+
+        .preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .preview-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.7);
+            padding: 4px;
+            font-size: 10px;
+            text-align: center;
+        }
+
+        /* Action Bar */
+        .action-bar {
+            padding: 20px;
+            background: #0f1419;
+            border-top: 1px solid #2a2f3e;
+            flex-shrink: 0;
+        }
+
+        .action-buttons {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            min-height: 44px; /* Minimum touch target */
+            min-width: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        .btn-secondary {
+            background: #2a2f3e;
+            color: #9ca3af;
+        }
+
+        .btn-secondary:hover {
+            background: #374151;
+            color: #fff;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-ai {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .credit-cost {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+
+        /* Toast - Fixed position to not cover buttons */
+        /* Loading Animation */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Refresh button styles */
+        .refresh-btn {
+            background: #2a2f3e;
+            border: 1px solid #3a3f4e;
+            border-radius: 6px;
+            padding: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 36px;
+            height: 36px;
+            transition: all 0.2s;
+        }
+        
+        .refresh-btn:hover {
+            background: #3a3f4e;
+            border-color: #4a4f5e;
+            transform: rotate(90deg);
+        }
+        
+        .refresh-btn:active {
+            transform: rotate(180deg);
+        }
+        
+        .refresh-btn svg {
+            width: 18px;
+            height: 18px;
+            color: #9ca3af;
+            transition: color 0.2s;
+        }
+        
+        .refresh-btn:hover svg {
+            color: #3b82f6;
+        }
+        
+        @keyframes rotate360 {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .refresh-btn.spinning {
+            animation: rotate360 1s linear infinite;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 120px; /* Moved up 100px to not cover buttons */
+            right: 20px;
+            background: #1f2937;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            body {
+                height: 100vh;
+                overflow: hidden;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .main-container {
+                flex-direction: column;
+                position: relative;
+                flex: 1;
+                overflow: hidden;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 280px;
+                height: 100vh;
+                background: #0f1419;
+                border-right: 1px solid #2a2f3e;
+                padding: 20px;
+                z-index: 1001;
+                transition: left 0.3s ease;
+                box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                z-index: 1000;
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+
+            .content {
+                width: 100%;
+                padding: 16px;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .generation-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .publish-preview {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .progress-steps {
+                gap: 20px;
+                padding: 0 10px;
+            }
+
+            .step-label {
+                display: none;
+            }
+
+            .credits {
+                font-size: 12px;
+                padding: 4px 8px;
+            }
+
+            .btn {
+                font-size: 12px;
+                padding: 8px 16px;
+            }
+
+            .table-header, .table-row {
+                font-size: 12px;
+            }
+
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            /* Fix the two-column layout on mobile */
+            #step3 .configure-section > div:nth-child(2) {
+                grid-template-columns: 1fr !important;
+            }
+
+            .product-details-table {
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div style="display: flex; align-items: center;">
+            <div class="hamburger" onclick="toggleSidebar()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="logo">
+                <span>🎨</span>
+                <span>TRESR Creator</span>
+            </div>
+        </div>
+        <div class="credit-balance">
+            <div class="credits">
+                <span id="creditCount">250</span> Credits
+            </div>
+            <button class="btn btn-primary" onclick="showCreditModal()">Buy Credits</button>
+        </div>
+    </div>
+
+    <!-- Progress Steps -->
+    <div class="progress-container">
+        <div class="progress-steps">
+            <div class="step active" onclick="goToStep(1)">
+                <div class="step-number">1</div>
+                <div class="step-label">Upload Design</div>
+            </div>
+            <div class="step" onclick="goToStep(2)">
+                <div class="step-number">2</div>
+                <div class="step-label">Select Background</div>
+            </div>
+            <div class="step" onclick="goToStep(3)">
+                <div class="step-number">3</div>
+                <div class="step-label">Configure Products</div>
+            </div>
+            <div class="step" onclick="goToStep(4)">
+                <div class="step-number">4</div>
+                <div class="step-label">Generate Images</div>
+            </div>
+            <div class="step" onclick="goToStep(5)">
+                <div class="step-number">5</div>
+                <div class="step-label">Publish</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay for mobile -->
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Main Layout -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="menu-item active">
+                <span>🏠</span>
+                <span>Dashboard</span>
+            </div>
+            <div class="menu-item" onclick="showCreateDesign()">
+                <span>🎨</span>
+                <span>Create Design</span>
+            </div>
+            <div class="menu-item">
+                <span>📦</span>
+                <span>Products</span>
+            </div>
+            <div class="menu-item">
+                <span>📊</span>
+                <span>Analytics</span>
+            </div>
+            <div class="menu-item" onclick="showLibrary()">
+                <span>📚</span>
+                <span>Library</span>
+            </div>
+            <div class="menu-item" onclick="showBulkCreate()">
+                <span>🚀</span>
+                <span>Bulk Create</span>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content">
+            <!-- Step Content Wrapper -->
+            <div style="flex: 1; padding: 24px; max-width: 1200px; margin: 0 auto; width: 100%;">
+            <!-- Step 1: Upload Design -->
+            <div class="step-content active" id="step1">
+                <div class="page-title">Upload Your Design</div>
+                <div class="page-subtitle">Start by uploading your design for AI analysis</div>
+
+                <div class="upload-section">
+                    <div class="landscape-warning" id="landscapeWarning">
+                        ⚠️ Your design is landscape mode. We recommend at least 1500px for best print quality.
+                        <a href="#" style="color: #3b82f6; text-decoration: none;">Upscale your image here →</a>
+                    </div>
+
+                    <!-- Upload Options -->
+                    <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+                        <button class="btn btn-secondary" onclick="showUploadBox()" style="flex: 1;">
+                            📤 Upload File
+                        </button>
+                        <div style="display: flex; align-items: center; color: #6b7280;">OR</div>
+                        <button class="btn btn-secondary" onclick="showLibraryModal()" style="flex: 1;">
+                            📚 Select from Library
+                        </button>
+                    </div>
+                    
+                    <div class="upload-box" id="uploadBox" onclick="simulateUpload()">
+                        <div id="uploadPrompt">
+                            <div style="font-size: 48px;">📤</div>
+                            <div style="font-size: 16px; margin-top: 8px;">Drop your design here</div>
+                            <div style="font-size: 14px; color: #6b7280; margin-top: 4px;">or click to browse • PNG, JPG, SVG up to 10MB</div>
+                        </div>
+                        <div class="uploaded-image" id="uploadedImage" style="display: none;">
+                            <img id="designImg" alt="Uploaded design">
+                        </div>
+                    </div>
+
+                    <div style="background: #0f1419; border-radius: 12px; padding: 20px; display: none;" id="aiAnalysis">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                            <span style="font-size: 24px;">✨</span>
+                            <div style="font-size: 18px; font-weight: 600;">AI Design Analysis</div>
+                            <span class="credits" style="font-size: 12px;">1 credit</span>
+                        </div>
+                        <div style="background: #1a1f2e; border-radius: 8px; padding: 16px;">
+                            <div style="margin-bottom: 16px; line-height: 1.6; color: #d1d5db;" id="designDescription">
+                                The design features a grumpy-looking orange cat clutching a coffee mug. Above the cat, "I LIKE COFFEE" is displayed, and below, "I JUST DON'T LIKE DOING THINGS" is written. The overall mood is humorous and relatable, embodying the feeling of exhaustion and reluctance towards activity often associated with coffee-fueled mornings.
+                            </div>
+                            <div style="display: grid; gap: 16px;">
+                                <div style="display: grid; grid-template-columns: 120px 1fr; gap: 12px; align-items: start;">
+                                    <div style="font-size: 14px; color: #6b7280; font-weight: 500;">Title</div>
+                                    <div style="display: flex; gap: 8px; align-items: center;">
+                                        <input type="text" id="productTitle" value="Grumpy Cat Coffee Lover" style="flex: 1; background: #0f1419; border: 1px solid #2a2f3e; border-radius: 6px; padding: 8px 12px; color: #fff;">
+                                        <button class="refresh-btn" onclick="regenerateTitle(this)" title="Regenerate title (1 credit)">
+                                            <svg style="width: 18px; height: 18px; color: #9ca3af;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6m12-4a9 9 0 0 1-15 6.7L3 16"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 120px 1fr; gap: 12px; align-items: start;">
+                                    <div style="font-size: 14px; color: #6b7280; font-weight: 500;">Category</div>
+                                    <select style="width: 100%; background: #0f1419; border: 1px solid #2a2f3e; border-radius: 6px; padding: 8px 12px; color: #fff;">
+                                        <option>Choose a category...</option>
+                                        <option selected>Coffee</option>
+                                        <option>Crypto/Web3</option>
+                                        <option>Bitcoin</option>
+                                        <option>Fitness</option>
+                                        <option>80s/90s Nostalgia</option>
+                                        <option>Mental Health</option>
+                                        <option>Cat Lovers</option>
+                                        <option>Dog Lovers</option>
+                                        <option>Science/Space</option>
+                                        <option>Entrepreneurship</option>
+                                        <option>A.I / ChatGPT</option>
+                                        <option>Devs</option>
+                                        <option>Other</option>
+                                    </select>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 120px 1fr; gap: 12px; align-items: start;">
+                                    <div style="font-size: 14px; color: #6b7280; font-weight: 500;">Target Audience</div>
+                                    <div style="display: flex; gap: 8px; align-items: center;">
+                                        <div id="targetAudience" style="flex: 1; color: #d1d5db; font-size: 14px;">Cat lovers, coffee enthusiasts, millennials & Gen Z who appreciate dark humor</div>
+                                        <button class="refresh-btn" onclick="regenerateAudience(this)" style="min-width: 32px; height: 32px; padding: 6px;" title="Regenerate audience (1 credit)">
+                                            <svg style="width: 16px; height: 16px; color: #9ca3af;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6m12-4a9 9 0 0 1-15 6.7L3 16"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Background Selection -->
+            <div class="step-content" id="step2">
+                <div class="page-title">Choose Your Background</div>
+                <div class="page-subtitle">Select a lifestyle background that matches your design's vibe</div>
+
+                <div class="backgrounds-container">
+                    <div class="backgrounds-grid">
+                        <!-- Coffee Shop Background -->
+                        <div class="background-card" onclick="selectBackground('coffee-shop', this)">
+                            <div class="background-preview" style="background: linear-gradient(135deg, #8B4513 0%, #D2691E 50%, #F4A460 100%);">
+                                <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;">
+                                    <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270681/garments/tee/front/black.png" 
+                                         style="width: 60%; height: auto; z-index: 10; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));">
+                                </div>
+                                <div style="position: absolute; top: 10%; left: 10%; font-size: 48px; opacity: 0.3;">☕</div>
+                                <div style="position: absolute; bottom: 10%; right: 10%; font-size: 36px; opacity: 0.3;">🥐</div>
+                            </div>
+                            <div style="padding: 16px;">
+                                <div style="font-weight: 600; margin-bottom: 8px;">Cozy Coffee Shop</div>
+                                <div style="display: flex; justify-content: space-between; font-size: 14px; color: #6b7280;">
+                                    <span>📈 <span style="color: #10b981; font-weight: 600;">15.2%</span></span>
+                                    <span>👁️ <span style="color: #10b981; font-weight: 600;">4.5k</span> views</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Home Office Background -->
+                        <div class="background-card" onclick="selectBackground('home-office', this)">
+                            <div class="background-preview" style="background: linear-gradient(135deg, #E8F4F8 0%, #B8D4E3 50%, #87CEEB 100%);">
+                                <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;">
+                                    <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270681/garments/tee/front/black.png" 
+                                         style="width: 60%; height: auto; z-index: 10; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));">
+                                </div>
+                                <div style="position: absolute; top: 15%; right: 15%; font-size: 48px; opacity: 0.3;">💻</div>
+                                <div style="position: absolute; bottom: 15%; left: 15%; font-size: 36px; opacity: 0.3;">🌱</div>
+                            </div>
+                            <div style="padding: 16px;">
+                                <div style="font-weight: 600; margin-bottom: 8px;">Home Office Morning</div>
+                                <div style="display: flex; justify-content: space-between; font-size: 14px; color: #6b7280;">
+                                    <span>📈 <span style="color: #10b981; font-weight: 600;">13.7%</span></span>
+                                    <span>👁️ <span style="color: #10b981; font-weight: 600;">3.2k</span> views</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bookstore Background -->
+                        <div class="background-card" onclick="selectBackground('bookstore', this)">
+                            <div class="background-preview" style="background: linear-gradient(135deg, #704214 0%, #8B4513 50%, #A0522D 100%);">
+                                <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;">
+                                    <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270681/garments/tee/front/black.png" 
+                                         style="width: 60%; height: auto; z-index: 10; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));">
+                                </div>
+                                <div style="position: absolute; top: 10%; left: 15%; font-size: 48px; opacity: 0.3;">📚</div>
+                                <div style="position: absolute; bottom: 20%; right: 10%; font-size: 36px; opacity: 0.3;">👓</div>
+                            </div>
+                            <div style="padding: 16px;">
+                                <div style="font-weight: 600; margin-bottom: 8px;">Bookstore Café</div>
+                                <div style="display: flex; justify-content: space-between; font-size: 14px; color: #6b7280;">
+                                    <span>📈 <span style="color: #10b981; font-weight: 600;">11.9%</span></span>
+                                    <span>👁️ <span style="color: #10b981; font-weight: 600;">2.8k</span> views</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Kitchen Background -->
+                        <div class="background-card" onclick="selectBackground('kitchen', this)">
+                            <div class="background-preview" style="background: linear-gradient(135deg, #F5F5F5 0%, #E0E0E0 50%, #D3D3D3 100%);">
+                                <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;">
+                                    <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270681/garments/tee/front/black.png" 
+                                         style="width: 60%; height: auto; z-index: 10; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));">
+                                </div>
+                                <div style="position: absolute; top: 20%; right: 10%; font-size: 48px; opacity: 0.3;">☕</div>
+                                <div style="position: absolute; bottom: 10%; left: 20%; font-size: 36px; opacity: 0.3;">🥖</div>
+                            </div>
+                            <div style="padding: 16px;">
+                                <div style="font-weight: 600; margin-bottom: 8px;">Kitchen Counter</div>
+                                <div style="display: flex; justify-content: space-between; font-size: 14px; color: #6b7280;">
+                                    <span>📈 <span style="color: #10b981; font-weight: 600;">10.4%</span></span>
+                                    <span>👁️ <span style="color: #10b981; font-weight: 600;">1.9k</span> views</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Configure Products (Matching design/new exactly) -->
+            <div class="step-content" id="step3">
+                <div class="page-title">Configure Products</div>
+
+                <div class="configure-section">
+                    <!-- Product Selection Grid -->
+                    <div class="products-grid-container">
+                        <div class="products-grid">
+                            <div class="product-card selected currently-editing" onclick="toggleProduct(this, 'Medium Weight T-Shirt')">
+                                <div class="product-editing-badge">Currently Editing</div>
+                                <div class="product-check">✓</div>
+                                <div class="product-icon">👕</div>
+                                <div class="product-name">Medium Weight<br>T-Shirt</div>
+                            </div>
+                            <div class="product-card" onclick="toggleProduct(this, 'Oversized Drop Shoulder')">
+                                <div class="product-editing-badge">Currently Editing</div>
+                                <div class="product-check">✓</div>
+                                <div class="product-icon">🧥</div>
+                                <div class="product-name">Oversized Drop<br>Shoulder</div>
+                            </div>
+                            <div class="product-card" onclick="toggleProduct(this, 'Next Level Crop Top')">
+                                <div class="product-editing-badge">Currently Editing</div>
+                                <div class="product-check">✓</div>
+                                <div class="product-icon">👚</div>
+                                <div class="product-name">Next Level Crop<br>Top</div>
+                            </div>
+                            <div class="product-card selected" onclick="toggleProduct(this, 'Ladies Baby Tee')">
+                                <div class="product-editing-badge">Currently Editing</div>
+                                <div class="product-check">✓</div>
+                                <div class="product-icon">👕</div>
+                                <div class="product-name">Ladies Baby Tee</div>
+                            </div>
+                            <div class="product-card selected" onclick="toggleProduct(this, 'Womens Independent Hoodie')">
+                                <div class="product-editing-badge">Currently Editing</div>
+                                <div class="product-check">✓</div>
+                                <div class="product-icon">🧥</div>
+                                <div class="product-name">Women's<br>Independent<br>Hoodie</div>
+                            </div>
+                            <div class="product-card" onclick="toggleProduct(this, 'Medium Weight Hoodie')">
+                                <div class="product-editing-badge">Currently Editing</div>
+                                <div class="product-check">✓</div>
+                                <div class="product-icon">🧥</div>
+                                <div class="product-name">Medium Weight<br>Hoodie</div>
+                            </div>
+                            <div class="product-card" onclick="toggleProduct(this, 'Medium Weight Sweatshirt')">
+                                <div class="product-editing-badge">Currently Editing</div>
+                                <div class="product-check">✓</div>
+                                <div class="product-icon">👔</div>
+                                <div class="product-name">Medium Weight<br>Sweatshirt</div>
+                            </div>
+                            <div class="product-card" onclick="toggleProduct(this, 'Standard Polo')">
+                                <div class="product-editing-badge">Currently Editing</div>
+                                <div class="product-check">✓</div>
+                                <div class="product-icon">👔</div>
+                                <div class="product-name">Standard Polo</div>
+                            </div>
+                            <div class="product-card" onclick="toggleProduct(this, 'Patch Hat Curved')">
+                                <div class="product-editing-badge">Currently Editing</div>
+                                <div class="product-check">✓</div>
+                                <div class="product-icon">🧢</div>
+                                <div class="product-name">Patch Hat -<br>Curved</div>
+                            </div>
+                            <div class="product-card" onclick="toggleProduct(this, 'Patch Hat Flat')">
+                                <div class="product-editing-badge">Currently Editing</div>
+                                <div class="product-check">✓</div>
+                                <div class="product-icon">🧢</div>
+                                <div class="product-name">Patch Hat - Flat</div>
+                            </div>
+                            <div class="product-card" onclick="toggleProduct(this, 'Coffee Mug')">
+                                <div class="product-editing-badge">Currently Editing</div>
+                                <div class="product-check">✓</div>
+                                <div class="product-icon">☕</div>
+                                <div class="product-name">Coffee Mug</div>
+                            </div>
+                            <div class="product-card" onclick="toggleProduct(this, 'Art Canvas 12x12')">
+                                <div class="product-editing-badge">Currently Editing</div>
+                                <div class="product-check">✓</div>
+                                <div class="product-icon">🎨</div>
+                                <div class="product-name">Art Canvas -<br>12x12</div>
+                            </div>
+                            <div class="product-card" onclick="toggleProduct(this, 'Art Canvas 16x16')">
+                                <div class="product-editing-badge">Currently Editing</div>
+                                <div class="product-check">✓</div>
+                                <div class="product-icon">🎨</div>
+                                <div class="product-name">Art Canvas -<br>16x16</div>
+                            </div>
+                            <div class="product-card" onclick="toggleProduct(this, 'Art Canvas 24x24')">
+                                <div class="product-editing-badge">Currently Editing</div>
+                                <div class="product-check">✓</div>
+                                <div class="product-icon">🎨</div>
+                                <div class="product-name">Art Canvas -<br>24x24</div>
+                            </div>
+                            <div class="product-card" onclick="toggleProduct(this, 'NFT Cards')">
+                                <div class="product-editing-badge">Currently Editing</div>
+                                <div class="product-check">✓</div>
+                                <div class="product-icon">🎴</div>
+                                <div class="product-name">NFTREASURE<br>NFT Cards</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Canvas Editor and Product Details in Two Columns -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; max-width: 1200px; margin-left: auto; margin-right: auto;">
+                        <!-- Left Column: Canvas Editor -->
+                        <div>
+                            <div style="background: #0f1419; border-radius: 12px; padding: 20px;">
+                                <!-- Canvas with T-shirt -->
+                                <div style="position: relative; background: white; border-radius: 8px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center;">
+                                    <!-- T-shirt image -->
+                                    <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270681/garments/tee/front/black.png" 
+                                         style="width: 80%; height: auto; position: relative; z-index: 1;">
+                                    
+                                    <!-- Design overlay (draggable) -->
+                                    <div id="designOverlay" style="position: absolute; width: 120px; height: 120px; border: 2px dashed #3b82f6; background: rgba(59, 130, 246, 0.1); cursor: move; z-index: 2; display: flex; align-items: center; justify-content: center;">
+                                        <img src="file:///Users/user/Desktop/Bfig6vaDax6ggvwqqD9Cdx_generated_image_b2mYF65qhftLPMaz44F8XE.png" 
+                                             style="width: 100%; height: 100%; object-fit: contain;">
+                                    </div>
+                                </div>
+                                
+                                <!-- Canvas Controls -->
+                                <div style="background: #1a1f2e; border-radius: 8px; padding: 16px; margin-top: 16px;">
+                                    <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+                                        <span style="font-size: 14px; color: #9ca3af;">Tools</span>
+                                        <button style="background: #3b82f6; color: white; padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px;">
+                                            Move
+                                        </button>
+                                        <button style="background: #2a2f3e; color: #9ca3af; padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px;">
+                                            Rotate
+                                        </button>
+                                        <button style="background: #2a2f3e; color: #9ca3af; padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px;">
+                                            🔍
+                                        </button>
+                                        <button style="background: #2a2f3e; color: #9ca3af; padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px;">
+                                            🗑️
+                                        </button>
+                                        <button style="background: #2a2f3e; color: #9ca3af; padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px;">
+                                            ⚙️
+                                        </button>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 16px;">
+                                        <span style="font-size: 14px; color: #9ca3af;">Scale</span>
+                                        <input type="range" min="50" max="150" value="100" style="flex: 1;">
+                                        <input type="number" value="100" style="width: 60px; background: #0f1419; border: 1px solid #2a2f3e; border-radius: 4px; padding: 4px 8px; color: white; text-align: center;">
+                                        <span style="color: #9ca3af;">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Product Details Table -->
+                    <div class="product-details-table">
+                        <div class="table-header">
+                            <div>Item</div>
+                            <div>Enable</div>
+                            <div>Default Color</div>
+                        </div>
+                        <div class="table-row">
+                            <div class="product-info">Medium Weight T-Shirt</div>
+                            <div>
+                                <div class="toggle-switch on" onclick="toggleSwitch(this)">
+                                    <div class="toggle-slider"></div>
+                                </div>
+                            </div>
+                            <div class="color-selector">
+                                <select class="color-dropdown">
+                                    <option>Select Default →</option>
+                                    <option selected>Black</option>
+                                    <option>White</option>
+                                    <option>Navy</option>
+                                    <option>Heather Grey</option>
+                                    <option>Red</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="table-row">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="opacity: 0.3;">○</span> Print on Front
+                                <span style="opacity: 0.3;">○</span> Print on Back
+                                <span style="color: #3b82f6;">●</span> Print on Front & Back
+                            </div>
+                            <div></div>
+                            <div style="display: flex; gap: 8px;">
+                                <div style="width: 24px; height: 24px; background: #000; border-radius: 4px;"></div>
+                                <div style="width: 24px; height: 24px; background: #fff; border: 1px solid #e5e7eb; border-radius: 4px;"></div>
+                                <div style="width: 24px; height: 24px; background: #1e40af; border-radius: 4px;"></div>
+                                <div style="width: 24px; height: 24px; background: #9ca3af; border-radius: 4px;"></div>
+                                <div style="width: 24px; height: 24px; background: #dc2626; border-radius: 4px;"></div>
+                            </div>
+                        </div>
+                        <div class="table-row">
+                            <div class="product-info">Ladies Baby Tee</div>
+                            <div>
+                                <div class="toggle-switch on" onclick="toggleSwitch(this)">
+                                    <div class="toggle-slider"></div>
+                                </div>
+                            </div>
+                            <div class="color-selector">
+                                <select class="color-dropdown">
+                                    <option>Select Default →</option>
+                                    <option selected>Black</option>
+                                    <option>White</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="table-row">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="color: #3b82f6;">●</span> Print on Front
+                                <span style="opacity: 0.3;">○</span> Print on Back
+                                <span style="opacity: 0.3;">○</span> Print on Front & Back
+                            </div>
+                            <div></div>
+                            <div style="display: flex; gap: 8px;">
+                                <div style="width: 24px; height: 24px; background: #000; border-radius: 4px;"></div>
+                            </div>
+                        </div>
+                        <div class="table-row">
+                            <div class="product-info">Women's Independent Hoodie</div>
+                            <div>
+                                <div class="toggle-switch on" onclick="toggleSwitch(this)">
+                                    <div class="toggle-slider"></div>
+                                </div>
+                            </div>
+                            <div class="color-selector">
+                                <select class="color-dropdown">
+                                    <option>Select Default →</option>
+                                    <option selected>Black</option>
+                                    <option>Pink</option>
+                                    <option>Grey Heather</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="table-row">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="color: #3b82f6;">●</span> Print on Front
+                                <span style="opacity: 0.3;">○</span> Print on Back
+                                <span style="opacity: 0.3;">○</span> Print on Front & Back
+                            </div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- NFC Experience Section -->
+                    <div style="background: #e8f5ff; border-radius: 12px; padding: 20px; margin-top: 20px; color: #1e40af;">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                            <span style="font-size: 20px;">🔗</span>
+                            <h3 style="font-size: 18px; font-weight: 600; color: #1e40af;">Connect an NFC Experience</h3>
+                        </div>
+                        <p style="color: #3b82f6; margin-bottom: 16px;">Turn your product into smart apparel with built-in NFC features</p>
+                        <div style="background: white; border-radius: 8px; padding: 16px;">
+                            <label style="font-weight: 500; color: #374151;">NFC Configuration</label>
+                            <select style="width: 100%; background: white; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 12px; margin-top: 8px; color: #374151;">
+                                <option>Include NFC for all purchases (adds $12 to retail price)</option>
+                                <option>No NFC chip</option>
+                            </select>
+                        </div>
+                        <div style="background: #dbeafe; border-radius: 8px; padding: 16px; margin-top: 16px;">
+                            <h4 style="color: #1e40af; margin-bottom: 8px;">💡 What's an NFC Experience?</h4>
+                            <p style="color: #3b82f6; font-size: 14px; line-height: 1.5;">
+                                TRESR products are smart apparel!<br>
+                                When scanned, they can unlock exclusive content, verify NFT ownership, assign reward points, redirect to custom destinations, and more — all powered by encrypted NFC tags.
+                            </p>
+                            <p style="color: #1e40af; font-size: 14px; margin-top: 8px; font-weight: 500;">
+                                Adding NFC adds $12 to retail price of product.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Ready to Generate Section -->
+                    <div style="text-align: center; margin-top: 32px;">
+                        <p style="color: #6b7280; margin-bottom: 8px;">Ready to Generate</p>
+                        <p style="color: #9ca3af; font-size: 14px; margin-bottom: 16px;">Your design will be applied to all enabled products with their individual positioning</p>
+                        <div style="font-size: 48px; color: #10b981; font-weight: 600;">36</div>
+                        <div style="color: #6b7280; font-size: 14px;">Total Product Variants</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Generate Images -->
+            <div class="step-content" id="step4">
+                <div class="page-title">Generate Product Images</div>
+                <div class="page-subtitle">Create mockups and lifestyle images for your products</div>
+
+                <div class="generation-container">
+                    <!-- Generation Summary -->
+                    <div class="generation-summary">
+                        <h3 style="margin-bottom: 16px;">Generation Summary</h3>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <div class="summary-number">3</div>
+                                <div class="summary-label">Garment Types</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-number">5</div>
+                                <div class="summary-label">Colors per Garment</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-number">15</div>
+                                <div class="summary-label">Total Mockups</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-number">30</div>
+                                <div class="summary-label">Credits Required</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mockup Generation -->
+                    <h3 style="margin: 24px 0 16px;">Product Mockups - All Variants Generated</h3>
+                    <div class="generation-grid" id="mockupGrid">
+                        <!-- T-Shirt Variations with Design -->
+                        <div class="mockup-card">
+                            <div class="mockup-image" style="position: relative;">
+                                <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270681/garments/tee/front/black.png">
+                                <img src="file:///Users/user/Desktop/Bfig6vaDax6ggvwqqD9Cdx_generated_image_b2mYF65qhftLPMaz44F8XE.png" 
+                                     style="position: absolute; width: 35%; top: 28%; left: 50%; transform: translateX(-50%); opacity: 0.95;">
+                            </div>
+                            <div class="mockup-info">
+                                <div class="mockup-name">Medium Weight T-Shirt</div>
+                                <div class="mockup-color">Black</div>
+                            </div>
+                        </div>
+                        <div class="mockup-card">
+                            <div class="mockup-image" style="position: relative;">
+                                <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270687/garments/tee/front/white.png">
+                                <img src="file:///Users/user/Desktop/Bfig6vaDax6ggvwqqD9Cdx_generated_image_b2mYF65qhftLPMaz44F8XE.png" 
+                                     style="position: absolute; width: 35%; top: 28%; left: 50%; transform: translateX(-50%); opacity: 0.95;">
+                            </div>
+                            <div class="mockup-info">
+                                <div class="mockup-name">Medium Weight T-Shirt</div>
+                                <div class="mockup-color">White</div>
+                            </div>
+                        </div>
+                        <div class="mockup-card">
+                            <div class="mockup-image" style="position: relative;">
+                                <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270682/garments/tee/front/navy.png">
+                                <img src="file:///Users/user/Desktop/Bfig6vaDax6ggvwqqD9Cdx_generated_image_b2mYF65qhftLPMaz44F8XE.png" 
+                                     style="position: absolute; width: 35%; top: 28%; left: 50%; transform: translateX(-50%); opacity: 0.95;">
+                            </div>
+                            <div class="mockup-info">
+                                <div class="mockup-name">Medium Weight T-Shirt</div>
+                                <div class="mockup-color">Navy</div>
+                            </div>
+                        </div>
+                        <div class="mockup-card">
+                            <div class="mockup-image" style="position: relative;">
+                                <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270684/garments/tee/front/heather-grey.png">
+                                <img src="file:///Users/user/Desktop/Bfig6vaDax6ggvwqqD9Cdx_generated_image_b2mYF65qhftLPMaz44F8XE.png" 
+                                     style="position: absolute; width: 35%; top: 28%; left: 50%; transform: translateX(-50%); opacity: 0.95;">
+                            </div>
+                            <div class="mockup-info">
+                                <div class="mockup-name">Medium Weight T-Shirt</div>
+                                <div class="mockup-color">Heather Grey</div>
+                            </div>
+                        </div>
+                        <div class="mockup-card">
+                            <div class="mockup-image" style="position: relative;">
+                                <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270688/garments/tee/front/red.png">
+                                <img src="file:///Users/user/Desktop/Bfig6vaDax6ggvwqqD9Cdx_generated_image_b2mYF65qhftLPMaz44F8XE.png" 
+                                     style="position: absolute; width: 35%; top: 28%; left: 50%; transform: translateX(-50%); opacity: 0.95;">
+                            </div>
+                            <div class="mockup-info">
+                                <div class="mockup-name">Medium Weight T-Shirt</div>
+                                <div class="mockup-color">Red</div>
+                            </div>
+                        </div>
+                        <!-- Ladies Baby Tee with Design -->
+                        <div class="mockup-card">
+                            <div class="mockup-image" style="position: relative;">
+                                <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1754608310/tresr-templates/tresr-templates/baby-tee/front-black.png">
+                                <img src="file:///Users/user/Desktop/Bfig6vaDax6ggvwqqD9Cdx_generated_image_b2mYF65qhftLPMaz44F8XE.png" 
+                                     style="position: absolute; width: 30%; top: 25%; left: 50%; transform: translateX(-50%); opacity: 0.95;">
+                            </div>
+                            <div class="mockup-info">
+                                <div class="mockup-name">Ladies Baby Tee</div>
+                                <div class="mockup-color">Black</div>
+                            </div>
+                        </div>
+                        <div class="mockup-card">
+                            <div class="mockup-image" style="position: relative;">
+                                <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1754608329/tresr-templates/tresr-templates/baby-tee/front-white.png">
+                                <img src="file:///Users/user/Desktop/Bfig6vaDax6ggvwqqD9Cdx_generated_image_b2mYF65qhftLPMaz44F8XE.png" 
+                                     style="position: absolute; width: 30%; top: 25%; left: 50%; transform: translateX(-50%); opacity: 0.95;">
+                            </div>
+                            <div class="mockup-info">
+                                <div class="mockup-name">Ladies Baby Tee</div>
+                                <div class="mockup-color">White</div>
+                            </div>
+                        </div>
+                        <!-- Women's Hoodie with Design -->
+                        <div class="mockup-card">
+                            <div class="mockup-image" style="position: relative;">
+                                <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270708/garments/wmn-hoodie/front/black.png">
+                                <img src="file:///Users/user/Desktop/Bfig6vaDax6ggvwqqD9Cdx_generated_image_b2mYF65qhftLPMaz44F8XE.png" 
+                                     style="position: absolute; width: 28%; top: 30%; left: 50%; transform: translateX(-50%); opacity: 0.95;">
+                            </div>
+                            <div class="mockup-info">
+                                <div class="mockup-name">Women's Hoodie</div>
+                                <div class="mockup-color">Black</div>
+                            </div>
+                        </div>
+                        <div class="mockup-card">
+                            <div class="mockup-image" style="position: relative;">
+                                <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270711/garments/wmn-hoodie/front/pink.png">
+                                <img src="file:///Users/user/Desktop/Bfig6vaDax6ggvwqqD9Cdx_generated_image_b2mYF65qhftLPMaz44F8XE.png" 
+                                     style="position: absolute; width: 28%; top: 30%; left: 50%; transform: translateX(-50%); opacity: 0.95;">
+                            </div>
+                            <div class="mockup-info">
+                                <div class="mockup-name">Women's Hoodie</div>
+                                <div class="mockup-color">Pink</div>
+                            </div>
+                        </div>
+                        <div class="mockup-card">
+                            <div class="mockup-image" style="position: relative;">
+                                <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270714/garments/wmn-hoodie/front/gray-heather.png">
+                                <img src="file:///Users/user/Desktop/Bfig6vaDax6ggvwqqD9Cdx_generated_image_b2mYF65qhftLPMaz44F8XE.png" 
+                                     style="position: absolute; width: 28%; top: 30%; left: 50%; transform: translateX(-50%); opacity: 0.95;">
+                            </div>
+                            <div class="mockup-info">
+                                <div class="mockup-name">Women's Hoodie</div>
+                                <div class="mockup-color">Grey Heather</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="generateMockups()" style="margin: 24px 0;">
+                        Generate All Mockups
+                        <span class="credit-cost">30 credits</span>
+                    </button>
+
+                    <!-- Lifestyle Generation -->
+                    <div class="lifestyle-section">
+                        <h3 style="margin-bottom: 16px;">Lifestyle Images</h3>
+                        
+                        <textarea class="lifestyle-prompt" placeholder="Describe your lifestyle scene...">Person lounging on a cozy couch with a large coffee mug, wearing the grumpy cat coffee shirt, surrounded by soft blankets, morning sunlight streaming through windows</textarea>
+                        
+                        <div class="prompt-suggestions">
+                            <div class="prompt-chip" onclick="setPrompt('Cozy Morning Routine')">☕ Cozy Morning</div>
+                            <div class="prompt-chip" onclick="setPrompt('Creative Coffee Break')">🎨 Creative Break</div>
+                            <div class="prompt-chip" onclick="setPrompt('Weekend Brunch with Friends')">🥐 Weekend Brunch</div>
+                            <div class="prompt-chip" onclick="setPrompt('Rainy Day Comfort')">🌧️ Rainy Day</div>
+                        </div>
+
+                        <button class="btn btn-ai" onclick="generateLifestyle()">
+                            ✨ Generate with Gemini
+                            <span class="credit-cost">10 credits</span>
+                        </button>
+
+                        <div class="lifestyle-grid">
+                            <!-- Cozy Home Scene -->
+                            <div class="lifestyle-card" style="height: auto; overflow: visible;">
+                                <img src="file:///Users/user/Desktop/Gemini_Generated_Image_i38nnmi38nnmi38n.png" 
+                                     style="width: 100%; border-radius: 12px; object-fit: cover;"
+                                     alt="Woman wearing grumpy cat coffee shirt on couch">
+                                <div style="margin-top: 12px;">
+                                    <div style="font-weight: 600; font-size: 14px;">Cozy Morning Vibes</div>
+                                    <div style="color: #9ca3af; font-size: 12px; margin-top: 4px;">Weekend comfort with your favorite tee</div>
+                                </div>
+                            </div>
+
+                            <!-- Home Office Scene -->
+                            <div class="lifestyle-card" style="height: auto; overflow: visible;">
+                                <img src="file:///Users/user/Desktop/Gemini_Generated_Image_70x0ey70x0ey70x0.png" 
+                                     style="width: 100%; border-radius: 12px; object-fit: cover;"
+                                     alt="Man wearing grumpy cat coffee shirt in library">
+                                <div style="margin-top: 12px;">
+                                    <div style="font-weight: 600; font-size: 14px;">Work From Home Style</div>
+                                    <div style="color: #9ca3af; font-size: 12px; margin-top: 4px;">Professional comfort for remote work days</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5: Review & Publish -->
+            <div class="step-content" id="step5">
+                <div class="page-title">Review & Publish</div>
+                <div class="page-subtitle">Final review of all generated product images</div>
+
+                <div class="publish-container">
+                    <h3 style="margin-bottom: 16px;">All Product Variants & Lifestyle Images</h3>
+                    
+                    <div class="publish-preview">
+                        <!-- T-Shirt Variants -->
+                        <div class="preview-item">
+                            <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270681/garments/tee/front/black.png">
+                            <div class="preview-label">T-Shirt Black</div>
+                        </div>
+                        <div class="preview-item">
+                            <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270687/garments/tee/front/white.png">
+                            <div class="preview-label">T-Shirt White</div>
+                        </div>
+                        <div class="preview-item">
+                            <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270682/garments/tee/front/navy.png">
+                            <div class="preview-label">T-Shirt Navy</div>
+                        </div>
+                        <div class="preview-item">
+                            <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270684/garments/tee/front/heather-grey.png">
+                            <div class="preview-label">T-Shirt Grey</div>
+                        </div>
+                        <div class="preview-item">
+                            <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270688/garments/tee/front/red.png">
+                            <div class="preview-label">T-Shirt Red</div>
+                        </div>
+                        <!-- Ladies Baby Tee -->
+                        <div class="preview-item">
+                            <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1754608310/tresr-templates/tresr-templates/baby-tee/front-black.png">
+                            <div class="preview-label">Baby Tee Black</div>
+                        </div>
+                        <div class="preview-item">
+                            <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1754608329/tresr-templates/tresr-templates/baby-tee/front-white.png">
+                            <div class="preview-label">Baby Tee White</div>
+                        </div>
+                        <!-- Women's Hoodie -->
+                        <div class="preview-item">
+                            <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270708/garments/wmn-hoodie/front/black.png">
+                            <div class="preview-label">Hoodie Black</div>
+                        </div>
+                        <div class="preview-item">
+                            <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270711/garments/wmn-hoodie/front/pink.png">
+                            <div class="preview-label">Hoodie Pink</div>
+                        </div>
+                        <div class="preview-item">
+                            <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270714/garments/wmn-hoodie/front/gray-heather.png">
+                            <div class="preview-label">Hoodie Grey</div>
+                        </div>
+                        <!-- Lifestyle Images -->
+                        <div class="preview-item">
+                            <img src="file:///Users/user/Desktop/Gemini_Generated_Image_i38nnmi38nnmi38n.png" style="width: 100%; height: 100%; object-fit: cover;">
+                            <div class="preview-label">Cozy Morning</div>
+                        </div>
+                        <div class="preview-item">
+                            <img src="file:///Users/user/Desktop/Gemini_Generated_Image_70x0ey70x0ey70x0.png" style="width: 100%; height: 100%; object-fit: cover;">
+                            <div class="preview-label">Home Office</div>
+                        </div>
+                    </div>
+
+                    <div style="background: #0f1419; border-radius: 12px; padding: 20px; margin-top: 24px;">
+                        <h3 style="margin-bottom: 16px;">Product Information</h3>
+                        <div style="display: grid; gap: 16px;">
+                            <div>
+                                <label style="font-size: 14px; color: #6b7280;">Title</label>
+                                <input type="text" value="Grumpy Cat Coffee Lover - Funny Morning Mood Collection" style="width: 100%; background: #1a1f2e; border: 1px solid #2a2f3e; border-radius: 6px; padding: 8px 12px; color: #fff; margin-top: 4px;">
+                            </div>
+                            <div>
+                                <label style="font-size: 14px; color: #6b7280;">Description</label>
+                                <textarea style="width: 100%; background: #1a1f2e; border: 1px solid #2a2f3e; border-radius: 6px; padding: 8px 12px; color: #fff; margin-top: 4px; min-height: 100px;">Fuel your laziness with this hilarious cat-themed tee! Perfect for coffee-loving, do-nothing days. Features a grumpy orange cat with the relatable message "I Like Coffee, I Just Don't Like Doing Things".</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 24px; text-align: center;">
+                        <div>
+                            <div style="font-size: 32px; font-weight: 600; color: #3b82f6;">3</div>
+                            <div style="font-size: 14px; color: #9ca3af;">Garment Types</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 32px; font-weight: 600; color: #3b82f6;">10</div>
+                            <div style="font-size: 14px; color: #9ca3af;">Color Variations</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 32px; font-weight: 600; color: #3b82f6;">2</div>
+                            <div style="font-size: 14px; color: #9ca3af;">Lifestyle Images</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 32px; font-weight: 600; color: #10b981;">43</div>
+                            <div style="font-size: 14px; color: #9ca3af;">Credits Used</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Library Section -->
+            <div class="step-content" id="library" style="display: none;">
+                <div class="page-title">Design Library</div>
+                <div class="page-subtitle">Access all your created designs in one place</div>
+                
+                <!-- Library Filter Tabs -->
+                <div style="display: flex; gap: 12px; margin-bottom: 24px; border-bottom: 1px solid #2a2f3e; padding-bottom: 12px;">
+                    <button class="filter-tab active" onclick="filterLibrary('all')">All Designs</button>
+                    <button class="filter-tab" onclick="filterLibrary('uploaded')">Uploaded</button>
+                    <button class="filter-tab" onclick="filterLibrary('bulk')">Bulk Generated</button>
+                    <button class="filter-tab" onclick="filterLibrary('lifestyle')">Lifestyle</button>
+                    <button class="filter-tab" onclick="filterLibrary('variations')">Product Variations</button>
+                </div>
+                
+                <!-- Search Bar -->
+                <div style="margin-bottom: 24px;">
+                    <input type="text" placeholder="Search by title or description..." 
+                           style="width: 100%; background: #0f1419; border: 1px solid #2a2f3e; border-radius: 8px; padding: 12px; color: #fff;"
+                           onkeyup="searchLibrary(this.value)">
+                </div>
+                
+                <!-- Library Grid -->
+                <div class="library-grid" id="libraryGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+                    <!-- Sample library items with coffee designs -->
+                    <div class="library-item" data-category="uploaded">
+                        <img src="file:///Users/user/Desktop/Bfig6vaDax6ggvwqqD9Cdx_generated_image_b2mYF65qhftLPMaz44F8XE.png" style="width: 100%; border-radius: 8px;">
+                        <div style="margin-top: 8px; font-weight: 600;">Grumpy Coffee Cat</div>
+                        <div style="color: #9ca3af; font-size: 12px; margin-top: 4px;">Humorous cat design expressing coffee addiction and laziness</div>
+                    </div>
+                    <div class="library-item" data-category="lifestyle">
+                        <img src="file:///Users/user/Desktop/Gemini_Generated_Image_i38nnmi38nnmi38n.png" style="width: 100%; border-radius: 8px;">
+                        <div style="margin-top: 8px; font-weight: 600;">Cozy Morning Vibes</div>
+                        <div style="color: #9ca3af; font-size: 12px; margin-top: 4px;">Woman wearing coffee cat shirt in comfortable home setting</div>
+                    </div>
+                    <div class="library-item" data-category="lifestyle">
+                        <img src="file:///Users/user/Desktop/Gemini_Generated_Image_70x0ey70x0ey70x0.png" style="width: 100%; border-radius: 8px;">
+                        <div style="margin-top: 8px; font-weight: 600;">Work From Home Style</div>
+                        <div style="color: #9ca3af; font-size: 12px; margin-top: 4px;">Professional wearing coffee cat shirt in library setting</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bulk Create Section -->
+            <div class="step-content" id="bulkCreate" style="display: none;">
+                <div class="page-title">Bulk Design Creator</div>
+                <div class="page-subtitle">Generate multiple designs at once from CSV or text prompts</div>
+                
+                <!-- Tabs for CSV vs Single -->
+                <div style="display: flex; gap: 12px; margin-bottom: 24px;">
+                    <button class="bulk-tab active" onclick="showBulkTab('csv')">📁 CSV Upload (50 max)</button>
+                    <button class="bulk-tab" onclick="showBulkTab('single')">✨ Single Design Generator</button>
+                </div>
+                
+                <!-- CSV Upload Tab -->
+                <div id="csvTab">
+                    <div style="background: #0f1419; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+                        <h3 style="margin-bottom: 16px;">Upload CSV File</h3>
+                        <div class="csv-drop-zone" ondrop="handleCSVDrop(event)" ondragover="handleDragOver(event)"
+                             style="border: 2px dashed #3a3f4e; border-radius: 8px; padding: 40px; text-align: center; cursor: pointer;">
+                            <div style="font-size: 48px; margin-bottom: 12px;">📄</div>
+                            <div style="font-weight: 600; margin-bottom: 8px;">Drop your CSV file here</div>
+                            <div style="color: #9ca3af; font-size: 14px;">or click to browse • Maximum 50 designs • 10 credits per design</div>
+                            <input type="file" accept=".csv" onchange="handleCSVSelect(event)" style="display: none;" id="csvInput">
+                        </div>
+                        
+                        <div id="csvInfo" style="display: none; margin-top: 20px; padding: 16px; background: #1a1f2e; border-radius: 8px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div style="font-weight: 600;">demo-coffee-bulk.csv</div>
+                                    <div style="color: #9ca3af; font-size: 14px;">25 designs detected • 250 credits required</div>
+                                </div>
+                                <button class="btn btn-primary" onclick="generateBulkDesigns()">Generate All Designs</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Generated Designs Grid -->
+                    <div id="bulkResults" style="display: none;">
+                        <h3 style="margin-bottom: 16px;">Generated Designs</h3>
+                        <div class="bulk-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
+                            <!-- This will be populated with generated designs -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Single Design Tab -->
+                <div id="singleTab" style="display: none;">
+                    <div style="background: #0f1419; border-radius: 12px; padding: 24px;">
+                        <h3 style="margin-bottom: 16px;">Generate Single Design</h3>
+                        
+                        <!-- Design Prompt Input -->
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Design Prompt</label>
+                            <textarea id="designPrompt" placeholder="Describe your t-shirt design idea..."
+                                      style="width: 100%; min-height: 100px; background: #1a1f2e; border: 1px solid #2a2f3e; border-radius: 8px; padding: 12px; color: #fff; resize: vertical;"></textarea>
+                        </div>
+                        
+                        <!-- Preset Prompts -->
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Quick Templates</label>
+                            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                <button class="prompt-chip" onclick="useTemplate('funny')">😄 Funny & Sarcastic</button>
+                                <button class="prompt-chip" onclick="useTemplate('cute')">🐱 Cute Animals</button>
+                                <button class="prompt-chip" onclick="useTemplate('motivational')">💪 Motivational</button>
+                                <button class="prompt-chip" onclick="useTemplate('minimalist')">⚪ Minimalist</button>
+                                <button class="prompt-chip" onclick="useTemplate('vintage')">🎨 Vintage Style</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Default Template -->
+                        <div style="background: #1a1f2e; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+                            <div style="font-size: 12px; color: #9ca3af; margin-bottom: 8px;">DEFAULT TEMPLATE:</div>
+                            <div style="font-family: monospace; font-size: 13px; line-height: 1.6; color: #3b82f6;">
+                                "Flat t-shirt design for print-on-demand. Solid [black/white] background. High-contrast. No shadows. No small details. No mockup. Vector style or bold illustration. Design centered and print-ready. [Your concept]. Include bold, legible text: '[Your phrase]'."
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-ai" onclick="generateSingleDesign()" style="width: 100%;">
+                            ✨ Generate Design
+                            <span class="credit-cost">10 credits</span>
+                        </button>
+                        
+                        <!-- Single Design Result -->
+                        <div id="singleResult" style="display: none; margin-top: 24px;">
+                            <div style="background: #0f1419; border-radius: 12px; padding: 20px;">
+                                <img id="generatedDesign" src="" style="width: 100%; max-width: 400px; margin: 0 auto; display: block; border-radius: 8px;">
+                                <div style="margin-top: 16px; text-align: center;">
+                                    <button class="btn btn-primary" onclick="addToLibrary()">Add to Library</button>
+                                    <button class="btn btn-secondary" onclick="createProduct()">Create Product</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+            
+            <!-- Action Bar -->
+            <div class="action-bar">
+        <div class="action-buttons">
+            <div style="display: flex; gap: 12px;">
+                <button class="btn btn-secondary" onclick="previousStep()" id="backBtn" style="display: none;">← Back</button>
+                <button class="btn btn-secondary" onclick="saveAsDraft()">Save as Draft</button>
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <button class="btn btn-ai" onclick="showCommunity()">
+                    🎉 Join Community for Credit Bundles
+                </button>
+                <button class="btn btn-primary" onclick="nextStep()" id="nextBtn" style="min-width: 140px; padding: 14px 24px;">
+                    Continue →
+                </button>
+                <button class="btn btn-success" onclick="publishProduct()" id="publishBtn" style="display: none;">
+                    🚀 Publish to Shopify
+                </button>
+            </div>
+        </div>
+    </div>
+        </div>
+    </div>
+
+    <!-- Toast - Positioned above buttons -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Global state
+        let currentStep = 1;
+        let credits = 250;
+        let selectedBackground = null;
+        let selectedProducts = ['Medium Weight T-Shirt', 'Ladies Baby Tee', 'Womens Independent Hoodie'];
+        let productColors = {
+            'Medium Weight T-Shirt': ['Black', 'White', 'Navy', 'Heather Grey', 'Red'],
+            'Ladies Baby Tee': ['Black', 'White'],
+            'Womens Independent Hoodie': ['Black', 'Pink', 'Grey Heather']
+        };
+        
+        // Touch gesture support
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        // Add swipe gesture detection
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+        
+        document.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+        
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0 && currentStep < 5) {
+                    // Swipe left - next step
+                    nextStep();
+                } else if (diff < 0 && currentStep > 1) {
+                    // Swipe right - previous step
+                    previousStep();
+                }
+            }
+        }
+
+        // Toggle Sidebar for mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            const hamburger = document.querySelector('.hamburger');
+            
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        }
+        
+        // Loading state helper
+        function showLoading(element, text = 'Loading...') {
+            const originalContent = element.innerHTML;
+            element.setAttribute('data-original', originalContent);
+            element.innerHTML = `<span style="display: inline-flex; align-items: center; gap: 8px;">
+                <span style="display: inline-block; width: 16px; height: 16px; border: 2px solid transparent; border-top-color: currentColor; border-radius: 50%; animation: spin 0.6s linear infinite;"></span>
+                ${text}
+            </span>`;
+            element.disabled = true;
+        }
+        
+        function hideLoading(element) {
+            const original = element.getAttribute('data-original');
+            if (original) {
+                element.innerHTML = original;
+                element.disabled = false;
+            }
+        }
+
+        // Navigation
+        function goToStep(step) {
+            currentStep = step;
+            
+            // Update steps
+            document.querySelectorAll('.step').forEach((s, i) => {
+                s.classList.remove('active', 'completed');
+                if (i + 1 < step) s.classList.add('completed');
+                if (i + 1 === step) s.classList.add('active');
+            });
+            
+            // Update content
+            document.querySelectorAll('.step-content').forEach(c => {
+                c.classList.remove('active');
+            });
+            document.getElementById(`step${step}`).classList.add('active');
+            
+            // Update buttons
+            document.getElementById('backBtn').style.display = step > 1 ? 'block' : 'none';
+            document.getElementById('nextBtn').style.display = step < 5 ? 'block' : 'none';
+            document.getElementById('publishBtn').style.display = step === 5 ? 'block' : 'none';
+        }
+
+        function nextStep() {
+            if (currentStep < 5) goToStep(currentStep + 1);
+        }
+
+        function previousStep() {
+            if (currentStep > 1) goToStep(currentStep - 1);
+        }
+
+        // Step 1: Upload with actual design
+        function simulateUpload() {
+            document.getElementById('uploadPrompt').style.display = 'none';
+            document.getElementById('uploadedImage').style.display = 'block';
+            document.getElementById('uploadBox').classList.add('has-file');
+            
+            // Use the actual coffee cat design image file
+            const img = document.getElementById('designImg');
+            img.src = 'file:///Users/user/Desktop/Bfig6vaDax6ggvwqqD9Cdx_generated_image_b2mYF65qhftLPMaz44F8XE.png';
+            img.onload = function() {
+                // Check if landscape
+                if (img.naturalWidth > img.naturalHeight) {
+                    document.getElementById('landscapeWarning').classList.add('show');
+                } else {
+                    document.getElementById('landscapeWarning').classList.remove('show');
+                }
+            };
+            
+            // Show AI analysis from Gemini
+            setTimeout(() => {
+                document.getElementById('aiAnalysis').style.display = 'block';
+                deductCredits(1);
+                showToast('✨ Design analyzed with Gemini AI (-1 credit)');
+            }, 1500);
+        }
+
+        // Step 2: Background selection
+        function selectBackground(bg, element) {
+            document.querySelectorAll('.background-card').forEach(c => {
+                c.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            selectedBackground = bg;
+            showToast('Background selected');
+        }
+
+        // Step 3: Product configuration
+        function toggleProduct(element, productName) {
+            // Remove currently-editing from all
+            document.querySelectorAll('.product-card').forEach(c => {
+                c.classList.remove('currently-editing');
+            });
+            
+            // Toggle selection
+            element.classList.toggle('selected');
+            element.classList.add('currently-editing');
+            
+            // Update selected products
+            if (element.classList.contains('selected')) {
+                if (!selectedProducts.includes(productName)) {
+                    selectedProducts.push(productName);
+                }
+            } else {
+                selectedProducts = selectedProducts.filter(p => p !== productName);
+            }
+            
+            updateProductCount();
+        }
+
+        function toggleSwitch(element) {
+            element.classList.toggle('on');
+        }
+
+        function updateProductCount() {
+            let totalVariants = 0;
+            selectedProducts.forEach(product => {
+                if (productColors[product]) {
+                    totalVariants += productColors[product].length;
+                }
+            });
+            // Update display if needed
+        }
+
+        // Step 4: Generation
+        function generateMockups() {
+            if (!checkCredits(30)) return;
+            const btn = event.target;
+            showLoading(btn, 'Generating...');
+            deductCredits(30);
+            
+            setTimeout(() => {
+                hideLoading(btn);
+                showToast('✅ All mockups generated with Canvas API (-30 credits)');
+            }, 2000);
+        }
+
+        function setPrompt(prompt) {
+            const promptMap = {
+                'Cozy Morning Routine': 'Person lounging on a cozy couch with a large coffee mug, wearing the grumpy cat coffee shirt, surrounded by soft blankets, morning sunlight streaming through windows',
+                'Creative Coffee Break': 'Someone wearing the coffee cat t-shirt engrossed in a creative project, working on a laptop during a coffee break in a home office with soft ambient lighting',
+                'Weekend Brunch with Friends': 'Group of friends enjoying a relaxed weekend brunch, one person wearing the coffee cat t-shirt, bright café setting with natural light and genuine laughter',
+                'Rainy Day Comfort': 'Person snuggled up on a sofa wearing the coffee cat t-shirt, enjoying a warm beverage on a rainy day, cozy living room with soft diffused light'
+            };
+            document.querySelector('.lifestyle-prompt').value = promptMap[prompt] || prompt;
+        }
+
+        function generateLifestyle() {
+            if (!checkCredits(10)) return;
+            deductCredits(10);
+            
+            showToast('🎨 Generating lifestyle image with Gemini 2.5 Flash...');
+            
+            setTimeout(() => {
+                showToast('✨ Lifestyle image generated (-10 credits)');
+            }, 2000);
+        }
+
+        // Step 5: Publishing
+        function saveAsDraft() {
+            showToast('📝 Saved as draft');
+        }
+
+        function publishProduct() {
+            showToast('🚀 Publishing to Shopify...');
+            setTimeout(() => {
+                showToast('✅ SuperProduct published successfully!');
+            }, 2000);
+        }
+
+        function showCommunity() {
+            showToast('🎉 Opening community signup...');
+        }
+
+        // Credit system
+        function checkCredits(amount) {
+            if (credits < amount) {
+                showToast('❌ Insufficient credits');
+                return false;
+            }
+            return true;
+        }
+
+        function deductCredits(amount) {
+            credits -= amount;
+            document.getElementById('creditCount').textContent = credits;
+        }
+
+        function showCreditModal() {
+            showToast('💳 Opening credit purchase...');
+        }
+
+        // Toast - Now positioned 120px from bottom
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Regenerate functions for AI content
+        async function regenerateTitle() {
+            const titleField = document.querySelector('input[placeholder="AI Generated Title"]');
+            const refreshBtn = titleField.parentElement.querySelector('.refresh-btn');
+            
+            // Check credits
+            const creditsElement = document.querySelector('.credits');
+            const currentCredits = parseInt(creditsElement.textContent);
+            if (currentCredits < 1) {
+                showToast('Not enough credits to regenerate title');
+                return;
+            }
+            
+            // Show loading state
+            refreshBtn.classList.add('spinning');
+            titleField.value = 'Generating new title...';
+            titleField.disabled = true;
+            
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            // Generate variations
+            const titleVariations = [
+                'Coffee Cat Comfort Collection',
+                'Grumpy Morning Essentials',
+                'Caffeine & Sass Apparel',
+                'The Anti-Morning Person Line',
+                'Coffee Lover\'s Mood Wear',
+                'Relatable Cat Energy Collection',
+                'Monday Survival Gear',
+                'Brew & Attitude Essentials'
+            ];
+            
+            // Pick a random variation
+            const newTitle = titleVariations[Math.floor(Math.random() * titleVariations.length)];
+            titleField.value = newTitle;
+            
+            // Update credits
+            creditsElement.textContent = currentCredits - 1;
+            
+            // Stop loading state
+            refreshBtn.classList.remove('spinning');
+            titleField.disabled = false;
+            
+            showToast('Title regenerated! -1 credit');
+        }
+        
+        async function regenerateAudience() {
+            const audienceField = document.querySelector('input[placeholder="AI Generated Audience Insights"]');
+            const refreshBtn = audienceField.parentElement.querySelector('.refresh-btn');
+            
+            // Check credits
+            const creditsElement = document.querySelector('.credits');
+            const currentCredits = parseInt(creditsElement.textContent);
+            if (currentCredits < 1) {
+                showToast('Not enough credits to regenerate audience');
+                return;
+            }
+            
+            // Show loading state
+            refreshBtn.classList.add('spinning');
+            audienceField.value = 'Analyzing new audience...';
+            audienceField.disabled = true;
+            
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            // Generate variations
+            const audienceVariations = [
+                'Coffee-loving millennials who embrace their introverted side',
+                'Remote workers who appreciate honest humor about productivity',
+                'Cat enthusiasts with a sarcastic sense of humor',
+                'Young professionals who value comfort over convention',
+                'Social media users who share relatable memes',
+                'Creative individuals who celebrate their quirky side',
+                'Night owls and late risers who own their lifestyle',
+                'People who find humor in everyday struggles'
+            ];
+            
+            // Pick a random variation
+            const newAudience = audienceVariations[Math.floor(Math.random() * audienceVariations.length)];
+            audienceField.value = newAudience;
+            
+            // Update credits
+            creditsElement.textContent = currentCredits - 1;
+            
+            // Stop loading state
+            refreshBtn.classList.remove('spinning');
+            audienceField.disabled = false;
+            
+            showToast('Audience regenerated! -1 credit');
+        }
+        
+        async function regenerateDescription() {
+            const descField = document.querySelector('textarea[placeholder="AI Generated Description"]');
+            const refreshBtn = descField.parentElement.querySelector('.refresh-btn');
+            
+            // Check credits
+            const creditsElement = document.querySelector('.credits');
+            const currentCredits = parseInt(creditsElement.textContent);
+            if (currentCredits < 2) {
+                showToast('Not enough credits to regenerate description (2 credits required)');
+                return;
+            }
+            
+            // Show loading state
+            refreshBtn.classList.add('spinning');
+            descField.value = 'Crafting new description...';
+            descField.disabled = true;
+            
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Generate variations
+            const descVariations = [
+                'Meet your spirit animal: a grumpy orange cat who perfectly captures that pre-coffee mood. This design speaks to everyone who loves their morning brew but could do without the "morning" part. Featuring bold, humorous text that\'s sure to get knowing nods from fellow coffee addicts.',
+                'This isn\'t just a t-shirt, it\'s a mood. Our grumpy coffee cat represents that universal feeling when you need caffeine but don\'t want to adult. Perfect for those who appreciate dark humor and aren\'t afraid to wear their feelings on their chest.',
+                'Embrace your inner grump with this relatable design that combines two of life\'s essentials: coffee and cats. The perfect conversation starter for introverts who\'d rather let their shirt do the talking. Because sometimes, honesty is the best policy.',
+                'For those who believe coffee is a personality trait and "doing things" is overrated. This cheeky design features a cat that gets it - the eternal struggle between needing caffeine and avoiding responsibilities. Wear it proud, wear it grumpy.'
+            ];
+            
+            // Pick a random variation
+            const newDesc = descVariations[Math.floor(Math.random() * descVariations.length)];
+            descField.value = newDesc;
+            
+            // Update credits
+            creditsElement.textContent = currentCredits - 2;
+            
+            // Stop loading state
+            refreshBtn.classList.remove('spinning');
+            descField.disabled = false;
+            
+            showToast('Description regenerated! -2 credits');
+        }
+        
+        async function regenerateTags() {
+            const tagsField = document.querySelector('input[placeholder="coffee, cat, humor, relatable, morning, grumpy"]');
+            const refreshBtn = tagsField.parentElement.querySelector('.refresh-btn');
+            
+            // Check credits
+            const creditsElement = document.querySelector('.credits');
+            const currentCredits = parseInt(creditsElement.textContent);
+            if (currentCredits < 1) {
+                showToast('Not enough credits to regenerate tags');
+                return;
+            }
+            
+            // Show loading state
+            refreshBtn.classList.add('spinning');
+            tagsField.value = 'Generating new tags...';
+            tagsField.disabled = true;
+            
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Generate variations
+            const tagVariations = [
+                'coffee, cat, sarcasm, introvert, mood, funny',
+                'caffeine, grumpy, relatable, meme, humor, morning',
+                'coffee lover, cat person, honest, lazy day, comfort',
+                'anti-morning, coffee addict, cat mom, sassy, real',
+                'monday mood, coffee first, cat life, truth, vibes',
+                'work from home, coffee break, cat lover, authentic, chill'
+            ];
+            
+            // Pick a random variation
+            const newTags = tagVariations[Math.floor(Math.random() * tagVariations.length)];
+            tagsField.value = newTags;
+            
+            // Update credits
+            creditsElement.textContent = currentCredits - 1;
+            
+            // Stop loading state
+            refreshBtn.classList.remove('spinning');
+            tagsField.disabled = false;
+            
+            showToast('Tags regenerated! -1 credit');
+        }
+
+        // Navigation Functions
+        function showCreateDesign() {
+            // Hide all special sections
+            document.querySelectorAll('.step-content').forEach(el => {
+                if (el.id === 'library' || el.id === 'bulkCreate') {
+                    el.style.display = 'none';
+                }
+            });
+            // Show action bar
+            document.querySelector('.action-bar').style.display = 'flex';
+            // Go to step 1
+            goToStep(1);
+            // Update menu
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+            event.target.closest('.menu-item').classList.add('active');
+        }
+        
+        // Library Functions
+        function showLibrary() {
+            // Hide all step content
+            document.querySelectorAll('.step-content').forEach(el => el.style.display = 'none');
+            // Show library
+            document.getElementById('library').style.display = 'block';
+            // Hide action bar
+            document.querySelector('.action-bar').style.display = 'none';
+            // Update menu
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+            event.target.closest('.menu-item').classList.add('active');
+        }
+        
+        function filterLibrary(category) {
+            // Update active tab
+            document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Filter items
+            const items = document.querySelectorAll('.library-item');
+            items.forEach(item => {
+                if (category === 'all' || item.dataset.category === category) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+        
+        function searchLibrary(query) {
+            const items = document.querySelectorAll('.library-item');
+            const searchTerm = query.toLowerCase();
+            
+            items.forEach(item => {
+                const title = item.querySelector('div:nth-child(2)').textContent.toLowerCase();
+                const description = item.querySelector('div:nth-child(3)').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+        
+        // Bulk Create Functions
+        function showBulkCreate() {
+            // Hide all step content
+            document.querySelectorAll('.step-content').forEach(el => el.style.display = 'none');
+            // Show bulk create
+            document.getElementById('bulkCreate').style.display = 'block';
+            // Hide action bar
+            document.querySelector('.action-bar').style.display = 'none';
+            // Update menu
+            document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+            event.target.closest('.menu-item').classList.add('active');
+        }
+        
+        function showBulkTab(tab) {
+            // Update active tab
+            document.querySelectorAll('.bulk-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Show/hide tabs
+            if (tab === 'csv') {
+                document.getElementById('csvTab').style.display = 'block';
+                document.getElementById('singleTab').style.display = 'none';
+            } else {
+                document.getElementById('csvTab').style.display = 'none';
+                document.getElementById('singleTab').style.display = 'block';
+            }
+        }
+        
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.currentTarget.classList.add('dragover');
+        }
+        
+        function handleCSVDrop(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.currentTarget.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type === 'text/csv') {
+                processCSVFile(files[0]);
+            }
+        }
+        
+        function handleCSVSelect(e) {
+            const file = e.target.files[0];
+            if (file && file.type === 'text/csv') {
+                processCSVFile(file);
+            }
+        }
+        
+        function processCSVFile(file) {
+            // Show CSV info
+            document.getElementById('csvInfo').style.display = 'block';
+            
+            // In a real app, you'd parse the CSV here
+            // For demo, we'll simulate it
+            showToast('CSV file loaded: ' + file.name);
+        }
+        
+        function generateBulkDesigns() {
+            // Show loading state
+            showToast('Generating 25 designs... This will take a moment');
+            
+            // Show results section
+            document.getElementById('bulkResults').style.display = 'block';
+            
+            // Sample coffee meme designs from CSV
+            const designs = [
+                { url: 'https://storage.googleapis.com/agenthub-public/uid-WznxttADVecJWdAGMJWwefR9Ffd2/9oYVX3eDu9CwVwNm5i2jDH%2Fgenerated_image_REr9dJAozDEBD5Cv3ETqMT.png', title: 'Brain Coffee Pour' },
+                { url: 'https://storage.googleapis.com/agenthub-public/uid-WznxttADVecJWdAGMJWwefR9Ffd2/JpgLEN8tbAb9axzgFsAWHi%2Fgenerated_image_GEku5GBxLG94sf3HDU4RMv.png', title: 'Grumpy Morning Cat' },
+                { url: 'https://storage.googleapis.com/agenthub-public/uid-WznxttADVecJWdAGMJWwefR9Ffd2/nNXjoQSYUCkDAB3oXCDmfH%2Fgenerated_image_e7Lz9G4zXQKkh8hDHZ6WpJ.png', title: 'Mysterious Dog Tea' },
+                { url: 'https://storage.googleapis.com/agenthub-public/uid-WznxttADVecJWdAGMJWwefR9Ffd2/fctbQCJhweeTmMgBBh9ZmJ%2Fgenerated_image_dKRjMyQrvzcVgfnzR8h32v.png', title: 'Wake Up To Drink' },
+                { url: 'https://storage.googleapis.com/agenthub-public/uid-WznxttADVecJWdAGMJWwefR9Ffd2/Qv36HAXGLD9wFq4T4MJZRf%2Fgenerated_image_mTZXeZFXHbtNYbFpEVqE5h.png', title: 'Coffee Is Answer' },
+                { url: 'https://storage.googleapis.com/agenthub-public/uid-WznxttADVecJWdAGMJWwefR9Ffd2/L8L4CvrqdWtopHyYo8vQu8%2Fgenerated_image_nf2MyLJz8tssM6WAjyae4f.png', title: 'Morning Wine' },
+                { url: 'https://storage.googleapis.com/agenthub-public/uid-WznxttADVecJWdAGMJWwefR9Ffd2/QQfmkopbzq8n4wMptxXNwC%2Fgenerated_image_TxFF4cUUvZpTT37PHK3Lf2.png', title: 'Monday Arrives' },
+                { url: 'https://storage.googleapis.com/agenthub-public/uid-WznxttADVecJWdAGMJWwefR9Ffd2/e7NK42DJu3nuEjMQJdsSng%2Fgenerated_image_7e2BkjQjtJrkQVLCX727Qg.png', title: 'Broken Coffee' },
+                { url: 'https://storage.googleapis.com/agenthub-public/uid-WznxttADVecJWdAGMJWwefR9Ffd2/9UEnyqrhcWQ8mzFmTvAczQ%2Fgenerated_image_aXv5VR822HYPsZPR4KnMCg.png', title: 'Deal With People' },
+                { url: 'https://storage.googleapis.com/agenthub-public/uid-WznxttADVecJWdAGMJWwefR9Ffd2/7VJdsPfEW4feb5o6ak5wis%2Fgenerated_image_3gvVre2K7McoG5oxwxykyZ.png', title: 'Murder Is Wrong' },
+                { url: 'https://storage.googleapis.com/agenthub-public/uid-WznxttADVecJWdAGMJWwefR9Ffd2/jFBNa6ntJpCNSbLVavcJSz%2Fgenerated_image_8ptm5Gpz2WgrYFh3xi58nN.png', title: 'Cats Coffee 3 People' },
+                { url: 'https://storage.googleapis.com/agenthub-public/uid-WznxttADVecJWdAGMJWwefR9Ffd2/4iv5sks2bdQcJa3wNshQDY%2Fgenerated_image_MwvWCKnz4YoApTTc7TsgiJ.png', title: '2 Coffee Cup Day' }
+            ];
+            
+            // Populate grid
+            const grid = document.querySelector('.bulk-grid');
+            grid.innerHTML = '';
+            
+            designs.forEach(design => {
+                const item = document.createElement('div');
+                item.innerHTML = `
+                    <div style="background: #0f1419; border-radius: 8px; padding: 12px; cursor: pointer;">
+                        <img src="${design.url}" style="width: 100%; border-radius: 6px;">
+                        <div style="margin-top: 8px; font-size: 14px; font-weight: 600;">${design.title}</div>
+                        <div style="margin-top: 8px; display: flex; gap: 8px;">
+                            <button class="btn btn-sm" style="flex: 1; padding: 6px; font-size: 12px;">Add to Library</button>
+                            <button class="btn btn-sm btn-primary" style="flex: 1; padding: 6px; font-size: 12px;">Create Product</button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(item);
+            });
+            
+            // Update credits
+            const creditsElement = document.querySelector('.credits');
+            const currentCredits = parseInt(creditsElement.textContent);
+            creditsElement.textContent = Math.max(0, currentCredits - 250);
+            
+            showToast('Successfully generated 25 designs! -250 credits');
+        }
+        
+        function useTemplate(type) {
+            const promptField = document.getElementById('designPrompt');
+            const templates = {
+                funny: "Flat t-shirt design for print-on-demand. Solid black background. High-contrast. No shadows. Vector style illustration. Design centered and print-ready. A grumpy cat holding a coffee mug with steam. Include bold, legible text: 'I NEED COFFEE TO PEOPLE'.",
+                cute: "Flat t-shirt design for print-on-demand. Solid white background. High-contrast. No shadows. Kawaii style illustration. Design centered and print-ready. A smiling corgi with a flower crown. Include bold, legible text: 'GOOD VIBES ONLY'.",
+                motivational: "Flat t-shirt design for print-on-demand. Solid black background. High-contrast. No shadows. Bold typography design. Design centered and print-ready. Mountain silhouette with sun rays. Include bold, legible text: 'RISE AND GRIND'.",
+                minimalist: "Flat t-shirt design for print-on-demand. Solid white background. High-contrast. No shadows. Simple line art. Design centered and print-ready. Single continuous line forming a coffee cup. Include minimal text: 'SIMPLICITY'.",
+                vintage: "Flat t-shirt design for print-on-demand. Solid black background. High-contrast. No shadows. Retro 70s style. Design centered and print-ready. Sunset with palm trees silhouette. Include groovy text: 'GOOD TIMES'."
+            };
+            
+            promptField.value = templates[type];
+            showToast('Template applied!');
+        }
+        
+        function generateSingleDesign() {
+            const prompt = document.getElementById('designPrompt').value;
+            if (!prompt) {
+                showToast('Please enter a design prompt');
+                return;
+            }
+            
+            // Show loading
+            showToast('Generating design with Gemini...');
+            
+            // Simulate generation
+            setTimeout(() => {
+                document.getElementById('singleResult').style.display = 'block';
+                // Use a sample design
+                document.getElementById('generatedDesign').src = 'https://storage.googleapis.com/agenthub-public/uid-WznxttADVecJWdAGMJWwefR9Ffd2/7VJdsPfEW4feb5o6ak5wis%2Fgenerated_image_3gvVre2K7McoG5oxwxykyZ.png';
+                
+                // Update credits
+                const creditsElement = document.querySelector('.credits');
+                const currentCredits = parseInt(creditsElement.textContent);
+                creditsElement.textContent = currentCredits - 10;
+                
+                showToast('Design generated successfully! -10 credits');
+            }, 2000);
+        }
+        
+        function addToLibrary() {
+            showToast('Design added to library!');
+        }
+        
+        function createProduct() {
+            showToast('Creating product from design...');
+            // Could navigate to step 1 with the design pre-loaded
+            goToStep(1);
+        }
+        
+        function showUploadBox() {
+            // Already visible by default
+            document.getElementById('uploadBox').style.display = 'block';
+        }
+        
+        function showLibraryModal() {
+            // Create modal overlay
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+            `;
+            
+            // Create modal content
+            const content = document.createElement('div');
+            content.style.cssText = `
+                background: #1a1f2e;
+                border-radius: 12px;
+                padding: 24px;
+                width: 90%;
+                max-width: 800px;
+                max-height: 80vh;
+                overflow-y: auto;
+            `;
+            
+            content.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="margin: 0;">Select Design from Library</h2>
+                    <button onclick="this.closest('div[style*=fixed]').remove()" style="background: none; border: none; color: #9ca3af; font-size: 24px; cursor: pointer;">×</button>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px;">
+                    <div onclick="selectLibraryDesign('file:///Users/user/Desktop/Bfig6vaDax6ggvwqqD9Cdx_generated_image_b2mYF65qhftLPMaz44F8XE.png', 'Grumpy Coffee Cat')" style="cursor: pointer;">
+                        <img src="file:///Users/user/Desktop/Bfig6vaDax6ggvwqqD9Cdx_generated_image_b2mYF65qhftLPMaz44F8XE.png" style="width: 100%; border-radius: 8px;">
+                        <div style="margin-top: 8px; font-size: 14px;">Grumpy Coffee Cat</div>
+                    </div>
+                    <div onclick="selectLibraryDesign('https://storage.googleapis.com/agenthub-public/uid-WznxttADVecJWdAGMJWwefR9Ffd2/7VJdsPfEW4feb5o6ak5wis%2Fgenerated_image_3gvVre2K7McoG5oxwxykyZ.png', 'Coffee Because Murder Is Wrong')" style="cursor: pointer;">
+                        <img src="https://storage.googleapis.com/agenthub-public/uid-WznxttADVecJWdAGMJWwefR9Ffd2/7VJdsPfEW4feb5o6ak5wis%2Fgenerated_image_3gvVre2K7McoG5oxwxykyZ.png" style="width: 100%; border-radius: 8px;">
+                        <div style="margin-top: 8px; font-size: 14px;">Coffee Because...</div>
+                    </div>
+                    <div onclick="selectLibraryDesign('https://storage.googleapis.com/agenthub-public/uid-WznxttADVecJWdAGMJWwefR9Ffd2/jFBNa6ntJpCNSbLVavcJSz%2Fgenerated_image_8ptm5Gpz2WgrYFh3xi58nN.png', 'Cats Coffee 3 People')" style="cursor: pointer;">
+                        <img src="https://storage.googleapis.com/agenthub-public/uid-WznxttADVecJWdAGMJWwefR9Ffd2/jFBNa6ntJpCNSbLVavcJSz%2Fgenerated_image_8ptm5Gpz2WgrYFh3xi58nN.png" style="width: 100%; border-radius: 8px;">
+                        <div style="margin-top: 8px; font-size: 14px;">Cats & Coffee</div>
+                    </div>
+                </div>
+            `;
+            
+            modal.appendChild(content);
+            document.body.appendChild(modal);
+        }
+        
+        function selectLibraryDesign(imageUrl, title) {
+            // Close modal
+            document.querySelector('div[style*=fixed]').remove();
+            
+            // Update upload box with selected design
+            document.getElementById('uploadPrompt').style.display = 'none';
+            document.getElementById('uploadedImage').style.display = 'block';
+            document.getElementById('designImg').src = imageUrl;
+            
+            // Show AI analysis
+            document.getElementById('aiAnalysis').style.display = 'block';
+            
+            // Update title field
+            document.querySelector('input[placeholder="AI Generated Title"]').value = title;
+            
+            showToast('Design selected from library!');
+        }
+        
+        // Buy Credits Modal
+        function showCreditModal() {
+            // Create modal overlay
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+            `;
+            
+            // Create modal content
+            const content = document.createElement('div');
+            content.style.cssText = `
+                background: #1a1f2e;
+                border-radius: 16px;
+                padding: 32px;
+                width: 90%;
+                max-width: 600px;
+                text-align: center;
+            `;
+            
+            content.innerHTML = `
+                <div style="font-size: 48px; margin-bottom: 16px;">💳</div>
+                <h2 style="margin: 0 0 8px 0; font-size: 28px;">Get More Credits</h2>
+                <p style="color: #9ca3af; margin-bottom: 32px;">Choose a credit package to continue creating amazing designs</p>
+                
+                <div style="display: grid; gap: 16px; margin-bottom: 24px;">
+                    <!-- Starter Pack -->
+                    <div style="background: #0f1419; border: 2px solid #2a2f3e; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.2s;"
+                         onmouseover="this.style.borderColor='#3b82f6'" onmouseout="this.style.borderColor='#2a2f3e'"
+                         onclick="purchaseCredits(100, 9.99)">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div style="text-align: left;">
+                                <div style="font-size: 24px; font-weight: 600;">100 Credits</div>
+                                <div style="color: #9ca3af; font-size: 14px; margin-top: 4px;">Perfect for trying out • ~10 designs</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 24px; font-weight: 600; color: #3b82f6;">$9.99</div>
+                                <div style="color: #10b981; font-size: 12px;">$0.10 per credit</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Popular Pack -->
+                    <div style="background: linear-gradient(135deg, #3b82f6, #1e40af); border: 2px solid #3b82f6; border-radius: 12px; padding: 20px; cursor: pointer; position: relative;"
+                         onclick="purchaseCredits(500, 39.99)">
+                        <div style="position: absolute; top: -12px; right: 20px; background: #f59e0b; color: #000; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">MOST POPULAR</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div style="text-align: left;">
+                                <div style="font-size: 24px; font-weight: 600;">500 Credits</div>
+                                <div style="color: rgba(255,255,255,0.9); font-size: 14px; margin-top: 4px;">Great for regular creators • ~50 designs</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 24px; font-weight: 600;">$39.99</div>
+                                <div style="color: #10b981; font-size: 12px;">$0.08 per credit • Save 20%</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pro Pack -->
+                    <div style="background: #0f1419; border: 2px solid #2a2f3e; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.2s;"
+                         onmouseover="this.style.borderColor='#3b82f6'" onmouseout="this.style.borderColor='#2a2f3e'"
+                         onclick="purchaseCredits(1000, 69.99)">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div style="text-align: left;">
+                                <div style="font-size: 24px; font-weight: 600;">1000 Credits</div>
+                                <div style="color: #9ca3af; font-size: 14px; margin-top: 4px;">For power users • ~100 designs</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 24px; font-weight: 600; color: #3b82f6;">$69.99</div>
+                                <div style="color: #10b981; font-size: 12px;">$0.07 per credit • Save 30%</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Enterprise Pack -->
+                    <div style="background: #0f1419; border: 2px solid #2a2f3e; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.2s;"
+                         onmouseover="this.style.borderColor='#3b82f6'" onmouseout="this.style.borderColor='#2a2f3e'"
+                         onclick="purchaseCredits(5000, 299.99)">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div style="text-align: left;">
+                                <div style="font-size: 24px; font-weight: 600;">5000 Credits</div>
+                                <div style="color: #9ca3af; font-size: 14px; margin-top: 4px;">Bulk creation • ~500 designs</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 24px; font-weight: 600; color: #3b82f6;">$299.99</div>
+                                <div style="color: #10b981; font-size: 12px;">$0.06 per credit • Save 40%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="border-top: 1px solid #2a2f3e; padding-top: 20px; margin-top: 20px;">
+                    <h3 style="margin-bottom: 12px;">What You Can Create With Credits:</h3>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; text-align: left; color: #9ca3af; font-size: 14px;">
+                        <div>✨ AI Design Generation (10 credits)</div>
+                        <div>🎨 Background Removal (5 credits)</div>
+                        <div>🖼️ Lifestyle Images (10 credits)</div>
+                        <div>📦 Product Mockups (2 credits)</div>
+                        <div>🔄 Design Variations (1 credit)</div>
+                        <div>📊 Bulk CSV Import (10 per design)</div>
+                    </div>
+                </div>
+                
+                <button onclick="this.closest('div[style*=fixed]').remove()" 
+                        style="margin-top: 20px; background: none; border: 1px solid #2a2f3e; color: #9ca3af; padding: 10px 20px; border-radius: 8px; cursor: pointer;">
+                    Cancel
+                </button>
+            `;
+            
+            modal.appendChild(content);
+            document.body.appendChild(modal);
+        }
+        
+        function purchaseCredits(amount, price) {
+            // Close modal
+            document.querySelector('div[style*=fixed]').remove();
+            
+            // Update credits
+            const creditsElement = document.querySelector('.credits');
+            const currentCredits = parseInt(creditsElement.textContent);
+            creditsElement.textContent = currentCredits + amount;
+            
+            // Show success message
+            showToast(`Successfully purchased ${amount} credits for $${price}! 🎉`);
+        }
+        
+        // Make CSV drop zone clickable
+        document.addEventListener('DOMContentLoaded', () => {
+            const dropZone = document.querySelector('.csv-drop-zone');
+            if (dropZone) {
+                dropZone.addEventListener('click', () => {
+                    document.getElementById('csvInput').click();
+                });
+                
+                dropZone.addEventListener('dragleave', (e) => {
+                    e.currentTarget.classList.remove('dragover');
+                });
+            }
+        });
+
+        // Initialize
+        window.onload = () => {
+            goToStep(1);
+        };
+    </script>
+</body>
+</html>

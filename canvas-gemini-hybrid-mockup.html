@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canvas + Gemini Hybrid Mockup (Perfect Preservation)</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+    }
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+    }
+    .mockup-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin: 30px 0;
+    }
+    .mockup-item {
+      text-align: center;
+    }
+    .mockup-item h3 {
+      color: #495057;
+      margin-bottom: 10px;
+    }
+    .canvas-container {
+      display: inline-block;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      padding: 10px;
+      background: white;
+      margin-bottom: 10px;
+    }
+    canvas {
+      display: block;
+      cursor: pointer;
+    }
+    .controls {
+      margin: 20px 0;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .success {
+      background: #28a745;
+    }
+    .success:hover {
+      background: #218838;
+    }
+    .warning {
+      background: #ffc107;
+      color: #333;
+    }
+    .warning:hover {
+      background: #e0a800;
+    }
+    .info-box {
+      background: #e8f4f8;
+      border-left: 4px solid #007bff;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+    .workflow-steps {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    .workflow-steps ol {
+      margin: 10px 0;
+      padding-left: 20px;
+    }
+    .workflow-steps li {
+      margin: 10px 0;
+    }
+    .log {
+      background: #f8f9fa;
+      padding: 10px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 12px;
+      margin-top: 10px;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎯 Canvas + Gemini Hybrid Solution</h1>
+    <p class="subtitle">Perfect shirt preservation with custom backgrounds</p>
+    
+    <div class="info-box">
+      <strong>✨ The Problem Solved:</strong> Gemini changes shirt size/position when generating lifestyle images. 
+      This hybrid approach guarantees EXACT preservation by separating background generation from shirt compositing.
+    </div>
+
+    <div class="workflow-steps">
+      <h3>🔧 How It Works:</h3>
+      <ol>
+        <li><strong>Gemini generates background only</strong> - Coffee shop scene without shirt ($0.039)</li>
+        <li><strong>Canvas composites original shirt</strong> - Perfect size & position (FREE)</li>
+        <li><strong>Result:</strong> Exact shirt preservation with custom backgrounds</li>
+      </ol>
+    </div>
+    
+    <div class="controls">
+      <button onclick="loadOriginal()">1️⃣ Load Original Shirt</button>
+      <button onclick="loadGeminiBackground()" class="warning">2️⃣ Load Gemini Background</button>
+      <button onclick="compositeImages()" class="success">3️⃣ Composite Final Image</button>
+      <button onclick="downloadFinal()">💾 Download Result</button>
+    </div>
+
+    <div class="mockup-grid">
+      <div class="mockup-item">
+        <h3>Original Shirt</h3>
+        <div class="canvas-container">
+          <canvas id="originalCanvas" width="600" height="600"></canvas>
+        </div>
+        <div class="log" id="originalLog">Ready to load original shirt...</div>
+      </div>
+      
+      <div class="mockup-item">
+        <h3>Gemini Background</h3>
+        <div class="canvas-container">
+          <canvas id="backgroundCanvas" width="600" height="600"></canvas>
+        </div>
+        <div class="log" id="backgroundLog">Ready to load Gemini background...</div>
+      </div>
+      
+      <div class="mockup-item">
+        <h3>Final Composite</h3>
+        <div class="canvas-container">
+          <canvas id="finalCanvas" width="600" height="600"></canvas>
+        </div>
+        <div class="log" id="finalLog">Ready to composite...</div>
+      </div>
+    </div>
+
+    <div class="info-box" style="background: #f0f8e8; border-color: #28a745;">
+      <h3>💰 Cost Analysis:</h3>
+      <ul>
+        <li><strong>Per mockup:</strong> $0.039 (Gemini background generation)</li>
+        <li><strong>At scale (reusing backgrounds):</strong> ~$0.002 per mockup</li>
+        <li><strong>vs Dynamic Mockups:</strong> Save $19/month</li>
+        <li><strong>vs IMG.ly:</strong> Save $980/month</li>
+      </ul>
+    </div>
+  </div>
+  
+  <script>
+    let originalImage = null;
+    let backgroundImage = null;
+    
+    function addLog(canvasId, message) {
+      const logId = canvasId.replace('Canvas', 'Log');
+      const log = document.getElementById(logId);
+      const time = new Date().toLocaleTimeString();
+      log.innerHTML += `\n[${time}] ${message}`;
+      log.scrollTop = log.scrollHeight;
+    }
+    
+    function loadOriginal() {
+      const canvas = document.getElementById('originalCanvas');
+      const ctx = canvas.getContext('2d');
+      
+      addLog('originalCanvas', '📥 Loading original shirt from Cloudinary...');
+      
+      originalImage = new Image();
+      originalImage.crossOrigin = 'anonymous';
+      
+      originalImage.onload = function() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(originalImage, 0, 0, 600, 600);
+        addLog('originalCanvas', '✅ Original shirt loaded');
+        addLog('originalCanvas', '📏 Size: 600x600px (exact preservation)');
+      };
+      
+      originalImage.onerror = function() {
+        addLog('originalCanvas', '❌ Error loading image');
+      };
+      
+      // Your actual Cloudinary garment
+      originalImage.src = 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270681/garments/tee/front/black.png';
+    }
+    
+    function loadGeminiBackground() {
+      const canvas = document.getElementById('backgroundCanvas');
+      const ctx = canvas.getContext('2d');
+      
+      addLog('backgroundCanvas', '🎨 Loading Gemini-generated background...');
+      
+      // For demo, we'll simulate with a coffee-colored background
+      // In production, this would load the actual Gemini-generated background
+      ctx.fillStyle = '#8B4513'; // Coffee brown
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Simulate coffee shop elements
+      ctx.fillStyle = '#654321';
+      ctx.fillRect(0, 0, 600, 100); // Top area
+      ctx.fillRect(0, 500, 600, 100); // Bottom area
+      
+      // Coffee cup circle (top right)
+      ctx.beginPath();
+      ctx.arc(500, 100, 40, 0, 2 * Math.PI);
+      ctx.fillStyle = '#D2691E';
+      ctx.fill();
+      
+      // Croissant shape (bottom left)
+      ctx.beginPath();
+      ctx.arc(100, 500, 30, 0, Math.PI);
+      ctx.fillStyle = '#F4A460';
+      ctx.fill();
+      
+      // Wood grain texture simulation
+      for (let i = 0; i < 10; i++) {
+        ctx.strokeStyle = `rgba(101, 67, 33, ${0.1 + Math.random() * 0.2})`;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, 50 + i * 60);
+        ctx.lineTo(600, 50 + i * 60 + Math.random() * 20);
+        ctx.stroke();
+      }
+      
+      backgroundImage = canvas;
+      addLog('backgroundCanvas', '✅ Coffee shop background loaded');
+      addLog('backgroundCanvas', '💰 Cost: $0.039 (Gemini generation)');
+      addLog('backgroundCanvas', '📝 Note: In production, load actual Gemini image');
+    }
+    
+    function compositeImages() {
+      if (!originalImage) {
+        alert('Load the original shirt first!');
+        return;
+      }
+      
+      const canvas = document.getElementById('finalCanvas');
+      const ctx = canvas.getContext('2d');
+      
+      addLog('finalCanvas', '🔄 Compositing images...');
+      
+      // First, draw the background
+      if (backgroundImage) {
+        const bgCanvas = document.getElementById('backgroundCanvas');
+        ctx.drawImage(bgCanvas, 0, 0, 600, 600);
+        addLog('finalCanvas', '✅ Background layer added');
+      } else {
+        // Default background if not loaded
+        ctx.fillStyle = '#f5f5f5';
+        ctx.fillRect(0, 0, 600, 600);
+      }
+      
+      // Extract non-white pixels from original (the shirt)
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = 600;
+      tempCanvas.height = 600;
+      const tempCtx = tempCanvas.getContext('2d');
+      tempCtx.drawImage(originalImage, 0, 0, 600, 600);
+      
+      const imageData = tempCtx.getImageData(0, 0, 600, 600);
+      const data = imageData.data;
+      
+      // Make white pixels transparent
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+        
+        // If pixel is white or near-white, make it transparent
+        if (r > 240 && g > 240 && b > 240) {
+          data[i + 3] = 0; // Set alpha to 0 (transparent)
+        }
+      }
+      
+      tempCtx.putImageData(imageData, 0, 0);
+      
+      // Draw the shirt with transparency on top of background
+      ctx.drawImage(tempCanvas, 0, 0, 600, 600);
+      
+      addLog('finalCanvas', '✅ Shirt composited at EXACT original position');
+      addLog('finalCanvas', '📏 Shirt size: 100% preserved');
+      addLog('finalCanvas', '🎯 Position: Perfectly centered as original');
+      addLog('finalCanvas', '💰 Total cost: $0.039 (background only)');
+    }
+    
+    function downloadFinal() {
+      const canvas = document.getElementById('finalCanvas');
+      
+      canvas.toBlob(function(blob) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `hybrid-mockup-${Date.now()}.png`;
+        a.click();
+        URL.revokeObjectURL(url);
+        
+        addLog('finalCanvas', '✅ Image downloaded!');
+      });
+    }
+    
+    // Auto-load original on page load
+    window.onload = function() {
+      loadOriginal();
+      setTimeout(loadGeminiBackground, 1000);
+    };
+  </script>
+</body>
+</html>

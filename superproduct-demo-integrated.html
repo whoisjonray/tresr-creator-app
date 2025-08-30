@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>TRESR SuperProduct Creator - Integrated Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #1a1f2e;
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        /* Header - Matching design/new */
+        .header {
+            background: #0f1419;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2a2f3e;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .credit-balance {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .credits {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid #3b82f6;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #3b82f6;
+            font-weight: 500;
+        }
+
+        /* Progress Steps */
+        .progress-container {
+            background: #0f1419;
+            padding: 16px 20px;
+            border-bottom: 1px solid #2a2f3e;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+
+        .step.active {
+            opacity: 1;
+        }
+
+        .step.completed {
+            opacity: 0.8;
+        }
+
+        .step-number {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #2a2f3e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .step.active .step-number {
+            background: #3b82f6;
+        }
+
+        .step.completed .step-number {
+            background: #10b981;
+        }
+
+        .step-label {
+            font-size: 14px;
+            color: #9ca3af;
+        }
+
+        .step.active .step-label {
+            color: #fff;
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            height: calc(100vh - 120px);
+        }
+
+        /* Sidebar - Matching design/new */
+        .sidebar {
+            width: 240px;
+            background: #0f1419;
+            border-right: 1px solid #2a2f3e;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .sidebar-section {
+            margin-bottom: 24px;
+        }
+
+        .sidebar-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #6b7280;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 4px;
+            font-size: 14px;
+            color: #9ca3af;
+        }
+
+        .menu-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: #fff;
+        }
+
+        .menu-item.active {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .menu-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Content Area */
+        .content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+            background: #1a1f2e;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .page-subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        /* Step Content */
+        .step-content {
+            display: none;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        /* Upload Section - Step 1 */
+        .upload-section {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .upload-box {
+            background: #0f1419;
+            border: 2px dashed #2a2f3e;
+            border-radius: 12px;
+            padding: 48px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 24px;
+        }
+
+        .upload-box:hover {
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .upload-box.has-file {
+            border-style: solid;
+            border-color: #10b981;
+            padding: 20px;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .upload-text {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .upload-subtext {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .uploaded-image {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .uploaded-image img {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        /* Background Selection - Step 2 */
+        .backgrounds-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .backgrounds-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .background-card {
+            background: #0f1419;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .background-card:hover {
+            transform: translateY(-4px);
+            border-color: #2a2f3e;
+        }
+
+        .background-card.selected {
+            border-color: #3b82f6;
+        }
+
+        .background-preview {
+            height: 200px;
+            background: #2a2f3e;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .background-tshirt {
+            width: 120px;
+            height: 140px;
+            position: absolute;
+        }
+
+        .background-info {
+            padding: 16px;
+        }
+
+        .background-name {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .background-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .stat-value {
+            color: #10b981;
+            font-weight: 600;
+        }
+
+        /* Canvas Editor - Step 3 (Matching design/new exactly) */
+        .editor-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .canvas-section {
+            background: #0f1419;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .canvas-wrapper {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .canvas-area {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            aspect-ratio: 1;
+            border: 2px dashed #3b82f6;
+            background: white;
+            position: relative;
+        }
+
+        .design-preview {
+            position: absolute;
+            border: 2px solid #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+            cursor: move;
+        }
+
+        .resize-handle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #3b82f6;
+            border-radius: 50%;
+        }
+
+        .resize-handle.nw { top: -4px; left: -4px; cursor: nw-resize; }
+        .resize-handle.ne { top: -4px; right: -4px; cursor: ne-resize; }
+        .resize-handle.sw { bottom: -4px; left: -4px; cursor: sw-resize; }
+        .resize-handle.se { bottom: -4px; right: -4px; cursor: se-resize; }
+
+        .design-requirements {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            color: #92400e;
+            font-size: 14px;
+        }
+
+        /* AI Analysis Section */
+        .ai-analysis {
+            background: #0f1419;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .ai-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .ai-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .ai-content {
+            background: #1a1f2e;
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .ai-description {
+            margin-bottom: 16px;
+            line-height: 1.6;
+            color: #d1d5db;
+        }
+
+        .ai-fields {
+            display: grid;
+            gap: 16px;
+        }
+
+        .field-group {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 12px;
+            align-items: start;
+        }
+
+        .field-label {
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .field-value {
+            font-size: 14px;
+            color: #fff;
+        }
+
+        .field-input {
+            width: 100%;
+            background: #0f1419;
+            border: 1px solid #2a2f3e;
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .field-select {
+            width: 100%;
+            background: #0f1419;
+            border: 1px solid #2a2f3e;
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .field-textarea {
+            width: 100%;
+            background: #0f1419;
+            border: 1px solid #2a2f3e;
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: #fff;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Configure Products Grid - Matching design/new */
+        .products-section {
+            background: #0f1419;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        .product-card {
+            background: #1a1f2e;
+            border: 2px solid #2a2f3e;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .product-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+        }
+
+        .product-card.selected {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .product-check {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #10b981;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .product-card.selected .product-check {
+            display: flex;
+        }
+
+        .product-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .product-name {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        /* Product Preview Section */
+        .preview-section {
+            background: #0f1419;
+            border-radius: 12px;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+        }
+
+        .preview-image {
+            background: #fff;
+            border-radius: 8px;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preview-image img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .preview-details {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .product-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .color-options {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .color-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .color-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .color-btn.selected {
+            border-color: #3b82f6;
+        }
+
+        .size-options {
+            display: flex;
+            gap: 8px;
+        }
+
+        .size-btn {
+            padding: 8px 16px;
+            background: #1a1f2e;
+            border: 1px solid #2a2f3e;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #9ca3af;
+        }
+
+        .size-btn:hover {
+            border-color: #3b82f6;
+            color: #fff;
+        }
+
+        .size-btn.selected {
+            background: #3b82f6;
+            border-color: #3b82f6;
+            color: #fff;
+        }
+
+        /* Generation Section - Step 4 */
+        .generation-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .generation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .mockup-card {
+            background: #0f1419;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .mockup-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .mockup-image {
+            height: 200px;
+            background: white;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mockup-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .mockup-info {
+            padding: 12px;
+        }
+
+        .mockup-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .mockup-color {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .lifestyle-section {
+            background: #0f1419;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .lifestyle-prompt {
+            width: 100%;
+            background: #1a1f2e;
+            border: 1px solid #2a2f3e;
+            border-radius: 8px;
+            padding: 12px;
+            color: #fff;
+            font-size: 14px;
+            margin-bottom: 16px;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .prompt-suggestions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .prompt-chip {
+            padding: 6px 12px;
+            background: #1a1f2e;
+            border: 1px solid #2a2f3e;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #9ca3af;
+        }
+
+        .prompt-chip:hover {
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+
+        /* Action Buttons */
+        .action-bar {
+            padding: 20px;
+            background: #0f1419;
+            border-top: 1px solid #2a2f3e;
+            position: sticky;
+            bottom: 0;
+        }
+
+        .action-buttons {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+
+        .btn-secondary {
+            background: #2a2f3e;
+            color: #9ca3af;
+        }
+
+        .btn-secondary:hover {
+            background: #374151;
+            color: #fff;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-ai {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Credit indicator in buttons */
+        .credit-cost {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+
+        /* Loading state */
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #3b82f6;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1f2937;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #2a2f3e;
+                padding: 12px;
+            }
+
+            .preview-section {
+                grid-template-columns: 1fr;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <span>🎨</span>
+            <span>TRESR Creator</span>
+        </div>
+        <div class="credit-balance">
+            <div class="credits">
+                <span id="creditCount">250</span> Credits
+            </div>
+            <button class="btn btn-primary" onclick="showCreditModal()">Buy Credits</button>
+        </div>
+    </div>
+
+    <!-- Progress Steps -->
+    <div class="progress-container">
+        <div class="progress-steps">
+            <div class="step active" onclick="goToStep(1)">
+                <div class="step-number">1</div>
+                <div class="step-label">Upload Design</div>
+            </div>
+            <div class="step" onclick="goToStep(2)">
+                <div class="step-number">2</div>
+                <div class="step-label">Select Background</div>
+            </div>
+            <div class="step" onclick="goToStep(3)">
+                <div class="step-number">3</div>
+                <div class="step-label">Configure Products</div>
+            </div>
+            <div class="step" onclick="goToStep(4)">
+                <div class="step-number">4</div>
+                <div class="step-label">Generate Images</div>
+            </div>
+            <div class="step" onclick="goToStep(5)">
+                <div class="step-number">5</div>
+                <div class="step-label">Publish</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <div class="menu-item active">
+                    <span class="menu-icon">🏠</span>
+                    <span>Dashboard</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">🎨</span>
+                    <span>Create Design</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">📦</span>
+                    <span>Products</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">📊</span>
+                    <span>Analytics</span>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Documentation</div>
+                <div class="menu-item">
+                    <span class="menu-icon">📖</span>
+                    <span>Best Practices</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">🎯</span>
+                    <span>Content Guidelines</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">🛠️</span>
+                    <span>Design Tools</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content">
+            <!-- Step 1: Upload Design -->
+            <div class="step-content active" id="step1">
+                <div class="page-title">Upload Your Design</div>
+                <div class="page-subtitle">Start by uploading your design for AI analysis</div>
+
+                <div class="upload-section">
+                    <div class="upload-box" id="uploadBox" onclick="simulateUpload()">
+                        <div id="uploadPrompt">
+                            <div class="upload-icon">📤</div>
+                            <div class="upload-text">Drop your design here</div>
+                            <div class="upload-subtext">or click to browse • PNG, JPG, SVG up to 10MB</div>
+                        </div>
+                        <div class="uploaded-image" id="uploadedImage" style="display: none;">
+                            <img id="designImg" alt="Uploaded design">
+                        </div>
+                    </div>
+
+                    <div class="ai-analysis" id="aiAnalysis" style="display: none;">
+                        <div class="ai-header">
+                            <span style="font-size: 24px;">✨</span>
+                            <div class="ai-title">AI Design Analysis</div>
+                            <span class="credits" style="font-size: 12px;">1 credit</span>
+                        </div>
+                        <div class="ai-content">
+                            <div class="ai-description">
+                                A humorous and relatable design featuring a grumpy orange cat holding a coffee cup. The cat has a tired expression that captures the morning mood. Text reads "I LIKE COFFEE" above and "I JUST DON'T LIKE DOING THINGS" below, creating a witty statement about preferring coffee over productivity. Perfect for coffee lovers and cat enthusiasts.
+                            </div>
+                            <div class="ai-fields">
+                                <div class="field-group">
+                                    <div class="field-label">Design Title</div>
+                                    <input type="text" class="field-input" value="Grumpy Coffee Cat - I Like Coffee" id="designTitle">
+                                </div>
+                                <div class="field-group">
+                                    <div class="field-label">Category</div>
+                                    <select class="field-select">
+                                        <option selected>Coffee & Cozy</option>
+                                        <option>Humor & Memes</option>
+                                        <option>Cats & Pets</option>
+                                        <option>Other</option>
+                                    </select>
+                                </div>
+                                <div class="field-group">
+                                    <div class="field-label">Creator Brand</div>
+                                    <input type="text" class="field-input" value="WhiskerBrew" placeholder="Your brand name">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Background Selection -->
+            <div class="step-content" id="step2">
+                <div class="page-title">Choose Your Background</div>
+                <div class="page-subtitle">Select a lifestyle background that matches your design's vibe</div>
+
+                <div class="backgrounds-container">
+                    <div class="backgrounds-grid">
+                        <!-- Coffee Shop -->
+                        <div class="background-card" onclick="selectBackground('coffee-shop', this)">
+                            <div class="background-preview">
+                                <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270681/garments/tee/front/black.png" class="background-tshirt">
+                            </div>
+                            <div class="background-info">
+                                <div class="background-name">Cozy Coffee Shop</div>
+                                <div class="background-stats">
+                                    <span>📈 <span class="stat-value">15.2%</span></span>
+                                    <span>👁️ <span class="stat-value">4.5k</span> views</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mountain -->
+                        <div class="background-card" onclick="selectBackground('mountain', this)">
+                            <div class="background-preview" style="background: linear-gradient(135deg, #4a5568, #2d3748);">
+                                <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270681/garments/tee/front/black.png" class="background-tshirt">
+                            </div>
+                            <div class="background-info">
+                                <div class="background-name">Mountain Adventure</div>
+                                <div class="background-stats">
+                                    <span>📈 <span class="stat-value">12.3%</span></span>
+                                    <span>👁️ <span class="stat-value">2.4k</span> views</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Home Office -->
+                        <div class="background-card" onclick="selectBackground('home', this)">
+                            <div class="background-preview" style="background: linear-gradient(135deg, #fef3c7, #fbbf24);">
+                                <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270681/garments/tee/front/black.png" class="background-tshirt">
+                            </div>
+                            <div class="background-info">
+                                <div class="background-name">Cozy Home Office</div>
+                                <div class="background-stats">
+                                    <span>📈 <span class="stat-value">13.7%</span></span>
+                                    <span>👁️ <span class="stat-value">3.2k</span> views</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bookstore -->
+                        <div class="background-card" onclick="selectBackground('bookstore', this)">
+                            <div class="background-preview" style="background: linear-gradient(135deg, #92400e, #b45309);">
+                                <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270681/garments/tee/front/black.png" class="background-tshirt">
+                            </div>
+                            <div class="background-info">
+                                <div class="background-name">Bookstore Café</div>
+                                <div class="background-stats">
+                                    <span>📈 <span class="stat-value">11.9%</span></span>
+                                    <span>👁️ <span class="stat-value">2.8k</span> views</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Configure Products (Matching design/new) -->
+            <div class="step-content" id="step3">
+                <div class="page-title">TRESR Design Editor</div>
+                <div class="page-subtitle">Position your design and configure products</div>
+
+                <div class="editor-container">
+                    <!-- Canvas Section -->
+                    <div class="canvas-section">
+                        <div class="design-requirements">
+                            ⚠️ Your design is landscape mode. We recommend at least 1500px for best print quality.
+                            <a href="#" style="color: #3b82f6; text-decoration: none;">Upscale your image here →</a>
+                        </div>
+                        
+                        <div class="canvas-wrapper">
+                            <div class="canvas-area" id="canvasArea">
+                                <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270681/garments/tee/front/black.png" style="width: 100%; height: 100%; object-fit: contain;">
+                                <div class="design-preview" style="width: 200px; height: 200px; top: 200px; left: 200px;">
+                                    <div class="resize-handle nw"></div>
+                                    <div class="resize-handle ne"></div>
+                                    <div class="resize-handle sw"></div>
+                                    <div class="resize-handle se"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-ai" onclick="suggestPlacement()">
+                            ✨ AI Suggest Best Position
+                            <span class="credit-cost">1 credit</span>
+                        </button>
+                    </div>
+
+                    <!-- Configure Products Grid -->
+                    <div class="products-section">
+                        <h3 style="margin-bottom: 16px;">Configure Products</h3>
+                        <div class="products-grid">
+                            <div class="product-card selected" onclick="toggleProduct(this)">
+                                <div class="product-check">✓</div>
+                                <div class="product-icon">👕</div>
+                                <div class="product-name">Medium Weight<br>T-Shirt</div>
+                            </div>
+                            <div class="product-card" onclick="toggleProduct(this)">
+                                <div class="product-check">✓</div>
+                                <div class="product-icon">🧥</div>
+                                <div class="product-name">Oversized Drop<br>Shoulder</div>
+                            </div>
+                            <div class="product-card" onclick="toggleProduct(this)">
+                                <div class="product-check">✓</div>
+                                <div class="product-icon">👔</div>
+                                <div class="product-name">Next Level Crop<br>Top</div>
+                            </div>
+                            <div class="product-card" onclick="toggleProduct(this)">
+                                <div class="product-check">✓</div>
+                                <div class="product-icon">🎽</div>
+                                <div class="product-name">Ladies Baby Tee</div>
+                            </div>
+                            <div class="product-card" onclick="toggleProduct(this)">
+                                <div class="product-check">✓</div>
+                                <div class="product-icon">🧢</div>
+                                <div class="product-name">Women's<br>Independent Hoodie</div>
+                            </div>
+                            <div class="product-card" onclick="toggleProduct(this)">
+                                <div class="product-check">✓</div>
+                                <div class="product-icon">👕</div>
+                                <div class="product-name">Medium Weight<br>Hoodie</div>
+                            </div>
+                            <div class="product-card" onclick="toggleProduct(this)">
+                                <div class="product-check">✓</div>
+                                <div class="product-icon">🎨</div>
+                                <div class="product-name">Standard Polo</div>
+                            </div>
+                            <div class="product-card" onclick="toggleProduct(this)">
+                                <div class="product-check">✓</div>
+                                <div class="product-icon">🎽</div>
+                                <div class="product-name">Patch Hat<br>Curved</div>
+                            </div>
+                            <div class="product-card" onclick="toggleProduct(this)">
+                                <div class="product-check">✓</div>
+                                <div class="product-icon">☕</div>
+                                <div class="product-name">Coffee Mug</div>
+                            </div>
+                            <div class="product-card" onclick="toggleProduct(this)">
+                                <div class="product-check">✓</div>
+                                <div class="product-icon">🎨</div>
+                                <div class="product-name">Art Canvas<br>12x16</div>
+                            </div>
+                            <div class="product-card" onclick="toggleProduct(this)">
+                                <div class="product-check">✓</div>
+                                <div class="product-icon">🎨</div>
+                                <div class="product-name">Art Canvas<br>20x24</div>
+                            </div>
+                            <div class="product-card" onclick="toggleProduct(this)">
+                                <div class="product-check">✓</div>
+                                <div class="product-icon">🎨</div>
+                                <div class="product-name">ART TREASURE<br>ART Candle</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product Preview -->
+                    <div class="preview-section">
+                        <div class="preview-image">
+                            <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270681/garments/tee/front/black.png" id="previewImg">
+                        </div>
+                        <div class="preview-details">
+                            <div class="product-title">Medium Weight T-Shirt</div>
+                            
+                            <div>
+                                <div style="margin-bottom: 8px; font-size: 14px; color: #6b7280;">Select Color</div>
+                                <div class="color-options">
+                                    <div class="color-btn selected" style="background: #000;" onclick="selectColor('black', this)"></div>
+                                    <div class="color-btn" style="background: #fff; border: 1px solid #e5e7eb;" onclick="selectColor('white', this)"></div>
+                                    <div class="color-btn" style="background: #1e40af;" onclick="selectColor('navy', this)"></div>
+                                    <div class="color-btn" style="background: #dc2626;" onclick="selectColor('red', this)"></div>
+                                    <div class="color-btn" style="background: #6b7280;" onclick="selectColor('grey', this)"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div style="margin-bottom: 8px; font-size: 14px; color: #6b7280;">Select Size</div>
+                                <div class="size-options">
+                                    <div class="size-btn" onclick="selectSize('S', this)">S</div>
+                                    <div class="size-btn selected" onclick="selectSize('M', this)">M</div>
+                                    <div class="size-btn" onclick="selectSize('L', this)">L</div>
+                                    <div class="size-btn" onclick="selectSize('XL', this)">XL</div>
+                                    <div class="size-btn" onclick="selectSize('2XL', this)">2XL</div>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 20px;">
+                                <button class="btn btn-primary" style="width: 100%;">
+                                    Enable Product
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Generate Images -->
+            <div class="step-content" id="step4">
+                <div class="page-title">Generate Product Images</div>
+                <div class="page-subtitle">Create mockups and lifestyle images for your products</div>
+
+                <div class="generation-container">
+                    <!-- Mockup Generation -->
+                    <h3 style="margin-bottom: 16px;">Product Mockups</h3>
+                    <div class="generation-grid" id="mockupGrid">
+                        <!-- Mockups will be loaded here -->
+                    </div>
+
+                    <button class="btn btn-primary" onclick="generateMockups()" style="margin-bottom: 32px;">
+                        Generate All Mockups
+                        <span class="credit-cost">10 credits</span>
+                    </button>
+
+                    <!-- Lifestyle Generation -->
+                    <div class="lifestyle-section">
+                        <h3 style="margin-bottom: 16px;">Lifestyle Images</h3>
+                        
+                        <textarea class="lifestyle-prompt" placeholder="Describe your lifestyle scene...">Person relaxing in a cozy coffee shop with warm lighting, wearing the shirt while enjoying their morning coffee</textarea>
+                        
+                        <div class="prompt-suggestions">
+                            <div class="prompt-chip" onclick="setPrompt('Coffee shop morning vibes')">☕ Coffee Shop</div>
+                            <div class="prompt-chip" onclick="setPrompt('Working from home with cat')">🏠 Home Office</div>
+                            <div class="prompt-chip" onclick="setPrompt('Reading in sunny corner')">📚 Reading Nook</div>
+                            <div class="prompt-chip" onclick="setPrompt('Weekend brunch scene')">🥐 Brunch Vibes</div>
+                        </div>
+
+                        <button class="btn btn-ai" onclick="generateLifestyle()">
+                            ✨ Generate with Gemini
+                            <span class="credit-cost">10 credits</span>
+                        </button>
+
+                        <div class="generation-grid" id="lifestyleGrid" style="margin-top: 20px;">
+                            <!-- Lifestyle images will appear here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5: Review & Publish -->
+            <div class="step-content" id="step5">
+                <div class="page-title">Review & Publish</div>
+                <div class="page-subtitle">Final review before publishing your SuperProduct</div>
+
+                <div class="editor-container">
+                    <div class="ai-analysis">
+                        <div class="ai-header">
+                            <span style="font-size: 24px;">📝</span>
+                            <div class="ai-title">Product Information</div>
+                        </div>
+                        <div class="ai-content">
+                            <div class="ai-fields">
+                                <div class="field-group">
+                                    <div class="field-label">Title</div>
+                                    <input type="text" class="field-input" value="I Like Coffee Cat - Funny Grumpy Cat Coffee Lover T-Shirt Collection">
+                                </div>
+                                <div class="field-group">
+                                    <div class="field-label">Short Description</div>
+                                    <textarea class="field-textarea">Perfect for coffee lovers with a sense of humor! This adorable grumpy cat design captures that morning mood we all know too well. Featuring the relatable quote "I Like Coffee, I Just Don't Like Doing Things" - ideal for anyone who prefers their coffee over productivity.</textarea>
+                                </div>
+                                <div class="field-group">
+                                    <div class="field-label">SEO Description</div>
+                                    <textarea class="field-textarea" style="min-height: 150px;">Get this hilarious grumpy cat coffee design on premium quality shirts, hoodies, and more. Perfect gift for coffee addicts, cat lovers, and anyone who relates to preferring caffeine over productivity. Our comfortable, high-quality apparel features vibrant, long-lasting prints that won't fade. Available in multiple colors and sizes. Free shipping on orders over $50. Join thousands of satisfied customers who love our unique, humor-filled designs.</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="products-section">
+                        <h3 style="margin-bottom: 16px;">Product Summary</h3>
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+                            <div>
+                                <div style="font-size: 24px; font-weight: 600;">5</div>
+                                <div style="font-size: 14px; color: #6b7280;">Garment Types</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 24px; font-weight: 600;">10</div>
+                                <div style="font-size: 14px; color: #6b7280;">Color Variations</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 24px; font-weight: 600;">50</div>
+                                <div style="font-size: 14px; color: #6b7280;">Total Variants</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 24px; font-weight: 600;">38</div>
+                                <div style="font-size: 14px; color: #6b7280;">Credits Used</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="generation-grid" style="margin-top: 24px;">
+                        <!-- Preview images -->
+                        <div class="mockup-card">
+                            <div class="mockup-image">
+                                <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270681/garments/tee/front/black.png">
+                            </div>
+                        </div>
+                        <div class="mockup-card">
+                            <div class="mockup-image">
+                                <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1755883296/garments/med-hood/front/black.png">
+                            </div>
+                        </div>
+                        <div class="mockup-card">
+                            <div class="mockup-image">
+                                <img src="https://res.cloudinary.com/dqslerzk9/image/upload/v1752270729/garments/next-crop/front/black.png">
+                            </div>
+                        </div>
+                        <div class="mockup-card">
+                            <div class="mockup-image" style="background: linear-gradient(135deg, #fbbf24, #f59e0b);">
+                                <div style="font-size: 48px;">🌟</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Bar -->
+    <div class="action-bar">
+        <div class="action-buttons">
+            <div style="display: flex; gap: 12px;">
+                <button class="btn btn-secondary" onclick="previousStep()" id="backBtn" style="display: none;">← Back</button>
+                <button class="btn btn-secondary" onclick="saveAsDraft()">Save as Draft</button>
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <button class="btn btn-ai" onclick="showCommunity()">
+                    🎉 Join Community for Credit Bundles
+                </button>
+                <button class="btn btn-primary" onclick="nextStep()" id="nextBtn">
+                    Continue →
+                </button>
+                <button class="btn btn-success" onclick="publishProduct()" id="publishBtn" style="display: none;">
+                    🚀 Publish to Shopify
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Global state
+        let currentStep = 1;
+        let credits = 250;
+        let selectedBackground = null;
+        let selectedProducts = ['tee'];
+
+        // Garment URLs from Cloudinary
+        const garmentUrls = {
+            tee: {
+                black: 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270681/garments/tee/front/black.png',
+                white: 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270687/garments/tee/front/white.png',
+                navy: 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270682/garments/tee/front/navy.png',
+                red: 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270688/garments/tee/front/red.png',
+                grey: 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270684/garments/tee/front/heather-grey.png'
+            },
+            hoodie: {
+                black: 'https://res.cloudinary.com/dqslerzk9/image/upload/v1755883296/garments/med-hood/front/black.png',
+                white: 'https://res.cloudinary.com/dqslerzk9/image/upload/v1755883302/garments/med-hood/front/white.png',
+                navy: 'https://res.cloudinary.com/dqslerzk9/image/upload/v1755883297/garments/med-hood/front/navy.png'
+            },
+            crop: {
+                black: 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270729/garments/next-crop/front/black.png',
+                white: 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270730/garments/next-crop/front/white.png',
+                pink: 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270736/garments/next-crop/front/pink.png'
+            },
+            boxy: {
+                black: 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270753/garments/boxy/front/black.png',
+                natural: 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270754/garments/boxy/front/natural.png'
+            },
+            longsleeve: {
+                black: 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270763/garments/mediu/front/black.png',
+                white: 'https://res.cloudinary.com/dqslerzk9/image/upload/v1752270769/garments/mediu/front/white.png'
+            }
+        };
+
+        // Navigation
+        function goToStep(step) {
+            currentStep = step;
+            
+            // Update steps
+            document.querySelectorAll('.step').forEach((s, i) => {
+                s.classList.remove('active', 'completed');
+                if (i + 1 < step) s.classList.add('completed');
+                if (i + 1 === step) s.classList.add('active');
+            });
+            
+            // Update content
+            document.querySelectorAll('.step-content').forEach(c => {
+                c.classList.remove('active');
+            });
+            document.getElementById(`step${step}`).classList.add('active');
+            
+            // Update buttons
+            document.getElementById('backBtn').style.display = step > 1 ? 'block' : 'none';
+            document.getElementById('nextBtn').style.display = step < 5 ? 'block' : 'none';
+            document.getElementById('publishBtn').style.display = step === 5 ? 'block' : 'none';
+            
+            // Initialize step-specific content
+            if (step === 4) loadMockups();
+        }
+
+        function nextStep() {
+            if (currentStep < 5) goToStep(currentStep + 1);
+        }
+
+        function previousStep() {
+            if (currentStep > 1) goToStep(currentStep - 1);
+        }
+
+        // Step 1: Upload
+        function simulateUpload() {
+            document.getElementById('uploadPrompt').style.display = 'none';
+            document.getElementById('uploadedImage').style.display = 'block';
+            document.getElementById('uploadBox').classList.add('has-file');
+            
+            // Create coffee cat design
+            const canvas = document.createElement('canvas');
+            canvas.width = 400;
+            canvas.height = 400;
+            const ctx = canvas.getContext('2d');
+            
+            // Background
+            ctx.fillStyle = '#fff9f0';
+            ctx.fillRect(0, 0, 400, 400);
+            
+            // Draw coffee cat design
+            ctx.fillStyle = '#d4a574';
+            ctx.font = 'bold 28px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('I LIKE COFFEE', 200, 60);
+            
+            // Cat
+            ctx.fillStyle = '#ffa500';
+            ctx.beginPath();
+            ctx.ellipse(200, 160, 60, 50, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Coffee cup
+            ctx.fillStyle = '#8b6914';
+            ctx.fillRect(170, 210, 60, 40);
+            
+            ctx.fillStyle = '#d4a574';
+            ctx.font = '20px Arial';
+            ctx.fillText('I JUST DON\'T LIKE', 200, 320);
+            ctx.fillText('DOING THINGS', 200, 345);
+            
+            document.getElementById('designImg').src = canvas.toDataURL();
+            
+            // Show AI analysis
+            setTimeout(() => {
+                document.getElementById('aiAnalysis').style.display = 'block';
+                deductCredits(1);
+                showToast('✨ Design analyzed with Gemini AI (-1 credit)');
+            }, 1500);
+        }
+
+        // Step 2: Background selection
+        function selectBackground(bg, element) {
+            document.querySelectorAll('.background-card').forEach(c => {
+                c.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            selectedBackground = bg;
+            showToast('Background selected');
+        }
+
+        // Step 3: Product configuration
+        function toggleProduct(element) {
+            element.classList.toggle('selected');
+        }
+
+        function selectColor(color, element) {
+            document.querySelectorAll('.color-btn').forEach(c => {
+                c.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            
+            // Update preview image
+            const currentProduct = 'tee'; // For demo
+            if (garmentUrls[currentProduct] && garmentUrls[currentProduct][color]) {
+                document.getElementById('previewImg').src = garmentUrls[currentProduct][color];
+            }
+        }
+
+        function selectSize(size, element) {
+            document.querySelectorAll('.size-btn').forEach(s => {
+                s.classList.remove('selected');
+            });
+            element.classList.add('selected');
+        }
+
+        function suggestPlacement() {
+            if (!checkCredits(1)) return;
+            deductCredits(1);
+            showToast('✨ AI suggested optimal placement (-1 credit)');
+        }
+
+        // Step 4: Generation
+        function loadMockups() {
+            const grid = document.getElementById('mockupGrid');
+            if (!grid) return;
+            
+            grid.innerHTML = '';
+            
+            const products = [
+                { name: 'Classic Tee', type: 'tee', color: 'black' },
+                { name: 'Hoodie', type: 'hoodie', color: 'black' },
+                { name: 'Crop Top', type: 'crop', color: 'black' },
+                { name: 'Boxy Tee', type: 'boxy', color: 'black' },
+                { name: 'Long Sleeve', type: 'longsleeve', color: 'black' }
+            ];
+            
+            products.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'mockup-card';
+                const imageUrl = garmentUrls[product.type] && garmentUrls[product.type][product.color] 
+                    ? garmentUrls[product.type][product.color] 
+                    : '';
+                
+                card.innerHTML = `
+                    <div class="mockup-image">
+                        <img src="${imageUrl}" alt="${product.name}">
+                    </div>
+                    <div class="mockup-info">
+                        <div class="mockup-name">${product.name}</div>
+                        <div class="mockup-color">${product.color}</div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function generateMockups() {
+            if (!checkCredits(10)) return;
+            deductCredits(10);
+            showToast('✅ Mockups generated with Canvas API (-10 credits)');
+        }
+
+        function setPrompt(prompt) {
+            document.querySelector('.lifestyle-prompt').value = prompt;
+        }
+
+        function generateLifestyle() {
+            if (!checkCredits(10)) return;
+            deductCredits(10);
+            
+            showToast('🎨 Generating with Gemini 2.5 Flash...');
+            
+            setTimeout(() => {
+                const grid = document.getElementById('lifestyleGrid');
+                const card = document.createElement('div');
+                card.className = 'mockup-card';
+                card.innerHTML = `
+                    <div class="mockup-image" style="background: linear-gradient(135deg, #fbbf24, #f59e0b);">
+                        <div style="font-size: 48px;">☕</div>
+                    </div>
+                    <div class="mockup-info">
+                        <div class="mockup-name">Coffee Shop Scene</div>
+                    </div>
+                `;
+                grid.appendChild(card);
+                showToast('✨ Lifestyle image generated (-10 credits)');
+            }, 2000);
+        }
+
+        // Step 5: Publishing
+        function saveAsDraft() {
+            showToast('📝 Saved as draft');
+        }
+
+        function publishProduct() {
+            showToast('🚀 Publishing to Shopify...');
+            setTimeout(() => {
+                showToast('✅ SuperProduct published successfully!');
+            }, 2000);
+        }
+
+        function showCommunity() {
+            showToast('🎉 Opening community signup...');
+        }
+
+        // Credit system
+        function checkCredits(amount) {
+            if (credits < amount) {
+                showToast('❌ Insufficient credits');
+                return false;
+            }
+            return true;
+        }
+
+        function deductCredits(amount) {
+            credits -= amount;
+            document.getElementById('creditCount').textContent = credits;
+        }
+
+        function showCreditModal() {
+            showToast('💳 Opening credit purchase...');
+        }
+
+        // Toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize
+        window.onload = () => {
+            goToStep(1);
+        };
+    </script>
+</body>
+</html>
