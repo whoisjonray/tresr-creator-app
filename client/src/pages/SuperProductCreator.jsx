@@ -162,6 +162,16 @@ function SuperProductCreator() {
 
       {/* Main Content */}
       <div className="spc-main">
+        {/* Menu Toggle Button */}
+        {!sidebarOpen && (
+          <button 
+            className="spc-menu-toggle"
+            onClick={() => setSidebarOpen(true)}
+          >
+            ☰
+          </button>
+        )}
+        
         {/* Sidebar */}
         <div className={`spc-sidebar ${sidebarOpen ? 'open' : ''}`}>
           <div className="spc-sidebar-header">
@@ -170,7 +180,7 @@ function SuperProductCreator() {
           </div>
           <nav className="spc-nav">
             <a href="/dashboard">Dashboard</a>
-            <a href="/design/new" className="active">Create Design</a>
+            <a href="#" className="active">SuperProduct Creator</a>
             <a href="/products">Products</a>
             <a href="/analytics">Analytics</a>
             <a href="/settings">Settings</a>
