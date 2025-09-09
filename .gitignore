@@ -35,4 +35,4 @@ Thumbs.db
 
 # Test coverage
 coverage/
-.nyc_output/
+.nyc_output/.swarm/

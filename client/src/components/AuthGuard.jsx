@@ -83,6 +83,7 @@ function AuthGuard({ children }) {
       <div className="auth-loading">
         <div className="loading-spinner"></div>
         <p>Verifying authentication...</p>
+        {/* Force fresh build to clear Railway cache */}
         
         <style>{`
           .auth-loading {
