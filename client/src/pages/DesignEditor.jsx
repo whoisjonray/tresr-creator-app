@@ -3,8 +3,25 @@ import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 import mockupService from '../services/mockupService';
+import canvasImageGenerator from '../services/canvasImageGenerator';
 import { getGarmentImage as getCloudinaryImage } from '../config/garmentImagesCloudinary';
 import './DesignEditor.css'; // v2 - square swatches with 14 colors
+import { userStorage } from '../utils/userStorage';
+
+// Get API base URL from environment
+const getApiBaseURL = () => {
+  const currentHost = window.location.hostname;
+  
+  if (currentHost.includes('ngrok') || currentHost === 'localhost') {
+    return window.location.origin + '/api';
+  }
+  
+  if (currentHost === 'creators.tresr.com') {
+    return 'https://creators.tresr.com/api';
+  }
+  
+  return 'http://localhost:3002/api';
+};
 
 // Map product IDs to actual Sanity SKUs we migrated
 // Color mapping strategy:
@@ -180,6 +197,11 @@ function DesignEditor() {
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [designScale, setDesignScale] = useState(100);
   const [loading, setLoading] = useState(false);
+  const [generationProgress, setGenerationProgress] = useState({
+    current: 0,
+    total: 0,
+    message: ''
+  });
   const [nfcExperienceType, setNfcExperienceType] = useState('default');
   const [showBoundingBox, setShowBoundingBox] = useState(false);
   const [isProductPublished, setIsProductPublished] = useState(false);
@@ -822,12 +844,12 @@ function DesignEditor() {
       if (!isEditMode) return;
       
       // Update the product to draft status
-      const savedProducts = JSON.parse(localStorage.getItem('generatedProducts') || '[]');
+      const savedProducts = userStorage.getProducts();
       const index = savedProducts.findIndex(p => p.id === params.id);
       
       if (index !== -1) {
         savedProducts[index].isDraft = true;
-        localStorage.setItem('generatedProducts', JSON.stringify(savedProducts));
+        userStorage.setProducts(savedProducts);
         setIsProductPublished(false);
         alert('Design unpublished to draft! Redirecting to products page...');
         navigate('/products');
@@ -853,9 +875,9 @@ function DesignEditor() {
       if (!isEditMode) return;
       
       // Remove the product from localStorage
-      const savedProducts = JSON.parse(localStorage.getItem('generatedProducts') || '[]');
+      const savedProducts = userStorage.getProducts();
       const updatedProducts = savedProducts.filter(p => p.id !== params.id);
-      localStorage.setItem('generatedProducts', JSON.stringify(updatedProducts));
+      userStorage.setProducts(updatedProducts);
       
       alert('Design deleted successfully!');
       navigate('/products');
@@ -920,7 +942,7 @@ function DesignEditor() {
       };
       
       // Save to localStorage
-      const savedProducts = JSON.parse(localStorage.getItem('generatedProducts') || '[]');
+      const savedProducts = userStorage.getProducts();
       
       if (isEditMode) {
         // Update existing product
@@ -935,7 +957,7 @@ function DesignEditor() {
         savedProducts.unshift(savedProduct);
       }
       
-      localStorage.setItem('generatedProducts', JSON.stringify(savedProducts));
+      userStorage.setProducts(savedProducts);
       
       console.log('🔥 SAVED PRODUCT DEBUG:', {
         savedProductId: savedProduct.id,
@@ -998,43 +1020,172 @@ function DesignEditor() {
         return;
       }
       
-      // Generate mockups for all enabled products
-      const mockupPromises = [];
+      console.log('🎨 🎨 🎨 GENERATING REAL PRODUCT IMAGES 🎨 🎨 🎨');
+      console.log('Enabled products:', enabledProducts.length);
+      console.log('Products to process:', enabledProducts.map(p => `${p.name} (${p.colors?.length || 0} colors)`));
+      
+      // Generate REAL product images for all enabled products and colors
+      const mockups = {};
+      const totalVariants = enabledProducts.reduce((total, product) => {
+        const availableColors = product.colors || ['Default'];
+        const colorsToGenerate = availableColors.filter(color => selectedColors.includes(color));
+        return total + colorsToGenerate.length;
+      }, 0);
+      
+      // Initialize progress
+      setGenerationProgress({
+        current: 0,
+        total: totalVariants,
+        message: 'Starting image generation...'
+      });
+      
+      let processedVariants = 0;
       
       for (const product of enabledProducts) {
         const config = productConfigs[product.id];
         
         // Determine which image to use based on print location
-        let mockupImage;
+        let designImage;
         if (config.printLocation === 'back') {
-          mockupImage = backDesignUrl || backDesignImageSrc;
+          designImage = backDesignUrl || backDesignImageSrc;
         } else {
           // For 'front' and 'both', use front image for preview
-          mockupImage = frontDesignUrl || frontDesignImageSrc || (isEditMode && location.state?.productData?.originalDesignImage);
+          designImage = frontDesignUrl || frontDesignImageSrc || (isEditMode && location.state?.productData?.originalDesignImage);
         }
         
-        if (mockupImage) {
-          // Generate mockup for this product
-          const mockupPromise = generateMockupPreview(product.id);
-          mockupPromises.push(mockupPromise);
+        if (designImage) {
+          // Get current position for this product
+          const currentPosition = getCurrentPosition(product.id);
+          
+          // Generate images ONLY for selected colors that are available for this product
+          const availableColors = product.colors || ['Default'];
+          const colorsToGenerate = availableColors.filter(color => selectedColors.includes(color));
+          
+          // If no colors selected for this product, skip it
+          if (colorsToGenerate.length === 0) {
+            console.log(`⚠️ No selected colors available for ${product.name}, skipping...`);
+            continue;
+          }
+          
+          const colorVariants = [];
+          
+          for (const color of colorsToGenerate) {
+            try {
+              console.log(`🎨 🎨 REAL IMAGE: Generating ${product.name} in ${color}...`);
+              
+              // Update progress message
+              setGenerationProgress({
+                current: processedVariants,
+                total: totalVariants,
+                message: `Generating ${product.name} in ${color}...`
+              });
+              
+              // Generate real composite image using canvas
+              const realImage = await canvasImageGenerator.generateProductImage(
+                designImage,
+                product.templateId,
+                color,
+                currentPosition,
+                designScale / 100
+              );
+              
+              colorVariants.push({
+                color: color,
+                image: realImage.url,
+                real: realImage.real || false,
+                width: realImage.width,
+                height: realImage.height
+              });
+              
+              processedVariants++;
+              
+              // Update progress after successful generation
+              setGenerationProgress({
+                current: processedVariants,
+                total: totalVariants,
+                message: `Generated ${product.name} in ${color}`
+              });
+              
+              // Log progress milestones
+              if (processedVariants % 5 === 0) {
+                console.log(`✅ Generated ${processedVariants}/${totalVariants} product variants`);
+              }
+              
+            } catch (error) {
+              console.error(`❌ Failed to generate ${product.name} in ${color}:`, error);
+              // Add fallback for failed generation
+              colorVariants.push({
+                color: color,
+                image: null,
+                error: error.message
+              });
+            }
+          }
+          
+          mockups[product.id] = {
+            productId: product.id,
+            templateId: product.templateId,
+            name: product.name,
+            price: product.price,
+            printLocation: config.printLocation,
+            selectedColor: config.selectedColor || config.defaultColor,
+            variants: colorVariants,
+            position: currentPosition,
+            scale: designScale / 100
+          };
         }
       }
       
-      await Promise.all(mockupPromises);
+      console.log('✅ Generated real product images for all variants:', mockups);
       
-      // Create mockups object from enabled products
-      const mockups = {};
-      for (const product of enabledProducts) {
-        const config = productConfigs[product.id];
-        mockups[product.id] = {
-          productId: product.id,
-          templateId: product.templateId,
-          color: config.selectedColor || config.defaultColor,
-          printLocation: config.printLocation
-        };
+      // Upload generated images to Cloudinary
+      console.log('📤 Uploading generated images to Cloudinary...');
+      setGenerationProgress({
+        current: processedVariants,
+        total: totalVariants,
+        message: 'Uploading images to cloud storage...'
+      });
+      
+      try {
+        for (const [productId, mockupData] of Object.entries(mockups)) {
+          if (mockupData.variants && mockupData.variants.length > 0) {
+            setGenerationProgress(prev => ({
+              ...prev,
+              message: `Uploading ${mockupData.name} images to cloud...`
+            }));
+            const response = await fetch(`${getApiBaseURL()}/mockups/upload-product-images`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              credentials: 'include',
+              body: JSON.stringify({
+                productName: `${designTitle}-${mockupData.name}`,
+                variants: mockupData.variants
+              })
+            });
+            
+            if (response.ok) {
+              const uploadResult = await response.json();
+              console.log(`✅ Uploaded ${uploadResult.uploaded} images for ${mockupData.name} to Cloudinary`);
+              
+              // Update mockup data with Cloudinary URLs
+              if (uploadResult.results) {
+                uploadResult.results.forEach((result, index) => {
+                  if (result.success && mockupData.variants[index]) {
+                    mockupData.variants[index].cloudinaryUrl = result.cloudinaryUrl;
+                  }
+                });
+              }
+            } else {
+              console.error(`❌ Failed to upload images for ${mockupData.name} to Cloudinary`);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error uploading to Cloudinary:', error);
+        // Continue even if upload fails - we still have the base64 images
       }
-      
-      console.log('Generated mockups:', mockups);
       
       // Use front design as the primary preview image
       const finalDesignImage = frontDesignUrl || frontDesignImageSrc || (isEditMode && location.state?.productData?.originalDesignImage);
@@ -1066,6 +1217,12 @@ function DesignEditor() {
       alert('Failed to generate products');
     } finally {
       setLoading(false);
+      // Clear progress
+      setGenerationProgress({
+        current: 0,
+        total: 0,
+        message: ''
+      });
     }
   };
 
@@ -1751,6 +1908,26 @@ function DesignEditor() {
                   </>
                 )}
               </div>
+              
+              {/* Progress Bar */}
+              {loading && generationProgress.total > 0 && (
+                <div className="generation-progress">
+                  <div className="progress-message">{generationProgress.message}</div>
+                  <div className="progress-bar-container">
+                    <div className="progress-bar">
+                      <div 
+                        className="progress-fill" 
+                        style={{ 
+                          width: `${(generationProgress.current / generationProgress.total) * 100}%` 
+                        }}
+                      />
+                    </div>
+                    <div className="progress-text">
+                      {generationProgress.current} / {generationProgress.total} images
+                    </div>
+                  </div>
+                </div>
+              )}
               
               <div className="generate-info">
                 {params.id && location.state?.productData ? (
