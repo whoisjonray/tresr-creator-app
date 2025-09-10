@@ -203,7 +203,6 @@ function DesignEditor() {
   const [nfcExperienceType, setNfcExperienceType] = useState('default');
   const [showBoundingBox, setShowBoundingBox] = useState(false);
   const [isProductPublished, setIsProductPublished] = useState(false);
-  const [colorFilter, setColorFilter] = useState('All');
 
   const onDrop = useCallback((acceptedFiles) => {
     if (acceptedFiles.length === 0) return;
@@ -1059,7 +1058,6 @@ function DesignEditor() {
             message: `Generating ${product.name} in ${selectedColor}...`
           });
           
-          try {
             // Generate real composite image using canvas
             const realImage = await canvasImageGenerator.generateProductImage(
               designImage,
@@ -1103,7 +1101,6 @@ function DesignEditor() {
               error: error.message,
               url: null
             };
-          }
         }
       }
       
