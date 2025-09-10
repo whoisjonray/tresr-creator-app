@@ -3,25 +3,8 @@ import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 import mockupService from '../services/mockupService';
-import canvasImageGenerator from '../services/canvasImageGenerator';
 import { getGarmentImage as getCloudinaryImage } from '../config/garmentImagesCloudinary';
 import './DesignEditor.css'; // v2 - square swatches with 14 colors
-import { userStorage } from '../utils/userStorage';
-
-// Get API base URL from environment
-const getApiBaseURL = () => {
-  const currentHost = window.location.hostname;
-  
-  if (currentHost.includes('ngrok') || currentHost === 'localhost') {
-    return window.location.origin + '/api';
-  }
-  
-  if (currentHost === 'creators.tresr.com') {
-    return 'https://creators.tresr.com/api';
-  }
-  
-  return 'http://localhost:3002/api';
-};
 
 // Map product IDs to actual Sanity SKUs we migrated
 // Color mapping strategy:
@@ -191,19 +174,15 @@ function DesignEditor() {
     return configs;
   });
   
+  const [selectedColors, setSelectedColors] = useState(['Black', 'White']);
+  const [colorFilter, setColorFilter] = useState('All');
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [designScale, setDesignScale] = useState(100);
   const [loading, setLoading] = useState(false);
-  const [generationProgress, setGenerationProgress] = useState({
-    current: 0,
-    total: 0,
-    message: ''
-  });
   const [nfcExperienceType, setNfcExperienceType] = useState('default');
   const [showBoundingBox, setShowBoundingBox] = useState(false);
   const [isProductPublished, setIsProductPublished] = useState(false);
-  const [colorFilter, setColorFilter] = useState('All');
 
   const onDrop = useCallback((acceptedFiles) => {
     if (acceptedFiles.length === 0) return;
@@ -555,6 +534,10 @@ function DesignEditor() {
         setPrintMethod(productData.printMethod);
       }
       
+      // Load selected colors
+      if (productData.selectedColors) {
+        setSelectedColors(productData.selectedColors);
+      }
       
       // Load product configurations with positions (do this after image loads)
       if (productData.productConfigs) {
@@ -812,20 +795,21 @@ function DesignEditor() {
     }));
   };
 
+  const handleColorToggle = (colorName) => {
+    setSelectedColors(prev => {
+      if (prev.includes(colorName)) {
+        return prev.filter(c => c !== colorName);
+      }
+      return [...prev, colorName];
+    });
+  };
 
   const calculateTotalVariants = () => {
     const enabledProducts = Object.entries(productConfigs)
       .filter(([_, config]) => config.enabled);
-    
-    // Calculate variants based on each product's available colors
-    const totalVariants = enabledProducts.reduce((total, [productId, config]) => {
-      const product = PRODUCT_TEMPLATES.find(p => p.id === productId);
-      const availableColors = product?.colors?.length || 1; // Use product's available colors
-      const sizes = 8; // Standard sizes S-5XL
-      return total + (availableColors * sizes);
-    }, 0);
-    
-    return totalVariants;
+    const colors = selectedColors.length > 0 ? selectedColors.length : 20; // Default to 20 colors
+    const sizes = 8; // Standard sizes S-5XL
+    return enabledProducts.length * colors * sizes;
   };
 
   const handleUnpublishToDraft = async () => {
@@ -838,12 +822,12 @@ function DesignEditor() {
       if (!isEditMode) return;
       
       // Update the product to draft status
-      const savedProducts = userStorage.getProducts();
+      const savedProducts = JSON.parse(localStorage.getItem('generatedProducts') || '[]');
       const index = savedProducts.findIndex(p => p.id === params.id);
       
       if (index !== -1) {
         savedProducts[index].isDraft = true;
-        userStorage.setProducts(savedProducts);
+        localStorage.setItem('generatedProducts', JSON.stringify(savedProducts));
         setIsProductPublished(false);
         alert('Design unpublished to draft! Redirecting to products page...');
         navigate('/products');
@@ -869,9 +853,9 @@ function DesignEditor() {
       if (!isEditMode) return;
       
       // Remove the product from localStorage
-      const savedProducts = userStorage.getProducts();
+      const savedProducts = JSON.parse(localStorage.getItem('generatedProducts') || '[]');
       const updatedProducts = savedProducts.filter(p => p.id !== params.id);
-      userStorage.setProducts(updatedProducts);
+      localStorage.setItem('generatedProducts', JSON.stringify(updatedProducts));
       
       alert('Design deleted successfully!');
       navigate('/products');
@@ -920,7 +904,7 @@ function DesignEditor() {
         backDesignUrl: backDesignUrl,
         printMethod: printMethod, // Save the selected print method
         productConfigs: productConfigs, // Save product positions and configurations
-        // No longer saving global selected colors - each product has its own default color
+        selectedColors: selectedColors, // Save selected colors
         mockups: [
           {
             id: `draft_mockup_${timestamp}_${randomSuffix}`,
@@ -936,7 +920,7 @@ function DesignEditor() {
       };
       
       // Save to localStorage
-      const savedProducts = userStorage.getProducts();
+      const savedProducts = JSON.parse(localStorage.getItem('generatedProducts') || '[]');
       
       if (isEditMode) {
         // Update existing product
@@ -951,7 +935,7 @@ function DesignEditor() {
         savedProducts.unshift(savedProduct);
       }
       
-      userStorage.setProducts(savedProducts);
+      localStorage.setItem('generatedProducts', JSON.stringify(savedProducts));
       
       console.log('🔥 SAVED PRODUCT DEBUG:', {
         savedProductId: savedProduct.id,
@@ -1014,144 +998,43 @@ function DesignEditor() {
         return;
       }
       
-      console.log('🎨 🎨 🎨 GENERATING REAL PRODUCT IMAGES 🎨 🎨 🎨');
-      console.log('Enabled products:', enabledProducts.length);
-      console.log('Products to process:', enabledProducts.map(p => `${p.name} (${p.colors?.length || 0} colors)`));
-      
-      // Generate REAL product images for all enabled products using their default colors
-      const mockups = {};
-      const totalVariants = enabledProducts.length; // One image per enabled product
-      
-      // Initialize progress
-      setGenerationProgress({
-        current: 0,
-        total: totalVariants,
-        message: 'Starting image generation...'
-      });
-      
-      let processedVariants = 0;
+      // Generate mockups for all enabled products
+      const mockupPromises = [];
       
       for (const product of enabledProducts) {
         const config = productConfigs[product.id];
         
-        // Use the selected default color for this product
-        const selectedColor = config.selectedColor || product.colors?.[0] || 'Black';
-        
         // Determine which image to use based on print location
-        let designImage;
+        let mockupImage;
         if (config.printLocation === 'back') {
-          designImage = backDesignUrl || backDesignImageSrc;
+          mockupImage = backDesignUrl || backDesignImageSrc;
         } else {
           // For 'front' and 'both', use front image for preview
-          designImage = frontDesignUrl || frontDesignImageSrc || (isEditMode && location.state?.productData?.originalDesignImage);
+          mockupImage = frontDesignUrl || frontDesignImageSrc || (isEditMode && location.state?.productData?.originalDesignImage);
         }
         
-        if (designImage) {
-          // Get current position for this product
-          const currentPosition = getCurrentPosition(product.id);
-          
-          console.log(`🎨 🎨 REAL IMAGE: Generating ${product.name} in ${selectedColor}...`);
-          
-          // Update progress message
-          setGenerationProgress({
-            current: processedVariants,
-            total: totalVariants,
-            message: `Generating ${product.name} in ${selectedColor}...`
-          });
-          
-          try {
-            // Generate real composite image using canvas
-            const realImage = await canvasImageGenerator.generateProductImage(
-              designImage,
-              product.templateId,
-              selectedColor,
-              currentPosition,
-              designScale / 100
-            );
-            
-            console.log(`✅ Generated real image for ${product.name} in ${selectedColor}:`, realImage.url ? 'SUCCESS' : 'FAILED');
-            
-            // Store the product with its generated image
-            mockups[product.id] = {
-              templateId: product.templateId,
-              name: product.name,
-              color: selectedColor,
-              image: realImage.url,
-              real: realImage.real || false,
-              width: realImage.width,
-              height: realImage.height,
-              url: realImage.url
-            };
-            
-            processedVariants++;
-            
-            // Update progress after successful generation
-            setGenerationProgress({
-              current: processedVariants,
-              total: totalVariants,
-              message: `Generated ${product.name} in ${selectedColor}`
-            });
-            
-          } catch (error) {
-            console.error(`❌ Failed to generate ${product.name} in ${selectedColor}:`, error);
-            // Add fallback for failed generation
-            mockups[product.id] = {
-              templateId: product.templateId,
-              name: product.name,
-              color: selectedColor,
-              image: null,
-              error: error.message,
-              url: null
-            };
-          }
+        if (mockupImage) {
+          // Generate mockup for this product
+          const mockupPromise = generateMockupPreview(product.id);
+          mockupPromises.push(mockupPromise);
         }
       }
       
-      console.log('✅ Generated real product images for all variants:', mockups);
+      await Promise.all(mockupPromises);
       
-      // Upload generated images to Cloudinary
-      console.log('📤 Uploading generated images to Cloudinary...');
-      setGenerationProgress({
-        current: processedVariants,
-        total: totalVariants,
-        message: 'Uploading images to cloud storage...'
-      });
-      
-      try {
-        for (const [productId, mockupData] of Object.entries(mockups)) {
-          if (mockupData.image && !mockupData.error) {
-            setGenerationProgress(prev => ({
-              ...prev,
-              message: `Uploading ${mockupData.name} image to cloud...`
-            }));
-            
-            const response = await fetch(`${getApiBaseURL()}/mockups/upload-single-image`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              credentials: 'include',
-              body: JSON.stringify({
-                productName: `${designTitle}-${mockupData.name}-${mockupData.color}`,
-                imageUrl: mockupData.image,
-                productId: productId,
-                color: mockupData.color
-              })
-            });
-            
-            if (response.ok) {
-              const uploadResult = await response.json();
-              console.log(`✅ Uploaded image for ${mockupData.name} in ${mockupData.color} to Cloudinary:`, uploadResult.cloudinaryUrl);
-              
-            } else {
-              console.error(`❌ Failed to upload image for ${mockupData.name} in ${mockupData.color} to Cloudinary`);
-            }
-          }
-        }
-      } catch (error) {
-        console.error('Error uploading to Cloudinary:', error);
-        // Continue even if upload fails - we still have the base64 images
+      // Create mockups object from enabled products
+      const mockups = {};
+      for (const product of enabledProducts) {
+        const config = productConfigs[product.id];
+        mockups[product.id] = {
+          productId: product.id,
+          templateId: product.templateId,
+          color: config.selectedColor || config.defaultColor,
+          printLocation: config.printLocation
+        };
       }
+      
+      console.log('Generated mockups:', mockups);
       
       // Use front design as the primary preview image
       const finalDesignImage = frontDesignUrl || frontDesignImageSrc || (isEditMode && location.state?.productData?.originalDesignImage);
@@ -1165,7 +1048,8 @@ function DesignEditor() {
           supportingText,
           tags,
           nfcEnabled: nfcExperienceType !== 'none',
-          productConfigs, // Pass product configs with selected colors
+          productConfigs,
+          selectedColors,
           designImageSrc: finalDesignImage, // Use the final design image
           frontDesignImageSrc,
           backDesignImageSrc,
@@ -1182,12 +1066,6 @@ function DesignEditor() {
       alert('Failed to generate products');
     } finally {
       setLoading(false);
-      // Clear progress
-      setGenerationProgress({
-        current: 0,
-        total: 0,
-        message: ''
-      });
     }
   };
 
@@ -1726,6 +1604,58 @@ function DesignEditor() {
               </div>
             </div>
 
+            {/* Colors Section */}
+            <div className="colors-section">
+              <h2>Product Colors</h2>
+              <p>Activate the background colors that you want to make available for your enabled products.</p>
+              <p style={{ fontSize: '12px', color: '#9ca3af' }}>Not all colors are available for all products.</p>
+              
+              <div className="color-filters">
+                <button 
+                  className={`color-filter ${colorFilter === 'All' ? 'active' : ''}`}
+                  onClick={() => setColorFilter('All')}
+                >
+                  All
+                </button>
+                <button 
+                  className={`color-filter ${colorFilter === 'Light' ? 'active' : ''}`}
+                  onClick={() => setColorFilter('Light')}
+                >
+                  Light
+                </button>
+                <button 
+                  className={`color-filter ${colorFilter === 'Dark' ? 'active' : ''}`}
+                  onClick={() => setColorFilter('Dark')}
+                >
+                  Dark
+                </button>
+                <button 
+                  className={`color-filter ${colorFilter === 'None' ? 'active' : ''}`}
+                  onClick={() => setColorFilter('None')}
+                >
+                  None
+                </button>
+              </div>
+              
+              <div className="color-grid">
+                {filteredColors.map(color => (
+                  <div
+                    key={color.name}
+                    className={`color-swatch ${selectedColors.includes(color.name) ? 'selected' : ''}`}
+                    style={{ backgroundColor: color.hex }}
+                    onClick={() => handleColorToggle(color.name)}
+                    title={color.name}
+                  >
+                    {selectedColors.includes(color.name) && (
+                      <svg className="checkmark" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5 13l4 4L19 7" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M5 13l4 4L19 7" stroke="black" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" style={{ strokeOpacity: 0.3 }}/>
+                      </svg>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
 
 
             {/* NFC Experience Section */}
@@ -1821,26 +1751,6 @@ function DesignEditor() {
                   </>
                 )}
               </div>
-              
-              {/* Progress Bar */}
-              {loading && generationProgress.total > 0 && (
-                <div className="generation-progress">
-                  <div className="progress-message">{generationProgress.message}</div>
-                  <div className="progress-bar-container">
-                    <div className="progress-bar">
-                      <div 
-                        className="progress-fill" 
-                        style={{ 
-                          width: `${(generationProgress.current / generationProgress.total) * 100}%` 
-                        }}
-                      />
-                    </div>
-                    <div className="progress-text">
-                      {generationProgress.current} / {generationProgress.total} images
-                    </div>
-                  </div>
-                </div>
-              )}
               
               <div className="generate-info">
                 {params.id && location.state?.productData ? (
