@@ -203,6 +203,7 @@ function DesignEditor() {
   const [nfcExperienceType, setNfcExperienceType] = useState('default');
   const [showBoundingBox, setShowBoundingBox] = useState(false);
   const [isProductPublished, setIsProductPublished] = useState(false);
+  const [colorFilter, setColorFilter] = useState('All');
 
   const onDrop = useCallback((acceptedFiles) => {
     if (acceptedFiles.length === 0) return;

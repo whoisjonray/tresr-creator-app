@@ -8,7 +8,6 @@ import Login from './pages/Login';
 import PrintGuidelines from './pages/PrintGuidelines';
 import GarmentDetails from './pages/GarmentDetails';
 import DesignTools from './pages/DesignTools';
-import SuperProductFlowIntegrated from './pages/SuperProductFlowIntegrated';
 import Navigation from './components/Navigation';
 import SidebarNavigation from './components/SidebarNavigation';
 import AuthGuard from './components/AuthGuard';
@@ -54,7 +53,6 @@ function AppContent() {
                     <Route path="/admin" element={<AdminPanel />} />
                     
                     {/* Test Routes */}
-                    <Route path="/test/superproduct-flow" element={<SuperProductFlowIntegrated />} />
                     
                     {/* Documentation Routes */}
                     <Route path="/docs/getting-started" element={<div>Getting Started Guide (Coming Soon)</div>} />
