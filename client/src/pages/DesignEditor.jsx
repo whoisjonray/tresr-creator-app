@@ -172,6 +172,7 @@ function DesignEditor() {
   const [isGeneratingMockup, setIsGeneratingMockup] = useState(false);
   const [printMethod, setPrintMethod] = useState('auto'); // auto = Use What's Best, dtg, dtf
   const [imageQualityWarning, setImageQualityWarning] = useState(null);
+  const [colorFilter, setColorFilter] = useState('All'); // All, Light, Dark, None
   
   const [activeProduct, setActiveProduct] = useState(PRODUCT_TEMPLATES[0].id);
   const [productConfigs, setProductConfigs] = useState(() => {
@@ -185,14 +186,13 @@ function DesignEditor() {
         backPosition: { x: printArea.x, y: printArea.y, width: 150, height: 150 },
         defaultColor: '', // Start with no default color selected
         selectedColor: '',
+        selectedColors: [], // Array of selected colors for variants
         printLocation: 'front' // New: track front/back/both
       };
     });
     return configs;
   });
   
-  const [selectedColors, setSelectedColors] = useState(['Black', 'White']);
-  const [colorFilter, setColorFilter] = useState('All');
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [designScale, setDesignScale] = useState(100);
@@ -556,10 +556,6 @@ function DesignEditor() {
         setPrintMethod(productData.printMethod);
       }
       
-      // Load selected colors
-      if (productData.selectedColors) {
-        setSelectedColors(productData.selectedColors);
-      }
       
       // Load product configurations with positions (do this after image loads)
       if (productData.productConfigs) {
@@ -817,21 +813,20 @@ function DesignEditor() {
     }));
   };
 
-  const handleColorToggle = (colorName) => {
-    setSelectedColors(prev => {
-      if (prev.includes(colorName)) {
-        return prev.filter(c => c !== colorName);
-      }
-      return [...prev, colorName];
-    });
-  };
 
   const calculateTotalVariants = () => {
     const enabledProducts = Object.entries(productConfigs)
       .filter(([_, config]) => config.enabled);
-    const colors = selectedColors.length > 0 ? selectedColors.length : 20; // Default to 20 colors
-    const sizes = 8; // Standard sizes S-5XL
-    return enabledProducts.length * colors * sizes;
+    
+    // Calculate variants based on each product's available colors
+    const totalVariants = enabledProducts.reduce((total, [productId, config]) => {
+      const product = PRODUCT_TEMPLATES.find(p => p.id === productId);
+      const availableColors = product?.colors?.length || 1; // Use product's available colors
+      const sizes = 8; // Standard sizes S-5XL
+      return total + (availableColors * sizes);
+    }, 0);
+    
+    return totalVariants;
   };
 
   const handleUnpublishToDraft = async () => {
@@ -926,7 +921,7 @@ function DesignEditor() {
         backDesignUrl: backDesignUrl,
         printMethod: printMethod, // Save the selected print method
         productConfigs: productConfigs, // Save product positions and configurations
-        selectedColors: selectedColors, // Save selected colors
+        // No longer saving global selected colors - each product has its own default color
         mockups: [
           {
             id: `draft_mockup_${timestamp}_${randomSuffix}`,
@@ -1024,13 +1019,9 @@ function DesignEditor() {
       console.log('Enabled products:', enabledProducts.length);
       console.log('Products to process:', enabledProducts.map(p => `${p.name} (${p.colors?.length || 0} colors)`));
       
-      // Generate REAL product images for all enabled products and colors
+      // Generate REAL product images for all enabled products using their default colors
       const mockups = {};
-      const totalVariants = enabledProducts.reduce((total, product) => {
-        const availableColors = product.colors || ['Default'];
-        const colorsToGenerate = availableColors.filter(color => selectedColors.includes(color));
-        return total + colorsToGenerate.length;
-      }, 0);
+      const totalVariants = enabledProducts.length; // One image per enabled product
       
       // Initialize progress
       setGenerationProgress({
@@ -1043,6 +1034,9 @@ function DesignEditor() {
       
       for (const product of enabledProducts) {
         const config = productConfigs[product.id];
+        
+        // Use the selected default color for this product
+        const selectedColor = config.selectedColor || product.colors?.[0] || 'Black';
         
         // Determine which image to use based on print location
         let designImage;
@@ -1057,82 +1051,60 @@ function DesignEditor() {
           // Get current position for this product
           const currentPosition = getCurrentPosition(product.id);
           
-          // Generate images ONLY for selected colors that are available for this product
-          const availableColors = product.colors || ['Default'];
-          const colorsToGenerate = availableColors.filter(color => selectedColors.includes(color));
+          console.log(`🎨 🎨 REAL IMAGE: Generating ${product.name} in ${selectedColor}...`);
           
-          // If no colors selected for this product, skip it
-          if (colorsToGenerate.length === 0) {
-            console.log(`⚠️ No selected colors available for ${product.name}, skipping...`);
-            continue;
+          // Update progress message
+          setGenerationProgress({
+            current: processedVariants,
+            total: totalVariants,
+            message: `Generating ${product.name} in ${selectedColor}...`
+          });
+          
+          try {
+            // Generate real composite image using canvas
+            const realImage = await canvasImageGenerator.generateProductImage(
+              designImage,
+              product.templateId,
+              selectedColor,
+              currentPosition,
+              designScale / 100
+            );
+            
+            console.log(`✅ Generated real image for ${product.name} in ${selectedColor}:`, realImage.url ? 'SUCCESS' : 'FAILED');
+            
+            // Store the product with its generated image
+            mockups[product.id] = {
+              templateId: product.templateId,
+              name: product.name,
+              color: selectedColor,
+              image: realImage.url,
+              real: realImage.real || false,
+              width: realImage.width,
+              height: realImage.height,
+              url: realImage.url
+            };
+            
+            processedVariants++;
+            
+            // Update progress after successful generation
+            setGenerationProgress({
+              current: processedVariants,
+              total: totalVariants,
+              message: `Generated ${product.name} in ${selectedColor}`
+            });
+            
+          } catch (error) {
+            console.error(`❌ Failed to generate ${product.name} in ${selectedColor}:`, error);
+            // Add fallback for failed generation
+            mockups[product.id] = {
+              templateId: product.templateId,
+              name: product.name,
+              color: selectedColor,
+              image: null,
+              error: error.message,
+              url: null
+            };
           }
-          
-          const colorVariants = [];
-          
-          for (const color of colorsToGenerate) {
-            try {
-              console.log(`🎨 🎨 REAL IMAGE: Generating ${product.name} in ${color}...`);
-              
-              // Update progress message
-              setGenerationProgress({
-                current: processedVariants,
-                total: totalVariants,
-                message: `Generating ${product.name} in ${color}...`
-              });
-              
-              // Generate real composite image using canvas
-              const realImage = await canvasImageGenerator.generateProductImage(
-                designImage,
-                product.templateId,
-                color,
-                currentPosition,
-                designScale / 100
-              );
-              
-              colorVariants.push({
-                color: color,
-                image: realImage.url,
-                real: realImage.real || false,
-                width: realImage.width,
-                height: realImage.height
-              });
-              
-              processedVariants++;
-              
-              // Update progress after successful generation
-              setGenerationProgress({
-                current: processedVariants,
-                total: totalVariants,
-                message: `Generated ${product.name} in ${color}`
-              });
-              
-              // Log progress milestones
-              if (processedVariants % 5 === 0) {
-                console.log(`✅ Generated ${processedVariants}/${totalVariants} product variants`);
-              }
-              
-            } catch (error) {
-              console.error(`❌ Failed to generate ${product.name} in ${color}:`, error);
-              // Add fallback for failed generation
-              colorVariants.push({
-                color: color,
-                image: null,
-                error: error.message
-              });
-            }
-          }
-          
-          mockups[product.id] = {
-            productId: product.id,
-            templateId: product.templateId,
-            name: product.name,
-            price: product.price,
-            printLocation: config.printLocation,
-            selectedColor: config.selectedColor || config.defaultColor,
-            variants: colorVariants,
-            position: currentPosition,
-            scale: designScale / 100
-          };
         }
       }
       
@@ -1148,37 +1120,32 @@ function DesignEditor() {
       
       try {
         for (const [productId, mockupData] of Object.entries(mockups)) {
-          if (mockupData.variants && mockupData.variants.length > 0) {
+          if (mockupData.image && !mockupData.error) {
             setGenerationProgress(prev => ({
               ...prev,
-              message: `Uploading ${mockupData.name} images to cloud...`
+              message: `Uploading ${mockupData.name} image to cloud...`
             }));
-            const response = await fetch(`${getApiBaseURL()}/mockups/upload-product-images`, {
+            
+            const response = await fetch(`${getApiBaseURL()}/mockups/upload-single-image`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
               },
               credentials: 'include',
               body: JSON.stringify({
-                productName: `${designTitle}-${mockupData.name}`,
-                variants: mockupData.variants
+                productName: `${designTitle}-${mockupData.name}-${mockupData.color}`,
+                imageUrl: mockupData.image,
+                productId: productId,
+                color: mockupData.color
               })
             });
             
             if (response.ok) {
               const uploadResult = await response.json();
-              console.log(`✅ Uploaded ${uploadResult.uploaded} images for ${mockupData.name} to Cloudinary`);
+              console.log(`✅ Uploaded image for ${mockupData.name} in ${mockupData.color} to Cloudinary:`, uploadResult.cloudinaryUrl);
               
-              // Update mockup data with Cloudinary URLs
-              if (uploadResult.results) {
-                uploadResult.results.forEach((result, index) => {
-                  if (result.success && mockupData.variants[index]) {
-                    mockupData.variants[index].cloudinaryUrl = result.cloudinaryUrl;
-                  }
-                });
-              }
             } else {
-              console.error(`❌ Failed to upload images for ${mockupData.name} to Cloudinary`);
+              console.error(`❌ Failed to upload image for ${mockupData.name} in ${mockupData.color} to Cloudinary`);
             }
           }
         }
@@ -1199,8 +1166,7 @@ function DesignEditor() {
           supportingText,
           tags,
           nfcEnabled: nfcExperienceType !== 'none',
-          productConfigs,
-          selectedColors,
+          productConfigs, // Pass product configs with selected colors
           designImageSrc: finalDesignImage, // Use the final design image
           frontDesignImageSrc,
           backDesignImageSrc,
@@ -1755,64 +1721,44 @@ function DesignEditor() {
                           </label>
                         </div>
                       )}
+                      
+                      {/* Color Swatches for each product */}
+                      <div className="color-swatches-section">
+                        <div className="color-grid">
+                          {product.colors.map(color => {
+                            const colorHex = COLOR_PALETTE.find(c => c.name === color)?.hex || '#000000';
+                            const isSelected = productConfigs[product.id]?.selectedColors?.includes(color) || false;
+                            
+                            return (
+                              <div
+                                key={color}
+                                className={`color-swatch ${isSelected ? 'selected' : ''}`}
+                                style={{ backgroundColor: colorHex }}
+                                title={color}
+                                onClick={() => {
+                                  setProductConfigs(prev => ({
+                                    ...prev,
+                                    [product.id]: {
+                                      ...prev[product.id],
+                                      selectedColors: isSelected
+                                        ? prev[product.id]?.selectedColors?.filter(c => c !== color) || []
+                                        : [...(prev[product.id]?.selectedColors || []), color]
+                                    }
+                                  }));
+                                }}
+                              >
+                                {isSelected && <span className="checkmark">✓</span>}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </div>
               </div>
             </div>
 
-            {/* Colors Section */}
-            <div className="colors-section">
-              <h2>Product Colors</h2>
-              <p>Activate the background colors that you want to make available for your enabled products.</p>
-              <p style={{ fontSize: '12px', color: '#9ca3af' }}>Not all colors are available for all products.</p>
-              
-              <div className="color-filters">
-                <button 
-                  className={`color-filter ${colorFilter === 'All' ? 'active' : ''}`}
-                  onClick={() => setColorFilter('All')}
-                >
-                  All
-                </button>
-                <button 
-                  className={`color-filter ${colorFilter === 'Light' ? 'active' : ''}`}
-                  onClick={() => setColorFilter('Light')}
-                >
-                  Light
-                </button>
-                <button 
-                  className={`color-filter ${colorFilter === 'Dark' ? 'active' : ''}`}
-                  onClick={() => setColorFilter('Dark')}
-                >
-                  Dark
-                </button>
-                <button 
-                  className={`color-filter ${colorFilter === 'None' ? 'active' : ''}`}
-                  onClick={() => setColorFilter('None')}
-                >
-                  None
-                </button>
-              </div>
-              
-              <div className="color-grid">
-                {filteredColors.map(color => (
-                  <div
-                    key={color.name}
-                    className={`color-swatch ${selectedColors.includes(color.name) ? 'selected' : ''}`}
-                    style={{ backgroundColor: color.hex }}
-                    onClick={() => handleColorToggle(color.name)}
-                    title={color.name}
-                  >
-                    {selectedColors.includes(color.name) && (
-                      <svg className="checkmark" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M5 13l4 4L19 7" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M5 13l4 4L19 7" stroke="black" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" style={{ strokeOpacity: 0.3 }}/>
-                      </svg>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
 
 
             {/* NFC Experience Section */}
