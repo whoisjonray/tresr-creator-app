@@ -334,7 +334,7 @@ function DesignEditor() {
       const mockup = await mockupService.generatePreview(
         designUrl,
         product.templateId,
-        config.selectedColor || config.defaultColor,
+        config.hoverColor || config.selectedColor || config.defaultColor,
         {
           position: apiPosition,
           scale: apiScale,
@@ -402,7 +402,7 @@ function DesignEditor() {
     const printAreaY = printArea.y - (printAreaHeight / 2);
     
     // Try to get and draw the garment image
-    const selectedColor = config?.selectedColor || config?.defaultColor || 'Black';
+    const selectedColor = config?.hoverColor || config?.selectedColor || config?.defaultColor || 'Black';
     // Determine which side to show based on print location
     let displaySide = 'front';
     if (config?.printLocation === 'back') {
@@ -499,7 +499,7 @@ function DesignEditor() {
   // Load garment image when product or color changes
   React.useEffect(() => {
     const config = productConfigs[activeProduct];
-    const selectedColor = config?.selectedColor || config?.defaultColor || 'Black';
+    const selectedColor = config?.hoverColor || config?.selectedColor || config?.defaultColor || 'Black';
     // Determine which side to show based on print location
     let displaySide = 'front';
     if (config?.printLocation === 'back') {
@@ -1742,9 +1742,35 @@ function DesignEditor() {
                                       ...prev[product.id],
                                       selectedColors: isSelected
                                         ? prev[product.id]?.selectedColors?.filter(c => c !== color) || []
-                                        : [...(prev[product.id]?.selectedColors || []), color]
+                                        : [...(prev[product.id]?.selectedColors || []), color],
+                                      selectedColor: color, // Set as the current display color
+                                      hoverColor: null // Clear any hover state
                                     }
                                   }));
+                                }}
+                                onMouseEnter={() => {
+                                  // Temporarily show this color on the garment if it's the active product
+                                  if (product.id === activeProduct) {
+                                    setProductConfigs(prev => ({
+                                      ...prev,
+                                      [product.id]: {
+                                        ...prev[product.id],
+                                        hoverColor: color // Temporary hover color
+                                      }
+                                    }));
+                                  }
+                                }}
+                                onMouseLeave={() => {
+                                  // Remove hover color when mouse leaves - will default back to selectedColor
+                                  if (product.id === activeProduct) {
+                                    setProductConfigs(prev => ({
+                                      ...prev,
+                                      [product.id]: {
+                                        ...prev[product.id],
+                                        hoverColor: null // Clear hover color, returns to selectedColor
+                                      }
+                                    }));
+                                  }
                                 }}
                               >
                                 {isSelected && <span className="checkmark">✓</span>}
