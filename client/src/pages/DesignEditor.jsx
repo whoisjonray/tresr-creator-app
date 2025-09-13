@@ -1605,6 +1605,23 @@ function DesignEditor() {
                     />
                     <span className="scale-suffix">%</span>
                   </div>
+                  
+                  {/* NFC Experience Dropdown */}
+                  <div className="nfc-control">
+                    <label>NFC Experience</label>
+                    <select 
+                      className="nfc-dropdown"
+                      value={nfcExperienceType}
+                      onChange={(e) => setNfcExperienceType(e.target.value)}
+                    >
+                      <option value="none">None</option>
+                      <option value="default">Default TRESR Experience</option>
+                      <option value="custom">Custom URL Redirect</option>
+                      <option value="nft">NFT Verification</option>
+                      <option value="rewards">Reward Points</option>
+                      <option value="exclusive">Exclusive Content</option>
+                    </select>
+                  </div>
                 </div>
               </div>
 
