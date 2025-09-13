@@ -116,4 +116,4 @@ Replaces IMG.ly ($980/month) with Dynamic Mockups ($19/month):
 
 ## Support
 
-For issues or questions, contact the TRESR development team.
+For issues or questions, contact the TRESR development team.# Force Railway redeploy after payment issue - Fri Sep 12 19:41:31 CDT 2025
