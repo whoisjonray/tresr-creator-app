@@ -9,9 +9,9 @@ const getBaseURL = () => {
     return window.location.origin;
   }
   
-  // If on production domain, use production API
+  // If on production domain, use production API backend
   if (currentHost === 'creators.tresr.com') {
-    return 'https://creators.tresr.com';
+    return 'https://vibes.tresr.com';
   }
   
   // Fallback to local development
